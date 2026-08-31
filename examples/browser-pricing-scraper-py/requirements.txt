@@ -1,0 +1,1 @@
+solari-browser>=0.1.2
