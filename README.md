@@ -1,6 +1,6 @@
 # Solari Cookbook + OSINT Operations Center
 
-This public fork preserves the upstream Solari cookbook examples while developing a production-minded OSINT operations-center showcase around them. The showcase demonstrates public-source acquisition, normalized evidence, isolated transformations, geospatial visualization, explainable correlation, observability, portable investigations, and two deployment modes: a FastAPI server mode and a static/no-hosting analyst console.
+This public fork preserves the upstream Solari cookbook examples while developing a production-minded OSINT operations-center showcase around them. The showcase demonstrates public-source acquisition, normalized evidence, isolated transformations, geospatial visualization, explainable correlation, observability, portable investigations, and one backend-independent analyst frontend that supports both static/no-hosting and FastAPI-backed runtime modes.
 
 The project uses only lawful public/open sources for the demonstration. It is not a media-monitoring product and does not include private source inventories, credentials, customer data, or unrelated proprietary logic.
 
@@ -8,10 +8,10 @@ The project uses only lawful public/open sources for the demonstration. It is no
 
 ### Static / no-hosting mode
 
-`static-console/` is a browser-only analyst workspace that does not require an application server, database server, PHP, Python runtime, Docker daemon, permanent VM, or background process. A modern browser can acquire a CORS-enabled public feed, normalize and retain events in IndexedDB, display a world view, work offline with previously retained investigations, and export/import portable cases.
+`static-console/` is the canonical analyst workspace. It does not require an application server, database server, PHP, Python runtime, Docker daemon, permanent VM, or background process when used in local/static mode. A modern browser can acquire a CORS-enabled public feed, normalize and retain events in IndexedDB, display a world view, work offline with previously retained investigations, and export/import portable cases.
 
 Current static capabilities include:
-- versioned IndexedDB stores for cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, and artifacts;
+- versioned IndexedDB stores for cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, acquisitions, transformations, and artifacts;
 - memory-only privacy mode plus local database/cache purge controls;
 - browser capability, online/offline, and storage-quota diagnostics;
 - a dependency-free global event canvas with no external tile requirement;
@@ -20,17 +20,20 @@ Current static capabilities include:
 - optional AES-256-GCM `.solari-case` encryption using a user passphrase;
 - import preview, integrity/secret checks, conflict counts, deterministic merge, and isolated read-only open;
 - JSON, CSV, GeoJSON, GraphML, and standalone offline HTML report exports;
-- a service-worker/PWA shell for offline-capable local analysis.
+- a service-worker/PWA shell for offline-capable local analysis;
+- a path-scoped FastAPI runtime adapter that is inactive on normal static hosting and, when mounted at `/workspace/`, synchronizes normalized server events/entities/relationships/evidence/acquisitions/source health into the same browser workspace.
 
 For reproducible local use, serve `static-console/` from any localhost static-file server. Some browsers restrict ES modules, service workers, and secure storage APIs on `file://` origins. The same folder can be deployed unchanged to GitHub Pages, Cloudflare Pages, Netlify, S3-compatible static hosting, or a generic HTTPS server. `python tools/build_static_zip.py` creates a distributable ZIP under ignored `dist/`.
 
-Direct browser-side Solari Browser/Sandbox/Desktop calls are deliberately **not** claimed until provider browser/CORS behavior is verified. The Solari key field is bring-your-own-key scaffolding and currently keeps the value in page memory only.
+Direct browser-side Solari Browser/Sandbox/Desktop calls are deliberately **not** claimed under the currently documented provider client model. The official cookbook clients use process-environment credentials rather than a browser-targeted credential/CORS flow, so provider execution remains a controlled server/broker responsibility unless that model changes. The optional Solari key field remains page-memory-only scaffolding and is never persisted.
 
 ### Server mode
 
-The FastAPI application under `app/` currently provides:
+The FastAPI application under `app/` mounts the same checked-in `static-console/` files at `/workspace/`; `/` redirects there. The runtime adapter synchronizes server data into the same analyst workspace and exposes registered-source collection controls. The previous rich server dashboard is preserved at `/server-dashboard` as an advanced operator surface for server-only execution, queue, Solari, workflow, globe, and debugging capabilities rather than being maintained as a second analyst frontend.
+
+The FastAPI application currently provides:
 - typed acquisition, source, event, geospatial, evidence, entity, relationship, and case contracts;
-- implemented public adapters for USGS earthquakes, NWS active alerts, and NOAA SWPC alerts, with explicit capabilities/dependencies and acquisition/parser/record telemetry;
+- implemented public adapters for USGS earthquakes, NWS active alerts, NOAA SWPC alerts, and the broader registered source set documented in `sources.md`, with explicit capabilities/dependencies and acquisition/parser/record telemetry;
 - bounded concurrent multi-source collection with deterministic result ordering and per-source failure preservation;
 - SQLite persistence with deterministic IDs, first/last seen state, sighting counts, retained event snapshots, entities/relationships, cases, and case-object links;
 - deterministic event-to-source/location graph projection plus bounded neighborhood/path/component queries;
@@ -50,6 +53,8 @@ Run the server after installing requirements:
 ```bash
 python -m uvicorn app.main:app --reload
 ```
+
+Open `/` for the canonical analyst workspace or `/server-dashboard` for the advanced server-only operations view.
 
 The project root update scripts remain the normal setup/update entrypoints on Linux, macOS, and Windows. They validate the repository/branch, require Python 3.11+ and Node.js 20+ where applicable, install dependencies, and run the Python/static-console test suites.
 
