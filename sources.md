@@ -36,7 +36,8 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Environmental | EPA AirNow and NOAA NDBC public environmental observations | API/download/feed | Implemented AirNow + NDBC baselines |
 | Air quality | EPA AirNow public daily data | feed/download | Implemented daily preliminary-observation baseline |
 | Infrastructure/public status | Public WZDx/CWZ work-zone feeds plus other lawful government infrastructure/status datasets | API/feed | Implemented configurable WZDx work-zone baseline; broader infrastructure status planned |
-| Transportation | Public WZDx, GTFS/GTFS-Realtime and government transportation feeds | API/feed | Implemented configurable WZDx work-zone baseline; GTFS/general transit planned |
+| Transportation | Public WZDx, GTFS/GTFS-Realtime and government transportation feeds | API/feed | Implemented WZDx work-zone plus MBTA static GTFS planned-service baselines; real-time transit remains planned |
+| Storm observations | NOAA Storm Prediction Center preliminary daily reports | feed/download | Implemented bounded hail-report baseline; reports remain explicitly preliminary |
 | Sanctions/watchlists | Official public government sanctions/watchlists where lawful for demonstration | API/download | Implemented OFAC SDN CSV baseline |
 | Public notices | Government/public-agency operational notices excluding general media monitoring | API/web | Planned |
 
@@ -253,6 +254,34 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Interpretation:** `vehicle_impact` is retained as source data but no project safety severity is inferred. Producer attribution/terms remain source-specific and must be preserved.
 - **Configuration boundary:** no feed hostname or credential is embedded in the repository. The USDOT Work Zone Feed Registry can be used by an evaluator to locate a current public WZDx/CWZ feed, then explicitly allow that producer hostname.
 - **Status:** implemented, registered, and fixture/safety-tested; live producer-feed validation remains tracked separately.
+
+### MBTA static GTFS planned-service routes
+- **Adapter ID:** `mbta-gtfs-static`
+- **Authoritative documentation:** `https://github.com/mbta/gtfs-documentation/blob/master/reference/gtfs.md`.
+- **Baseline endpoint:** `https://cdn.mbta.com/MBTA_GTFS.zip`.
+- **Acquisition:** public GTFS ZIP download; no authentication; nominal poll interval 86400 seconds; 64 MiB response cap, 128-entry archive cap, 4 MiB bounds on the selected `feed_info.txt` and `routes.txt` members, and 2,000-route parser limit.
+- **Scope/category:** MBTA planned-service route definitions; normalized category `transportation-schedule-route`.
+- **Raw/normalized mapping:** route ID, short/long names, route type, description, public route URL/colors and feed version/start/end dates are retained. The current baseline intentionally does not ingest trips/stop_times or claim current service performance.
+- **Evidence/deduplication:** deterministic source + feed version/date key + route ID; acquisition ID and `routes.txt` record path retained.
+- **Safety:** archive member paths are checked for traversal/absolute paths before selected files are parsed; member and record sizes are bounded.
+- **Interpretation:** every record carries `schedule_only=true`; a route's presence in static GTFS is not a vehicle position, delay, service interruption, emergency notice, or proof that a particular trip is operating at collection time.
+- **Health:** common acquisition/job/source-health telemetry applies; response bytes, parser duration, feed version/dates and accepted records are retained.
+- **Terms:** public MBTA GTFS planned-service publication; preserve MBTA attribution and current provider terms.
+- **Status:** implemented, registered, and covered by deterministic archive/parser/normalization/bounds tests; live network validation remains tracked separately.
+
+### NOAA Storm Prediction Center preliminary hail reports
+- **Adapter ID:** `spc-hail-reports`
+- **Authoritative report page:** `https://www.spc.noaa.gov/climo/reports/today.html`.
+- **Baseline endpoint:** `https://www.spc.noaa.gov/climo/reports/today_hail.csv`.
+- **Acquisition:** public daily CSV; no authentication; nominal poll interval 300 seconds; 4 MiB response and 10,000-record bounds.
+- **Scope/category:** current SPC preliminary hail reports for the active convective day; normalized category `storm-observation-hail`.
+- **Time/coordinate mapping:** SPC organizes the report day from 1200 UTC through 1159 UTC the following day. The adapter applies that documented rollover to HHMM report times; source latitude/longitude are retained as preliminary two-decimal-degree report coordinates.
+- **Raw/normalized mapping:** report time, hail size (hundredths of an inch plus derived inches), location/county/state, coordinates and comments are retained.
+- **Evidence/deduplication:** deterministic identity from convective-day start, report time, coordinate, size/location/county/state/comment content; acquisition ID and CSV record path retained.
+- **Interpretation:** `preliminary=true` and `warning_or_forecast=false` are explicit. No severity is inferred, and a report is not represented as a warning, forecast, finalized Storm Data record, or proof of damage at a specific property.
+- **Health:** common acquisition/job/source-health telemetry applies with response/parser/accepted/rejected metrics.
+- **Terms:** public NOAA/NWS/SPC storm-report data; preserve NOAA/SPC attribution and the provider's preliminary-data disclaimer.
+- **Status:** implemented, registered, and covered by deterministic convective-day/parser/normalization/bounds tests; live endpoint validation remains tracked separately.
 
 ## Implemented observable/reference enrichment sources
 These are analyst-invoked enrichment adapters rather than continuously polled event feeds. They accept user-supplied public observables/places, impose bounded requests where applicable, and retain the source URL/provider in returned provenance. They must not be used to probe private/internal targets.
