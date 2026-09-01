@@ -1,6 +1,7 @@
 import { buildCase, validateCase, verifyCaseIntegrity } from './schema.js';
 import { decryptCase, encryptCase } from './crypto.js';
 import { caseCsv, caseGeoJson, caseGraphMl, caseReportHtml } from './exports.js';
+import { artifactBlob, artifactFromFile, artifactFromText, storeArtifact } from './artifacts.js';
 import { assertSafeExport, scanForSecrets } from './security.js';
 import { STATIC_SOURCES, fetchStaticSource } from './sources.js';
 import { getAll, isPrivacyMode, purgeWorkspace, putMany, setPrivacyMode, storageEstimate } from './storage.js';
@@ -8,6 +9,7 @@ import { getAll, isPrivacyMode, purgeWorkspace, putMany, setPrivacyMode, storage
 let solariKey = '';
 let pendingImport = null;
 let readOnlyEvents = null;
+let activeCaseId = crypto.randomUUID ? crypto.randomUUID() : `case-${Date.now()}`;
 
 function sortedEvents(events) { return [...events].sort((a,b)=>String(b.observed_at).localeCompare(String(a.observed_at))); }
 async function getEvents() { return sortedEvents(await getAll('events')); }
@@ -35,11 +37,21 @@ async function renderCapabilities(){
   document.querySelector('#quota-status').textContent=`Browser storage: ${used} MiB / ${quota} MiB (${percent}%).${estimate.percent>=80?' Warning: storage usage is high.':''}`;
 }
 
+async function renderArtifacts(){
+  const artifacts=await getAll('artifacts'); const body=document.querySelector('#artifacts'); body.replaceChildren();
+  for(const artifact of artifacts.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))){
+    const row=document.createElement('tr');
+    for(const value of[artifact.original_name||artifact.sha256,artifact.mime_type,`${(Number(artifact.size_bytes||0)/1024).toFixed(1)} KiB`,(artifact.tags||[]).join(', ')]){const cell=document.createElement('td');cell.textContent=value??'';row.appendChild(cell);}
+    const action=document.createElement('td'); const button=document.createElement('button'); button.textContent='Download'; button.addEventListener('click',()=>{const blob=artifactBlob(artifact);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=artifact.original_name||artifact.sha256;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}); action.appendChild(button); row.appendChild(action); body.appendChild(row);
+  }
+  document.querySelector('#artifact-status').textContent=`${artifacts.length} content-addressed artifact(s).`;
+}
+
 async function render(){
   const events=readOnlyEvents || await getEvents(); const body=document.querySelector('#events'); body.replaceChildren();
   for(const event of events.slice(0,500)){const row=document.createElement('tr');for(const value of[event.observed_at,event.category,event.title,event.source_id]){const cell=document.createElement('td');cell.textContent=value??'';row.appendChild(cell);}body.appendChild(row);}
   document.querySelector('#storage-status').textContent=readOnlyEvents?`${events.length} event(s) in isolated read-only import preview.`:`${events.length} ${isPrivacyMode()?'memory-only':'locally persisted'} event(s).`;
-  drawWorld(events); await renderCapabilities();
+  drawWorld(events); await renderArtifacts(); await renderCapabilities();
 }
 
 function download(data,filename,type='application/json'){
@@ -47,9 +59,10 @@ function download(data,filename,type='application/json'){
 }
 
 async function currentCase(){
-  const [events,entities,relationships,evidence,savedViews]=await Promise.all(['events','entities','relationships','evidence','saved_views'].map(getAll));
+  const stores=['events','entities','relationships','evidence','saved_views','artifacts','acquisitions','transformations','notes'];
+  const [events,entities,relationships,evidence,savedViews,artifacts,acquisitions,transformations,notes]=await Promise.all(stores.map(getAll));
   const title=document.querySelector('#case-title').value.trim()||'Portable investigation';
-  return buildCase(sortedEvents(events),{title,entities,relationships,evidence,saved_views:savedViews});
+  return buildCase(sortedEvents(events),{id:activeCaseId,title,entities,relationships,evidence,saved_views:savedViews,artifacts,acquisitions,transformations,notes});
 }
 
 async function exportCase(encrypted=false){
@@ -68,13 +81,14 @@ async function exportDerived(kind){
 }
 
 function incomingWins(existing,incoming){
-  const current=Date.parse(existing.updated_at||existing.observed_at||0); const next=Date.parse(incoming.updated_at||incoming.observed_at||0); return !Number.isFinite(current)||!Number.isFinite(next)||next>=current;
+  const current=Date.parse(existing.updated_at||existing.observed_at||existing.created_at||0); const next=Date.parse(incoming.updated_at||incoming.observed_at||incoming.created_at||0); return !Number.isFinite(current)||!Number.isFinite(next)||next>=current;
 }
+function recordsDiverge(left,right){return JSON.stringify(left)!==JSON.stringify(right);}
 
 async function analyzeImport(data){
-  const existing=await getEvents(); const current=new Map(existing.map((e)=>[e.id,e])); let duplicate=0,newer=0,older=0;
-  for(const event of data.events){const prior=current.get(event.id);if(!prior)continue;duplicate+=1;if(incomingWins(prior,event))newer+=1;else older+=1;}
-  return {events:data.events.length,new_events:data.events.length-duplicate,duplicate_ids:duplicate,incoming_newer_or_equal:newer,incoming_older:older,entities:data.entities?.length||0,relationships:data.relationships?.length||0,evidence:data.evidence?.length||0};
+  const existing=await getEvents(); const current=new Map(existing.map((e)=>[e.id,e])); let duplicate=0,newer=0,older=0,divergent=0;
+  for(const event of data.events){const prior=current.get(event.id);if(!prior)continue;duplicate+=1;if(recordsDiverge(prior,event))divergent+=1;if(incomingWins(prior,event))newer+=1;else older+=1;}
+  return {events:data.events.length,new_events:data.events.length-duplicate,duplicate_ids:duplicate,divergent_event_records:divergent,incoming_newer_or_equal:newer,incoming_older:older,entities:data.entities?.length||0,relationships:data.relationships?.length||0,evidence:data.evidence?.length||0,artifacts:data.artifacts?.length||0,acquisitions:data.acquisitions?.length||0,transformations:data.transformations?.length||0,notes:data.notes?.length||0};
 }
 
 async function prepareImport(file){
@@ -84,7 +98,7 @@ async function prepareImport(file){
   validateCase(data); const integrity=await verifyCaseIntegrity(data); if(!integrity.legacy&&!integrity.verified)throw new Error(`Case integrity verification failed: ${integrity.mismatches.join('; ')}`);
   const secrets=scanForSecrets(data); if(secrets.length)throw new Error(`Import blocked by secret/session scan (${secrets.length} finding(s)).`);
   const analysis=await analyzeImport(data); pendingImport={data,analysis,integrity};
-  document.querySelector('#import-preview').textContent=JSON.stringify({case:data.case?.title||null,schema_version:data.version,integrity,analysis,source_ids:data.manifest?.source_ids||[]},null,2);
+  document.querySelector('#import-preview').textContent=JSON.stringify({case:data.case?.title||null,schema_version:data.version,integrity,analysis,source_ids:data.manifest?.source_ids||[],transformation_ids:data.manifest?.transformation_ids||[]},null,2);
   document.querySelector('#case-status').textContent='Import preview ready. Confirm merge or open read-only.';
 }
 
@@ -92,8 +106,8 @@ async function confirmImport(){
   if(!pendingImport)throw new Error('No import is pending.'); const data=pendingImport.data; const current=new Map((await getEvents()).map((e)=>[e.id,e]));
   const merged=[]; for(const event of data.events){const prior=current.get(event.id);if(!prior||incomingWins(prior,event))merged.push(event);}
   await putMany('events',merged);
-  for(const [store,key] of[['entities','entities'],['relationships','relationships'],['evidence','evidence'],['saved_views','saved_views']]) if(Array.isArray(data[key])&&data[key].length)await putMany(store,data[key]);
-  if(data.case?.id)await putMany('cases',[{...data.case,id:data.case.id,imported_at:new Date().toISOString()}]);
+  for(const [store,key] of[['entities','entities'],['relationships','relationships'],['evidence','evidence'],['saved_views','saved_views'],['artifacts','artifacts'],['acquisitions','acquisitions'],['transformations','transformations'],['notes','notes']]) if(Array.isArray(data[key])&&data[key].length)await putMany(store,data[key]);
+  if(data.case?.id){activeCaseId=data.case.id;await putMany('cases',[{...data.case,id:data.case.id,imported_at:new Date().toISOString()}]);}
   readOnlyEvents=null; pendingImport=null; document.querySelector('#import-preview').textContent=''; document.querySelector('#case-status').textContent=`Merged ${merged.length} incoming event record(s).`; await render();
 }
 
@@ -102,10 +116,18 @@ function closeReadOnly(){readOnlyEvents=null;render();}
 
 function fillSourceOptions(){const select=document.querySelector('#source-adapter');for(const source of Object.values(STATIC_SOURCES)){const option=document.createElement('option');option.value=source.id;option.textContent=source.name;select.appendChild(option);}select.addEventListener('change',()=>{document.querySelector('#source-url').value=STATIC_SOURCES[select.value].defaultUrl;});}
 
+async function addUserArtifact(file){
+  const tags=document.querySelector('#artifact-tags').value.split(',');
+  const artifact=await artifactFromFile(file,{tags,caseId:activeCaseId,provenance:{kind:'user-supplied',imported_at:new Date().toISOString()}}); await storeArtifact(artifact);
+  const evidence={id:`artifact-evidence:${artifact.sha256}`,case_id:activeCaseId,artifact_sha256:artifact.sha256,kind:'observed',field:'artifact',note:'User-supplied/public artifact retained with content hash.',created_at:new Date().toISOString(),provenance:artifact.provenance};
+  await putMany('evidence',[evidence]); await renderArtifacts(); return artifact;
+}
+
 document.querySelector('#solari-key').addEventListener('input',(event)=>{solariKey=event.target.value;document.querySelector('#key-status').textContent=solariKey?'Solari key loaded in memory for this page session.':'No Solari key loaded.';});
 document.querySelector('#clear-key').addEventListener('click',()=>{solariKey='';document.querySelector('#solari-key').value='';document.querySelector('#key-status').textContent='No Solari key loaded.';});
 document.querySelector('#privacy-mode').addEventListener('change',async(event)=>{setPrivacyMode(event.target.checked);readOnlyEvents=null;document.querySelector('#privacy-status').textContent=event.target.checked?'Privacy mode enabled: new investigation state is memory-only.':'Persistent browser storage enabled.';await render();});
-document.querySelector('#fetch-source').addEventListener('click',async()=>{const status=document.querySelector('#fetch-status');try{status.textContent='Fetching…';const result=await fetchStaticSource(document.querySelector('#source-adapter').value,document.querySelector('#source-url').value);await putMany('events',result.events);await putMany('source_state',[{id:result.source.id,last_success:new Date().toISOString(),url:result.url,count:result.events.length}]);await render();status.textContent=`Stored ${result.events.length} event(s).`;}catch(error){status.textContent=`Fetch failed: ${error.message}`;}});
+document.querySelector('#fetch-source').addEventListener('click',async()=>{const status=document.querySelector('#fetch-status');try{status.textContent='Fetching…';const result=await fetchStaticSource(document.querySelector('#source-adapter').value,document.querySelector('#source-url').value);await putMany('events',result.events);await putMany('acquisitions',[result.acquisition]);const rawArtifact=await artifactFromText(result.rawText,{originalName:`${result.source.id}-${Date.now()}.json`,mimeType:result.acquisition.content_type||'application/json',tags:['raw-acquisition'],caseId:activeCaseId,provenance:{kind:'raw-acquisition',acquisition_id:result.acquisition.id,source_url:result.acquisition.final_url}});await storeArtifact(rawArtifact);await putMany('evidence',[{id:`raw-evidence:${result.acquisition.id}`,case_id:activeCaseId,artifact_sha256:rawArtifact.sha256,acquisition_id:result.acquisition.id,kind:'observed',field:'raw-acquisition',source_url:result.acquisition.final_url,note:'Content-addressed raw public-source response retained by static collector.',created_at:new Date().toISOString()}]);await putMany('source_state',[{id:result.source.id,last_success:new Date().toISOString(),url:result.url,count:result.events.length}]);await render();status.textContent=`Stored ${result.events.length} event(s), acquisition metadata, and raw SHA-256 artifact.`;}catch(error){status.textContent=`Fetch failed: ${error.message}`;}});
+document.querySelector('#artifact-file').addEventListener('change',async(event)=>{const file=event.target.files[0];if(!file)return;try{const artifact=await addUserArtifact(file);document.querySelector('#artifact-status').textContent=`Stored ${artifact.original_name||artifact.sha256}; identical bytes deduplicate by SHA-256.`;}catch(error){document.querySelector('#artifact-status').textContent=error.message;}event.target.value='';});
 document.querySelector('#refresh-events').addEventListener('click',()=>{readOnlyEvents=null;render();});
 document.querySelector('#export-case').addEventListener('click',async()=>{try{await exportCase(false);document.querySelector('#case-status').textContent='Case JSON exported after secret/session scan.';}catch(error){document.querySelector('#case-status').textContent=error.message;}});
 document.querySelector('#export-encrypted').addEventListener('click',async()=>{try{await exportCase(true);document.querySelector('#case-status').textContent='Encrypted case exported after integrity and secret/session checks.';}catch(error){document.querySelector('#case-status').textContent=error.message;}});
@@ -114,7 +136,7 @@ document.querySelector('#import-case').addEventListener('change',async(event)=>{
 document.querySelector('#confirm-import').addEventListener('click',async()=>{try{await confirmImport();}catch(error){document.querySelector('#case-status').textContent=error.message;}});
 document.querySelector('#open-readonly').addEventListener('click',async()=>{try{await openReadOnly();}catch(error){document.querySelector('#case-status').textContent=error.message;}});
 document.querySelector('#close-readonly').addEventListener('click',closeReadOnly);
-document.querySelector('#purge-data').addEventListener('click',async()=>{solariKey='';document.querySelector('#solari-key').value='';pendingImport=null;readOnlyEvents=null;await purgeWorkspace();document.querySelector('#case-status').textContent='Local database and application caches purged. Reloading storage on next use.';await render();});
+document.querySelector('#purge-data').addEventListener('click',async()=>{solariKey='';document.querySelector('#solari-key').value='';pendingImport=null;readOnlyEvents=null;activeCaseId=crypto.randomUUID?crypto.randomUUID():`case-${Date.now()}`;await purgeWorkspace();document.querySelector('#case-status').textContent='Local database and application caches purged. Reloading storage on next use.';await render();});
 window.addEventListener('online',renderCapabilities);window.addEventListener('offline',renderCapabilities);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
 fillSourceOptions(); renderCapabilities(); render();
