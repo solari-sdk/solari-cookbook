@@ -11,6 +11,7 @@ from app.sources import (
     nhc_tropical_cyclones,
     noaa_tsunami_bulletins,
     nws_alerts,
+    ofac_sdn,
     reliefweb_disasters,
     swpc_alerts,
     usgs_earthquakes,
@@ -27,6 +28,7 @@ REGISTERED_ADAPTERS: tuple[ModuleType, ...] = (
     celestrak_weather_satellites,
     nasa_firms_fires,
     reliefweb_disasters,
+    ofac_sdn,
 )
 
 ADAPTERS: dict[str, ModuleType] = {adapter.SOURCE.id: adapter for adapter in REGISTERED_ADAPTERS}
