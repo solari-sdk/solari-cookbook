@@ -25,7 +25,7 @@ from app.observability import current_correlation_id, install_observability
 from app.observables import ObservableRecord
 from app.pagination_api import router as pagination_router
 from app.recon_api import router as recon_router
-from app.sources import fema_disaster_declarations, gdacs_disasters, nhc_tropical_cyclones, noaa_tsunami_bulletins, nws_alerts, swpc_alerts, usgs_earthquakes
+from app.sources.registry import ADAPTERS, SOURCES
 from app.storage import (
     case_contents, connect, list_acquisitions, list_cases, list_entities, list_event_history,
     list_events, list_evidence, list_relationships, save_acquisition, save_entities, save_events,
@@ -41,8 +41,6 @@ for router in (graph_router, pagination_router, correlation_router, workspace_ro
     app.include_router(router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
-ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts, nhc_tropical_cyclones, noaa_tsunami_bulletins, fema_disaster_declarations, gdacs_disasters)}
-SOURCES: dict[str, SourceDescriptor] = {key: adapter.SOURCE for key, adapter in ADAPTERS.items()}
 SOURCE_BREAKERS = {source_id: CircuitBreaker(failure_threshold=3, cooldown_seconds=60) for source_id in ADAPTERS}
 COLLECTION_RETRY_POLICY = RetryPolicy(max_attempts=3, base_delay_seconds=0.5, max_delay_seconds=4.0)
 
