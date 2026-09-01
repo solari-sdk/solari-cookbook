@@ -54,6 +54,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] All registered server public-source adapters now use a registry-level immutable raw-response retention boundary. Direct `urlopen` collectors and the allowlisted WZDx explicit-opener path retain exact bytes consumed by the collector in the SHA-256 raw archive, verify single-response digests against the acquisition envelope, expose safe digest/size/status/content-type references, and are covered by registry-wide and deduplication/integrity tests.
 - [x] Reconciled speculative scale-out dependencies against measured/current deployment needs. PostgreSQL, Redis/distributed queue infrastructure, a broader migration framework, distributed-queue telemetry, and provider cost telemetry now have explicit evidence-based reopen triggers in `docs/server-scaling-design.md` instead of remaining active implementation boxes without a demonstrated requirement.
 - [x] Current code/test batch passed GitHub CI on `develop` at commit `c04ef8713db1f24d3845286e384ad5476b0833cb`, including Python tests, dependency-free static-console tests, real Chromium QA, and the public-release secret-pattern scan. Subsequent raw-retention commits are required to pass the same exact-head CI gate before this pass is considered settled.
+- [x] Converged static-local and FastAPI-backed operation onto the same checked-in `static-console/` analyst frontend. FastAPI mounts it unchanged at `/workspace/` and redirects `/` there; a path-scoped runtime adapter synchronizes normalized server events/entities/relationships/evidence/acquisitions/source-health state into the same IndexedDB or memory-only workspace and exposes registered-source collection controls. Standalone static hosting performs no FastAPI discovery request. The pre-existing rich server-only operations UI remains available at `/server-dashboard` rather than being discarded.
+- [x] Hardened the converged service-worker boundary so dynamic `/api/` responses are never shell-cached, added dependency-free runtime-normalization/UI-contract tests plus FastAPI route/asset identity tests, and extended real Chromium QA to prove both standalone no-backend behavior and FastAPI-backed canonical-workspace behavior. Exact-head CI passed at `a2d1b4cda01340c834f07f3bda474deb49f08139` with Python tests, static-console tests, Chromium QA, and the public-release scan all green.
 
 ## Governance / public-release boundary
 - [ ] Create/synchronize the central Prime Prompts TODO mirror. **Blocked by current single-repository scope unless cross-repository authorization is explicitly granted.**
@@ -85,9 +87,6 @@ Registered direct API/feed collectors now retain immutable content-addressed raw
 
 Distributed-queue-specific capacity/timing telemetry is conditional on introducing a distributed queue. The current SQLite queue already exposes the relevant single-host queue timings and worker utilization. Provider cost telemetry follows the documented-provider-data trigger above.
 
-## Static / no-hosting mode
-- [ ] Converge static-local and FastAPI/server modes onto one backend-independent frontend; today they share a generated domain contract and portable data but remain separate frontends.
-
 Direct provider orchestration from the browser-only static console is intentionally not a current TODO: current official Solari client documentation does not provide a browser-targeted credential/client model that would make durable-key static execution a defensible design. Re-open that work only if the provider publishes explicit browser/CORS support with a safe credential model.
 
 ## Packaging / deployment
@@ -114,8 +113,8 @@ The following unresolved work cannot be truthfully completed from repository-onl
 ## Maintenance
 - **TODO last reviewed:** 2026-09-02
 - **Reviewed with `meta.md`:** Yes — reconciled 2026-09-02.
-- **Reviewed with `sources.md`:** Yes — reconciled 2026-09-02.
-- **Prime Prompts revision reviewed:** `0c499baad9f2b8dcf42e78deb6086174d000a90f`
+- **Reviewed with `sources.md`:** Yes — no source-registry change was required for frontend convergence.
+- **Prime Prompts revision reviewed:** `2766813375b227177e722c52498fc789a87ff7a0`
 - **Prime Prompts TODO standard:** completed tasks may be removed when their history is preserved elsewhere; unresolved findings remain visible until remediated, explicitly accepted as an exception, or determined not applicable.
 
 ## Definition of ready
