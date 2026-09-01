@@ -5,7 +5,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.openapi.docs import get_swagger_ui_html
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.collection import collect_many
@@ -22,7 +23,7 @@ from app.storage import (
     save_relationships, source_health,
 )
 
-VERSION = "0.7.2"
+VERSION = "0.7.3"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 app.include_router(graph_router)
 app.include_router(pagination_router)
@@ -60,6 +61,18 @@ def _persist_collection(acquisition: AcquisitionEnvelope, events: list[EventReco
     }
 
 
+def _read_only_openapi() -> dict[str, object]:
+    spec = app.openapi()
+    paths: dict[str, object] = {}
+    for path, operations in spec.get("paths", {}).items():
+        if not path.startswith("/api/v1/"):
+            continue
+        read_operations = {method: operation for method, operation in operations.items() if method.lower() in {"get", "head", "options"}}
+        if read_operations:
+            paths[path] = read_operations
+    return {**spec, "info": {**spec["info"], "title": f"{spec['info']['title']} — read-only explorer"}, "paths": paths}
+
+
 @app.get("/")
 def dashboard() -> FileResponse: return FileResponse(STATIC_DIR / "index.html")
 
@@ -80,6 +93,12 @@ def version() -> dict[str, object]: return {"service":"solari-osint-operations-c
 @app.get("/api/v1/schema")
 def schemas() -> dict[str, object]:
     return {"event":EventRecord.model_json_schema(),"source":SourceDescriptor.model_json_schema(),"acquisition":AcquisitionEnvelope.model_json_schema(),"entity":EntityRecord.model_json_schema(),"relationship":RelationshipRecord.model_json_schema(),"case":CaseRecord.model_json_schema()}
+
+@app.get("/api/v1/read-only-openapi.json", include_in_schema=False)
+def read_only_openapi() -> dict[str, object]: return _read_only_openapi()
+
+@app.get("/api/v1/read-only-docs", response_class=HTMLResponse, include_in_schema=False)
+def read_only_docs() -> HTMLResponse: return get_swagger_ui_html(openapi_url="/api/v1/read-only-openapi.json", title="Solari OSINT read-only API explorer")
 
 @app.get("/api/v1/metrics")
 def metrics() -> dict[str, object]:
