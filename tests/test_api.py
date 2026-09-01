@@ -29,11 +29,22 @@ def test_schema_endpoint_exposes_typed_contracts() -> None:
     assert {"event", "source", "acquisition", "entity", "relationship", "case"} <= set(response.json())
 
 
-def test_sources_endpoint_lists_usgs() -> None:
+def test_sources_endpoint_lists_public_baselines() -> None:
     response = client.get("/api/v1/sources")
     assert response.status_code == 200
     source_ids = {item["id"] for item in response.json()}
-    assert "usgs-earthquakes" in source_ids
+    assert {"usgs-earthquakes", "mbta-gtfs-static", "spc-hail-reports"} <= source_ids
+
+
+def test_production_entrypoint_mounts_solari_and_workflow_routers() -> None:
+    methods_by_path = {route.path: set(route.methods or []) for route in app.routes if hasattr(route, "methods")}
+    assert "GET" in methods_by_path["/api/v1/solari/executions"]
+    assert "POST" in methods_by_path["/api/v1/solari/browser/capture"]
+    assert "POST" in methods_by_path["/api/v1/solari/sandbox/geospatial"]
+    assert "POST" in methods_by_path["/api/v1/solari/desktop/capture"]
+    assert "POST" in methods_by_path["/api/v1/workflows/validate"]
+    assert "POST" in methods_by_path["/api/v1/workflows/run"]
+    assert "POST" in methods_by_path["/api/v1/workflows/rerun"]
 
 
 def test_event_bounds_validation() -> None:
