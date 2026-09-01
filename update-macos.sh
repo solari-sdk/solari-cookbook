@@ -24,6 +24,7 @@ git pull --ff-only origin "$BRANCH"
 stage "Check runtime tools"
 command -v python3 >/dev/null || fail "Python 3 is required. Install it with Homebrew or python.org, then rerun."
 if [[ -f package-lock.json ]]; then command -v npm >/dev/null || fail "npm is required by package-lock.json"; fi
+if [[ -d static-console/tests ]]; then command -v node >/dev/null || fail "Node.js is required to run static-console tests"; fi
 
 stage "Create Python environment"
 python3 -m venv .venv
@@ -41,6 +42,7 @@ if [[ -f package.json ]] && npm run | grep -qE '^  build'; then npm run build; f
 
 stage "Test"
 if [[ -f package.json ]] && npm run | grep -qE '^  test'; then npm test; fi
+if [[ -d static-console/tests ]]; then node --test static-console/tests/*.test.mjs; fi
 if [[ -d tests ]]; then python -m pytest; fi
 
 stage "Configuration check"
