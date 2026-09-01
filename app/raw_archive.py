@@ -35,10 +35,10 @@ class RawArchive:
         return self.root / "objects" / digest[:2] / digest
 
     def _metadata_path(self, digest: str, acquisition_id: str) -> Path:
-        safe = "".join(ch for ch in acquisition_id if ch.isalnum() or ch in "._-")
-        if not safe:
-            raise ValueError("acquisition_id must contain a safe identifier character")
-        return self.root / "metadata" / digest[:2] / digest / f"{safe}.json"
+        if not acquisition_id:
+            raise ValueError("acquisition_id is required")
+        acquisition_digest = sha256(acquisition_id.encode("utf-8")).hexdigest()
+        return self.root / "metadata" / digest[:2] / digest / f"{acquisition_digest}.json"
 
     def put(
         self,
