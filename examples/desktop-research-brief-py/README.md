@@ -143,3 +143,5 @@ a hard budget; `--timeout-min` (default 25) kills the VM even if this process di
 `checks/` holds the incremental gates the example was built with, in order. Run any with
 `python -m checks.<name>` from this directory: `smoke`, `ground`, `nav`, `keys`, `memory`, `plan`,
 `loop`, `report`, `chaos`. `memory` part A and `chaos` part A need no VM and no model.
+
+| `desktop-research-brief-py` | Python | Autonomous cited research brief: plans sources, browses from screenshots (no DOM), extracts findings to a checkpoint, writes and GUI-saves the brief in a desktop editor. Retries, resume, fault injection. |

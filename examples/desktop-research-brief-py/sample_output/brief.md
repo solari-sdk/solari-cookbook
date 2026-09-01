@@ -2,68 +2,76 @@
 
 ## Summary
 
-Pinetree Research is a small AI research lab headquartered in Palo Alto, CA, focused on building computer-use agents (CUAs) for enterprise settings [7]. The company describes its mission as closing the gap between AI reasoning and real-world execution, specifically by making computer use a first-class capability of AI systems [2][7]. Its flagship agent, Pinetree-CUA, claims top-ranked performance on multiple standard benchmarks as of mid-2026, operating entirely through visual perception rather than APIs or structured data access [3]. The company has approximately 6 employees visible on LinkedIn and 692 followers on the platform as of September 2025 [7].
+Pinetree Research is a small AI research lab headquartered in Palo Alto, CA, building computer-use agents (CUAs) intended for enterprise deployment [1][5][7]. As of September 2026, the company has six LinkedIn-listed employees, 712 LinkedIn followers, and three public GitHub repositories [6][7]. Its primary public output consists of benchmark results and a June 2026 arXiv paper on autonomous research. No funding information appears in the available sources.
 
 ---
 
-## Problem they are solving
+## Problem They Are Solving
 
-Pinetree Research identifies the core bottleneck in applied AI as the gap between intelligence and execution: current AI models can reason and converse but remain largely incapable of acting inside real software environments such as dashboards, internal tools, and complex graphical interfaces [2]. Most enterprise software was built for human interaction — interfaces are visual, dynamic, and inconsistent — meaning agents cannot simply rely on clean APIs or structured access layers [3]. Protocol-based approaches that depend on APIs or MCP-style communication assume structured access that most legacy systems do not provide [3]. Text-based approaches that process HTML or accessibility layers fail in dynamic or poorly structured interfaces [3]. The field-level context is consistent with this framing: a January 2025 arXiv survey of 87 ACU agents identified insufficient generalization, limited planning, and a disconnect between research and practical deployment conditions as the six major research gaps facing the space [8].
-
----
-
-## Approach and thesis
-
-Pinetree Research adopts a pure vision-based approach: agents interact with software exclusively through the rendered screen, keyboard, and mouse, mirroring how humans actually use software [3]. The company explicitly identifies and rejects the two alternative paradigms — protocol-based (APIs/MCP) and text-based (HTML/accessibility layers) — arguing that the vision-based approach avoids their structural failure modes and generalizes across legacy and modern interfaces alike [3]. The long-term thesis is that computer use must become a core primitive of intelligent systems before AI can function as a genuine autonomous collaborator in human-built digital environments [2][3]. Pinetree Research distinguishes its approach from traditional RPA or scripting tools by combining reasoning, perception, and decision-making to allow agents to adapt to dynamic interfaces and real-world variability [7]. This direction aligns with one of the six future research directions advocated in the 2025 ACU survey: vision-based observations and low-level control as the path to generalization [8].
+Pinetree Research identifies the gap between AI "thinking" and AI "doing" as the central bottleneck in applied AI [2]. Its specific framing: most real-world software — particularly legacy enterprise systems — does not expose clean APIs or structured interfaces, so agents that rely on protocol-based or DOM-based access fail in production [3]. Software interfaces are visual, dynamic, and inconsistent; Pinetree argues that any agent architecture depending on structured access will inherit structural failure modes [3]. Separately, the June 2026 Arbor paper frames a second problem: scientific progress requires a long-horizon loop of exploration, experimentation, and abstraction that current AI systems cannot run autonomously [9].
 
 ---
 
-## Products and technical signals
+## Approach and Thesis
 
-Pinetree-CUA is the company's primary agent product, targeting enterprise use cases including operations, analytics, compliance, customer support, and internal business workflows [7]. The product is positioned as production-grade, emphasizing reliability, auditability, security, and scalability [7].
+Pinetree's core thesis is that computer use — interacting with software through the rendered screen, keyboard, and mouse — is both a prerequisite for general intelligence and the first practical step toward AGI [2]. They reject two alternative approaches explicitly: protocol-based systems (APIs, MCP) because most legacy software does not provide structured access, and text-based systems (HTML scraping, accessibility layers) because they degrade on dynamic or poorly structured interfaces [3]. Their adopted "Vision-First Paradigm" operates directly on the rendered interface, requiring no integrations [3].
 
-Benchmark results reported on the company's research and blog pages — framed as product milestones — show the following (note: self-reported figures, not independently verified):
-
-- **Online-Mind2Web**: Pinetree-CUA achieves 90% accuracy at 154.5 seconds end-to-end latency, placing it first in both accuracy and speed among systems compared [3]. Claude Opus 4.8 follows at 84.12% accuracy (259.91s), GPT-5.5 at 72.35% (285.43s), Gemini 2.5 Computer Use at 71.33% (180.07s), and Claude Sonnet 4.6 at 62.67% (386.66s, the slowest) [3].
-- **WebVoyager**: Pinetree-CUA at 99%, Gemini 2.5 CUA at 89%, Browser Use at 85% [4]. (Medium confidence — read from bar chart.)
-- **Hallucinate Westworld**: Pinetree-CUA at 93%, Yutori Navigator at 86%, OpenAGI Lux at approximately 40% [4]. (Medium confidence — read from bar chart.)
-
-These results were published in three blog posts between April 20 and May 1, 2026 [4].
-
-On GitHub, PinetreeResearch has 3 public repositories [6]. The primary one, `browser-use-solari-browser`, runs the open-source Browser Use agent on a Solari-managed Chrome environment via Chrome DevTools Protocol (CDP), with profiles, stealth, and native session capabilities; it is written in Python under the MIT License and has approximately 12,000 forks [6]. A second repository, `browserbench`, is a browser benchmark written in TypeScript [6]. A third, `Online-Mind2Web`, is consistent with the company's benchmark work [6]. The reference to a "Solari-managed Chrome" suggests an internal browser management system [6].
+The longer-term thesis is to establish computer use as a core primitive of intelligent systems, positioning AI as an autonomous collaborator across the digital world [2]. A secondary research thread, the Arbor framework, extends this toward autonomous scientific research by converting iterative experimentation from a sequence of local attempts into a cumulative, tree-structured process [9].
 
 ---
 
-## Team and hiring signals
+## Products and Technical Signals
 
-Pinetree Research has approximately 6 employees visible on LinkedIn as of September 2025 [7]. The careers page describes a team culture of curiosity, speed, and depth of focus [5]. Published company values include: think from first principles, build what lasts, embrace weaknesses as learning, thrive through growth, and keep it simple [5]. No individual team members, founders, or specific open roles are identified in the available sources.
+**Pinetree-CUA** is the flagship product, targeting enterprise settings where reliability, auditability, and scale are required [2]. Benchmark results across three evaluations are the company's primary public communication [4]:
 
----
+- **Online-Mind2Web**: Pinetree-CUA scores 90%, first among listed models. Nearest competitors: OpenAGI Lux (83.6%), Yutori Navigator (78.7%), Gemini 2.5 CUA (69%), OpenAI CUA (61.3%) [4]. The same benchmark shows 90% accuracy at 154.5 seconds latency, versus Claude Opus 4.8 at 84.12% / 259.91 s, GPT-5.5 at 72.35% / 285.43 s, and Gemini 2.5 Computer Use at 71.33% / 180.07 s [3]. Pinetree-CUA claims both higher accuracy and lower latency than most listed competitors [3].
+- **WebVoyager**: Pinetree-CUA scores 99%, first among listed models, ahead of OpenAI CUA (87%), Gemini 2.5 CUA (89%), Browser Use (85%), and Skyvern 2.0 (80%) [4].
+- **Hallucinate Westworld**: Pinetree-CUA scores 93%, first; Yutori Navigator second at 86%, Claude Sonnet 4.5 third at 67.7%, Gemini 2.5 Pro fourth at 54% [4].
 
-## Funding and news
+*Caveat*: All benchmark results are self-reported. The sources do not include independent third-party replication or details on benchmark methodology beyond the names [3][4].
 
-No funding rounds, investors, or revenue figures appear in the available sources. The company's recent public activity consists of three benchmark-related blog posts published between April 20 and May 1, 2026, all categorized under "Product & Updates" [4]. A fourth blog post is partially visible on the blog page, indicating additional content not captured in these findings [4]. The GitHub primary repository was last updated approximately mid-August 2025 [6]. The company had 692 LinkedIn followers as of September 2025 [7].
+On GitHub, Pinetree has three public repositories: `browser-use-solari-browser` (Python, MIT License, ~12,000 forks, updated within three weeks of this brief) runs the open-source Browser Use agent on a Solari-managed Chrome instance via Chrome DevTools Protocol (CDP), with stealth and native session capabilities [6]. `browserbench` is a TypeScript browser benchmark tool [6]. A third repository, `Online-Mind2Web`, is public but details were not fully captured [6].
 
----
-
-## Open questions
-
-- **Funding and ownership**: No information on investors, funding stage, revenue model, or whether the company is venture-backed or bootstrapped.
-- **Benchmark methodology**: Self-reported benchmark figures are not independently verified; it is unclear whether evaluation conditions (e.g., test set, task distribution, infrastructure) are standardized against competitors or set by Pinetree Research itself.
-- **Team composition**: No named founders, researchers, or engineers are identified; the basis for claimed state-of-the-art results cannot be attributed to specific technical leads.
-- **API and integration surface**: It is unclear whether Pinetree-CUA is available as an API, SDK, or only as a managed service, and what the access model is for enterprise customers or developers.
-- **Solari browser infrastructure**: The "Solari-managed Chrome" reference suggests a proprietary browser layer, but its architecture, licensing, and relationship to the public `browser-use-solari-browser` repository are unexplained.
-- **Production deployment evidence**: No case studies, customer names, or independent deployment data are available to corroborate the claim of human-level reliability at enterprise scale.
+**Arbor** is a general framework for autonomous research introduced in a June 10, 2026 arXiv paper [9]. It uses Hypothesis Tree Refinement (HTR): a persistent tree linking hypotheses, artifacts, evidence, and distilled insights across time, managed by a long-lived coordinator and short-lived executor agents operating in isolated worktrees [9]. Evaluated across six tasks in model training, harness engineering, and data synthesis, Arbor achieved the best held-out result on all six and more than 2.5× the average relative held-out gain of Codex and Claude Code under the same resource budget [9]. On MLE-Bench Lite it reaches 86.36% Any Medal with GPT-5.5 [9]. The relationship between Arbor and Pinetree-CUA is not explained in the available sources.
 
 ---
 
-## Implications for computer-use agent builders
+## Team and Hiring Signals
 
-- **Vision-only as a design commitment, not just a fallback**: Pinetree Research's explicit rejection of API- and HTML-based approaches in favor of pure vision-based interaction is a deliberate architectural choice, not a limitation [3]. Builders should evaluate whether their own agents' reliance on DOM or accessibility layers creates fragility that vision-based pipelines avoid in legacy and inconsistent GUI environments [3][8].
-- **Latency is a first-class metric alongside accuracy**: The Online-Mind2Web comparison shows that Pinetree-CUA's advantage over frontier models includes speed (154.5s vs. 259.91s for the next-best) as well as accuracy [3]. Agent builders targeting production use cases should treat end-to-end latency as a benchmark variable, not an afterthought.
-- **CDP-based browser control with stealth and session management is table stakes**: The public `browser-use-solari-browser` repository demonstrates that sophisticated browser control — CDP, profiles, stealth, native sessions — is part of the infrastructure layer even for a 6-person lab [6]. Teams building web-navigating agents without this layer may face reliability gaps in real environments.
-- **Benchmarks are being used as product launch vehicles**: All three of Pinetree Research's major benchmark results were published as "Product & Updates" blog posts within an 11-day window in April–May 2026 [4]. This signals that benchmark performance on Online-Mind2Web, WebVoyager, and Hallucinate Westworld has become a competitive positioning tool; builders should be prepared to run and publish results on these evaluations.
-- **The field-level research gaps identified in the ACU survey directly map to Pinetree's product claims**: The survey flags insufficient generalization, limited planning, and low real-world task complexity in benchmarks as open problems [8]. Pinetree's emphasis on generalization ("Demonstrating True Generalization") and multi-step execution in production environments [2][4] is a direct response to these gaps — builders should scrutinize whether their own architectures address these same axes.
+LinkedIn lists six employees [7]. The company describes itself as "small, highly technical, and focused on shipping quickly," with every person expected to have direct product impact [5]. Hiring criteria emphasize curiosity, speed, and obsession with the work [5]. The Arbor paper lists 18 authors [9]; it is not confirmed how many are Pinetree employees versus external collaborators.
+
+---
+
+## Funding and News
+
+No funding announcements, investor names, or funding amounts appear in any of the nine sources. Recent public milestones:
+
+- April 1, 2026: "Introducing Pinetree Agent" blog post [4]
+- April 20, 2026: "Approaching Human-level Intelligence on Online-Mind2Web" [4][8]
+- April 24, 2026: "Achieves Frontier Performance on WebVoyager" [4]
+- May 1, 2026: "Demonstrating True Generalization on Hallucinate Westworld" [4]
+- June 10, 2026: Arbor paper submitted to arXiv (cs.CL, cs.AI) [9]
+
+---
+
+## Open Questions
+
+- **Funding and commercialization**: No funding data, pricing, or revenue model is disclosed in any source. It is unknown whether Pinetree-CUA is available as an API, a managed service, or only through direct enterprise engagement.
+- **Benchmark independence**: All benchmark results are self-reported. It is unclear whether the Online-Mind2Web, WebVoyager, and Hallucinate Westworld scores were produced under third-party or community-audited conditions.
+- **Arbor–CUA relationship**: The Arbor autonomous research framework and Pinetree-CUA are described in separate sources with no stated connection. Whether Arbor uses CUA as its execution layer, or is an independent research project, is not answered.
+- **Team composition and authorship**: The Arbor paper lists 18 authors, while LinkedIn shows 6 employees. The overlap between paper authors and full-time Pinetree staff is unknown.
+- **`browser-use-solari-browser` scope**: The repository has ~12,000 forks and integrates with a "Solari-managed Chrome." The nature of the Solari relationship, and whether this reflects a production infrastructure dependency or a research integration, is not explained.
+- **Enterprise traction**: No customer names, case studies, deployment scale, or third-party adoption data appear in any source.
+
+---
+
+## Implications for Computer-Use Agent Builders
+
+- **Vision-first is a design commitment, not a fallback.** Pinetree explicitly rejects DOM and API-based interaction as architecturally insufficient for production environments [3]. Engineers building CUAs should assess whether their own pipelines degrade gracefully on visually rendered, structurally inconsistent interfaces — Pinetree's benchmark-first communication strategy suggests this is the axis they intend to compete on.
+- **Latency is treated as a first-class benchmark dimension.** Pinetree-CUA's 154.5-second latency on Online-Mind2Web is positioned as a differentiator against competitors ranging from 180 to 386 seconds [3]. Agent builders should instrument and report latency alongside accuracy, as this framing is likely to become standard in the field.
+- **CDP + stealth profiles are open-sourced at scale.** The `browser-use-solari-browser` repo (~12,000 forks, MIT) shows that Pinetree's browser automation approach is already widely adopted [6]. Engineers can study or build on this implementation directly, including its CDP-based session and stealth approach.
+- **Hypothesis Tree Refinement offers a long-horizon scaffolding pattern.** Arbor's coordinator/executor split — persistent strategy tree with isolated execution worktrees — is a concrete architectural pattern for agents that must run multi-step research or engineering tasks without step-level human supervision [9]. Builders working on agentic loops longer than a single session should review this design.
+- **The competitive field is fragmenting quickly.** Pinetree's leaderboards reference at least eight distinct competing systems (Claude Opus 4.8, GPT-5.5, Gemini 2.5 CUA, OpenAI CUA, Yutori Navigator, OpenAGI Lux, Browser Use, Skyvern 2.0) across three different benchmarks [3][4]. Engineers should expect benchmark proliferation and should independently verify which benchmarks reflect their target task distribution.
 
 ---
 
@@ -76,8 +84,7 @@ No funding rounds, investors, or revenue figures appear in the available sources
 5. https://pinetree-research.com/careers
 6. https://github.com/orgs/PinetreeResearch/repositories
 7. https://www.linkedin.com/company/pinetree-research
-8. https://arxiv.org/abs/2501.16150
+8. https://pinetree-research.com/blog/online-mind2web-benchmark
+9. https://arxiv.org/abs/2606.11926
 
----
-
-_Generated autonomously by a Solari Desktop computer-use agent on 2026-09-01: 96 findings from 8 sources, screenshot-driven browsing, no DOM access._
+_Generated autonomously by a Solari Desktop computer-use agent on 2026-09-01: 105 findings from 9 sources, screenshot-driven browsing, no DOM access._
