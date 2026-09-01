@@ -29,8 +29,9 @@ def test_gdacs_geojson_normalization_preserves_hazard_alert_and_provenance():
     assert event.source_record_id == "EQ:1557413:1724396"
     assert event.category == "earthquake"
     assert event.severity == "high"
-    assert event.latitude == 45.5
-    assert event.longitude == 12.25
+    assert event.location is not None
+    assert event.location.latitude == 45.5
+    assert event.location.longitude == 12.25
     assert event.properties["severity_value"] == 5.6
     assert event.evidence[0].acquisition_id == "acq-1"
 
