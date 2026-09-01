@@ -1,0 +1,56 @@
+[
+  {
+    "id": "sample:earthquake:001",
+    "source_id": "fixture-public-source",
+    "source_record_id": "001",
+    "category": "earthquake",
+    "title": "M4.2 — Sample offshore event",
+    "summary": "Deterministic documentation fixture",
+    "observed_at": "2026-01-01T00:00:00Z",
+    "updated_at": "2026-01-01T00:05:00Z",
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "severity": "moderate",
+    "quality_score": 1.0,
+    "properties": {
+      "magnitude": 4.2,
+      "depth_km": 12.0,
+      "fixture": true
+    },
+    "evidence": [
+      {
+        "acquisition_id": "fixture-acquisition-001",
+        "field": "*",
+        "kind": "observed",
+        "source_path": "fixture.events[0]",
+        "note": "Synthetic public-safe sample; not a live incident."
+      }
+    ]
+  },
+  {
+    "id": "sample:weather:002",
+    "source_id": "fixture-public-source",
+    "source_record_id": "002",
+    "category": "weather-alert",
+    "title": "Sample weather advisory",
+    "summary": "Deterministic documentation fixture",
+    "observed_at": "2026-01-01T01:00:00Z",
+    "updated_at": null,
+    "latitude": 45.0,
+    "longitude": -90.0,
+    "severity": "low",
+    "quality_score": 1.0,
+    "properties": {
+      "fixture": true
+    },
+    "evidence": [
+      {
+        "acquisition_id": "fixture-acquisition-002",
+        "field": "*",
+        "kind": "observed",
+        "source_path": "fixture.events[1]",
+        "note": "Synthetic public-safe sample; not a live alert."
+      }
+    ]
+  }
+]
