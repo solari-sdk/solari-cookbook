@@ -19,7 +19,7 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Space weather | NOAA Space Weather Prediction Center | API/feed | Implemented |
 | Tropical cyclones | NOAA/NHC public tropical cyclone RSS products | feed | Implemented baseline |
 | Tsunami | NOAA/NWS Tsunami Warning System public products | feed/web | Implemented RSS baseline |
-| Humanitarian/disaster | GDACS, OpenFEMA; ReliefWeb where configured/authorized | API/feed | Implemented GDACS/OpenFEMA baseline |
+| Humanitarian/disaster | GDACS, OpenFEMA; ReliefWeb where configured/authorized | API/feed | Implemented GDACS/OpenFEMA/ReliefWeb baseline |
 | Public safety/emergency | OpenFEMA and public emergency-management sources | API/feed | Implemented OpenFEMA baseline |
 | Satellite/orbital | CelesTrak public GP data | API/download | Implemented weather-group baseline |
 | Geospatial reference | OpenStreetMap/Nominatim, Natural Earth, public boundaries/gazetteers | API/download | Implemented Nominatim + boundary foundation |
@@ -29,14 +29,14 @@ Each implemented adapter must record canonical provider/source, public documenta
 | TLS/HTTP metadata | user-supplied public HTTPS targets | direct network | Implemented enrichment |
 | Web history | Internet Archive CDX API for user-supplied public URLs | public API | Implemented enrichment |
 | Volcanoes | USGS Volcano Hazards Program / Smithsonian public volcano data where terms permit | API/web | Planned |
-| Wildfire | NASA FIRMS and public fire/perimeter datasets | API/download | Planned; FIRMS API requires a user-supplied MAP_KEY |
+| Wildfire | NASA FIRMS and public fire/perimeter datasets | API/download | Implemented credential-gated FIRMS Area API baseline; live collection requires a user-supplied MAP_KEY and bounded area |
 | Flood/hydrology | NOAA/NWS/NWPS and public river/gauge sources | API/feed | Planned |
 | Aviation | FAA/public airport/status datasets and other lawful open aviation data | API/download/web | Planned |
 | Maritime | NOAA/USCG/public maritime safety and environmental datasets; AIS only where a lawful free/open source explicitly permits reuse | API/feed/web | Planned |
 | Environmental | EPA and other public air/water/environmental sensor datasets | API/download | Planned |
 | Infrastructure/public status | Public government infrastructure/outage/status datasets where redistribution is permitted | API/web | Planned |
 | Transportation | Public GTFS/GTFS-Realtime and government transportation feeds | API/feed | Planned |
-| Sanctions/watchlists | Official public government sanctions/watchlists where lawful for demonstration | API/download | Planned |
+| Sanctions/watchlists | Official public government sanctions/watchlists where lawful for demonstration | API/download | Implemented OFAC SDN CSV baseline |
 | Public notices | Government/public-agency operational notices excluding general media monitoring | API/web | Planned |
 
 ## Implemented adapters
@@ -134,7 +134,7 @@ Each implemented adapter must record canonical provider/source, public documenta
 
 ### CelesTrak weather-satellite GP data
 - **Adapter ID:** `celestrak-weather-satellites`
-- **Authoritative documentation:** `https://celestrak.org/NORAD/documentation/gp-data-formats.php` and `https://celestrak.org/NORAD/documentation/gp-data-formats.php` query documentation/usage policy links.
+- **Authoritative documentation:** `https://celestrak.org/NORAD/documentation/gp-data-formats.php` and CelesTrak's current query/usage policy pages.
 - **Baseline query:** `https://celestrak.org/NORAD/elements/gp.php?GROUP=WEATHER&FORMAT=JSON`.
 - **Acquisition:** public GP JSON query; no authentication; fixed `WEATHER` group only; configured poll interval 7200 seconds to respect CelesTrak's current once-per-update guidance; 3 MiB response cap and 2,000-object parser limit.
 - **Scope/category:** general-perturbations orbital-element snapshots for CelesTrak's weather group; `satellite-orbit` events keyed to NORAD catalog ID and epoch.
@@ -143,6 +143,42 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Terms:** request only data needed and no more frequently than the provider's update cadence; current adapter intentionally requests one named group rather than the full catalog.
 - **Known limits:** GP elements are not converted to a current latitude/longitude without an orbital propagator; the adapter therefore does not fabricate a map position or claim TLE visualization.
 - **Status:** implemented with deterministic fixture/bounds tests; live network validation tracked separately.
+
+### NASA FIRMS active fire detections
+- **Adapter ID:** `nasa-firms-fires`
+- **Authoritative documentation:** `https://firms.modaps.eosdis.nasa.gov/api/area/`.
+- **Acquisition:** NASA FIRMS Area API CSV; a free evaluator/user-owned `FIRMS_MAP_KEY` is required. Collection additionally requires an explicit bounded `FIRMS_AREA_COORDINATES` west,south,east,north rectangle; supported day range is 1–5.
+- **Scope/category:** satellite-derived active fire/hotspot detections from an allowlisted FIRMS source; `active-fire-detection` events.
+- **Raw/normalized mapping:** coordinates, acquisition date/time, satellite, instrument, confidence, fire radiative power, day/night, scan/track and brightness fields are retained. The adapter explicitly does not infer a confirmed wildfire perimeter from a hotspot detection.
+- **Evidence/deduplication:** deterministic identity from rounded coordinates, observed time, satellite and instrument; acquisition ID and CSV row path retained.
+- **Safety:** 15 MiB response cap, bounded area/day range, fixed NASA HTTPS host and supported-source allowlist. Provider key is redacted from persisted request metadata.
+- **Terms:** preserve NASA FIRMS attribution and current use guidance. A user-supplied provider credential is never committed or exported.
+- **Known limits:** fixture/unit coverage is credential-free; live collection remains blocked until a valid evaluator/user key and collection area are supplied.
+- **Status:** implemented credential-gated adapter with deterministic normalization tests.
+
+### ReliefWeb disasters
+- **Adapter ID:** `reliefweb-disasters`
+- **Authoritative documentation:** `https://apidoc.reliefweb.int/`.
+- **Acquisition:** ReliefWeb v2 disasters API; current API access requires a pre-approved user/evaluator `RELIEFWEB_APPNAME`; bounded to 100 records per pull with a 5 MiB response cap.
+- **Scope/category:** humanitarian disaster records; `humanitarian-disaster` events.
+- **Raw/normalized mapping:** record ID, name, status, disaster types, countries, primary country, created/changed dates, GLIDE identifier and ReliefWeb record URL are retained.
+- **Evidence/deduplication:** deterministic source + ReliefWeb record ID; acquisition ID and response-array path retained.
+- **Safety:** fixed ReliefWeb HTTPS endpoint and bounded result/response size. The configured appname is redacted from persisted request metadata.
+- **Terms:** attribute ReliefWeb and preserve downstream/source copyright obligations. The adapter does not claim partner content is project-owned.
+- **Known limits:** current implementation does not infer coordinates when the API record lacks deterministic geospatial data.
+- **Status:** implemented credential/configuration-gated adapter with deterministic fixture tests; live validation requires an approved appname.
+
+### U.S. Treasury OFAC SDN list
+- **Adapter ID:** `ofac-sdn`
+- **Authoritative source:** `https://ofac.treasury.gov/sanctions-list-service`.
+- **Baseline endpoint:** official OFAC Sanctions List Service `SDN.CSV` publication export.
+- **Acquisition:** public CSV feed; no project credential; nominal poll interval 3600 seconds; 25 MiB response cap.
+- **Scope/category:** official Specially Designated Nationals list records; `sanctions-listing` events/reference records.
+- **Raw/normalized mapping:** OFAC entity number, name, SDN type, program, title, vessel/call-sign/tonnage/flag/owner fields and remarks are retained without guessing identity matches.
+- **Evidence/deduplication:** deterministic source + OFAC entity number; acquisition ID and CSV row path retained.
+- **Safety/interpretation:** each normalized record carries `identity_resolution_required=true`; a name or observable resemblance is not treated as an independent identity-resolution conclusion.
+- **Terms:** official U.S. Treasury data; preserve OFAC attribution and current guidance.
+- **Status:** implemented with deterministic fixture tests; live network validation tracked separately.
 
 ## Implemented observable/reference enrichment sources
 These are analyst-invoked enrichment adapters rather than continuously polled event feeds. They accept user-supplied public observables/places, impose bounded requests where applicable, and retain the source URL/provider in returned provenance. They must not be used to probe private/internal targets.
@@ -182,13 +218,14 @@ These are analyst-invoked enrichment adapters rather than continuously polled ev
 - **Terms/limits:** published DNS posture is descriptive only; presence of a record is not a full mail-security assessment.
 - **Status:** implemented with mocked tests; live network validation tracked separately.
 
-### RIPEstat prefix overview
-- **Endpoint:** `https://stat.ripe.net/data/prefix-overview/data.json`.
-- **Acquisition:** unauthenticated HTTPS JSON, analyst-invoked for a public IP observable.
-- **Data:** announced prefix, originating ASNs and holder text exposed by the endpoint.
+### RIPEstat prefix overview / geolocation enrichment
+- **Endpoint families:** `https://stat.ripe.net/data/prefix-overview/data.json` and the RIPEstat MaxMind GeoLite data endpoint used for approximate network geolocation.
+- **Acquisition:** unauthenticated HTTPS JSON, analyst-invoked for public IP/prefix observables.
+- **Data:** announced prefix, originating ASNs, holder text and approximate provider geolocation where available.
+- **Uncertainty:** network geolocation explicitly reports that coordinates are approximate and that the current provider integration does not expose a per-result accuracy radius; it must not be treated as exact device/person location.
 - **Rate/cadence:** no automatic polling; bounded interactive requests.
 - **Health:** explicit request failure and bounded response.
-- **Terms/limits:** routing/holder metadata is network context, not proof of physical location or operator identity.
+- **Terms/limits:** routing/holder/geolocation metadata is network context, not proof of physical location, operator identity or user identity.
 - **Status:** implemented with mocked tests; live network validation tracked separately.
 
 ### Internet Archive CDX
@@ -208,6 +245,12 @@ These are analyst-invoked enrichment adapters rather than continuously polled ev
 - **Rate/cadence:** analyst-invoked only; bounded timeouts and redirect limits.
 - **Terms/limits:** passive connection metadata is descriptive; fingerprint fields are hints, not definitive software identification.
 - **Status:** implemented with deterministic/mocked safety tests; live network validation tracked separately.
+
+### Public code-search navigation and alias-correlation enrichment
+- **Providers/data:** credential-free navigation pivots for public GitHub, GitLab and Sourcegraph code search plus caller-supplied public alias observations.
+- **Acquisition:** the project builds public HTTPS navigation URLs; it does not scrape repository search results or require hidden credentials. Alias correlation accepts only public HTTPS evidence URLs.
+- **Interpretation:** exact normalized alias matches across distinct public evidence URLs are review-required hypotheses. They never assert that matching aliases identify the same person.
+- **Status:** implemented with deterministic safety/interpretation tests.
 
 ## Solari acquisition routing
 Use the least-complex reliable acquisition method:
