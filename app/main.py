@@ -11,6 +11,7 @@ from app.contracts import AcquisitionEnvelope, CaseRecord, EntityRecord, EventRe
 from app.entities import derive_graph
 from app.exports import events_csv, events_geojson
 from app.graph_api import router as graph_router
+from app.pagination_api import router as pagination_router
 from app.sources import nws_alerts, swpc_alerts, usgs_earthquakes
 from app.storage import (
     case_contents, connect, list_acquisitions, list_cases, list_entities, list_event_history,
@@ -18,9 +19,10 @@ from app.storage import (
     save_relationships, source_health,
 )
 
-VERSION = "0.6.1"
+VERSION = "0.6.2"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 app.include_router(graph_router)
+app.include_router(pagination_router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts)}
