@@ -9,7 +9,7 @@ Stage 'Verify repository'
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) { Fail 'git is required' }
 $remote = (git remote get-url origin 2>$null)
 if ($LASTEXITCODE -ne 0 -or -not $remote) { Fail 'Unable to read git origin' }
-if ($remote -notmatch 'tocsindata/solari-cookbook(?:\.git)?$') { Fail "origin does not identify tocsindata/solari-cookbook: $remote" }
+if ($remote -notmatch 'tocsindata/solari-osint-cookbook(?:\.git)?$') { Fail "origin does not identify tocsindata/solari-osint-cookbook: $remote" }
 $branch = (git branch --show-current).Trim()
 if ($branch -ne 'develop' -and -not $branch.StartsWith('develop/')) { Fail "Run development updates from develop or develop/* (current: $branch)" }
 
