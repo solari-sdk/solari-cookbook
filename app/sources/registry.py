@@ -9,6 +9,7 @@ from app.sources import (
     celestrak_weather_satellites,
     fema_disaster_declarations,
     gdacs_disasters,
+    ioda_outage_alerts,
     mbta_gtfs_static,
     nasa_firms_fires,
     ndbc_latest_observations,
@@ -45,6 +46,7 @@ REGISTERED_ADAPTERS: tuple[ModuleType, ...] = (
     aviationweather_metars,
     mbta_gtfs_static,
     spc_hail_reports,
+    ioda_outage_alerts,
 )
 
 ADAPTERS: dict[str, ModuleType] = {adapter.SOURCE.id: adapter for adapter in REGISTERED_ADAPTERS}
