@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { buildCase, verifyCaseIntegrity } from '../schema.js';
+import { buildCase, cloneCaseBundle, verifyCaseIntegrity } from '../schema.js';
 import { encryptCase, decryptCase } from '../crypto.js';
 import { scanForSecrets } from '../security.js';
 import { caseCsv, caseGeoJson, caseGraphMl, caseReportHtml } from '../exports.js';
@@ -21,6 +21,18 @@ test('encrypted portable case round trips',async()=>{
   const decrypted=await decryptCase(encrypted,'correct horse battery staple');
   assert.equal(decrypted.case.id,'case-1');
   await assert.rejects(()=>decryptCase(encrypted,'incorrect password value'),/Unable to decrypt case/);
+});
+
+test('portable case cloning branches without mutating original',async()=>{
+  const bundle=await buildCase([event],{id:'case-1',title:'Fixture',notes:[{id:'n1',body:'Evidence note'}]});
+  const clone=await cloneCaseBundle(bundle,{id:'case-2',title:'Alternate',hypothesisLabel:'alternate'});
+  assert.equal(bundle.case.id,'case-1');
+  assert.equal(bundle.case.hypothesis_label,undefined);
+  assert.equal(clone.case.id,'case-2');
+  assert.equal(clone.case.cloned_from,'case-1');
+  assert.equal(clone.case.hypothesis_label,'alternate');
+  assert.equal(clone.notes[0].body,'Evidence note');
+  assert.equal((await verifyCaseIntegrity(clone)).verified,true);
 });
 
 test('secret scanner blocks credential-shaped fields',()=>{
