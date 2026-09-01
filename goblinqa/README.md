@@ -4,7 +4,7 @@
 
 GoblinQA releases autonomous synthetic users into a product and asks them to accomplish a goal in real, isolated cloud browsers. It shows where they succeed, fail, become confused, or discover friction—and ties every meaningful finding to browser evidence.
 
-**Project status:** Milestone 0 is in progress. The immediate goal is one real, recorded Solari browser controlled by the GoblinQA runtime through the Solari TypeScript SDK. The swarm, reporting, and Fix Goblin described below are planned, not yet implemented.
+**Project status:** Milestone 0 is complete. The GoblinQA runtime has created one real, recorded Solari browser through the TypeScript SDK, verified a page, retrieved its replay, and completed cleanup. Milestone 1 and the swarm, reporting, and Fix Goblin described below are not yet implemented.
 
 ## The problem
 
@@ -39,11 +39,23 @@ The full target swarm is **20 autonomous synthetic users**. That number matches 
 
 | Horizon | Scope |
 | --- | --- |
-| **Current — Milestone 0** | Prove one recorded browser session from the GoblinQA runtime using `@solarisdk/browser`, including replay retrieval and complete cleanup. |
-| **Next** | Build one autonomous Goblin, then run three distinct behavioral personas and produce structured evidence. |
+| **Current — Milestone 0 complete** | One recorded browser session has run from the GoblinQA runtime using `@solarisdk/browser`, including replay retrieval and complete cleanup. |
+| **Next — not started** | Build one autonomous Goblin, then run three distinct behavioral personas and produce structured evidence. |
 | **Vision** | Run the 20-Goblin swarm, cluster repeated failures, let Fix Goblin patch a reproducible bug in `@solarisdk/sandbox`, and rerun the same Goblin to verify the result. |
 
 The previously verified Solari MCP browser session established that the development connection works. Milestone 0 is separate: it proves that GoblinQA's own runtime can use the SDK directly.
+
+### Run Milestone 0
+
+With Node.js 22+ and a Solari API key exported in the shell:
+
+```bash
+npm install
+export SOLARI_API_KEY=slr_live_...
+npm run milestone:0
+```
+
+The command opens one recorded browser against `example.com`, verifies the page, releases the session, retrieves its replay URL with bounded retry, closes the SDK client, and prints a JSON result.
 
 ## Architecture
 
