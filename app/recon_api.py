@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field, HttpUrl
 
 from app.geocoding import reverse_geocode, search_places
 from app.observables import ObservableRecord, link_observable, list_observables, make_observable, observable_links, save_observable
+from app.public_enrichment import network_geolocation, public_code_search_pivots
 from app.recon import (
     asn_network_lookup,
     certificate_transparency,
@@ -129,6 +130,18 @@ def mail_security(domain: str) -> dict[str, object]:
 @router.get("/recon/asn-network/{ip_value}")
 def asn(ip_value: str) -> dict[str, object]:
     try: return asn_network_lookup(ip_value)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/network-geolocation")
+def network_geo(resource: str = Query(..., min_length=2, max_length=100)) -> dict[str, object]:
+    try: return network_geolocation(resource)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/code-search-pivots")
+def code_search_pivots(q: str = Query(..., min_length=2, max_length=200)) -> list[dict[str, str]]:
+    try: return public_code_search_pivots(q)
     except Exception as exc: raise _error(exc) from exc
 
 
