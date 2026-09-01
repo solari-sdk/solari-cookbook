@@ -5,7 +5,7 @@ from tools.public_release_scan import scan
 
 def test_public_release_scan_detects_secret_and_sensitive_filename(tmp_path: Path):
     (tmp_path / "safe.txt").write_text("public data only\n", encoding="utf-8")
-    (tmp_path / "secret.txt").write_text("token=ghp_abcdefghijklmnopqrstuvwxyz1234567890\n", encoding="utf-8")
+    (tmp_path / "secret.txt").write_text("token=ghp_abcdefghijklmnopqrstuvwxyz1234567890\n", encoding="utf-8")  # placeholder synthetic scanner fixture
     (tmp_path / ".env").write_text("A=B\n", encoding="utf-8")
     findings = scan(tmp_path)
     assert any("github-token" in finding for finding in findings)
