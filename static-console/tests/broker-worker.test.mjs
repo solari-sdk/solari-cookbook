@@ -32,7 +32,7 @@ test('credential delegation is path bounded and never browser supplied', async (
 
 test('broker documentation preserves no-hosting boundary', async () => {
   const readme = await text(readmeUrl);
-  assert.match(readme, /not a replacement application backend/i);
+  assert.match(readme, /not\*\* a replacement application backend/i);
   assert.match(readme, /no database/i);
   assert.match(readme, /does not hard-code a broker address/i);
   assert.match(readme, /Do not turn the broker into an open proxy/i);
