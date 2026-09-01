@@ -7,6 +7,7 @@ from typing import Any
 
 from app.contracts import AcquisitionEnvelope, EventRecord
 from app.jobs import CircuitBreaker, FailureClass, RetryPolicy, run_with_retry
+from app.source_runtime import SourceRuntime, SourceRuntimePolicy
 
 
 @dataclass(slots=True)
@@ -34,13 +35,16 @@ def collect_many(
     max_workers: int = 4,
     retry_policy: RetryPolicy | None = None,
     breakers: dict[str, CircuitBreaker] | None = None,
+    runtime: SourceRuntime | None = None,
+    runtime_policies: dict[str, SourceRuntimePolicy] | None = None,
+    force: bool = False,
 ) -> list[CollectionResult]:
-    """Collect independent public sources concurrently with bounded retries.
+    """Collect independent public sources concurrently with bounded controls.
 
-    Collection runs concurrently but persistence is intentionally left to the caller
-    so SQLite writes and graph projection can remain ordered and easy to audit.
-    When a breaker mapping is supplied, repeated terminal failures open a per-source
-    cooldown circuit; CircuitBreaker.can_run() automatically closes it after cooldown.
+    Persistence is intentionally left to the caller so SQLite writes and graph
+    projection remain ordered and auditable. Optional per-source runtime policies
+    provide request spacing, call-window quotas, and short-lived result caching;
+    optional circuit breakers stop repeatedly failing collectors until cooldown.
     """
     if max_workers < 1 or max_workers > 16:
         raise ValueError("max_workers must be between 1 and 16")
@@ -54,9 +58,15 @@ def collect_many(
 
     def run(source_id: str) -> CollectionResult:
         breaker = breakers.get(source_id) if breakers is not None else None
+        operation = adapters[source_id].collect
+        if runtime is not None:
+            if runtime_policies is None or source_id not in runtime_policies:
+                raise KeyError(f"missing source runtime policy: {source_id}")
+            policy = runtime_policies[source_id]
+            operation = lambda operation=operation, source_id=source_id, policy=policy: runtime.run(source_id, operation, policy, force=force)
         execution = run_with_retry(
             f"collect:{source_id}",
-            adapters[source_id].collect,
+            operation,
             policy=retry_policy,
             breaker=breaker,
         )
