@@ -7,9 +7,11 @@ from app.sources import (
     celestrak_weather_satellites,
     fema_disaster_declarations,
     gdacs_disasters,
+    nasa_firms_fires,
     nhc_tropical_cyclones,
     noaa_tsunami_bulletins,
     nws_alerts,
+    reliefweb_disasters,
     swpc_alerts,
     usgs_earthquakes,
 )
@@ -23,6 +25,8 @@ REGISTERED_ADAPTERS: tuple[ModuleType, ...] = (
     fema_disaster_declarations,
     gdacs_disasters,
     celestrak_weather_satellites,
+    nasa_firms_fires,
+    reliefweb_disasters,
 )
 
 ADAPTERS: dict[str, ModuleType] = {adapter.SOURCE.id: adapter for adapter in REGISTERED_ADAPTERS}
