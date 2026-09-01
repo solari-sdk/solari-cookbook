@@ -56,7 +56,13 @@ if (Test-Path 'package.json') {
     if ($scripts -match '(?m)^\s+build\b') { npm run build; if ($LASTEXITCODE -ne 0) { Fail 'npm build failed' } }
     if ($scripts -match '(?m)^\s+test\b') { npm test; if ($LASTEXITCODE -ne 0) { Fail 'npm test failed' } }
 }
-if (Test-Path 'static-console\tests') { node --test static-console/tests/*.test.mjs; if ($LASTEXITCODE -ne 0) { Fail 'static-console tests failed' } }
+if (Test-Path 'static-console\tests') {
+    $staticTests = @(Get-ChildItem -Path 'static-console\tests' -Filter '*.test.mjs' -File | ForEach-Object { $_.FullName })
+    if ($staticTests.Count -gt 0) {
+        & node --test @staticTests
+        if ($LASTEXITCODE -ne 0) { Fail 'static-console tests failed' }
+    }
+}
 if (Test-Path 'tests') { & $pythonExe -m pytest; if ($LASTEXITCODE -ne 0) { Fail 'pytest failed' } }
 
 Stage 'Configuration check'
