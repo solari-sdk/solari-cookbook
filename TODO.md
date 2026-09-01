@@ -37,6 +37,10 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] A separate background worker process now executes durable registered-public-source collection and bounded declarative workflow tasks.
 - [x] A separate scheduler process now persists interval schedules and enqueues due public-source/workflow tasks with slot-level deduplication and missed-interval catch-up bounds.
 - [x] Persistent local queue depth, active/busy worker counts, utilization, oldest-pending age, queue-wait timing, and run-duration timing are exposed through API/SSE telemetry.
+- [x] Georgia Tech IODA country-level outage-alert telemetry is implemented and registered with a bounded six-hour/300-alert/2 MiB acquisition window, deterministic normalization/tests, and an explicit detector-signal/no-cause/no-impact interpretation boundary.
+- [x] Real Chromium CI covers the server dashboard with page-error detection plus static no-backend first run, IndexedDB v1-to-v3 migration/persistence, credential/session non-persistence and clear behavior, and explicit direct-network/CORS-failure broker fallback.
+- [x] Browser QA identified and fixed a production classic-script `refresh`/`collect` identifier collision in the dashboard correlation controls; exact-head CI is green after the correction.
+- [x] Cross-platform updater verification passed on clean GitHub-hosted Ubuntu, Windows, and macOS runners, including fresh and repeat/idempotent updater executions on all three platforms.
 
 ## Governance / public-release boundary
 - [ ] Create/synchronize the central Prime Prompts TODO mirror. **Blocked by current single-repository scope unless cross-repository authorization is explicitly granted.**
@@ -52,7 +56,6 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Demonstrate geospatial/enrichment computation inside the live Solari Sandbox; bounded deterministic geospatial program generation and unit coverage already exist.
 
 ## Public source expansion
-- [ ] Add lawful free/open public internet-health/outage telemetry if a suitable source with acceptable access/reuse terms is identified.
 - [ ] Add public airport/airspace operational-status data beyond weather observations without inferring status from METAR data.
 - [ ] Add public vessel/port status data that does not require restricted credentials or prohibited redistribution.
 - [ ] Continue adding additional lawful free/open sources when they materially broaden the showcase and have defensible provenance/terms.
@@ -85,26 +88,14 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Add optional Redis queue/cache for concurrent/distributed jobs when justified by deployment requirements; the current durable queue is intentionally single-host SQLite.
 - [ ] Introduce a broader database migration framework if schema evolution outgrows the current bootstrap/versioned migration approach.
 
-## Cross-platform setup/update validation
-- [ ] Test a fresh Linux checkout through the documented root updater.
-- [ ] Test repeat/idempotent Linux update behavior.
-- [ ] Test a fresh Windows checkout through `update.ps1`.
-- [ ] Test repeat/idempotent Windows update behavior.
-- [ ] Test a fresh macOS checkout through `update-macos.sh`, or document honestly if no macOS validation environment is available.
-
 ## Tests / QA
 - [ ] Run live smoke tests against representative public sources and record endpoint/date/result without treating network failure as empty data.
 - [ ] Run Solari Browser integration tests with a live evaluator/user key.
 - [ ] Run Solari Sandbox integration tests with a live evaluator/user key.
 - [ ] Run Solari Desktop integration tests with a live evaluator/user key.
-- [ ] Add browser UI smoke tests for the server dashboard.
 - [ ] Complete an accessibility pass.
 - [ ] Complete a performance pass with representative retained-event/artifact volume.
 - [ ] Validate remote Solari cleanup/resource-leak behavior with real provider sessions.
-- [ ] Add a first-run static browser test with no backend process available.
-- [ ] Add real-browser IndexedDB persistence/migration tests.
-- [ ] Add real-browser credential/session purge tests.
-- [ ] Add browser capability/CORS/broker-fallback integration tests.
 
 ## Documentation / submission
 - [ ] Run and document the live demo scenario exercising Browser + Sandbox + Desktop with evaluator/user provider credentials.
@@ -117,7 +108,6 @@ The following unresolved work cannot be truthfully completed from repository-onl
 - NASA FIRMS live validation requires an evaluator/user-owned FIRMS key plus bounded area configuration.
 - ReliefWeb live validation requires an approved evaluator/user appname.
 - Cross-repository Prime Prompts mirror/registry changes require explicit cross-repository authorization under the current scope rule.
-- Windows and macOS updater validation require those operating-system environments; live browser QA requires a browser-capable test environment.
 
 ## Maintenance
 - **TODO last reviewed:** 2026-09-01
