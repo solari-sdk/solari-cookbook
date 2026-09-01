@@ -56,6 +56,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Current code/test batch passed GitHub CI on `develop` at commit `c04ef8713db1f24d3845286e384ad5476b0833cb`, including Python tests, dependency-free static-console tests, real Chromium QA, and the public-release secret-pattern scan. Subsequent raw-retention commits are required to pass the same exact-head CI gate before this pass is considered settled.
 - [x] Converged static-local and FastAPI-backed operation onto the same checked-in `static-console/` analyst frontend. FastAPI mounts it unchanged at `/workspace/` and redirects `/` there; a path-scoped runtime adapter synchronizes normalized server events/entities/relationships/evidence/acquisitions/source-health state into the same IndexedDB or memory-only workspace and exposes registered-source collection controls. Standalone static hosting performs no FastAPI discovery request. The pre-existing rich server-only operations UI remains available at `/server-dashboard` rather than being discarded.
 - [x] Hardened the converged service-worker boundary so dynamic `/api/` responses are never shell-cached, added dependency-free runtime-normalization/UI-contract tests plus FastAPI route/asset identity tests, and extended real Chromium QA to prove both standalone no-backend behavior and FastAPI-backed canonical-workspace behavior. Exact-head CI passed at `a2d1b4cda01340c834f07f3bda474deb49f08139` with Python tests, static-console tests, Chromium QA, and the public-release scan all green.
+- [x] Reconciled the GitHub rename to canonical repository identity `tocsindata/solari-osint-cookbook`: `meta.md` and Linux/macOS/Windows update scripts now use the renamed repository, and a regression test prevents the stale `tocsindata/solari-cookbook` identity from returning in those identity-sensitive files.
 
 ## Governance / public-release boundary
 - [ ] Create/synchronize the central Prime Prompts TODO mirror. **Blocked by current single-repository scope unless cross-repository authorization is explicitly granted.**
@@ -112,9 +113,9 @@ The following unresolved work cannot be truthfully completed from repository-onl
 
 ## Maintenance
 - **TODO last reviewed:** 2026-09-02
-- **Reviewed with `meta.md`:** Yes — reconciled 2026-09-02.
-- **Reviewed with `sources.md`:** Yes — no source-registry change was required for frontend convergence.
-- **Prime Prompts revision reviewed:** `2766813375b227177e722c52498fc789a87ff7a0`
+- **Reviewed with `meta.md`:** Yes — reconciled through the repository rename/updater identity pass.
+- **Reviewed with `sources.md`:** Yes — no source-registry change was required for repository identity reconciliation.
+- **Prime Prompts revision reviewed:** `51907fd028486c48b75b417f45beb189d718212b`
 - **Prime Prompts TODO standard:** completed tasks may be removed when their history is preserved elsewhere; unresolved findings remain visible until remediated, explicitly accepted as an exception, or determined not applicable.
 
 ## Definition of ready
