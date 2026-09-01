@@ -1,6 +1,6 @@
 import { buildCase, validateCase, verifyCaseIntegrity } from './schema.js';
 import { decryptCase, encryptCase } from './crypto.js';
-import { caseCsv, caseGeoJson, caseGraphMl } from './exports.js';
+import { caseCsv, caseGeoJson, caseGraphMl, caseReportHtml } from './exports.js';
 import { assertSafeExport, scanForSecrets } from './security.js';
 import { STATIC_SOURCES, fetchStaticSource } from './sources.js';
 import { getAll, isPrivacyMode, purgeWorkspace, putMany, setPrivacyMode, storageEstimate } from './storage.js';
@@ -64,6 +64,7 @@ async function exportDerived(kind){
   if(kind==='csv')download(caseCsv(bundle),`solari-case-${stamp}.csv`,'text/csv');
   if(kind==='geojson')download(caseGeoJson(bundle),`solari-case-${stamp}.geojson`,'application/geo+json');
   if(kind==='graphml')download(caseGraphMl(bundle),`solari-case-${stamp}.graphml`,'application/graphml+xml');
+  if(kind==='report')download(caseReportHtml(bundle),`solari-case-${stamp}-report.html`,'text/html');
 }
 
 function incomingWins(existing,incoming){
@@ -108,7 +109,7 @@ document.querySelector('#fetch-source').addEventListener('click',async()=>{const
 document.querySelector('#refresh-events').addEventListener('click',()=>{readOnlyEvents=null;render();});
 document.querySelector('#export-case').addEventListener('click',async()=>{try{await exportCase(false);document.querySelector('#case-status').textContent='Case JSON exported after secret/session scan.';}catch(error){document.querySelector('#case-status').textContent=error.message;}});
 document.querySelector('#export-encrypted').addEventListener('click',async()=>{try{await exportCase(true);document.querySelector('#case-status').textContent='Encrypted case exported after integrity and secret/session checks.';}catch(error){document.querySelector('#case-status').textContent=error.message;}});
-for(const kind of['csv','geojson','graphml'])document.querySelector(`#export-${kind}`).addEventListener('click',async()=>{try{await exportDerived(kind);}catch(error){document.querySelector('#case-status').textContent=error.message;}});
+for(const kind of['csv','geojson','graphml','report'])document.querySelector(`#export-${kind}`).addEventListener('click',async()=>{try{await exportDerived(kind);}catch(error){document.querySelector('#case-status').textContent=error.message;}});
 document.querySelector('#import-case').addEventListener('change',async(event)=>{const file=event.target.files[0];if(!file)return;try{await prepareImport(file);}catch(error){pendingImport=null;document.querySelector('#case-status').textContent=error.message;}event.target.value='';});
 document.querySelector('#confirm-import').addEventListener('click',async()=>{try{await confirmImport();}catch(error){document.querySelector('#case-status').textContent=error.message;}});
 document.querySelector('#open-readonly').addEventListener('click',async()=>{try{await openReadOnly();}catch(error){document.querySelector('#case-status').textContent=error.message;}});
