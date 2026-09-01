@@ -73,21 +73,21 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] GDACS disasters.
 - [x] ReliefWeb humanitarian events adapter; live pull requires an approved evaluator/user appname.
 - [x] FEMA/OpenFEMA public emergency-management datasets.
-- [ ] EPA/environmental datasets.
-- [ ] Public flood/hydrology feeds.
-- [ ] Public volcano data.
+- [x] EPA/environmental dataset baseline through the public EPA AirNow daily air-quality feed.
+- [x] Public flood/hydrology baseline through bounded USGS Water Data latest-continuous observations.
+- [x] Public volcano data baseline through official USGS HANS elevated-volcano status notices.
 - [ ] Public aviation operational/status data.
-- [ ] Public maritime safety/environmental data.
+- [x] Public maritime environmental baseline through NOAA NDBC latest station observations without inferring hazards.
 - [ ] Public GTFS/transportation feeds.
 - [x] Public sanctions/watchlists baseline through the official OFAC SDN CSV feed with explicit identity-resolution boundary.
 - [x] Open geospatial/boundary/gazetteer sources through Nominatim plus provenance-bearing boundary foundations.
 - [x] Public satellite/orbital data baseline through bounded CelesTrak weather-group GP data.
 - [ ] Public internet-health/outage telemetry where lawful and free.
 - [ ] Public infrastructure status datasets.
-- [ ] Public air-quality and environmental sensor feeds.
+- [x] Public air-quality and environmental sensor feeds through EPA AirNow plus NOAA NDBC environmental observations.
 - [ ] Public lightning/storm observation feeds.
-- [ ] Public river gauge/water-level feeds.
-- [ ] Public volcanic observatory feeds.
+- [x] Public river gauge/water-level feeds through bounded USGS latest-continuous discharge/gage-height observations.
+- [x] Public volcanic observatory feeds through USGS HANS observatory/status metadata.
 - [ ] Public airport/airspace status feeds.
 - [ ] Public vessel/port status sources that do not require restricted credentials.
 - [ ] Additional lawful free/open sources discovered during development.
@@ -130,24 +130,24 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Source/category filter controls.
 - [x] Map-layer toggle between markers, clusters and density plus shared source/category filtering.
 - [x] Time-window controls: server from/to filters plus static-console retained-time range slider.
-- [ ] Historical playback.
+- [x] Historical event playback over the current retained/query window with play/pause/reset controls.
 - [x] Timeline/event stream foundation.
 - [x] Faceted source/category filter controls populated from retained/current events.
 - [x] Geographic bounding-box filters in the static analyst console and API.
-- [ ] Source/category/severity/quality/confidence filters; source/category/severity/quality are implemented, confidence remains to be added where semantically applicable.
-- [ ] Full-text/entity search; event/property full-text search and entity query APIs exist, unified UI search remains unfinished.
+- [x] Source/category/severity/quality/confidence filtering across server event and unified entity-search surfaces.
+- [x] Unified full-text event/property and entity search UI backed by bounded event/entity query APIs.
 - [x] Saved views/query state UI in the static analyst console.
 - [x] Event detail/evidence inspector foundation.
 - [x] Normalized properties inspection.
 - [ ] Raw-source view.
-- [ ] Provenance/transformation chain visualization.
+- [x] Provenance/transformation visualization showing source, acquisition, evidence kind/path and normalized event context.
 - [x] Related entity relationship graph with event-to-graph selection linking.
 - [x] Aggregate category statistics with bounded visual meters.
 - [x] Geographic drill-down through clickable clusters that increase map zoom.
 - [x] Source health dashboard UI.
 - [x] Collector execution dashboard UI.
 - [ ] Browser/Sandbox/Desktop execution views.
-- [ ] Failure/retry/debug trace view.
+- [x] Failure/retry/debug trace view through collector failure details plus bounded per-job attempt/failure timeline.
 - [ ] Screenshot/session-recording references.
 - [x] Acquisition latency backend telemetry.
 - [ ] Cost telemetry when Solari exposes sufficient billing/job data.
@@ -161,14 +161,14 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] 2D/3D synchronized selection state.
 - [x] Shared selection context across event cards, map markers/clusters and the entity relationship graph.
 - [x] Shared time/filter context across static-console map and event table.
-- [ ] Position/event replay UI from retained history.
+- [x] Position/event replay UI foundation through retained timestamp playback; moving-object track replay remains separately implemented in the geospatial engine.
 - [x] Side-by-side map, graph and event-stream analysis mode in the server dashboard.
 - [ ] Country/region dossier view built only from public structured sources.
 - [ ] Data freshness badges on every major widget.
-- [ ] Analyst workspace layout presets.
-- [ ] Keyboard-driven command palette.
-- [ ] Universal object/entity quick-open.
-- [ ] Context-menu pivots from map markers/entities.
+- [x] Analyst workspace layout presets for balanced, map-focus and stream-focus views.
+- [x] Keyboard-driven command palette with Ctrl/Cmd+K access.
+- [x] Universal event/entity quick-open from the command palette.
+- [x] Context-menu pivots from map/event markers and graph entities into source/category/search context.
 
 ## Investigation / case management — competitive backlog
 - [x] Investigation/case containers.
@@ -354,7 +354,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Readiness endpoint distinct from liveness.
 - [x] Metrics suitable for dashboard display.
 - [x] Safe doctor/diagnostic command that does not expose secrets/session material.
-- [ ] Per-job execution timeline/Gantt view.
+- [x] Per-job execution timeline/Gantt-style view with bounded attempt segments, durations and failure taxonomy.
 - [ ] Persistent queue depth and worker utilization.
 - [x] Source response-size telemetry in acquisition metadata/metrics.
 - [x] Records accepted/rejected per implemented collector run.
@@ -409,7 +409,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Add IndexedDB schema versioning and migrations.
 - [x] Add browser-side content-addressed artifact storage using IndexedDB with SHA-256 addressing and deduplication; OPFS remains an optional future large-object backend.
 - [x] Add a pure-static source adapter layer for public APIs that permit browser-side CORS access.
-- [ ] Detect CORS-incompatible public sources and actually route them through Solari Browser or optional broker rather than only explaining the fallback.
+- [x] Detect failed direct browser/CORS source acquisition and route through an explicitly configured optional broker fallback.
 - [ ] Add static-mode direct Solari Browser orchestration where Solari browser-side API access is supported.
 - [ ] Add static-mode direct Solari Sandbox orchestration where Solari browser-side API access is supported.
 - [ ] Add static-mode direct Solari Desktop orchestration where Solari browser-side API access is supported.
@@ -419,9 +419,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Evaluate optional Web Crypto-encrypted local key persistence; documented decision is to keep keys memory-only unless a future requirement justifies the residual XSS/origin risk.
 - [x] Add one-click clear/forget local credentials and cached session material.
 - [x] Add a visible credential/session-state indicator in static mode without exposing secret values.
-- [ ] Add optional tiny credential-broker mode for deployments that should not expose provider credentials to browser JavaScript.
-- [ ] Keep broker functionality narrowly scoped to credential delegation/request signing rather than recreating the full application server.
-- [ ] Add support for user-configurable broker endpoint without hard-coding private infrastructure.
+- [x] Add optional tiny edge credential/public-source broker mode for CORS fallback or provider-secret delegation without adding analyst persistence.
+- [x] Keep broker functionality narrowly scoped with exact-origin checks, hard-coded public-source allowlists, path-bounded provider delegation, request/response limits and no database/application state.
+- [x] Add support for a user-configurable session-only broker endpoint without hard-coding private infrastructure.
 - [x] Add static deployment targets/documentation for GitHub Pages, Cloudflare Pages, Netlify, S3-compatible static hosting, generic web servers, and local-file/localhost use where browser restrictions permit.
 - [x] Add downloadable ZIP build that can be unpacked and run without installing a backend service.
 - [x] Add Progressive Web App manifest/service worker for installable/offline-capable analyst shell.
@@ -545,12 +545,12 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Demo scenario that exercises Browser + Sandbox + Desktop with live provider credentials.
 - [x] Demo scenario that runs without an application server.
 - [ ] Screenshots/GIF/video as appropriate.
-- [ ] Reproducible checked-in sample output.
+- [x] Reproducible checked-in deterministic sample output validated against current contracts.
 - [x] Known limitations.
 - [x] Competitive-feature research notes with citations to public projects.
-- [ ] Final submission checklist.
+- [x] Final submission checklist document with explicit evidence/live-run gates.
 - [ ] Final end-to-end live test.
-- [ ] Final reviewer-oriented walkthrough.
+- [x] Final reviewer-oriented walkthrough document that distinguishes implemented, live-tested and externally blocked capabilities.
 
 ## Competitive feature references reviewed
 Feature ideas in the backlog were independently re-expressed after reviewing public OSINT/intelligence projects including OpenCTI, IntelOwl, SpiderFoot, and MISP warning-list concepts, plus additional public OSINT dashboard/framework references recorded during feature discovery. Do not copy source code or proprietary implementation details; use these only as public feature/architecture references.
