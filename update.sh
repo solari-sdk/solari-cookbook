@@ -23,8 +23,15 @@ git pull --ff-only origin "$BRANCH"
 
 stage "Check runtime tools"
 if [[ -f package-lock.json ]]; then command -v npm >/dev/null || fail "npm is required by package-lock.json"; fi
-if [[ -f requirements.txt || -f pyproject.toml ]]; then command -v python3 >/dev/null || fail "python3 is required"; fi
-if [[ -d static-console/tests ]]; then command -v node >/dev/null || fail "Node.js is required to run static-console tests"; fi
+if [[ -f requirements.txt || -f pyproject.toml ]]; then
+  command -v python3 >/dev/null || fail "python3 is required"
+  python3 tools/runtime_check.py || fail "unsupported Python runtime"
+fi
+if [[ -d static-console/tests ]]; then
+  command -v node >/dev/null || fail "Node.js is required to run static-console tests"
+  NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+  [[ "$NODE_MAJOR" =~ ^[0-9]+$ && "$NODE_MAJOR" -ge 20 ]] || fail "Node.js 20+ is required for static-console tests (found: $(node --version))"
+fi
 
 stage "Create Python environment"
 if [[ -f requirements.txt || -f pyproject.toml ]]; then
