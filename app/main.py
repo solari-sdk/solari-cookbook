@@ -9,27 +9,31 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.alerts_api import router as alerts_router
+from app.artifact_api import router as artifact_router
 from app.collection import collect_many
 from app.contracts import AcquisitionEnvelope, CaseRecord, EntityRecord, EventRecord, RelationshipRecord, SourceDescriptor
 from app.correlation_api import router as correlation_router
 from app.entities import derive_graph
 from app.exports import events_csv, events_geojson
 from app.graph_api import router as graph_router
+from app.notes_api import router as notes_router
+from app.observables import ObservableRecord
 from app.pagination_api import router as pagination_router
+from app.recon_api import router as recon_router
 from app.sources import nws_alerts, swpc_alerts, usgs_earthquakes
 from app.storage import (
     case_contents, connect, list_acquisitions, list_cases, list_entities, list_event_history,
     list_events, list_evidence, list_relationships, save_acquisition, save_entities, save_events,
     save_relationships, source_health,
 )
+from app.tracking_api import router as tracking_router
 from app.workspace_api import router as workspace_router
 
-VERSION = "0.8.0"
+VERSION = "0.9.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
-app.include_router(graph_router)
-app.include_router(pagination_router)
-app.include_router(correlation_router)
-app.include_router(workspace_router)
+for router in (graph_router, pagination_router, correlation_router, workspace_router, notes_router, artifact_router, alerts_router, recon_router, tracking_router):
+    app.include_router(router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts)}
@@ -94,7 +98,7 @@ def version() -> dict[str, object]: return {"service":"solari-osint-operations-c
 
 @app.get("/api/v1/schema")
 def schemas() -> dict[str, object]:
-    return {"event":EventRecord.model_json_schema(),"source":SourceDescriptor.model_json_schema(),"acquisition":AcquisitionEnvelope.model_json_schema(),"entity":EntityRecord.model_json_schema(),"relationship":RelationshipRecord.model_json_schema(),"case":CaseRecord.model_json_schema()}
+    return {"event":EventRecord.model_json_schema(),"source":SourceDescriptor.model_json_schema(),"acquisition":AcquisitionEnvelope.model_json_schema(),"entity":EntityRecord.model_json_schema(),"relationship":RelationshipRecord.model_json_schema(),"case":CaseRecord.model_json_schema(),"observable":ObservableRecord.model_json_schema()}
 
 @app.get("/api/v1/read-only-openapi.json", include_in_schema=False)
 def read_only_openapi() -> dict[str, object]: return _read_only_openapi()
