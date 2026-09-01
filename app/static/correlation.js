@@ -17,6 +17,6 @@ async function loadCorrelationCandidates(){
   }catch(error){state.textContent=`Correlation view unavailable: ${error.message}`;}
 }
 
-const refresh=document.getElementById('refreshBtn');if(refresh)refresh.addEventListener('click',()=>setTimeout(loadCorrelationCandidates,0));
-const collect=document.getElementById('collectBtn');if(collect)collect.addEventListener('click',()=>setTimeout(loadCorrelationCandidates,500));
+const correlationRefreshButton=document.getElementById('refreshBtn');if(correlationRefreshButton)correlationRefreshButton.addEventListener('click',()=>setTimeout(loadCorrelationCandidates,0));
+const correlationCollectButton=document.getElementById('collectBtn');if(correlationCollectButton)correlationCollectButton.addEventListener('click',()=>setTimeout(loadCorrelationCandidates,500));
 loadCorrelationCandidates();
