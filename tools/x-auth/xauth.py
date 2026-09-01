@@ -126,11 +126,20 @@ def redirect_uri() -> str:
     return os.environ.get("X_REDIRECT_URI", DEFAULT_REDIRECT).strip()
 
 
+def client_secret() -> str:
+    value = os.environ.get("X_CLIENT_SECRET", "").strip().strip("'\"")
+    if not value:
+        raise SystemExit(
+            "Set X_CLIENT_SECRET in this same Terminal.\n"
+            "X app type Web App is a confidential client: the token request\n"
+            "must send HTTP Basic (client_id:client_secret).\n"
+            "Use OAuth 2.0 Client Secret — not the Consumer Secret or Bearer token."
+        )
+    return value
+
+
 def token_headers() -> dict[str, str]:
-    secret = os.environ.get("X_CLIENT_SECRET", "").strip()
-    if not secret:
-        return {}
-    return {"Authorization": _basic_auth(client_id(), secret)}
+    return {"Authorization": _basic_auth(client_id(), client_secret())}
 
 
 def refresh_if_needed(doc: dict) -> dict:
@@ -205,6 +214,9 @@ def cmd_login(args: argparse.Namespace) -> int:
     server = http.server.HTTPServer((host, port), _Callback)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
+    # Fail early so a missing secret is not discovered after the browser hop.
+    _ = token_headers()
+    print("Using confidential client (Authorization: Basic).")
     print("Open this URL if the browser does not launch:\n")
     print(url)
     print()
