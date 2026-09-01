@@ -1,0 +1,75 @@
+name: Cross-platform updater verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      - update.sh
+      - update.ps1
+      - update-macos.sh
+      - requirements.txt
+      - requirements-dev.txt
+      - tests/test_browser_ui.py
+      - .github/workflows/platform-update.yml
+      - tools/runtime_check.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: solari-platform-update-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: ${{ matrix.os }} fresh + repeat update
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    steps:
+      - name: Checkout develop as a branch
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fresh Linux update
+        if: runner.os == 'Linux'
+        run: bash ./update.sh
+
+      - name: Repeat Linux update
+        if: runner.os == 'Linux'
+        run: bash ./update.sh
+
+      - name: Fresh Windows update
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./update.ps1
+
+      - name: Repeat Windows update
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./update.ps1
+
+      - name: Fresh macOS update
+        if: runner.os == 'macOS'
+        run: bash ./update-macos.sh
+
+      - name: Repeat macOS update
+        if: runner.os == 'macOS'
+        run: bash ./update-macos.sh

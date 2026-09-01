@@ -1,0 +1,158 @@
+{
+  "contract": "solari-osint-domain",
+  "version": 1,
+  "portable_case": {
+    "format": "solari-portable-case",
+    "version": 3
+  },
+  "models": {
+    "event": {
+      "fields": [
+        "id",
+        "source_id",
+        "source_record_id",
+        "category",
+        "title",
+        "summary",
+        "observed_at",
+        "updated_at",
+        "location",
+        "severity",
+        "quality_score",
+        "properties",
+        "evidence"
+      ],
+      "required": [
+        "id",
+        "source_id",
+        "source_record_id",
+        "category",
+        "title",
+        "observed_at"
+      ]
+    },
+    "source": {
+      "fields": [
+        "id",
+        "name",
+        "category",
+        "authoritative_url",
+        "method",
+        "poll_interval_seconds",
+        "license_note",
+        "capabilities",
+        "depends_on"
+      ],
+      "required": [
+        "id",
+        "name",
+        "category",
+        "authoritative_url",
+        "method"
+      ]
+    },
+    "acquisition": {
+      "fields": [
+        "id",
+        "source_id",
+        "method",
+        "requested_url",
+        "final_url",
+        "started_at",
+        "completed_at",
+        "status",
+        "http_status",
+        "content_type",
+        "content_sha256",
+        "error_type",
+        "error_message",
+        "metadata"
+      ],
+      "required": [
+        "id",
+        "source_id",
+        "method",
+        "requested_url",
+        "started_at",
+        "completed_at",
+        "status"
+      ]
+    },
+    "entity": {
+      "fields": [
+        "id",
+        "type",
+        "label",
+        "aliases",
+        "first_seen",
+        "last_seen",
+        "location",
+        "confidence",
+        "properties",
+        "evidence"
+      ],
+      "required": [
+        "id",
+        "type",
+        "label"
+      ]
+    },
+    "relationship": {
+      "fields": [
+        "id",
+        "source_entity_id",
+        "target_entity_id",
+        "type",
+        "first_seen",
+        "last_seen",
+        "confidence",
+        "observed",
+        "properties",
+        "evidence"
+      ],
+      "required": [
+        "id",
+        "source_entity_id",
+        "target_entity_id",
+        "type"
+      ]
+    },
+    "case": {
+      "fields": [
+        "id",
+        "title",
+        "status",
+        "priority",
+        "owner",
+        "tags",
+        "notes",
+        "created_at",
+        "updated_at"
+      ],
+      "required": [
+        "id",
+        "title",
+        "created_at",
+        "updated_at"
+      ]
+    },
+    "observable": {
+      "fields": [
+        "id",
+        "type",
+        "value",
+        "canonical_value",
+        "first_seen",
+        "last_seen",
+        "confidence",
+        "properties"
+      ],
+      "required": [
+        "id",
+        "type",
+        "value",
+        "canonical_value"
+      ]
+    }
+  }
+}

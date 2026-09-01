@@ -1,0 +1,13 @@
+fastapi>=0.116,<1.0
+pydantic>=2.11,<3.0
+uvicorn[standard]>=0.35,<1.0
+solari-browser>=0.1.2
+solari-sandbox>=0.1.0
+solari-desktop>=0.2.0
+Pillow>=11.0,<13.0
+pypdf>=5.0,<7.0
+opencv-python-headless>=4.10,<5.0
+numpy>=2.0,<3.0
+defusedxml>=0.7,<1.0
+beautifulsoup4>=4.13,<5.0
+tzdata>=2026.1; platform_system == "Windows"

@@ -1,0 +1,1 @@
+"""Public/open source adapters."""
