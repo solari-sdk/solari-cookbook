@@ -8,6 +8,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.collection import collect_many
 from app.contracts import AcquisitionEnvelope, CaseRecord, EntityRecord, EventRecord, RelationshipRecord, SourceDescriptor
 from app.correlation_api import router as correlation_router
 from app.entities import derive_graph
@@ -21,7 +22,7 @@ from app.storage import (
     save_relationships, source_health,
 )
 
-VERSION = "0.7.1"
+VERSION = "0.7.2"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 app.include_router(graph_router)
 app.include_router(pagination_router)
@@ -41,6 +42,22 @@ def _acquisition_rows(limit: int = 100, source_id: str | None = None) -> list[di
         except json.JSONDecodeError:
             row["metadata"] = {"decode_error": True}
     return rows
+
+
+def _persist_collection(acquisition: AcquisitionEnvelope, events: list[EventRecord]) -> dict[str, object]:
+    save_acquisition(acquisition)
+    count = save_events(events)
+    entities_out, relationships_out = derive_graph(events)
+    save_entities(entities_out)
+    save_relationships(relationships_out)
+    return {
+        "source_id": acquisition.source_id,
+        "acquisition_id": acquisition.id,
+        "status": acquisition.status,
+        "events_saved": count,
+        "entities_saved": len(entities_out),
+        "relationships_saved": len(relationships_out),
+    }
 
 
 @app.get("/")
@@ -141,14 +158,26 @@ def export_csv(limit:int=Query(1000,ge=1,le=1000))->PlainTextResponse: return Pl
 @app.get("/api/v1/export/events.geojson")
 def export_geojson(limit:int=Query(1000,ge=1,le=1000))->dict[str,object]: return events_geojson(list_events(limit))
 
+@app.post("/api/v1/collect-batch")
+def collect_batch(source_id:list[str]=Query(...),max_workers:int=Query(4,ge=1,le=16))->dict[str,object]:
+    try:
+        results=collect_many(ADAPTERS,source_id,max_workers=max_workers)
+    except (ValueError,KeyError) as exc:
+        raise HTTPException(400,str(exc)) from exc
+    output=[]
+    for result in results:
+        if result.succeeded and result.acquisition is not None:
+            output.append(_persist_collection(result.acquisition,result.events))
+        else:
+            output.append({"source_id":result.source_id,"status":"failure","error_type":result.error_type,"error_message":result.error_message})
+    return {"requested":len(results),"succeeded":sum(1 for item in results if item.succeeded),"failed":sum(1 for item in results if not item.succeeded),"results":output}
+
 @app.post("/api/v1/collect/{source_id}")
 def collect_and_store(source_id:str)->dict[str,object]:
     adapter=ADAPTERS.get(source_id)
     if not adapter: raise HTTPException(404,"unknown source")
     try:
-        acquisition,events=adapter.collect(); save_acquisition(acquisition); count=save_events(events)
-        entities_out,relationships_out=derive_graph(events); save_entities(entities_out); save_relationships(relationships_out)
-        return {"source_id":source_id,"acquisition_id":acquisition.id,"status":acquisition.status,"events_saved":count,"entities_saved":len(entities_out),"relationships_saved":len(relationships_out)}
+        acquisition,events=adapter.collect(); return _persist_collection(acquisition,events)
     except Exception as exc: raise HTTPException(502,f"collector failed: {type(exc).__name__}") from exc
 
 @app.get("/api/v1/events/live/{source_id}",response_model=list[EventRecord])
