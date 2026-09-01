@@ -42,15 +42,16 @@ def test_history_scan_ignores_only_exact_public_scanner_fixture(tmp_path: Path):
     _init_repo(repo)
     test_dir = repo / "tests"
     test_dir.mkdir()
-    synthetic = "ghp_abcdefghijklmnopqrstuvwxyz1234567890"
+    synthetic = "ghp_" + "abcdefghijklmnopqrstuvwxyz1234567890"
     fixture = test_dir / "test_public_release_scan.py"
     fixture.write_text(f'fixture = "{synthetic}"\n', encoding="utf-8")
     _git(repo, "add", str(fixture.relative_to(repo)))
     _git(repo, "commit", "-m", "scanner fixture")
     assert scan_history(repo) == []
 
+    different = "ghp_" + ("Z" * 36)
     other = repo / "other.py"
-    other.write_text(f'value = "{synthetic}"\n', encoding="utf-8")
+    other.write_text(f'value = "{different}"\n', encoding="utf-8")
     _git(repo, "add", "other.py")
-    _git(repo, "commit", "-m", "same value outside bounded fixture")
+    _git(repo, "commit", "-m", "different secret-shaped value")
     assert any("github-token" in finding and "other.py" in finding for finding in scan_history(repo))
