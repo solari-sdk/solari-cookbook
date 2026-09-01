@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from hashlib import sha256
 from typing import Any
 from urllib.request import Request, urlopen
@@ -15,6 +16,8 @@ SOURCE = SourceDescriptor(
     method=AcquisitionMethod.API,
     poll_interval_seconds=300,
     license_note="Public U.S. government weather alert API.",
+    capabilities=["events", "public-api", "deterministic-normalization"],
+    depends_on=[],
 )
 DEFAULT_FEED = "https://api.weather.gov/alerts/active"
 
@@ -31,6 +34,7 @@ def fetch(timeout_seconds: int = 20) -> tuple[AcquisitionEnvelope, dict[str, Any
             requested_url=DEFAULT_FEED, final_url=response.geturl(), started_at=started,
             completed_at=completed, status="success", http_status=getattr(response, "status", 200),
             content_type=response.headers.get("Content-Type"), content_sha256=sha256(payload).hexdigest(),
+            metadata={"response_bytes": len(payload)},
         )
     return envelope, json.loads(payload)
 
@@ -56,4 +60,13 @@ def normalize(payload: dict[str, Any], acquisition_id: str) -> list[EventRecord]
 
 def collect(timeout_seconds: int = 20) -> tuple[AcquisitionEnvelope, list[EventRecord]]:
     acquisition, payload = fetch(timeout_seconds)
-    return acquisition, normalize(payload, acquisition.id)
+    parser_started = time.perf_counter()
+    events = normalize(payload, acquisition.id)
+    received = len(payload.get("features", []))
+    acquisition.metadata.update({
+        "parser_duration_ms": (time.perf_counter() - parser_started) * 1000.0,
+        "records_received": received,
+        "records_accepted": len(events),
+        "records_rejected": max(0, received - len(events)),
+    })
+    return acquisition, events
