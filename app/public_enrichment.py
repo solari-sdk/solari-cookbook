@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import ipaddress
-from urllib.parse import quote_plus, urlencode
+import re
+from urllib.parse import quote_plus, urlencode, urlparse
 
 from app.recon import _json_get
 
 RIPESTAT_MAXMIND_ENDPOINT = "https://stat.ripe.net/data/maxmind-geo-lite/data.json"
 MAX_PIVOT_QUERY_LENGTH = 200
+_ALIAS_RE = re.compile(r"^[A-Za-z0-9_.-]{2,80}$")
 
 
 def network_geolocation(resource: str, *, timeout_seconds: int = 15) -> dict[str, object]:
@@ -79,3 +81,43 @@ def public_code_search_pivots(query: str) -> list[dict[str, str]]:
         {"provider": "GitLab", "mode": "public-browser-pivot", "url": f"https://gitlab.com/search?scope=blobs&search={encoded}"},
         {"provider": "Sourcegraph", "mode": "public-browser-pivot", "url": f"https://sourcegraph.com/search?q=context%3Aglobal+{encoded}&patternType=literal"},
     ]
+
+
+def correlate_alias_observations(observations: list[dict[str, object]], *, max_observations: int = 1000) -> list[dict[str, object]]:
+    """Suggest exact normalized-alias matches across caller-supplied public evidence.
+
+    This deliberately does not assert that matching usernames identify the same
+    person. Every candidate remains a review-required hypothesis and preserves
+    its public source URLs.
+    """
+    if not 1 <= max_observations <= 5000:
+        raise ValueError("max_observations must be between 1 and 5000")
+    if len(observations) > max_observations:
+        raise ValueError("alias observation set exceeds configured limit")
+    grouped: dict[str, list[dict[str, str]]] = {}
+    for index, observation in enumerate(observations):
+        raw_alias = str(observation.get("alias") or observation.get("username") or "").strip().lstrip("@")
+        if not _ALIAS_RE.fullmatch(raw_alias):
+            raise ValueError(f"observation {index} has an invalid alias")
+        source_url = str(observation.get("source_url") or "").strip()
+        parsed = urlparse(source_url)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+            raise ValueError(f"observation {index} requires a public HTTPS source_url without embedded credentials")
+        source_name = str(observation.get("source_name") or parsed.hostname)[:120]
+        canonical = raw_alias.casefold()
+        grouped.setdefault(canonical, []).append({"alias": raw_alias, "source_name": source_name, "source_url": source_url})
+
+    candidates: list[dict[str, object]] = []
+    for canonical, items in sorted(grouped.items()):
+        distinct_urls = {item["source_url"] for item in items}
+        if len(distinct_urls) < 2:
+            continue
+        candidates.append({
+            "canonical_alias": canonical,
+            "observations": items,
+            "source_count": len(distinct_urls),
+            "match_basis": "exact case-insensitive normalized alias",
+            "review_required": True,
+            "identity_asserted": False,
+        })
+    return candidates
