@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -20,7 +21,7 @@ from app.storage import (
     save_relationships, source_health,
 )
 
-VERSION = "0.7.0"
+VERSION = "0.7.1"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 app.include_router(graph_router)
 app.include_router(pagination_router)
@@ -29,6 +30,18 @@ STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts)}
 SOURCES: dict[str, SourceDescriptor] = {key: adapter.SOURCE for key, adapter in ADAPTERS.items()}
+
+
+def _acquisition_rows(limit: int = 100, source_id: str | None = None) -> list[dict[str, object]]:
+    rows = list_acquisitions(limit, source_id)
+    for row in rows:
+        raw = row.pop("metadata_json", "{}")
+        try:
+            row["metadata"] = json.loads(str(raw))
+        except json.JSONDecodeError:
+            row["metadata"] = {"decode_error": True}
+    return rows
+
 
 @app.get("/")
 def dashboard() -> FileResponse: return FileResponse(STATIC_DIR / "index.html")
@@ -56,17 +69,33 @@ def metrics() -> dict[str, object]:
     with connect() as db:
         counts={table:int(db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]) for table in ("acquisitions","events","event_history","entities","relationships","cases")}
     health_rows=health_by_source()
+    recent=_acquisition_rows(1000)
+    parser_ms=[float(row["metadata"]["parser_duration_ms"]) for row in recent if isinstance(row.get("metadata"),dict) and row["metadata"].get("parser_duration_ms") is not None]
+    response_bytes=[int(row["metadata"]["response_bytes"]) for row in recent if isinstance(row.get("metadata"),dict) and row["metadata"].get("response_bytes") is not None]
+    accepted=sum(int(row["metadata"].get("records_accepted",0)) for row in recent if isinstance(row.get("metadata"),dict))
+    rejected=sum(int(row["metadata"].get("records_rejected",0)) for row in recent if isinstance(row.get("metadata"),dict))
     return {
         "version": VERSION,
         "counts": counts,
         "sources_registered": len(SOURCES),
         "sources_with_acquisitions": len(health_rows),
         "sources_stale": sum(1 for row in health_rows if row.get("stale")),
+        "recent_acquisition_telemetry": {
+            "sample_size": len(recent),
+            "parser_duration_ms_average": sum(parser_ms)/len(parser_ms) if parser_ms else None,
+            "response_bytes_total": sum(response_bytes),
+            "records_accepted": accepted,
+            "records_rejected": rejected,
+        },
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
 @app.get("/api/v1/sources",response_model=list[SourceDescriptor])
 def sources() -> list[SourceDescriptor]: return list(SOURCES.values())
+
+@app.get("/api/v1/source-dependencies")
+def source_dependencies() -> dict[str, object]:
+    return {"nodes": sorted(SOURCES), "edges": [{"source_id": source.id, "depends_on": dependency} for source in SOURCES.values() for dependency in source.depends_on]}
 
 @app.get("/api/v1/source-health")
 def health_by_source() -> list[dict[str, object]]:
@@ -80,7 +109,7 @@ def health_by_source() -> list[dict[str, object]]:
     return results
 
 @app.get("/api/v1/acquisitions")
-def acquisitions(limit:int=Query(100,ge=1,le=1000),source_id:str|None=None)->list[dict[str,object]]: return list_acquisitions(limit,source_id)
+def acquisitions(limit:int=Query(100,ge=1,le=1000),source_id:str|None=None)->list[dict[str,object]]: return _acquisition_rows(limit,source_id)
 
 @app.get("/api/v1/events")
 def persisted_events(limit:int=Query(500,ge=1,le=1000),source_id:str|None=None,category:str|None=None,start:str|None=None,end:str|None=None,min_lat:float|None=Query(None,ge=-90,le=90),max_lat:float|None=Query(None,ge=-90,le=90),min_lon:float|None=Query(None,ge=-180,le=180),max_lon:float|None=Query(None,ge=-180,le=180),q:str|None=Query(None,max_length=200))->list[dict[str,object]]:
