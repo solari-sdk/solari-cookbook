@@ -27,9 +27,21 @@ if ((Test-Path 'requirements.txt') -or (Test-Path 'pyproject.toml')) {
     if (-not (Get-Command python -ErrorAction SilentlyContinue)) { Fail 'python is required' }
 }
 
-Stage 'Install locked dependencies'
+if ((Test-Path 'requirements.txt') -or (Test-Path 'pyproject.toml')) {
+    Stage 'Create Python environment'
+    python -m venv .venv
+    if ($LASTEXITCODE -ne 0) { Fail 'python -m venv failed' }
+    $pythonExe = Join-Path $PSScriptRoot '.venv\Scripts\python.exe'
+    & $pythonExe -m pip install --upgrade pip
+    if ($LASTEXITCODE -ne 0) { Fail 'pip upgrade failed' }
+} else {
+    $pythonExe = 'python'
+}
+
+Stage 'Install dependencies'
 if (Test-Path 'package-lock.json') { npm ci; if ($LASTEXITCODE -ne 0) { Fail 'npm ci failed' } }
-if (Test-Path 'requirements.txt') { python -m pip install -r requirements.txt; if ($LASTEXITCODE -ne 0) { Fail 'pip install failed' } }
+if (Test-Path 'requirements.txt') { & $pythonExe -m pip install -r requirements.txt; if ($LASTEXITCODE -ne 0) { Fail 'pip install failed' } }
+if (Test-Path 'requirements-dev.txt') { & $pythonExe -m pip install -r requirements-dev.txt; if ($LASTEXITCODE -ne 0) { Fail 'dev dependency install failed' } }
 
 Stage 'Build and test'
 if (Test-Path 'package.json') {
@@ -37,7 +49,7 @@ if (Test-Path 'package.json') {
     if ($scripts -match '(?m)^\s+build\b') { npm run build; if ($LASTEXITCODE -ne 0) { Fail 'npm build failed' } }
     if ($scripts -match '(?m)^\s+test\b') { npm test; if ($LASTEXITCODE -ne 0) { Fail 'npm test failed' } }
 }
-if ((Test-Path 'tests') -and (Get-Command pytest -ErrorAction SilentlyContinue)) { pytest; if ($LASTEXITCODE -ne 0) { Fail 'pytest failed' } }
+if (Test-Path 'tests') { & $pythonExe -m pytest; if ($LASTEXITCODE -ne 0) { Fail 'pytest failed' } }
 
 Stage 'Configuration check'
 if (-not $env:SOLARI_API_KEY) {
