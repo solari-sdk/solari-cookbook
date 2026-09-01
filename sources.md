@@ -35,8 +35,8 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Maritime | NOAA NDBC environmental observations; additional public maritime safety sources where reuse is permitted | API/feed/web | Implemented NDBC environmental-observation baseline; safety/vessel/port expansion planned |
 | Environmental | EPA AirNow and NOAA NDBC public environmental observations | API/download/feed | Implemented AirNow + NDBC baselines |
 | Air quality | EPA AirNow public daily data | feed/download | Implemented daily preliminary-observation baseline |
-| Infrastructure/public status | Public government infrastructure/outage/status datasets where redistribution is permitted | API/web | Planned |
-| Transportation | Public GTFS/GTFS-Realtime and government transportation feeds | API/feed | Planned |
+| Infrastructure/public status | Public WZDx/CWZ work-zone feeds plus other lawful government infrastructure/status datasets | API/feed | Implemented configurable WZDx work-zone baseline; broader infrastructure status planned |
+| Transportation | Public WZDx, GTFS/GTFS-Realtime and government transportation feeds | API/feed | Implemented configurable WZDx work-zone baseline; GTFS/general transit planned |
 | Sanctions/watchlists | Official public government sanctions/watchlists where lawful for demonstration | API/download | Implemented OFAC SDN CSV baseline |
 | Public notices | Government/public-agency operational notices excluding general media monitoring | API/web | Planned |
 
@@ -229,6 +229,17 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Interpretation:** station measurements are environmental observations, not inferred hazard warnings. The adapter does not infer vessel movements, port status, or marine-warning severity.
 - **Terms:** preserve NOAA/NDBC attribution; use official NOAA/NWS warning products for safety-critical decisions.
 - **Status:** implemented, registered, and fixture-tested; live endpoint validation is tracked separately.
+
+### USDOT-compatible WZDx public work-zone feeds
+- **Adapter ID:** `usdot-wzdx-workzones`
+- **Authoritative documentation:** `https://www.transportation.gov/av/data/wzdx`; the USDOT-origin WZDx v4.2 schema is maintained publicly by `usdot-jpo-ode/wzdx`.
+- **Acquisition:** operator/evaluator configures one lawful public `WZDX_FEED_URL` and an explicit exact-host `WZDX_ALLOWED_HOSTS` allowlist. The adapter requires HTTPS port 443, rejects embedded credentials/non-public IP literals, revalidates redirects against the allowlist, caps responses at 10 MiB and parses at most 5,000 features.
+- **Scope/category:** WZDx `work-zone` and `detour` road events from the configured public producer feed; normalized category `road-work-zone`.
+- **Raw/normalized mapping:** feature identity, core event type/data-source ID, road names, direction, name/description, creation/update/start/end dates, vehicle impact, work-zone type and source geometry type are retained. The map point uses only the first valid coordinate from the source geometry and explicitly does not represent a centroid or full work-zone extent.
+- **Evidence/deduplication:** deterministic source + WZDx feature ID (or deterministic fallback); acquisition ID and feature-array path retained.
+- **Interpretation:** `vehicle_impact` is retained as source data but no project safety severity is inferred. Producer attribution/terms remain source-specific and must be preserved.
+- **Configuration boundary:** no feed hostname or credential is embedded in the repository. The USDOT Work Zone Feed Registry can be used by an evaluator to locate a current public WZDx/CWZ feed, then explicitly allow that producer hostname.
+- **Status:** implemented, registered, and fixture/safety-tested; live producer-feed validation remains tracked separately.
 
 ## Implemented observable/reference enrichment sources
 These are analyst-invoked enrichment adapters rather than continuously polled event feeds. They accept user-supplied public observables/places, impose bounded requests where applicable, and retain the source URL/provider in returned provenance. They must not be used to probe private/internal targets.
