@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Iterable
 
 from app.contracts import EntityRecord, EventRecord
-from app.geospatial import distance_and_bearing
+from app.geospatial import distance_km, initial_bearing_degrees
 
 
 def event_entity_proximity(
@@ -21,13 +21,13 @@ def event_entity_proximity(
         if event.location is None:
             continue
         for entity in entity_items:
-            metric = distance_and_bearing(event.location, entity.location)
-            if metric["distance_km"] <= radius_km:
+            distance = distance_km(event.location, entity.location)
+            if distance <= radius_km:
                 matches.append({
                     "event_id": event.id,
                     "entity_id": entity.id,
-                    "distance_km": metric["distance_km"],
-                    "initial_bearing_degrees": metric["initial_bearing_degrees"],
+                    "distance_km": distance,
+                    "initial_bearing_degrees": initial_bearing_degrees(event.location, entity.location),
                     "radius_km": radius_km,
                     "inferred_relationship": False,
                     "reason": "geospatial-proximity-only",
