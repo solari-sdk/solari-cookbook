@@ -33,6 +33,12 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### End-to-end bounty submission
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [project-polished](examples/project-polished) | TypeScript (Next.js) | Autonomous UI/UX revamp agent — sandbox + browser + desktop in one pipeline. Drop a repo, get a polished UI PR. Demo video included. |
+
 ## Running an example
 
 Each directory is self-contained.
