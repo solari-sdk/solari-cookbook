@@ -17,7 +17,11 @@ from app.correlation_api import router as correlation_router
 from app.entities import derive_graph
 from app.exports import events_csv, events_geojson
 from app.graph_api import router as graph_router
+from app.job_store import job_metrics, record_collection_result, record_job_execution
+from app.jobs import CircuitBreaker, RetryPolicy, run_with_retry
+from app.jobs_api import router as jobs_router
 from app.notes_api import router as notes_router
+from app.observability import current_correlation_id, install_observability
 from app.observables import ObservableRecord
 from app.pagination_api import router as pagination_router
 from app.recon_api import router as recon_router
@@ -30,14 +34,17 @@ from app.storage import (
 from app.tracking_api import router as tracking_router
 from app.workspace_api import router as workspace_router
 
-VERSION = "0.9.0"
+VERSION = "0.10.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
-for router in (graph_router, pagination_router, correlation_router, workspace_router, notes_router, artifact_router, alerts_router, recon_router, tracking_router):
+install_observability(app)
+for router in (graph_router, pagination_router, correlation_router, workspace_router, notes_router, artifact_router, alerts_router, recon_router, tracking_router, jobs_router):
     app.include_router(router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts)}
 SOURCES: dict[str, SourceDescriptor] = {key: adapter.SOURCE for key, adapter in ADAPTERS.items()}
+SOURCE_BREAKERS = {source_id: CircuitBreaker(failure_threshold=3, cooldown_seconds=60) for source_id in ADAPTERS}
+COLLECTION_RETRY_POLICY = RetryPolicy(max_attempts=3, base_delay_seconds=0.5, max_delay_seconds=4.0)
 
 
 def _acquisition_rows(limit: int = 100, source_id: str | None = None) -> list[dict[str, object]]:
@@ -129,6 +136,16 @@ def metrics() -> dict[str, object]:
             "records_accepted": accepted,
             "records_rejected": rejected,
         },
+        "jobs": job_metrics(),
+        "circuit_breakers": {
+            source_id: {
+                "can_run": breaker.can_run(),
+                "consecutive_failures": breaker.consecutive_failures,
+                "opened_at": breaker.opened_at.isoformat() if breaker.opened_at else None,
+                "cooldown_seconds": breaker.cooldown_seconds,
+            }
+            for source_id, breaker in SOURCE_BREAKERS.items()
+        },
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -186,27 +203,40 @@ def export_geojson(limit:int=Query(1000,ge=1,le=1000))->dict[str,object]: return
 @app.post("/api/v1/collect-batch")
 def collect_batch(source_id:list[str]=Query(...),max_workers:int=Query(4,ge=1,le=16))->dict[str,object]:
     try:
-        results=collect_many(ADAPTERS,source_id,max_workers=max_workers)
+        results=collect_many(ADAPTERS,source_id,max_workers=max_workers,retry_policy=COLLECTION_RETRY_POLICY,breakers=SOURCE_BREAKERS)
     except (ValueError,KeyError) as exc:
         raise HTTPException(400,str(exc)) from exc
     output=[]
+    correlation_id=current_correlation_id()
     for result in results:
+        job=record_collection_result(result,correlation_id=correlation_id)
         if result.succeeded and result.acquisition is not None:
-            output.append(_persist_collection(result.acquisition,result.events))
+            item=_persist_collection(result.acquisition,result.events)
+            item.update({"job_id":job["id"],"attempts":result.attempts,"attempt_durations_ms":result.attempt_durations_ms})
+            output.append(item)
         else:
-            output.append({"source_id":result.source_id,"status":"failure","error_type":result.error_type,"error_message":result.error_message})
+            output.append({"source_id":result.source_id,"status":"failure","job_id":job["id"],"attempts":result.attempts,"failure_class":result.failure_class.value if result.failure_class else None,"error_type":result.error_type,"error_message":result.error_message})
     return {"requested":len(results),"succeeded":sum(1 for item in results if item.succeeded),"failed":sum(1 for item in results if not item.succeeded),"results":output}
 
 @app.post("/api/v1/collect/{source_id}")
 def collect_and_store(source_id:str)->dict[str,object]:
     adapter=ADAPTERS.get(source_id)
     if not adapter: raise HTTPException(404,"unknown source")
-    try:
-        acquisition,events=adapter.collect(); return _persist_collection(acquisition,events)
-    except Exception as exc: raise HTTPException(502,f"collector failed: {type(exc).__name__}") from exc
+    execution=run_with_retry(f"collect:{source_id}",adapter.collect,policy=COLLECTION_RETRY_POLICY,breaker=SOURCE_BREAKERS[source_id])
+    job=record_job_execution(execution,source_id=source_id,correlation_id=current_correlation_id())
+    if execution.result is None:
+        raise HTTPException(502,{"message":"collector failed","job_id":job["id"],"failure_class":execution.failure_class.value if execution.failure_class else None,"error_type":execution.error_type})
+    acquisition,events=execution.result
+    item=_persist_collection(acquisition,events)
+    item.update({"job_id":job["id"],"attempts":execution.attempts,"attempt_durations_ms":execution.attempt_durations_ms})
+    return item
 
 @app.get("/api/v1/events/live/{source_id}",response_model=list[EventRecord])
 def collect_live(source_id:str,limit:int=Query(100,ge=1,le=1000))->list[EventRecord]:
     adapter=ADAPTERS.get(source_id)
     if not adapter: raise HTTPException(404,"unknown source")
-    _,events=adapter.collect(); return events[:limit]
+    execution=run_with_retry(f"collect-live:{source_id}",adapter.collect,policy=COLLECTION_RETRY_POLICY,breaker=SOURCE_BREAKERS[source_id])
+    record_job_execution(execution,source_id=source_id,correlation_id=current_correlation_id())
+    if execution.result is None: raise HTTPException(502,"live collector failed")
+    _,events=execution.result
+    return events[:limit]
