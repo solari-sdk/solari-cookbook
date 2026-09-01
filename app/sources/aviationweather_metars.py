@@ -104,12 +104,14 @@ def normalize(payload: list[dict[str, Any]], acquisition_id: str) -> list[EventR
             f"wind {record.get('wdir')}°/{record.get('wspd')} kt" if record.get("wspd") is not None else None,
             f"visibility {record.get('visib')} SM" if record.get("visib") is not None else None,
         ] if part]
+        station_name = str(record.get("name") or "").strip()
+        title = f"METAR — {station}" + (f" — {station_name}" if station_name else "")
         events.append(EventRecord(
             id=record_id,
             source_id=SOURCE.id,
             source_record_id=f"{station}:{observed_at.isoformat()}",
             category="aviation-weather-observation",
-            title=f"METAR — {station}{f' — {record.get("name")}' if record.get('name') else ''}",
+            title=title,
             summary="; ".join(summary_parts) if summary_parts else "Latest Aviation Weather Center METAR observation.",
             observed_at=observed_at,
             updated_at=_datetime(record.get("receiptTime")),
@@ -118,7 +120,7 @@ def normalize(payload: list[dict[str, Any]], acquisition_id: str) -> list[EventR
             quality_score=1.0,
             properties={
                 "station_id": station,
-                "station_name": record.get("name"),
+                "station_name": station_name or None,
                 "metar_type": record.get("metarType"),
                 "raw_observation": raw_observation,
                 "temperature_c": record.get("temp"),
