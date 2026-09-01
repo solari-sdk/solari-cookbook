@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { buildCase, cloneCaseBundle, verifyCaseIntegrity } from '../schema.js';
 import { encryptCase, decryptCase } from '../crypto.js';
 import { scanForSecrets } from '../security.js';
-import { caseCsv, caseGeoJson, caseGraphMl, caseReportHtml } from '../exports.js';
+import { caseCsv, caseGeoJson, caseGraphMl, caseGraphSnapshotSvg, caseReportHtml } from '../exports.js';
 
 const event={id:'e1',source_id:'fixture',source_record_id:'1',category:'test',title:'Example',observed_at:'2026-09-01T00:00:00Z',latitude:1,longitude:2,quality_score:1};
 
@@ -40,13 +40,17 @@ test('secret scanner blocks credential-shaped fields',()=>{
   assert.equal(scanForSecrets({quality_score:1,title:'safe'}).length,0);
 });
 
-test('derivative exports are generated from one case',async()=>{
-  const bundle=await buildCase([event],{id:'case-1',title:'Fixture <Case>',entities:[{id:'a',label:'A'},{id:'b',label:'B'}],relationships:[{id:'r',source_id:'a',target_id:'b'}]});
+test('derivative exports and graph snapshot are generated from one case',async()=>{
+  const bundle=await buildCase([event],{id:'case-1',title:'Fixture <Case>',entities:[{id:'a',label:'A'},{id:'b',label:'B'}],relationships:[{id:'r',source_entity_id:'a',target_entity_id:'b',type:'related'}]});
   assert.match(caseCsv(bundle),/Example/);
   assert.deepEqual(caseGeoJson(bundle).features[0].geometry.coordinates,[2,1]);
   assert.match(caseGraphMl(bundle),/<edge id="r" source="a" target="b"\/>/);
+  const graph=caseGraphSnapshotSvg(bundle);
+  assert.match(graph,/aria-label="Case relationship graph snapshot"/);
+  assert.match(graph,/<line /);
   const report=caseReportHtml(bundle);
   assert.match(report,/<h2>Timeline<\/h2>/);
+  assert.match(report,/Relationship graph snapshot/);
   assert.match(report,/Reproducibility manifest/);
   assert.match(report,/Fixture &lt;Case&gt;/);
   assert.doesNotMatch(report,/<script/i);
