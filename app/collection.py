@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from app.contracts import AcquisitionEnvelope, EventRecord
+from app.jobs import CircuitBreaker, FailureClass, RetryPolicy, run_with_retry
 
 
 @dataclass(slots=True)
@@ -14,17 +15,29 @@ class CollectionResult:
     events: list[EventRecord]
     error_type: str | None = None
     error_message: str | None = None
+    failure_class: FailureClass | None = None
+    attempts: int = 0
+    attempt_durations_ms: list[float] = field(default_factory=list)
 
     @property
     def succeeded(self) -> bool:
         return self.acquisition is not None and self.error_type is None
 
 
-def collect_many(adapters: dict[str, Any], source_ids: list[str], *, max_workers: int = 4) -> list[CollectionResult]:
-    """Collect independent public sources concurrently, returning every outcome.
+def collect_many(
+    adapters: dict[str, Any],
+    source_ids: list[str],
+    *,
+    max_workers: int = 4,
+    retry_policy: RetryPolicy | None = None,
+    breakers: dict[str, CircuitBreaker] | None = None,
+) -> list[CollectionResult]:
+    """Collect independent public sources concurrently with bounded retries.
 
     Collection runs concurrently but persistence is intentionally left to the caller
     so SQLite writes and graph projection can remain ordered and easy to audit.
+    When a breaker mapping is supplied, repeated terminal failures open a per-source
+    cooldown circuit; CircuitBreaker.can_run() automatically closes it after cooldown.
     """
     if max_workers < 1 or max_workers > 16:
         raise ValueError("max_workers must be between 1 and 16")
@@ -34,19 +47,35 @@ def collect_many(adapters: dict[str, Any], source_ids: list[str], *, max_workers
     unknown = [source_id for source_id in normalized if source_id not in adapters]
     if unknown:
         raise KeyError(f"unknown sources: {', '.join(sorted(unknown))}")
+    retry_policy = retry_policy or RetryPolicy()
 
     def run(source_id: str) -> CollectionResult:
-        try:
-            acquisition, events = adapters[source_id].collect()
-            return CollectionResult(source_id=source_id, acquisition=acquisition, events=events)
-        except Exception as exc:
+        breaker = breakers.get(source_id) if breakers is not None else None
+        execution = run_with_retry(
+            f"collect:{source_id}",
+            adapters[source_id].collect,
+            policy=retry_policy,
+            breaker=breaker,
+        )
+        if execution.status.value == "succeeded" and execution.result is not None:
+            acquisition, events = execution.result
             return CollectionResult(
                 source_id=source_id,
-                acquisition=None,
-                events=[],
-                error_type=type(exc).__name__,
-                error_message=str(exc)[:500],
+                acquisition=acquisition,
+                events=events,
+                attempts=execution.attempts,
+                attempt_durations_ms=execution.attempt_durations_ms,
             )
+        return CollectionResult(
+            source_id=source_id,
+            acquisition=None,
+            events=[],
+            error_type=execution.error_type,
+            error_message=execution.error_message[:500] if execution.error_message else None,
+            failure_class=execution.failure_class,
+            attempts=execution.attempts,
+            attempt_durations_ms=execution.attempt_durations_ms,
+        )
 
     results: dict[str, CollectionResult] = {}
     with ThreadPoolExecutor(max_workers=min(max_workers, len(normalized))) as pool:
