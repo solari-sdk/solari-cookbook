@@ -46,6 +46,11 @@ if [[ -f package-lock.json ]]; then npm ci; fi
 if [[ -f requirements.txt ]]; then python -m pip install -r requirements.txt; fi
 if [[ -f requirements-dev.txt ]]; then python -m pip install -r requirements-dev.txt; fi
 
+if [[ -f tests/test_browser_ui.py ]]; then
+  stage "Install browser QA runtime"
+  python -m playwright install chromium
+fi
+
 stage "Build"
 if [[ -f package.json ]] && npm run | grep -qE '^  build'; then npm run build; fi
 
