@@ -15,9 +15,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Record exact Prime Prompts commit SHA used for compliance review.
 - [ ] Create/synchronize central Prime Prompts TODO mirror. Blocked by single-repository scope unless cross-repository authorization is explicitly granted.
 - [ ] Add repository to applicable Prime Prompts work-repository registry. Blocked by single-repository scope unless cross-repository authorization is explicitly granted.
-- [ ] Complete applicable Prime Prompts compliance review.
+- [x] Complete applicable Prime Prompts rules/applicability review at revision `0c499baad9f2b8dcf42e78deb6086174d000a90f`; `docs/prime-prompts-compliance.md` records a truthful **Remediation required** result while central mirror/registry and final-release items remain open.
 - [x] Complete current-tree secret scan through the CI public-release scanner on the current development tree.
-- [ ] Complete Git-history secret scan.
+- [x] Complete reachable Git-history secret scan; CI history scan passed at commit `94a22969c92749b19a2f3233fd2b88447d8d6f45` after bounding a known public synthetic scanner fixture.
 - [x] Review `.gitignore` and sensitive/generated-file exclusions.
 - [ ] Perform final public-release scan for private names, unrelated project/company identifiers, credentials, proprietary material, and restricted data.
 
@@ -76,7 +76,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] EPA/environmental dataset baseline through the public EPA AirNow daily air-quality feed.
 - [x] Public flood/hydrology baseline through bounded USGS Water Data latest-continuous observations.
 - [x] Public volcano data baseline through official USGS HANS elevated-volcano status notices.
-- [ ] Public aviation operational/status data.
+- [x] Public aviation data baseline through bounded official AviationWeather.gov METAR observations; no airport closure/delay/flight-safety status is inferred.
 - [x] Public maritime environmental baseline through NOAA NDBC latest station observations without inferring hazards.
 - [ ] Public GTFS/transportation feeds.
 - [x] Public sanctions/watchlists baseline through the official OFAC SDN CSV feed with explicit identity-resolution boundary.
@@ -88,7 +88,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Public lightning/storm observation feeds.
 - [x] Public river gauge/water-level feeds through bounded USGS latest-continuous discharge/gage-height observations.
 - [x] Public volcanic observatory feeds through USGS HANS observatory/status metadata.
-- [ ] Public airport/airspace status feeds.
+- [ ] Public airport/airspace status feeds beyond weather observations.
 - [ ] Public vessel/port status sources that do not require restricted credentials.
 - [ ] Additional lawful free/open sources discovered during development.
 
@@ -473,7 +473,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Healthchecks in container definitions.
 - [ ] Optional PostgreSQL backend for larger deployments.
 - [ ] Optional Redis queue/cache for concurrent jobs.
-- [ ] Optional S3-compatible artifact storage implementation.
+- [x] Optional S3-compatible artifact storage implementation through `S3CompatibleArtifactBackend`, SHA-256 object keys/integrity verification, injected client support, tests, and `docs/object-storage.md`.
 - [ ] Migration framework if database schema grows beyond simple bootstrap migrations.
 - [ ] Background worker process.
 - [ ] Scheduler process.
@@ -498,7 +498,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 
 ## Tests / QA
 - [x] Unit tests for baseline normalization/idempotence/provenance.
-- [x] Fixture normalization tests for every currently implemented source adapter, including the configurable public WZDx work-zone adapter.
+- [x] Fixture normalization tests for every currently implemented source adapter, including the configurable public WZDx work-zone and AviationWeather METAR adapters.
 - [ ] Live smoke tests for representative public sources.
 - [ ] Solari Browser integration tests with live key.
 - [ ] Solari Sandbox integration tests with live key.
@@ -516,7 +516,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Correlation explanation/candidate tests.
 - [x] Portable report reproducibility/escaping test foundation.
 - [x] Public-release/private-name/identifier scanner test supports configured deny terms in addition to secret/sensitive-file patterns.
-- [x] Secret-pattern scanner in CI; CI run for the WZDx/dashboard batch passed Python, static-console and current-tree secret scans.
+- [x] Secret-pattern scanner in CI; current development CI passes Python/static-console/current-tree scanning after the history-scanner fixture hardening.
 - [ ] Static-mode first-run browser test with no backend process available.
 - [x] Static-mode offline-shell asset regression test.
 - [ ] IndexedDB persistence/migration browser tests.
