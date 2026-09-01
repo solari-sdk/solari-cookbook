@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
 
 from app.contracts import AcquisitionEnvelope, EventRecord
@@ -18,6 +19,8 @@ class CollectionResult:
     failure_class: FailureClass | None = None
     attempts: int = 0
     attempt_durations_ms: list[float] = field(default_factory=list)
+    started_at: datetime | None = None
+    completed_at: datetime | None = None
 
     @property
     def succeeded(self) -> bool:
@@ -57,15 +60,15 @@ def collect_many(
             policy=retry_policy,
             breaker=breaker,
         )
+        common = {
+            "attempts": execution.attempts,
+            "attempt_durations_ms": execution.attempt_durations_ms,
+            "started_at": execution.started_at,
+            "completed_at": execution.completed_at,
+        }
         if execution.status.value == "succeeded" and execution.result is not None:
             acquisition, events = execution.result
-            return CollectionResult(
-                source_id=source_id,
-                acquisition=acquisition,
-                events=events,
-                attempts=execution.attempts,
-                attempt_durations_ms=execution.attempt_durations_ms,
-            )
+            return CollectionResult(source_id=source_id, acquisition=acquisition, events=events, **common)
         return CollectionResult(
             source_id=source_id,
             acquisition=None,
@@ -73,8 +76,7 @@ def collect_many(
             error_type=execution.error_type,
             error_message=execution.error_message[:500] if execution.error_message else None,
             failure_class=execution.failure_class,
-            attempts=execution.attempts,
-            attempt_durations_ms=execution.attempt_durations_ms,
+            **common,
         )
 
     results: dict[str, CollectionResult] = {}
