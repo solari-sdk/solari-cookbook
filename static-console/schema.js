@@ -13,9 +13,9 @@ async function sha256Json(value) {
 export async function buildCase(events, extra = {}) {
   const payload = {
     case: { id: extra.id || crypto.randomUUID(), title: extra.title || 'Portable investigation', notes: extra.notes || '', tags: Array.isArray(extra.tags) ? extra.tags : [] },
-    events: Array.isArray(events) ? events : [], entities: Array.isArray(extra.entities) ? extra.entities : [],
-    relationships: Array.isArray(extra.relationships) ? extra.relationships : [], evidence: Array.isArray(extra.evidence) ? extra.evidence : [],
-    provenance: Array.isArray(extra.provenance) ? extra.provenance : [], saved_views: Array.isArray(extra.saved_views) ? extra.saved_views : [],
+    events: Array.isArray(events) ? structuredClone(events) : [], entities: Array.isArray(extra.entities) ? structuredClone(extra.entities) : [],
+    relationships: Array.isArray(extra.relationships) ? structuredClone(extra.relationships) : [], evidence: Array.isArray(extra.evidence) ? structuredClone(extra.evidence) : [],
+    provenance: Array.isArray(extra.provenance) ? structuredClone(extra.provenance) : [], saved_views: Array.isArray(extra.saved_views) ? structuredClone(extra.saved_views) : [],
   };
   const files = {};
   for (const name of MEMBER_NAMES) files[`${name}.json`] = await sha256Json(payload[name]);
