@@ -33,6 +33,12 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### Multi-product
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [browser-sandbox-pricing-reporter-py](examples/browser-sandbox-pricing-reporter-py) | Python | Browser collects a pricing page, sandbox parses it, host gets CSV/JSON |
+
 ## Running an example
 
 Each directory is self-contained.
