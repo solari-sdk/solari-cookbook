@@ -116,12 +116,26 @@ def _leaflet_stub(route: Route) -> None:
     )
 
 
-def test_server_dashboard_real_browser_smoke(browser: Browser, dashboard_url: str) -> None:
+def test_converged_server_workspace_real_browser_smoke(browser: Browser, dashboard_url: str) -> None:
+    page = browser.new_page()
+    page_errors: list[str] = []
+    page.on("pageerror", lambda error: page_errors.append(str(error)))
+    page.goto(dashboard_url, wait_until="networkidle")
+    expect(page.locator("h1")).to_contain_text("Solari Static OSINT Console")
+    expect(page.locator("#runtime-status")).to_contain_text("Server mode active", timeout=10_000)
+    expect(page.locator("#server-runtime-controls")).to_be_visible()
+    assert page.locator("#server-source option").count() >= 20
+    assert page.url.endswith("/workspace/")
+    assert not page_errors
+    page.close()
+
+
+def test_advanced_server_dashboard_remains_available(browser: Browser, dashboard_url: str) -> None:
     page = browser.new_page()
     page_errors: list[str] = []
     page.on("pageerror", lambda error: page_errors.append(str(error)))
     page.route("https://unpkg.com/**", _leaflet_stub)
-    page.goto(dashboard_url, wait_until="domcontentloaded")
+    page.goto(f"{dashboard_url}/server-dashboard", wait_until="domcontentloaded")
     expect(page.locator("h1")).to_have_text("Solari OSINT Operations Center")
     expect(page.locator("#health")).to_contain_text("OK · READY", timeout=10_000)
     expect(page.locator("#streamState")).to_have_text("Current", timeout=10_000)
@@ -140,6 +154,7 @@ def test_static_console_first_run_requires_no_backend(browser: Browser, static_u
     page.on("request", lambda request: backend_requests.append(request.url) if "/api/v1/" in request.url else None)
     page.goto(f"{static_url}/", wait_until="networkidle")
     expect(page.locator("h1")).to_contain_text("Solari Static OSINT Console")
+    expect(page.locator("#runtime-status")).to_contain_text("Local/static mode")
     expect(page.locator("#storage-status")).to_contain_text("0 of 0", timeout=10_000)
     capabilities = json.loads(page.locator("#capabilities").inner_text())
     assert capabilities["indexed_db"] is True
