@@ -3,6 +3,7 @@ from __future__ import annotations
 from types import ModuleType
 
 from app.contracts import SourceDescriptor
+from app.raw_capture import RawCapturingAdapter
 from app.sources import (
     airnow_daily_quality,
     aviationweather_metars,
@@ -53,8 +54,14 @@ REGISTERED_ADAPTERS: tuple[ModuleType, ...] = (
     uscg_port_status,
 )
 
-ADAPTERS: dict[str, ModuleType] = {adapter.SOURCE.id: adapter for adapter in REGISTERED_ADAPTERS}
+ADAPTERS: dict[str, RawCapturingAdapter] = {
+    adapter.SOURCE.id: RawCapturingAdapter(adapter) for adapter in REGISTERED_ADAPTERS
+}
 SOURCES: dict[str, SourceDescriptor] = {source_id: adapter.SOURCE for source_id, adapter in ADAPTERS.items()}
 
 if len(ADAPTERS) != len(REGISTERED_ADAPTERS):
     raise RuntimeError("duplicate public source adapter ID in registry")
+
+unsupported_raw_capture = sorted(source_id for source_id, adapter in ADAPTERS.items() if not adapter.raw_capture_supported)
+if unsupported_raw_capture:
+    raise RuntimeError(f"registered public source adapters lack raw-capture support: {', '.join(unsupported_raw_capture)}")
