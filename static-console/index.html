@@ -21,15 +21,33 @@
     <label>Adapter <select id="source-adapter"></select></label><label>Public HTTPS URL <input id="source-url" type="url" value="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"></label>
     <button id="fetch-source">Fetch and store</button><p id="fetch-status"></p>
   </section>
-  <section class="panel"><h2>World view</h2><canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas><p>Dependency-free equirectangular view of locally stored geolocated events.</p></section>
+  <section class="panel"><h2>Source health</h2><p id="source-health-summary"></p><div class="table-wrap"><table><thead><tr><th>Source</th><th>Last success</th><th>Age</th><th>Records</th><th>URL</th></tr></thead><tbody id="source-health"></tbody></table></div></section>
+  <section class="panel"><h2>Collector executions</h2><div class="table-wrap"><table><thead><tr><th>Source</th><th>Started</th><th>Status</th><th>Accepted</th><th>Rejected</th><th>Bytes</th></tr></thead><tbody id="collector-executions"></tbody></table></div></section>
+  <section class="panel"><h2>World view</h2><p id="map-freshness"></p><canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas><p>Dependency-free equirectangular view of the current filtered geolocated events.</p></section>
   <section class="panel"><h2>Portable investigation</h2>
     <label>Case title <input id="case-title" type="text" value="Portable investigation"></label><label>Encryption passphrase <input id="case-passphrase" type="password" autocomplete="new-password" placeholder="10+ characters"></label>
     <div class="actions"><button id="export-case">Export JSON</button><button id="export-encrypted">Export encrypted .solari-case</button><button id="export-csv">CSV</button><button id="export-geojson">GeoJSON</button><button id="export-graphml">GraphML</button><button id="export-report">Offline HTML report</button><label class="file-button">Import case<input id="import-case" type="file" accept="application/json,.solari-case"></label></div>
     <pre id="import-preview" aria-live="polite"></pre><div class="actions"><button id="confirm-import">Merge preview</button><button id="open-readonly">Open preview read-only</button><button id="close-readonly">Return to local workspace</button></div><p id="case-status"></p>
   </section>
-  <section class="panel"><h2>Local workspace</h2><div class="actions"><button id="refresh-events">Refresh</button><button id="purge-data">Purge local database & caches</button></div><p id="storage-status"></p>
-    <div class="table-wrap"><table><thead><tr><th>Time</th><th>Category</th><th>Title</th><th>Source</th></tr></thead><tbody id="events"></tbody></table></div>
+  <section class="panel"><h2>Local workspace</h2>
+    <div class="filter-grid">
+      <label>Search <input id="filter-query" type="search" placeholder="Title, summary, source, category"></label>
+      <label>Source <select id="filter-source"><option value="">All</option></select></label>
+      <label>Category <select id="filter-category"><option value="">All</option></select></label>
+      <label>Severity <select id="filter-severity"><option value="">All</option><option>low</option><option>moderate</option><option>high</option><option>severe</option><option>extreme</option></select></label>
+      <label>Minimum quality <input id="filter-quality" type="number" min="0" max="1" step="0.05" value="0"></label>
+      <label>Time window <input id="filter-hours" type="range" min="0" max="168" step="1" value="0"><span id="filter-hours-label">All retained time</span></label>
+      <label>Min latitude <input id="filter-min-lat" type="number" min="-90" max="90" step="0.1"></label>
+      <label>Max latitude <input id="filter-max-lat" type="number" min="-90" max="90" step="0.1"></label>
+      <label>Min longitude <input id="filter-min-lon" type="number" min="-180" max="180" step="0.1"></label>
+      <label>Max longitude <input id="filter-max-lon" type="number" min="-180" max="180" step="0.1"></label>
+    </div>
+    <div class="actions"><button id="refresh-events">Refresh</button><button id="clear-filters">Clear filters</button><button id="purge-data">Purge local database & caches</button></div>
+    <div class="actions"><label>View name <input id="view-name" type="text" placeholder="Saved view name"></label><button id="save-view">Save view</button><label>Saved view <select id="saved-view"><option value="">Select…</option></select></label><button id="load-view">Load view</button></div>
+    <p id="storage-status"></p><p id="freshness-summary"></p>
+    <div class="table-wrap"><table><thead><tr><th>Time</th><th>Freshness</th><th>Category</th><th>Severity</th><th>Quality</th><th>Title</th><th>Source</th></tr></thead><tbody id="events"></tbody></table></div>
   </section>
+  <section class="panel"><h2>Artifacts</h2><div class="actions"><label class="file-button">Add public/user-supplied artifact<input id="artifact-file" type="file"></label><label>Tags <input id="artifact-tags" type="text" placeholder="comma,separated"></label></div><p id="artifact-status"></p><div class="table-wrap"><table><thead><tr><th>Name / SHA-256</th><th>MIME</th><th>Size</th><th>Tags</th><th>Action</th></tr></thead><tbody id="artifacts"></tbody></table></div></section>
 </main>
 <script type="module" src="app.js"></script>
 </body></html>
