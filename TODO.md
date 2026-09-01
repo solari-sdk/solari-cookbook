@@ -3,7 +3,7 @@
 Status: active development  
 Branch: `develop`
 
-> Root action/remediation tracker for the public Solari OSINT Operations Center. Completed work before this reconciliation remains preserved in Git history, implementation tests, `meta.md`, `sources.md`, and project documentation. In accordance with the Prime Prompts TODO standard, this file now emphasizes unresolved work instead of retaining hundreds of historical completed boxes.
+> Root action/remediation tracker for the public Solari OSINT Operations Center. Completed work before this reconciliation remains preserved in Git history, implementation tests, `meta.md`, `sources.md`, and project documentation. In accordance with the Prime Prompts TODO standard, this file emphasizes unresolved work instead of retaining hundreds of historical completed boxes.
 
 ## Submission objective
 Build and publicly demonstrate a comprehensive OSINT operations center that uses Solari Browser, Sandbox, and Desktop for legitimate public-source acquisition/processing workflows and shows production-minded evidence handling, observability, debugging, visualization, static/no-hosting operation, and cross-platform reproducibility.
@@ -26,21 +26,32 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Desktop screenshot artifact retention is wired to Desktop executions; video retention is not claimed because the current workflow uses screenshots.
 - [x] Production FastAPI entrypoint route regression coverage verifies nested jobs/Solari/workflow router aggregation without duplicate direct mounts.
 - [x] Fixture normalization coverage now includes MBTA static GTFS and NOAA/SPC preliminary hail adapters in addition to the previously implemented public adapters.
-- [x] `sources.md` documents access mode, cadence, bounds, schema/provenance, interpretation limits, terms/attribution, and live-test state for the new GTFS and SPC adapters.
-- [x] `meta.md` and source registry were reconciled with the current adapter/workflow/Solari execution state.
-- [x] Dashboard now includes a safe raw-acquisition metadata inspector that preserves the raw-vs-normalized boundary without rendering source response bodies as active content.
-- [x] Dashboard now includes a dependency-free orthographic 3D globe for global situational awareness.
+- [x] `sources.md` documents access mode, cadence, bounds, schema/provenance, interpretation limits, terms/attribution, and live-test state for the GTFS and SPC adapters.
+- [x] `meta.md` and source registry were reconciled with the adapter/workflow/Solari execution state at that checkpoint.
+- [x] Dashboard includes a safe raw-acquisition metadata inspector that preserves the raw-vs-normalized boundary without rendering source response bodies as active content.
+- [x] Dashboard includes a dependency-free orthographic 3D globe for global situational awareness.
 - [x] 2D/3D analyst selection is synchronized through event-stream/map/globe/evidence/graph pivots, including globe-to-Leaflet recentering and 2D event selection-to-globe focus.
 - [x] Public weather-satellite orbital visualization uses retained CelesTrak general-perturbations elements with a bounded ±24-hour two-body Kepler approximation, explicit epoch handling, and a visible warning that it is not SGP4 or operational navigation data.
-- [x] Static and server modes now share a generated domain-contract manifest derived from the server Pydantic models; the static console validates/consumes the checked-in contract and tests fail on model/manifest drift.
-- [x] A durable local SQLite task queue now provides atomic claims, bounded payloads/results, retry state, schedule-slot deduplication, worker heartbeats, queue wait/runtime telemetry, and read-only API visibility without claiming distributed-queue semantics.
-- [x] A separate background worker process now executes durable registered-public-source collection and bounded declarative workflow tasks.
-- [x] A separate scheduler process now persists interval schedules and enqueues due public-source/workflow tasks with slot-level deduplication and missed-interval catch-up bounds.
+- [x] Static and server modes share a generated domain-contract manifest derived from the server Pydantic models; the static console validates/consumes the checked-in contract and tests fail on model/manifest drift.
+- [x] A durable local SQLite task queue provides atomic claims, bounded payloads/results, retry state, schedule-slot deduplication, worker heartbeats, queue wait/runtime telemetry, and read-only API visibility without claiming distributed-queue semantics.
+- [x] A separate background worker process executes durable registered-public-source collection and bounded declarative workflow tasks.
+- [x] A separate scheduler process persists interval schedules and enqueues due public-source/workflow tasks with slot-level deduplication and missed-interval catch-up bounds.
 - [x] Persistent local queue depth, active/busy worker counts, utilization, oldest-pending age, queue-wait timing, and run-duration timing are exposed through API/SSE telemetry.
 - [x] Georgia Tech IODA country-level outage-alert telemetry is implemented and registered with a bounded six-hour/300-alert/2 MiB acquisition window, deterministic normalization/tests, and an explicit detector-signal/no-cause/no-impact interpretation boundary.
 - [x] Real Chromium CI covers the server dashboard with page-error detection plus static no-backend first run, IndexedDB v1-to-v3 migration/persistence, credential/session non-persistence and clear behavior, and explicit direct-network/CORS-failure broker fallback.
-- [x] Browser QA identified and fixed a production classic-script `refresh`/`collect` identifier collision in the dashboard correlation controls; exact-head CI is green after the correction.
+- [x] Browser QA identified and fixed a production classic-script `refresh`/`collect` identifier collision in the dashboard correlation controls; exact-head CI was green after the correction.
 - [x] Cross-platform updater verification passed on clean GitHub-hosted Ubuntu, Windows, and macOS runners, including fresh and repeat/idempotent updater executions on all three platforms.
+
+## Verified completions — 2026-09-02 autonomous pass
+- [x] Added and registered a bounded FAA National Airspace System airport-operational-status adapter using the official machine-readable airport-status endpoint, hardened XML parsing, deterministic identities, explicit source wording/provenance, and no status/geolocation inference from METAR data.
+- [x] Added and registered a bounded U.S. Coast Guard Navigation Center port-status adapter using exact published COTP-zone allowlisting, table/header validation, deterministic identities, date-only timestamp provenance, and no vessel/geolocation inference.
+- [x] Added bounded local OCR for lawful public/user-supplied images through an already-installed Tesseract engine: 10 MiB/20-million-pixel input limits, 1–30 second timeout, language-selector validation, no shell execution, temporary decoded-PNG boundary, and capped returned text.
+- [x] Added bounded QR/common-barcode extraction through headless OpenCV with the same image limits, exact-result deduplication, a 100-result cap, inert decoded values, and a real generated-QR regression fixture.
+- [x] Completed a practical accessibility engineering pass over both reviewer-facing web surfaces with automated landmark/control/visualization naming checks, explicit high-visibility keyboard focus treatment, and reduced-motion handling. This is not represented as third-party accessibility certification.
+- [x] Completed a representative retained-data performance regression pass covering 5,000 normalized events and 300 content-addressed artifacts with deliberately generous CI acceptance ceilings rather than precision benchmark claims.
+- [x] Ran and documented representative unauthenticated live public-source smoke checks for USGS earthquakes, NOAA SWPC products, and NOAA NDBC latest observations. Unsupported validation-client content types/fetches are recorded as tooling/network failures rather than empty source data.
+- [x] Verified the current official Solari client model before making direct-static claims. The published Browser/Sandbox TypeScript examples are Node/process-environment clients, Browser maintains a Node-side loopback proxy, and Desktop is documented through a process-environment client; no browser-script/short-lived browser credential flow is published. Direct static Browser/Sandbox/Desktop orchestration is therefore not applicable under the currently documented provider client/security model; static mode uses public CORS sources plus optional narrow broker/server delegation instead of exposing a durable provider key.
+- [x] Current code/test batch passed GitHub CI on `develop` at commit `c04ef8713db1f24d3845286e384ad5476b0833cb`, including Python tests, dependency-free static-console tests, real Chromium QA, and the public-release secret-pattern scan.
 
 ## Governance / public-release boundary
 - [ ] Create/synchronize the central Prime Prompts TODO mirror. **Blocked by current single-repository scope unless cross-repository authorization is explicitly granted.**
@@ -55,10 +66,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 ## Solari Sandbox
 - [ ] Demonstrate geospatial/enrichment computation inside the live Solari Sandbox; bounded deterministic geospatial program generation and unit coverage already exist.
 
-## Public source expansion
-- [ ] Add public airport/airspace operational-status data beyond weather observations without inferring status from METAR data.
-- [ ] Add public vessel/port status data that does not require restricted credentials or prohibited redistribution.
-- [ ] Continue adding additional lawful free/open sources when they materially broaden the showcase and have defensible provenance/terms.
+## Public source maintenance
+Additional lawful free/open sources may be added when they materially broaden the showcase and have defensible provenance/terms. The current autonomous expansion now includes event, disaster, environmental, transportation, storm, infrastructure/outage, aviation-operational, and maritime-port status families; do not add sources merely to inflate adapter count.
 
 ## Dashboard / visualization
 - [ ] Add cost telemetry only when Solari/provider billing or job-cost data are available through a defensible interface.
@@ -68,20 +77,16 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 
 ## Reconnaissance / document processing
 - [ ] Demonstrate PDF metadata/text extraction inside live Solari Sandbox; bounded local PDF metadata extraction already exists.
-- [ ] Add an OCR pipeline for lawful public/user-supplied evidence with explicit size/type/resource bounds.
-- [ ] Add QR/barcode extraction for lawful public/user-supplied evidence with explicit size/type/resource bounds.
 
 ## Debugging / observability
-- [ ] Add distributed-queue-specific timing/capacity telemetry if/when a persistent distributed queue is introduced; the new local SQLite queue already exposes queue wait, run duration, depth, and worker-utilization telemetry.
+- [ ] Add distributed-queue-specific timing/capacity telemetry if/when a persistent distributed queue is introduced; the local SQLite queue already exposes queue wait, run duration, depth, and worker-utilization telemetry.
 - [ ] Add remote Solari Browser/Sandbox/Desktop resource-leak detection validated against real provider sessions.
 - [ ] Add cost-per-job/source telemetry when provider data make this possible without guessing.
 
 ## Static / no-hosting mode
 - [ ] Converge static-local and FastAPI/server modes onto one backend-independent frontend; today they share a generated domain contract and portable data but remain separate frontends.
-- [ ] Verify Solari API browser/CORS/client support before claiming direct static Solari operation.
-- [ ] Add direct static Solari Browser orchestration if provider browser/CORS support permits it safely.
-- [ ] Add direct static Solari Sandbox orchestration if provider browser/CORS support permits it safely.
-- [ ] Add direct static Solari Desktop orchestration if provider browser/CORS support permits it safely.
+
+Direct provider orchestration from the browser-only static console is intentionally not a current TODO: current official Solari client documentation does not provide a browser-targeted credential/client model that would make durable-key static execution a defensible design. Re-open that work only if the provider publishes explicit browser/CORS support with a safe credential model.
 
 ## Packaging / deployment
 - [ ] Add optional PostgreSQL backend for larger/shared deployments when the SQLite boundary becomes insufficient.
@@ -89,12 +94,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Introduce a broader database migration framework if schema evolution outgrows the current bootstrap/versioned migration approach.
 
 ## Tests / QA
-- [ ] Run live smoke tests against representative public sources and record endpoint/date/result without treating network failure as empty data.
 - [ ] Run Solari Browser integration tests with a live evaluator/user key.
 - [ ] Run Solari Sandbox integration tests with a live evaluator/user key.
 - [ ] Run Solari Desktop integration tests with a live evaluator/user key.
-- [ ] Complete an accessibility pass.
-- [ ] Complete a performance pass with representative retained-event/artifact volume.
 - [ ] Validate remote Solari cleanup/resource-leak behavior with real provider sessions.
 
 ## Documentation / submission
@@ -110,9 +112,9 @@ The following unresolved work cannot be truthfully completed from repository-onl
 - Cross-repository Prime Prompts mirror/registry changes require explicit cross-repository authorization under the current scope rule.
 
 ## Maintenance
-- **TODO last reviewed:** 2026-09-01
-- **Reviewed with `meta.md`:** Yes
-- **Reviewed with `sources.md`:** Yes
+- **TODO last reviewed:** 2026-09-02
+- **Reviewed with `meta.md`:** Follow-up reconciliation required for this pass.
+- **Reviewed with `sources.md`:** Follow-up reconciliation required for this pass.
 - **Prime Prompts revision reviewed:** `0c499baad9f2b8dcf42e78deb6086174d000a90f`
 - **Prime Prompts TODO standard:** completed tasks may be removed when their history is preserved elsewhere; unresolved findings remain visible until remediated, explicitly accepted as an exception, or determined not applicable.
 
