@@ -35,23 +35,25 @@
 ## Current Architecture State
 - **Server stack:** FastAPI + Pydantic + SQLite.
 - **Static stack:** dependency-free HTML/CSS/ES modules + IndexedDB + Web Crypto + service worker/PWA shell.
-- **Implemented public adapters:** USGS earthquakes, NWS active alerts, NOAA SWPC alerts, and NOAA/NHC Atlantic-basin tropical cyclone RSS products; adapters publish explicit capability/dependency descriptors and parser/record/response telemetry.
+- **Implemented public event/reference adapters:** USGS earthquakes, NWS active alerts, NOAA SWPC alerts, NOAA/NHC Atlantic-basin tropical cyclone RSS products, NOAA/NWS tsunami bulletin RSS, OpenFEMA disaster declarations, GDACS multi-hazard events, CelesTrak weather-group orbital GP data, and OpenStreetMap/Nominatim place/reverse-geocoding reference enrichment. Event adapters publish explicit capability/dependency descriptors and parser/record/response telemetry.
+- **Source registration:** public collection adapters are centralized in `app.sources.registry`; duplicate source IDs fail at import instead of silently replacing one another.
 - **Collection orchestration:** bounded concurrent multi-source collection with deterministic result ordering and per-source failure preservation; persistence remains serialized for auditability. Source runtime adds spacing, rolling-window quotas, cache TTLs, retry-after state and per-source diagnostics.
 - **Normalized storage:** acquisitions, current event records, first/last seen, sighting counts, event-history snapshots, entities, relationships, cases, and case-object links. Versioned event-contract migrations and a separate immutable SHA-256 raw-object archive now define explicit schema/raw preservation boundaries.
-- **Normalization/enrichment:** timezone-aware UTC normalization with source/assumption provenance; documented CRS/geocoding rules; bounded parallel fan-out/fan-in enrichers with per-step timing, partial-failure state, and retained conflicts.
+- **Normalization/enrichment:** timezone-aware UTC normalization with source/assumption provenance; documented CRS/geocoding rules; bounded parallel fan-out/fan-in enrichers with per-step timing, partial-failure state, and retained conflicts. Nominatim place results retain provider bounding boxes and derived uncertainty instead of pretending provider centroids are exact.
 - **Analyst workspace:** persisted case activity, safe Markdown notes, annotations/dispositions, allow/block annotations, bookmarks, templates, cloning, archive/restore, evidence attachments/links, correction overlays, validation-error inbox, source reliability and suppression rules.
 - **Collaboration foundation:** optional shared-mode architecture/RBAC design plus append-only analyst audit records, secret-safe saved views, prioritized assignments/work queues, handoff notes, and review decisions. Local single-user mode remains the default.
 - **Knowledge graph:** persisted typed entities/relationships, bounded neighborhood/path/component queries, alias canonicalization/deduplication suggestions, relationship staleness, explicit inferred-link review/hypothesis labels, and audited merge/split operations.
 - **Correlation/geospatial:** explainable cross-source correlation candidates without auto-merge; per-field conflict/preferred-value support; explainable suppression rules; haversine distance, initial bearing, event/entity proximity, tracks/position history/replay, geofences and enter/exit events, administrative-boundary intersection, antimeridian-aware bounding boxes, simple polygon filtering, great-circle interpolation, and explicit map-layer attribution policy.
 - **Workflow engine:** reusable versioned playbooks, dependency/pivot context, declarative conditions, bounded parallel steps, retry/fallback, human-review gates, batch runs, result diffs, priority queueing, reusable preset registry, and schedule/event/source-health trigger matching. No untrusted expressions are evaluated.
-- **Job model:** explicit failure taxonomy, bounded exponential retry policy, terminal job state, attempt timings, and reusable circuit-breaker/cooldown primitive. Structured logging can bind both correlation and job IDs to the same execution trail.
-- **Alert/watchlist foundation:** persisted source/category/severity/geographic/entity/observable/correlation/change rules, suppression windows, acknowledgement/history, and public-HTTPS webhook/JSON output validation.
-- **Reconnaissance foundation:** generic observables plus bounded public-target DNS/reverse-DNS, RDAP, CT, TLS, HTTP-header, SPF/DMARC, ASN/prefix, redirect-chain and Internet Archive enrichment.
+- **Job model:** explicit failure taxonomy, bounded exponential retry policy, terminal job state, attempt timings, reusable circuit-breaker/cooldown primitive, and an SSE job-metrics stream. Structured logging can bind both correlation and job IDs to the same execution trail.
+- **Alert/watchlist foundation:** persisted source/category/severity/geographic/entity/observable/correlation/change rules, suppression windows, acknowledgement/history, public-HTTPS webhook/JSON output validation, and credential-free email/Slack-style connector envelopes for configured transports.
+- **Reconnaissance foundation:** generic observables plus bounded public-target DNS/reverse-DNS, RDAP, CT, TLS, HTTP-header, SPF/DMARC, ASN/prefix, redirect-chain and Internet Archive enrichment; place search/reverse geocoding; and bounded STIX 2.1 import/export for supported public observables.
 - **Artifact/evidence vault:** content-addressed SHA-256 catalog, deduplication/integrity verification, MIME/size metadata, safe text previews, tags, typed links, custody records, retention cleanup, manifest/checksum ZIP evidence bundles, and a backend protocol suitable for future S3-compatible implementations.
 - **Debug/data quality:** schema-drift detection/quarantine, validation-error inbox, source reliability, warning/suppression rules, correction overlays, raw-vs-normalized field comparison, source freshness, parser/response/record telemetry, and conflict-preserving enrichment/correlation behavior.
 - **Static workspace stores:** cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, acquisitions, transformations, and content-addressed artifacts.
 - **Portable investigation:** version-3 contract with case metadata, events, entities, relationships, evidence, artifact bytes, acquisitions, transformations, provenance, notes and saved views; logical-member SHA-256 integrity, AES-256-GCM optional encryption, secret/session scanning, conflict-safe all-store merge, isolated read-only open, alternate-hypothesis cloning, JSON/CSV/GeoJSON/GraphML output, and standalone offline HTML report generation.
-- **API surfaces:** events, evidence, event history, entities, relationships, cases/workspace, graph queries, correlation candidates, alerts/watchlists, artifacts, observables/reconnaissance, jobs, sources/dependencies/health, acquisitions with decoded telemetry, dashboard metrics, liveness, readiness, version, JSON schema, OpenAPI/read-only explorer, CSV, and GeoJSON.
+- **API surfaces:** events, evidence, event history, entities, relationships, cases/workspace, graph queries, correlation candidates, alerts/watchlists, artifacts, observables/reconnaissance, Nominatim place/reverse-geocoding, STIX observable import/export, jobs plus SSE metrics, sources/dependencies/health, acquisitions with decoded telemetry, dashboard metrics, liveness, readiness, version, JSON schema, OpenAPI/read-only explorer, CSV, and GeoJSON.
+- **Operations UI:** current server dashboard exposes event/source/category/time/quality filtering, map/timeline, evidence inspection, aggregate category statistics, source health, recent collector executions, and source attribution/terms notes.
 - **Solari direct browser-mode caveat:** browser-side CORS/client support has not yet been verified, so direct static Solari Browser/Sandbox/Desktop orchestration is not claimed.
 
 ## Architecture Principles
@@ -67,6 +69,7 @@
 - Run risky/generated processing in Solari Sandbox rather than host/browser execution.
 - Human-verifiable output and observability are first-class requirements.
 - Correlation candidates never destructively merge independent source records without an explicit review decision.
+- Provider cadence/usage policies are engineering constraints: for example, CelesTrak collection is limited to one named group and a two-hour configured interval rather than bulk/high-frequency polling.
 
 ## Static / No-Hosting Security Boundary
 - Solari/API credentials must never be embedded in static assets or repository content.
@@ -90,7 +93,7 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 ## Configuration / Secrets
 - Never commit live API keys, tokens, credentials, cookies, private keys, authenticated session material, runtime databases, exports, logs, or generated credential artifacts.
 - `SOLARI_API_KEY` and any future source credentials are environment/user supplied.
-- Public no-credential sources are preferred.
+- Public no-credential sources are preferred. Current GDACS/OpenFEMA/NOAA tsunami/CelesTrak baseline adapters require no repository credential.
 - `.gitignore` was reviewed and expanded for environment files, runtime databases/data, virtual environments/caches, coverage, logs/temp/backups, build output, editor files, and generated screenshot artifacts.
 - CI runs `tools/public_release_scan.py` against the checked-out development tree and fails on known sensitive filenames and likely private/AWS/GitHub/Slack/Stripe/bearer/credential-in-URL patterns.
 
@@ -145,4 +148,4 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## Maintenance
 - **Metadata last updated:** 2026-09-01
-- **Metadata updated for:** immutable raw archive/schema migration/time normalization, fan-out enrichment and schema-drift quarantine, reusable workflows/triggers, audited entity review/merge/split, collaboration audit/work queues/handoffs/reviews, correlation suppression, tracking/boundaries/map attribution, structured job/correlation logs, raw-vs-normalized debug comparison, version-3 portable case cloning/conflict-safe merge, and TODO reconciliation.
+- **Metadata updated for:** expanded registered public adapters (NOAA tsunami, OpenFEMA, GDACS, CelesTrak), centralized source registry, Nominatim geocoding/reference status, STIX and SSE interoperability, source attribution/dashboard state, and current TODO reconciliation evidence.
