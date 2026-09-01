@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, HttpUrl
 
 from app.public_enrichment import correlate_alias_observations
 
-router = APIRouter(prefix="/api/v1/recon", tags=["recon"])
+router = APIRouter(prefix="/recon", tags=["recon"])
 
 
 class AliasObservationInput(BaseModel):
