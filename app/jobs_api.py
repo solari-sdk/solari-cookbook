@@ -8,6 +8,7 @@ from typing import AsyncIterator
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import StreamingResponse
 
+from app.domain_contract_api import router as domain_contract_router
 from app.job_store import get_job_execution, job_metrics, list_job_executions
 from app.solari_api import router as solari_router
 from app.task_queue import list_schedules, list_tasks, queue_metrics
@@ -85,5 +86,6 @@ def job(job_id: str) -> dict[str, object]:
 
 
 router.include_router(jobs_router)
+router.include_router(domain_contract_router)
 router.include_router(solari_router)
 router.include_router(workflow_router)
