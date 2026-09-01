@@ -17,6 +17,7 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Earthquakes | USGS Earthquake Hazards Program | API/feed + static CORS | Implemented |
 | Weather alerts | NOAA/NWS public alerts | API/feed | Implemented |
 | Space weather | NOAA Space Weather Prediction Center | API/feed | Implemented |
+| Tropical cyclones | NOAA/NHC public tropical cyclone RSS products | feed | Implemented baseline |
 | Observable registration/network | RDAP bootstrap services, RIPEstat | public API | Implemented enrichment |
 | DNS/email-domain posture | system DNS plus Google Public DNS JSON API for TXT lookups | DNS/API | Implemented enrichment |
 | Certificate transparency | crt.sh public certificate search | public web/API-style JSON | Implemented enrichment |
@@ -24,7 +25,6 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Web history | Internet Archive CDX API for user-supplied public URLs | public API | Implemented enrichment |
 | Volcanoes | USGS Volcano Hazards Program / Smithsonian public volcano data where terms permit | API/web | Planned |
 | Wildfire | NASA FIRMS and public fire/perimeter datasets | API/download | Planned |
-| Tropical cyclones | NOAA/NHC and other authoritative public warning centers | API/feed/web | Planned |
 | Flood/hydrology | NOAA/NWS/NWPS and public river/gauge sources | API/feed | Planned |
 | Tsunami | NOAA/NWS Tsunami Warning System public products | feed/web | Planned |
 | Humanitarian/disaster | GDACS, ReliefWeb and other openly reusable humanitarian event sources | API/feed | Planned |
@@ -77,6 +77,20 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Terms:** public NOAA space-weather products; preserve source attribution.
 - **Known limits:** products are not inherently geospatial and remain non-map events unless a later deterministic product model supports location.
 - **Status:** implemented; live network validation is tracked separately.
+
+### NOAA National Hurricane Center tropical cyclone products
+- **Adapter ID:** `nhc-tropical-cyclones`
+- **Authoritative documentation:** `https://www.nhc.noaa.gov/aboutrss.shtml` and `https://www.nhc.noaa.gov/mobile/rss.html`.
+- **Baseline endpoint:** `https://www.nhc.noaa.gov/index-at.xml` (Atlantic basin dynamic tropical cyclone feed).
+- **Acquisition:** public RSS/XML feed; no authentication; nominal poll interval 3600 seconds, consistent with NHC guidance that feed readers generally check about hourly.
+- **Scope/category:** current NHC Atlantic-basin tropical cyclone public products; `tropical-cyclone` events. Eastern/Central Pacific basin expansion remains straightforward but is not claimed as implemented by this baseline adapter.
+- **Raw/normalized mapping:** RSS item title, link, GUID, publication date and inert-text description are normalized into the common event/evidence contract.
+- **Evidence/deduplication:** acquisition ID plus RSS item path; deterministic source + GUID/link identity.
+- **Safety:** response is capped at 2 MiB; XML with DTD/entity declarations is rejected before parsing; RSS description markup is stripped and decoded to inert text.
+- **Health:** standard acquisition/job/source-health telemetry, bounded retry/circuit-breaker behavior and parser/record/response metrics apply through the common collector path.
+- **Terms:** public NOAA/NWS/NHC operational products; preserve NOAA/NHC attribution. NHC explicitly warns that Internet delivery is not guaranteed and these convenience feeds should not be relied on for life-threatening decisions.
+- **Known limits:** current RSS baseline represents issued products, not forecast cones/wind polygons or a canonical storm-track object; it does not infer coordinates from advisory prose.
+- **Status:** implemented with deterministic fixture/security tests; live network validation is tracked separately.
 
 ## Implemented observable-enrichment sources
 These are analyst-invoked enrichment adapters rather than continuously polled event feeds. They accept user-supplied public observables, impose bounded response sizes/timeouts, and retain the source URL/provider in returned provenance. They must not be used to probe private/internal targets.
