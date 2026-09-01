@@ -2,8 +2,9 @@
  * Persistent profiles — log in once, reuse the session forever.
  *
  * A profile stores cookies + localStorage server-side. Attach it with
- * `profileId` and the browser starts already logged in, so you stop paying the
- * login (and the 2FA, and the bot check) on every run.
+ * `profileId` and pass the returned state to your context, and the browser
+ * starts already logged in, so you stop paying the login (and the 2FA, and the
+ * bot check) on every run.
  *
  * Run this file twice: the first run logs in and saves, the second reuses it.
  */
@@ -19,7 +20,14 @@ console.log(existing ? `reusing profile ${profile.id}` : `created profile ${prof
 
 const browser = await solari.launch({ profileId: profile.id })
 try {
-  const page = await browser.newPage()
+  // Attaching a profile hands its state to `session.storageState`. It does not
+  // seed the browser, so the state has to go to the context you create. A page
+  // from `browser.newPage()` starts anonymous and the counter below never
+  // leaves 1, however many times you run this.
+  const context = await browser.newContext({
+    storageState: browser.session.storageState ?? undefined,
+  })
+  const page = await context.newPage()
 
   // This demo site echoes whatever is in localStorage/cookies back to you, so
   // you can see state survive between runs. Swap it for your real login flow.
@@ -34,7 +42,7 @@ try {
 
   // Persist whatever the browser accumulated. Without this the session's state
   // is discarded on release — attaching a profile does not auto-save it.
-  const state = await page.context().storageState()
+  const state = await context.storageState()
   const { version, sizeBytes } = await solari.profiles.save(profile.id, state)
   console.log(`saved profile v${version} (${sizeBytes} bytes)`)
 } finally {

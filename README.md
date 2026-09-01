@@ -66,6 +66,10 @@ Things that cost you an afternoon if you meet them cold:
 - **TypeScript: call `await solari.close()`.** The browser client keeps a
   loopback proxy open for connection retries. Skip the close and your script
   prints its output and then hangs forever instead of exiting.
+- **A profile does not seed the browser on its own.** `launch({ profileId })` puts the
+  stored state on `session.storageState` and stops there. Pass it to
+  `newContext({ storageState })` or every run starts anonymous while looking logged in.
+  `addCookies()` is not a substitute: it restores the cookies and drops localStorage.
 - **Recording is per session, not per account.** Pass `recording: true` when you
   create the session; without it the replay endpoint 404s forever. The upload is
   async after release, so poll for ~30s before giving up.
