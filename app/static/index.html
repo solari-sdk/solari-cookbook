@@ -11,6 +11,7 @@
   <section class="controls panel">
     <label>Source<select id="sourceFilter"><option value="">All</option></select></label>
     <label>Category<select id="categoryFilter"><option value="">All</option></select></label>
+    <label>Severity<select id="severityFilter"><option value="">All</option></select></label>
     <label>Search<input id="searchFilter" type="search" maxlength="200" placeholder="events and entities"></label>
     <label>From<input id="startFilter" type="datetime-local"></label>
     <label>To<input id="endFilter" type="datetime-local"></label>
@@ -18,7 +19,9 @@
     <label>Min entity confidence<input id="confidenceFilter" type="number" min="0" max="1" step="0.1" value="0"></label>
     <label>Map layer<select id="mapMode"><option value="markers">Markers</option><option value="clusters">Clusters</option><option value="density">Density</option></select></label>
     <label>Workspace<select id="workspacePreset"><option value="balanced">Balanced</option><option value="map-focus">Map focus</option><option value="stream-focus">Stream focus</option></select></label>
+    <label>Historical playback<input id="playbackRange" type="range" min="0" max="100" step="1" value="100"><span id="playbackLabel">Latest retained point</span></label>
     <label>Limit<input id="limitFilter" type="number" min="1" max="1000" value="250"></label>
+    <button id="playbackPlay" type="button">Play history</button><button id="playbackReset" type="button">Reset history</button>
     <button id="refreshBtn">Refresh</button><button id="collectBtn">Collect USGS now</button><button id="commandOpen" title="Keyboard shortcut: Ctrl/Cmd+K">Quick open</button>
   </section>
   <section class="metrics">
