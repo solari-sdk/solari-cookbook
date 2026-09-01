@@ -10,8 +10,9 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header><h1>Solari Static OSINT Console</h1><p>No application server required. Local data stays in this browser unless you export it.</p></header>
+<header><h1>Solari Static OSINT Console</h1><p>One analyst frontend for local/static and optional FastAPI-backed operation. Local data stays in this browser unless you export it.</p></header>
 <main>
+  <section class="panel"><h2>Runtime</h2><p id="runtime-status" aria-live="polite">Detecting runtime mode…</p><div id="server-runtime-controls" class="actions" hidden><button id="server-sync" type="button">Sync server workspace</button><label>Server collector <select id="server-source"></select></label><button id="server-collect" type="button">Collect selected source</button><a id="advanced-server-dashboard" href="/server-dashboard">Advanced server operations dashboard</a></div><p>Static/local mode uses the same interface without an application server. When this frontend is mounted by FastAPI, the runtime adapter synchronizes normalized server data into the same browser workspace while preserving portable-case semantics.</p></section>
   <section class="panel"><h2>Capabilities & storage</h2><p id="network-status"></p><p id="quota-status"></p><pre id="capabilities"></pre></section>
   <section class="panel"><h2>Session & privacy</h2>
     <label>Solari API key <input id="solari-key" type="password" autocomplete="off" placeholder="Stored in memory only"></label><button id="clear-key">Clear key</button><p id="key-status">No Solari key loaded.</p>
@@ -55,4 +56,5 @@
 </main>
 <script type="module" src="app.js"></script>
 <script type="module" src="graph-bootstrap.js"></script>
+<script type="module" src="server-runtime.js"></script>
 </body></html>
