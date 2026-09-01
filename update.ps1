@@ -25,9 +25,13 @@ if (Test-Path 'package-lock.json') {
 }
 if ((Test-Path 'requirements.txt') -or (Test-Path 'pyproject.toml')) {
     if (-not (Get-Command python -ErrorAction SilentlyContinue)) { Fail 'python is required' }
+    python tools/runtime_check.py
+    if ($LASTEXITCODE -ne 0) { Fail 'Python 3.11+ is required' }
 }
 if (Test-Path 'static-console\tests') {
     if (-not (Get-Command node -ErrorAction SilentlyContinue)) { Fail 'Node.js is required to run static-console tests' }
+    $nodeMajor = [int](node -p "process.versions.node.split('.')[0]")
+    if ($nodeMajor -lt 20) { Fail "Node.js 20+ is required for static-console tests (found: $(node --version))" }
 }
 
 if ((Test-Path 'requirements.txt') -or (Test-Path 'pyproject.toml')) {
