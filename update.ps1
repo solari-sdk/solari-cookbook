@@ -50,6 +50,12 @@ if (Test-Path 'package-lock.json') { npm ci; if ($LASTEXITCODE -ne 0) { Fail 'np
 if (Test-Path 'requirements.txt') { & $pythonExe -m pip install -r requirements.txt; if ($LASTEXITCODE -ne 0) { Fail 'pip install failed' } }
 if (Test-Path 'requirements-dev.txt') { & $pythonExe -m pip install -r requirements-dev.txt; if ($LASTEXITCODE -ne 0) { Fail 'dev dependency install failed' } }
 
+if (Test-Path 'tests\test_browser_ui.py') {
+    Stage 'Install browser QA runtime'
+    & $pythonExe -m playwright install chromium
+    if ($LASTEXITCODE -ne 0) { Fail 'Playwright Chromium install failed' }
+}
+
 Stage 'Build and test'
 if (Test-Path 'package.json') {
     $scripts = (npm run 2>&1 | Out-String)
