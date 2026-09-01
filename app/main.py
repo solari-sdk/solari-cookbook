@@ -8,6 +8,7 @@ from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.contracts import AcquisitionEnvelope, CaseRecord, EntityRecord, EventRecord, RelationshipRecord, SourceDescriptor
+from app.correlation_api import router as correlation_router
 from app.entities import derive_graph
 from app.exports import events_csv, events_geojson
 from app.graph_api import router as graph_router
@@ -19,10 +20,11 @@ from app.storage import (
     save_relationships, source_health,
 )
 
-VERSION = "0.6.2"
+VERSION = "0.7.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 app.include_router(graph_router)
 app.include_router(pagination_router)
+app.include_router(correlation_router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts)}
@@ -48,6 +50,20 @@ def version() -> dict[str, object]: return {"service":"solari-osint-operations-c
 @app.get("/api/v1/schema")
 def schemas() -> dict[str, object]:
     return {"event":EventRecord.model_json_schema(),"source":SourceDescriptor.model_json_schema(),"acquisition":AcquisitionEnvelope.model_json_schema(),"entity":EntityRecord.model_json_schema(),"relationship":RelationshipRecord.model_json_schema(),"case":CaseRecord.model_json_schema()}
+
+@app.get("/api/v1/metrics")
+def metrics() -> dict[str, object]:
+    with connect() as db:
+        counts={table:int(db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]) for table in ("acquisitions","events","event_history","entities","relationships","cases")}
+    health_rows=health_by_source()
+    return {
+        "version": VERSION,
+        "counts": counts,
+        "sources_registered": len(SOURCES),
+        "sources_with_acquisitions": len(health_rows),
+        "sources_stale": sum(1 for row in health_rows if row.get("stale")),
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 @app.get("/api/v1/sources",response_model=list[SourceDescriptor])
 def sources() -> list[SourceDescriptor]: return list(SOURCES.values())
