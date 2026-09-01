@@ -95,7 +95,7 @@ class CircuitBreaker:
 def classify_exception(exc: Exception) -> FailureClass:
     name = type(exc).__name__.lower()
     message = str(exc).lower()
-    if "429" in message or ("rate" in name and "limit" in name) or "rate_limited" in message or "rate limited" in message:
+    if "429" in message or ("rate" in name and "limit" in name) or "rate_limited" in message or "rate limited" in message or "quota exceeded" in message:
         return FailureClass.RATE_LIMITED
     if isinstance(exc, (ValueError, TypeError, KeyError)) or "validation" in name or '"error_type":"validation' in message:
         return FailureClass.VALIDATION
@@ -150,6 +150,10 @@ def run_with_retry(
                 if breaker is not None:
                     breaker.record_failure()
                 return execution
-            sleeper(policy.delay_for_attempt(attempt))
+            delay = policy.delay_for_attempt(attempt)
+            retry_after = getattr(exc, "retry_after_seconds", None)
+            if isinstance(retry_after, (int, float)) and retry_after > 0:
+                delay = min(policy.max_delay_seconds, max(delay, float(retry_after)))
+            sleeper(delay)
 
     raise AssertionError("unreachable")
