@@ -29,11 +29,13 @@ def test_network_geolocation_preserves_approximate_uncertainty(monkeypatch):
     assert result["source"].startswith(enrichment.RIPESTAT_MAXMIND_ENDPOINT)
 
 
-def test_network_geolocation_accepts_prefixes_and_rejects_invalid_values(monkeypatch):
+def test_network_geolocation_accepts_public_prefixes_and_rejects_nonpublic(monkeypatch):
     monkeypatch.setattr(enrichment, "_json_get", lambda url, **kwargs: {"data": {"located_resources": []}})
-    assert enrichment.network_geolocation("192.0.2.44/24")["resource"] == "192.0.2.0/24"
+    assert enrichment.network_geolocation("93.184.216.44/24")["resource"] == "93.184.216.0/24"
     with pytest.raises(ValueError, match="valid public IP"):
         enrichment.network_geolocation("not-an-address")
+    with pytest.raises(ValueError, match="globally routable"):
+        enrichment.network_geolocation("127.0.0.1")
 
 
 def test_public_code_search_pivots_are_navigation_only():
