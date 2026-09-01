@@ -63,6 +63,40 @@ async function renderProvenanceChain(){
   const normalized=advNode('div',undefined,'chain-step');normalized.append(advNode('strong',`Normalized event · ${selected.id}`),advNode('span',`quality ${Number(selected.quality_score??1).toFixed(2)} · observed ${selected.observed_at||'unknown'}`));output.append(normalized);
 }
 
+const workspace=document.querySelector('.workspace');
+function setWorkspacePreset(value){const preset=['balanced','map-focus','stream-focus'].includes(value)?value:'balanced';workspace.dataset.layout=preset;document.getElementById('workspacePreset').value=preset;}
+document.getElementById('workspacePreset').addEventListener('change',(event)=>setWorkspacePreset(event.target.value));setWorkspacePreset('balanced');
+
+const palette=document.getElementById('commandPalette');const paletteQuery=document.getElementById('commandQuery');const paletteResults=document.getElementById('commandResults');let paletteTimer=null;
+const COMMANDS=[
+  {label:'Refresh current workspace',run:()=>document.getElementById('refreshBtn').click()},
+  {label:'Collect USGS earthquakes now',run:()=>document.getElementById('collectBtn').click()},
+  {label:'Focus shared search',run:()=>document.getElementById('searchFilter').focus()},
+  {label:'Balanced workspace layout',run:()=>setWorkspacePreset('balanced')},
+  {label:'Map-focused workspace layout',run:()=>setWorkspacePreset('map-focus')},
+  {label:'Stream-focused workspace layout',run:()=>setWorkspacePreset('stream-focus')},
+  {label:'Map markers layer',run:()=>{document.getElementById('mapMode').value='markers';document.getElementById('mapMode').dispatchEvent(new Event('change'))}},
+  {label:'Map clusters layer',run:()=>{document.getElementById('mapMode').value='clusters';document.getElementById('mapMode').dispatchEvent(new Event('change'))}},
+  {label:'Map density layer',run:()=>{document.getElementById('mapMode').value='density';document.getElementById('mapMode').dispatchEvent(new Event('change'))}},
+];
+function closePalette(){if(typeof palette.close==='function'&&palette.open)palette.close();else palette.removeAttribute('open')}
+function paletteButton(label,detail,onClick){const button=advNode('button',undefined,'palette-result');button.type='button';button.append(advNode('strong',label));if(detail)button.append(advNode('span',detail));button.addEventListener('click',()=>{onClick();closePalette()});return button}
+async function renderPalette(){
+  const query=paletteQuery.value.trim();paletteResults.replaceChildren();
+  if(!query){for(const command of COMMANDS)paletteResults.append(paletteButton(command.label,'command',command.run));return;}
+  const commandMatches=COMMANDS.filter((item)=>item.label.toLocaleLowerCase().includes(query.toLocaleLowerCase()));
+  for(const command of commandMatches)paletteResults.append(paletteButton(command.label,'command',command.run));
+  try{
+    const params=new URLSearchParams({limit:'20',q:query});const[events,entities]=await Promise.all([advApi(`/api/v1/events?${params}`),advApi(`/api/v1/entities?${params}`)]);
+    for(const event of events.slice(0,10))paletteResults.append(paletteButton(event.title||event.id,`event · ${event.category||''} · ${event.source_id||''}`,()=>{document.getElementById('evidence').textContent=JSON.stringify(event,null,2)}));
+    for(const entity of entities.slice(0,10))paletteResults.append(paletteButton(entity.label||entity.id,`entity · ${entity.type||''} · confidence ${Number(entity.confidence??1).toFixed(2)}`,()=>{document.getElementById('evidence').textContent=JSON.stringify(entity,null,2);if(typeof window.selectGraphEntity==='function')window.selectGraphEntity(entity)}));
+    if(!paletteResults.children.length)paletteResults.append(advNode('p','No command, event, or entity matches.'));
+  }catch(error){paletteResults.append(advNode('p',`Quick-open search unavailable: ${error.message}`))}
+}
+function openPalette(){if(typeof palette.showModal==='function')palette.showModal();else palette.setAttribute('open','');paletteQuery.value='';renderPalette();setTimeout(()=>paletteQuery.focus(),0)}
+paletteQuery.addEventListener('input',()=>{clearTimeout(paletteTimer);paletteTimer=setTimeout(renderPalette,150)});document.getElementById('commandClose').addEventListener('click',closePalette);document.getElementById('commandOpen').addEventListener('click',openPalette);
+document.addEventListener('keydown',(event)=>{if((event.ctrlKey||event.metaKey)&&event.key.toLocaleLowerCase()==='k'){event.preventDefault();openPalette()}});
+
 const search=document.getElementById('searchFilter');search.addEventListener('input',scheduleEntitySearch);search.addEventListener('keydown',(event)=>{if(event.key==='Enter')refreshEntitySearch()});document.getElementById('confidenceFilter').addEventListener('change',refreshEntitySearch);
 document.getElementById('refreshBtn').addEventListener('click',()=>setTimeout(()=>{refreshEntitySearch();refreshJobTimeline()},0));
 new MutationObserver(()=>renderProvenanceChain()).observe(document.getElementById('evidence'),{childList:true,characterData:true,subtree:true});

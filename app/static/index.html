@@ -17,8 +17,9 @@
     <label>Min quality<input id="qualityFilter" type="number" min="0" max="1" step="0.1" value="0"></label>
     <label>Min entity confidence<input id="confidenceFilter" type="number" min="0" max="1" step="0.1" value="0"></label>
     <label>Map layer<select id="mapMode"><option value="markers">Markers</option><option value="clusters">Clusters</option><option value="density">Density</option></select></label>
+    <label>Workspace<select id="workspacePreset"><option value="balanced">Balanced</option><option value="map-focus">Map focus</option><option value="stream-focus">Stream focus</option></select></label>
     <label>Limit<input id="limitFilter" type="number" min="1" max="1000" value="250"></label>
-    <button id="refreshBtn">Refresh</button><button id="collectBtn">Collect USGS now</button>
+    <button id="refreshBtn">Refresh</button><button id="collectBtn">Collect USGS now</button><button id="commandOpen" title="Keyboard shortcut: Ctrl/Cmd+K">Quick open</button>
   </section>
   <section class="metrics">
     <article class="panel metric"><span>Events</span><strong id="eventCount">0</strong></article>
@@ -26,7 +27,7 @@
     <article class="panel metric"><span>Latest event</span><strong id="latestEvent">—</strong></article>
     <article class="panel metric"><span>Stale sources</span><strong id="staleCount">0</strong></article>
   </section>
-  <section class="workspace">
+  <section class="workspace" data-layout="balanced">
     <div id="map" class="panel"></div>
     <article class="panel graph-panel"><div class="panel-title"><h2>Relationship graph</h2><span id="graphState">Loading…</span></div><canvas id="graphCanvas" width="640" height="520" aria-label="Interactive entity relationship graph"></canvas><p id="graphSelection" class="graph-selection">Select a node or event.</p></article>
     <aside class="panel event-panel"><div class="panel-title"><h2>Event stream</h2><span id="streamState"></span></div><div id="events"></div></aside>
@@ -47,5 +48,6 @@
   <section class="panel"><div class="panel-title padded"><h2>Correlation candidates</h2><span id="correlationState">Explainable suggestions only; no auto-merge.</span></div><div id="correlationCandidates" class="execution-list"></div></section>
   <section class="panel evidence-panel"><div class="panel-title"><h2>Evidence / provenance</h2><span>Select an event</span></div><pre id="evidence">No event selected.</pre></section>
 </main>
+<dialog id="commandPalette" aria-labelledby="commandPaletteTitle"><div class="command-shell"><div class="panel-title"><h2 id="commandPaletteTitle">Command palette & quick open</h2><button id="commandClose" type="button">Close</button></div><label>Command, event, or entity <input id="commandQuery" type="search" autocomplete="off" placeholder="Type to search; Ctrl/Cmd+K opens"></label><div id="commandResults" class="command-results"></div></div></dialog>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/app.js"></script><script src="/static/correlation.js"></script><script src="/static/advanced.js"></script>
 </body></html>
