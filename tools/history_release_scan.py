@@ -10,6 +10,10 @@ try:
 except ModuleNotFoundError:  # direct execution from tools/ sets sys.path to that directory
     from public_release_scan import FORBIDDEN_FILENAMES, PATTERNS, _is_placeholder
 
+SYNTHETIC_SCANNER_FIXTURES = {
+    ("tests/test_public_release_scan.py", "ghp_abcdefghijklmnopqrstuvwxyz1234567890"),
+}
+
 
 def _run_git(root: Path, *args: str) -> str:
     result = subprocess.run(
@@ -24,6 +28,15 @@ def _run_git(root: Path, *args: str) -> str:
 def _sensitive_filename(path_text: str) -> bool:
     name = Path(path_text).name
     return name in FORBIDDEN_FILENAMES or (name.startswith(".env.") and name not in {".env.example", ".env.sample"})
+
+
+def _known_scanner_fixture(path_text: str, content: str) -> bool:
+    """Ignore only exact, public synthetic tokens used to prove the scanner itself.
+
+    This exception is deliberately path-and-value bounded so a different credential-shaped
+    value in the same test file, or the same value anywhere else, is still reported.
+    """
+    return any(path_text == path and token in content for path, token in SYNTHETIC_SCANNER_FIXTURES)
 
 
 def scan_history(root: Path, *, deny_terms: list[str] | None = None) -> list[str]:
@@ -59,7 +72,7 @@ def scan_history(root: Path, *, deny_terms: list[str] | None = None) -> list[str
         if not line.startswith(("+", "-")) or line.startswith(("+++", "---")):
             continue
         content = line[1:]
-        if not _is_placeholder(content):
+        if not _is_placeholder(content) and not _known_scanner_fixture(path_text, content):
             for pattern in PATTERNS:
                 if pattern.regex.search(content):
                     findings.add(f"{commit}:{path_text}: possible {pattern.name}")
