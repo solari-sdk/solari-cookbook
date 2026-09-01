@@ -110,8 +110,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Observation frequency / sighting counts.
 - [ ] Immutable raw-object archive with content-addressed lookup.
 - [ ] Schema versioning and migrations for normalized event contracts.
-- [ ] Source-specific rate limiting and quotas.
-- [ ] Result caching with explicit freshness TTLs.
+- [x] Source-specific rate limiting and quotas with explicit retry-after state.
+- [x] Result caching with explicit freshness TTLs.
 - [x] Parallel/concurrent multi-source collection.
 - [x] Multi-target collection jobs.
 - [ ] Fan-out/fan-in enrichment pipelines.
@@ -156,7 +156,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] GeoJSON export.
 - [x] GraphML graph export through portable/static investigation export.
 - [ ] STIX 2.x export/import where semantically appropriate.
-- [ ] Read-only API explorer/documentation.
+- [x] Read-only API explorer/documentation.
 - [ ] 3D globe mode for global situational awareness.
 - [ ] 2D/3D synchronized selection state.
 - [ ] Shared selection context across dashboard modules.
@@ -272,25 +272,25 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Sandbox output artifact retention wired to executions.
 - [ ] Desktop screenshot/video artifact retention where appropriate.
 - [x] File hash and MIME metadata.
-- [ ] Artifact preview.
-- [ ] Artifact tags.
-- [ ] Artifact-to-case/entity/event relationships.
-- [ ] Evidence chain-of-custody metadata for demo purposes.
-- [ ] Artifact retention policies.
+- [x] Artifact preview for safe textual formats.
+- [x] Artifact tags.
+- [x] Artifact-to-case/entity/event relationships through typed artifact links.
+- [x] Evidence chain-of-custody metadata for demo purposes.
+- [x] Artifact retention policies and cleanup workflow.
 - [x] Deduplicate identical artifacts by hash.
-- [ ] Export evidence bundle with manifest/checksums including artifact bytes.
+- [x] Export evidence bundle with manifest/checksums and artifact bytes.
 - [ ] Object-storage backend abstraction for future S3-compatible storage.
 
 ## Reconnaissance / observable enrichment — competitive backlog
-- [ ] Generic observable model distinct from situational events.
-- [ ] Domain/IP/URL enrichment adapters using lawful free sources.
-- [ ] DNS and reverse-DNS lookup module.
-- [ ] RDAP/WHOIS-style public registration lookup where terms permit.
-- [ ] Certificate Transparency lookup.
-- [ ] TLS certificate metadata extraction.
-- [ ] HTTP technology/header fingerprinting for user-supplied public targets.
-- [ ] SPF/DMARC/DNS security metadata checks.
-- [ ] Public ASN/network ownership lookup.
+- [x] Generic observable model distinct from situational events.
+- [x] Domain/IP/URL enrichment API foundation using lawful free public sources.
+- [x] DNS and reverse-DNS lookup module.
+- [x] RDAP/WHOIS-style public registration lookup where terms permit.
+- [x] Certificate Transparency lookup.
+- [x] TLS certificate metadata extraction.
+- [x] HTTP technology/header fingerprinting for user-supplied public targets.
+- [x] SPF/DMARC/DNS security metadata checks.
+- [x] Public ASN/network ownership lookup.
 - [ ] Public geolocation of network prefixes with uncertainty metadata.
 - [ ] Username/alias correlation only against lawful public sources.
 - [ ] Public repository/code search pivots.
@@ -299,8 +299,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Image EXIF metadata extraction for user-supplied/public artifacts.
 - [ ] OCR pipeline for public/user-supplied evidence where appropriate.
 - [ ] QR/barcode extraction from public/user-supplied artifacts.
-- [ ] URL redirect-chain analysis.
-- [ ] Web archive/history lookup using lawful public archive services.
+- [x] URL redirect-chain analysis.
+- [x] Web archive/history lookup using lawful public archive services.
 - [ ] Screenshot comparison / visual change detection.
 
 ## Geospatial / situational-awareness backlog
@@ -311,30 +311,30 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Enter/exit geofence events.
 - [x] Distance/bearing calculations.
 - [ ] Proximity correlation between both events and entities.
-- [ ] Bounding-box/polygon filters (bounding-box filtering exists; polygon filtering remains).
+- [x] Bounding-box and simple polygon filters; antimeridian-crossing polygons must be split explicitly.
 - [ ] Administrative boundary intersection.
 - [ ] Reverse geocoding from open datasets.
 - [ ] Place-name gazetteer lookup.
 - [ ] Coordinate precision/uncertainty visualization.
-- [ ] Great-circle route visualization.
+- [x] Great-circle route calculation/interpolation.
 - [ ] Public satellite orbital/TLE visualization.
 - [ ] Optional 3D terrain/globe visualization.
 - [ ] Tile/layer attribution management.
 - [x] Offline/local baseline map works without external tile assets; richer licensed offline map cache remains optional.
 
 ## Alerts / watchlists
-- [ ] User-defined watchlists over public entities/events.
-- [ ] Geographic watch areas.
-- [ ] Source watch rules.
-- [ ] Category/severity threshold alerts.
-- [ ] Entity/observable watch rules.
-- [ ] Correlation-triggered alerts.
-- [ ] Change-detection alerts.
-- [ ] Alert acknowledgement/triage.
-- [ ] Alert suppression/deduplication window.
-- [ ] Alert history.
-- [ ] Webhook output connector.
-- [ ] Generic REST output connector.
+- [x] User-defined watchlists over public entities/events.
+- [x] Geographic watch areas.
+- [x] Source watch rules.
+- [x] Category/severity threshold alerts.
+- [x] Entity/observable watch rules.
+- [x] Correlation-triggered alerts.
+- [x] Change-detection alerts.
+- [x] Alert acknowledgement/triage.
+- [x] Alert suppression/deduplication window.
+- [x] Alert history.
+- [x] Webhook output connector.
+- [x] Generic REST/JSON output connector foundation with public-HTTPS destination validation.
 - [ ] Optional email/Slack-style connector interfaces without embedding credentials in repository.
 
 ## Debugging / observability
@@ -361,8 +361,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Transformation-step timing.
 - [ ] Resource-leak detection for Solari browser/sandbox/desktop sessions.
 - [ ] Cost-per-job/source telemetry where provider data allows.
-- [ ] Wire circuit breaker into collectors after repeated failures.
-- [ ] Wire automated collector recovery after cooldown.
+- [x] Collector circuit breaker after repeated failures.
+- [x] Automated collector recovery after cooldown.
 
 ## API / interoperability
 - [x] Read-only events endpoint.
@@ -378,8 +378,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Full-text search/filter support.
 - [x] Graph query endpoint.
 - [x] Case/investigation read endpoint.
-- [ ] Artifact/evidence endpoint including stored artifact access.
-- [ ] Job/execution endpoint.
+- [x] Artifact/evidence endpoint including stored artifact metadata, preview, retrieval, tagging, linking, retention and bundle export.
+- [x] Job/execution endpoint with filtering, metrics and detail retrieval.
 - [x] OpenAPI generation through FastAPI.
 - [ ] WebSocket/SSE live updates.
 - [ ] GraphQL evaluation for graph-heavy client queries.
@@ -511,7 +511,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Performance pass with representative event volume.
 - [ ] Cleanup/resource-leak tests for remote Solari resources.
 - [ ] Migration/upgrade tests beyond current schema migration unit coverage.
-- [ ] Data-retention cleanup tests.
+- [x] Data-retention cleanup tests for content-addressed artifact retention/expiry.
 - [x] Graph integrity/path/component tests.
 - [x] Correlation explanation/candidate tests.
 - [x] Portable report reproducibility/escaping test foundation.
