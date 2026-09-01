@@ -1,6 +1,12 @@
 # Server scaling design
 
-The current FastAPI + SQLite server mode is deliberately small and single-node. This document defines a future scale-out boundary without claiming PostgreSQL, Redis, S3, workers, or scheduling are implemented.
+The current FastAPI + SQLite server mode is deliberately small and single-node. This document defines a future scale-out boundary without claiming PostgreSQL, Redis, S3, distributed workers, or distributed scheduling are implemented.
+
+## Current deployment decision
+
+The public showcase currently targets a reproducible single-host server mode plus the independent browser-only static mode. Repository QA includes retained-data coverage at 5,000 normalized events and 300 content-addressed artifacts, and the durable SQLite queue already exposes queue depth, wait/run timing, worker heartbeat/utilization, retry state, and schedule-slot deduplication.
+
+There is currently no repository evidence of a multi-host deployment requirement, sustained SQLite write-lock contention, or a need for cross-host cache/queue coordination. Adding PostgreSQL, Redis, or a second migration stack solely to increase technology count would add operational state without solving a demonstrated problem. Those components are therefore conditional scale-out work, not current implementation blockers.
 
 ## Separation of concerns
 
@@ -28,6 +34,25 @@ A larger deployment should separate:
 
 PostgreSQL is the preferred relational candidate if SQLite becomes a concurrency/volume constraint. Redis is a possible queue/cache candidate but is not required if a durable database-backed queue is sufficient. S3-compatible object storage is a possible artifact backend. These are architectural candidates, not current dependencies.
 
-## Migration trigger
+## Explicit reopen triggers
 
-Do not add distributed infrastructure for the demo by default. Move beyond SQLite/in-process collection only when measured volume/concurrency, collaboration requirements, or deployment topology demonstrate the need. Add migration/load/failure tests before advertising a scaled deployment.
+Re-open the PostgreSQL work only when at least one of these becomes true and is evidenced by a deployment/test requirement:
+- multiple application/worker hosts need concurrent writes to the same relational state;
+- measured SQLite lock/contention or data-volume behavior violates an agreed operational target; or
+- shared-team availability/recovery requirements require a separately operated relational service.
+
+Re-open Redis or another distributed queue/cache only when:
+- workers/schedulers must coordinate across hosts/process domains that cannot share the current SQLite queue safely;
+- a durable visibility/lease model is required beyond the existing single-host queue; or
+- measured cache/dispatch behavior demonstrates a bottleneck that the relational queue cannot satisfy.
+
+Re-open a broader database migration framework when:
+- more than one database backend must be supported concurrently;
+- rolling/zero-downtime deployments require independently orchestrated schema transitions; or
+- the existing bootstrap plus explicit versioned migrations can no longer express a safe, testable upgrade path.
+
+Distributed-queue capacity/timing telemetry becomes required when a distributed queue is actually introduced. Provider cost telemetry becomes required only when the provider publishes a documented per-job/source billing or cost interface that can be recorded without estimation or guesswork.
+
+## Migration rule
+
+Do not add distributed infrastructure for the demo by default. Move beyond SQLite/single-host execution only when measured volume/concurrency, collaboration requirements, or deployment topology demonstrate the need. Add migration/load/failure tests before advertising a scaled deployment, and preserve the same provenance, idempotency, retry, evidence, and source-rate-limit semantics across the migration.

@@ -12,9 +12,11 @@ This policy defines the development/demo defaults. A future deployed organizatio
 ## Server-mode local data
 
 - Normalized events, event-history snapshots, cases, entities, and relationships remain until an explicit cleanup/retention operation removes them; no hidden age-based deletion is currently performed.
-- Acquisitions retain metadata and hashes. Raw response-body archival is not yet wired, so no raw-body retention duration is claimed.
-- Content-addressed artifacts remain until an explicit artifact cleanup policy is implemented. Identical bytes share one stored object by SHA-256.
-- Runtime SQLite databases, artifact directories, exports, logs, and generated files are local/runtime state and are excluded from source control.
+- Registered direct API/feed collectors retain the exact response bytes consumed by the collector in the immutable SHA-256 raw archive before a successful collection is accepted. Acquisition metadata carries safe digest/size/status/content-type references; request URLs, authorization headers, cookies, and credentials are not duplicated into raw-archive metadata.
+- The default raw archive is `data/raw-archive/`; `SOLARI_RAW_ARCHIVE_DIR` may point it at another operator-controlled local path. No automatic age-based raw-object deletion is currently performed.
+- Content-addressed evidence artifacts remain until an explicit artifact cleanup policy removes them. Identical bytes share one stored object by SHA-256.
+- Runtime SQLite databases, raw archives, artifact directories, exports, logs, and generated files are local/runtime state and are excluded from source control.
+- Direct-feed raw retention is documented in `docs/raw-acquisition-retention.md`. Browser/Sandbox/Desktop artifacts continue through the evidence artifact catalog because their lifecycle and media semantics differ from direct HTTP feed capture.
 
 ## Static/no-hosting mode
 

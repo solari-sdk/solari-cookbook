@@ -51,7 +51,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Completed a representative retained-data performance regression pass covering 5,000 normalized events and 300 content-addressed artifacts with deliberately generous CI acceptance ceilings rather than precision benchmark claims.
 - [x] Ran and documented representative unauthenticated live public-source smoke checks for USGS earthquakes, NOAA SWPC products, and NOAA NDBC latest observations. Unsupported validation-client content types/fetches are recorded as tooling/network failures rather than empty source data.
 - [x] Verified the current official Solari client model before making direct-static claims. The published Browser/Sandbox TypeScript examples are Node/process-environment clients, Browser maintains a Node-side loopback proxy, and Desktop is documented through a process-environment client; no browser-script/short-lived browser credential flow is published. Direct static Browser/Sandbox/Desktop orchestration is therefore not applicable under the currently documented provider client/security model; static mode uses public CORS sources plus optional narrow broker/server delegation instead of exposing a durable provider key.
-- [x] Current code/test batch passed GitHub CI on `develop` at commit `c04ef8713db1f24d3845286e384ad5476b0833cb`, including Python tests, dependency-free static-console tests, real Chromium QA, and the public-release secret-pattern scan.
+- [x] All registered server public-source adapters now use a registry-level immutable raw-response retention boundary. Direct `urlopen` collectors and the allowlisted WZDx explicit-opener path retain exact bytes consumed by the collector in the SHA-256 raw archive, verify single-response digests against the acquisition envelope, expose safe digest/size/status/content-type references, and are covered by registry-wide and deduplication/integrity tests.
+- [x] Reconciled speculative scale-out dependencies against measured/current deployment needs. PostgreSQL, Redis/distributed queue infrastructure, a broader migration framework, distributed-queue telemetry, and provider cost telemetry now have explicit evidence-based reopen triggers in `docs/server-scaling-design.md` instead of remaining active implementation boxes without a demonstrated requirement.
+- [x] Current code/test batch passed GitHub CI on `develop` at commit `c04ef8713db1f24d3845286e384ad5476b0833cb`, including Python tests, dependency-free static-console tests, real Chromium QA, and the public-release secret-pattern scan. Subsequent raw-retention commits are required to pass the same exact-head CI gate before this pass is considered settled.
 
 ## Governance / public-release boundary
 - [ ] Create/synchronize the central Prime Prompts TODO mirror. **Blocked by current single-repository scope unless cross-repository authorization is explicitly granted.**
@@ -70,18 +72,18 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 Additional lawful free/open sources may be added when they materially broaden the showcase and have defensible provenance/terms. The current autonomous expansion now includes event, disaster, environmental, transportation, storm, infrastructure/outage, aviation-operational, and maritime-port status families; do not add sources merely to inflate adapter count.
 
 ## Dashboard / visualization
-- [ ] Add cost telemetry only when Solari/provider billing or job-cost data are available through a defensible interface.
+Provider cost telemetry is intentionally conditional rather than an active repository-only TODO. Re-open it only when Solari or another provider exposes documented per-job/source billing data that can be recorded without estimation.
 
 ## Evidence vault / raw acquisition
-- [ ] Wire immutable HTML/text raw capture retention to all applicable server collectors; current content-addressed raw/archive primitives and Solari execution artifacts do not yet cover every direct API/feed collector payload.
+Registered direct API/feed collectors now retain immutable content-addressed raw response bytes through the common registry boundary; see `docs/raw-acquisition-retention.md`. Browser/Sandbox/Desktop evidence continues through the existing artifact catalog.
 
 ## Reconnaissance / document processing
 - [ ] Demonstrate PDF metadata/text extraction inside live Solari Sandbox; bounded local PDF metadata extraction already exists.
 
 ## Debugging / observability
-- [ ] Add distributed-queue-specific timing/capacity telemetry if/when a persistent distributed queue is introduced; the local SQLite queue already exposes queue wait, run duration, depth, and worker-utilization telemetry.
 - [ ] Add remote Solari Browser/Sandbox/Desktop resource-leak detection validated against real provider sessions.
-- [ ] Add cost-per-job/source telemetry when provider data make this possible without guessing.
+
+Distributed-queue-specific capacity/timing telemetry is conditional on introducing a distributed queue. The current SQLite queue already exposes the relevant single-host queue timings and worker utilization. Provider cost telemetry follows the documented-provider-data trigger above.
 
 ## Static / no-hosting mode
 - [ ] Converge static-local and FastAPI/server modes onto one backend-independent frontend; today they share a generated domain contract and portable data but remain separate frontends.
@@ -89,9 +91,7 @@ Additional lawful free/open sources may be added when they materially broaden th
 Direct provider orchestration from the browser-only static console is intentionally not a current TODO: current official Solari client documentation does not provide a browser-targeted credential/client model that would make durable-key static execution a defensible design. Re-open that work only if the provider publishes explicit browser/CORS support with a safe credential model.
 
 ## Packaging / deployment
-- [ ] Add optional PostgreSQL backend for larger/shared deployments when the SQLite boundary becomes insufficient.
-- [ ] Add optional Redis queue/cache for concurrent/distributed jobs when justified by deployment requirements; the current durable queue is intentionally single-host SQLite.
-- [ ] Introduce a broader database migration framework if schema evolution outgrows the current bootstrap/versioned migration approach.
+PostgreSQL, Redis/distributed queue infrastructure, and a broader migration framework are conditional scale-out options rather than current implementation requirements. `docs/server-scaling-design.md` records the existing single-host evidence and the exact architectural/deployment conditions that must be met before those items are reopened.
 
 ## Tests / QA
 - [ ] Run Solari Browser integration tests with a live evaluator/user key.
