@@ -2,6 +2,7 @@ import { buildCase, validateCase, verifyCaseIntegrity } from './schema.js';
 import { decryptCase, encryptCase } from './crypto.js';
 import { caseCsv, caseGeoJson, caseGraphMl, caseReportHtml } from './exports.js';
 import { artifactBlob, artifactFromFile, artifactFromText, storeArtifact } from './artifacts.js';
+import { mergeRecordSets } from './merge.js';
 import { assertSafeExport, scanForSecrets } from './security.js';
 import { STATIC_SOURCES, fetchStaticSource } from './sources.js';
 import { getAll, isPrivacyMode, purgeWorkspace, putMany, setPrivacyMode, storageEstimate } from './storage.js';
@@ -10,6 +11,7 @@ let solariKey = '';
 let pendingImport = null;
 let readOnlyEvents = null;
 let activeCaseId = crypto.randomUUID ? crypto.randomUUID() : `case-${Date.now()}`;
+const BUNDLE_STORES=[['events','events'],['entities','entities'],['relationships','relationships'],['evidence','evidence'],['saved_views','saved_views'],['artifacts','artifacts'],['acquisitions','acquisitions'],['transformations','transformations'],['notes','notes']];
 
 function sortedEvents(events) { return [...events].sort((a,b)=>String(b.observed_at).localeCompare(String(a.observed_at))); }
 async function getEvents() { return sortedEvents(await getAll('events')); }
@@ -80,15 +82,14 @@ async function exportDerived(kind){
   if(kind==='report')download(caseReportHtml(bundle),`solari-case-${stamp}-report.html`,'text/html');
 }
 
-function incomingWins(existing,incoming){
-  const current=Date.parse(existing.updated_at||existing.observed_at||existing.created_at||0); const next=Date.parse(incoming.updated_at||incoming.observed_at||incoming.created_at||0); return !Number.isFinite(current)||!Number.isFinite(next)||next>=current;
-}
-function recordsDiverge(left,right){return JSON.stringify(left)!==JSON.stringify(right);}
-
 async function analyzeImport(data){
-  const existing=await getEvents(); const current=new Map(existing.map((e)=>[e.id,e])); let duplicate=0,newer=0,older=0,divergent=0;
-  for(const event of data.events){const prior=current.get(event.id);if(!prior)continue;duplicate+=1;if(recordsDiverge(prior,event))divergent+=1;if(incomingWins(prior,event))newer+=1;else older+=1;}
-  return {events:data.events.length,new_events:data.events.length-duplicate,duplicate_ids:duplicate,divergent_event_records:divergent,incoming_newer_or_equal:newer,incoming_older:older,entities:data.entities?.length||0,relationships:data.relationships?.length||0,evidence:data.evidence?.length||0,artifacts:data.artifacts?.length||0,acquisitions:data.acquisitions?.length||0,transformations:data.transformations?.length||0,notes:data.notes?.length||0};
+  const analysis={};
+  for(const [store,key] of BUNDLE_STORES){
+    const decision=mergeRecordSets(await getAll(store),Array.isArray(data[key])?data[key]:[]);
+    analysis[store]=decision.stats;
+  }
+  if(data.case?.id) analysis.cases=mergeRecordSets(await getAll('cases'),[data.case]).stats;
+  return analysis;
 }
 
 async function prepareImport(file){
@@ -103,12 +104,20 @@ async function prepareImport(file){
 }
 
 async function confirmImport(){
-  if(!pendingImport)throw new Error('No import is pending.'); const data=pendingImport.data; const current=new Map((await getEvents()).map((e)=>[e.id,e]));
-  const merged=[]; for(const event of data.events){const prior=current.get(event.id);if(!prior||incomingWins(prior,event))merged.push(event);}
-  await putMany('events',merged);
-  for(const [store,key] of[['entities','entities'],['relationships','relationships'],['evidence','evidence'],['saved_views','saved_views'],['artifacts','artifacts'],['acquisitions','acquisitions'],['transformations','transformations'],['notes','notes']]) if(Array.isArray(data[key])&&data[key].length)await putMany(store,data[key]);
-  if(data.case?.id){activeCaseId=data.case.id;await putMany('cases',[{...data.case,id:data.case.id,imported_at:new Date().toISOString()}]);}
-  readOnlyEvents=null; pendingImport=null; document.querySelector('#import-preview').textContent=''; document.querySelector('#case-status').textContent=`Merged ${merged.length} incoming event record(s).`; await render();
+  if(!pendingImport)throw new Error('No import is pending.');
+  const data=pendingImport.data; let accepted=0; let unresolved=0;
+  for(const [store,key] of BUNDLE_STORES){
+    const decision=mergeRecordSets(await getAll(store),Array.isArray(data[key])?data[key]:[]);
+    if(decision.accepted.length)await putMany(store,decision.accepted);
+    accepted+=decision.accepted.length; unresolved+=decision.unresolved.length;
+  }
+  if(data.case?.id){
+    const decision=mergeRecordSets(await getAll('cases'),[data.case]);
+    if(decision.accepted.length)await putMany('cases',decision.accepted);
+    accepted+=decision.accepted.length; unresolved+=decision.unresolved.length; activeCaseId=data.case.id;
+  }
+  readOnlyEvents=null; pendingImport=null; document.querySelector('#import-preview').textContent='';
+  document.querySelector('#case-status').textContent=`Merged ${accepted} incoming record(s). ${unresolved} divergent record(s) were left unchanged for explicit review.`; await render();
 }
 
 async function openReadOnly(){if(!pendingImport)throw new Error('No import is pending.');readOnlyEvents=sortedEvents(pendingImport.data.events);document.querySelector('#case-status').textContent='Opened imported case in isolated read-only mode; local storage was not changed.';await render();}
