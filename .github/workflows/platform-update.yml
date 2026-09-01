@@ -10,6 +10,7 @@ on:
       - update-macos.sh
       - requirements.txt
       - requirements-dev.txt
+      - tests/test_browser_ui.py
       - .github/workflows/platform-update.yml
       - tools/runtime_check.py
 
