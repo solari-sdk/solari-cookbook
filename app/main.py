@@ -22,12 +22,14 @@ from app.storage import (
     list_events, list_evidence, list_relationships, save_acquisition, save_entities, save_events,
     save_relationships, source_health,
 )
+from app.workspace_api import router as workspace_router
 
-VERSION = "0.7.3"
+VERSION = "0.8.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 app.include_router(graph_router)
 app.include_router(pagination_router)
 app.include_router(correlation_router)
+app.include_router(workspace_router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 ADAPTERS = {adapter.SOURCE.id: adapter for adapter in (usgs_earthquakes, nws_alerts, swpc_alerts)}
