@@ -6,4 +6,6 @@ solari-sandbox>=0.1.0
 solari-desktop>=0.2.0
 Pillow>=11.0,<13.0
 pypdf>=5.0,<7.0
-tzdata>=2026.1; platform_system == "Windows"
+opencv-python-headless>=4.10,<5.0
+numpy>=2.0,<3.0
+ tzdata>=2026.1; platform_system == "Windows"
