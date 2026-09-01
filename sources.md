@@ -31,7 +31,7 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Volcanoes | USGS Volcano Hazards Program HANS | API | Implemented elevated-status baseline |
 | Wildfire | NASA FIRMS and public fire/perimeter datasets | API/download | Implemented credential-gated FIRMS Area API baseline; live collection requires a user-supplied MAP_KEY and bounded area |
 | Flood/hydrology | USGS Water Data APIs and public river/gauge sources | API/feed | Implemented bounded latest-continuous baseline |
-| Aviation | FAA/public airport/status datasets and other lawful open aviation data | API/download/web | Planned |
+| Aviation | AviationWeather.gov Data API plus other lawful public airport/airspace sources | API/download/web | Implemented bounded METAR observation baseline; broader airport/airspace operational status planned |
 | Maritime | NOAA NDBC environmental observations; additional public maritime safety sources where reuse is permitted | API/feed/web | Implemented NDBC environmental-observation baseline; safety/vessel/port expansion planned |
 | Environmental | EPA AirNow and NOAA NDBC public environmental observations | API/download/feed | Implemented AirNow + NDBC baselines |
 | Air quality | EPA AirNow public daily data | feed/download | Implemented daily preliminary-observation baseline |
@@ -229,6 +229,19 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Interpretation:** station measurements are environmental observations, not inferred hazard warnings. The adapter does not infer vessel movements, port status, or marine-warning severity.
 - **Terms:** preserve NOAA/NDBC attribution; use official NOAA/NWS warning products for safety-critical decisions.
 - **Status:** implemented, registered, and fixture-tested; live endpoint validation is tracked separately.
+
+### Aviation Weather Center METAR observations
+- **Adapter ID:** `aviationweather-metars`
+- **Authoritative documentation:** `https://aviationweather.gov/data/api/`.
+- **Baseline endpoint:** `https://aviationweather.gov/api/data/metar` using `format=json` and an explicit bounded station list.
+- **Acquisition:** public HTTPS Data API; no authentication; nominal poll interval 3600 seconds to align with the provider guidance that most METARs update about hourly. The adapter defaults to five public station identifiers, accepts an optional `AWC_METAR_STATIONS` list, limits one run to 25 station IDs, caps the response at 2 MiB, and never requests more than the provider's documented 400-entry maximum.
+- **Scope/category:** current worldwide terminal weather observations for selected stations; `aviation-weather-observation` events.
+- **Raw/normalized mapping:** station identity/name, report/receipt timestamps, provider station coordinates, METAR/SPECI type, raw observation, temperature/dewpoint, wind, visibility, altimeter, flight category, cloud layers and provider quality-control field are retained.
+- **Evidence/deduplication:** deterministic source + station + observation timestamp + raw observation; acquisition ID and response-array path retained.
+- **Interpretation:** provider flight category and weather measurements are preserved as observations. The adapter does not infer airport closure, delay, airspace restriction, flight safety, or operational availability from a METAR.
+- **Rate/terms:** custom User-Agent; bounded request scope; current AWC guidance limits the Data API to 100 requests/minute and recommends respecting product update frequency. Preserve Aviation Weather Center/NOAA/NWS attribution.
+- **Browser/static limit:** the provider currently does not permit CORS for this Data API, so this is a server/direct-collector source unless an explicitly configured bounded broker is used; it is not claimed as a direct static-browser adapter.
+- **Status:** implemented, registered, fixture-tested, and current Python CI passed; broader airport/airspace operational-status feeds remain separate backlog work.
 
 ### USDOT-compatible WZDx public work-zone feeds
 - **Adapter ID:** `usdot-wzdx-workzones`
