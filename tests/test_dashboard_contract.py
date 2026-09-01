@@ -10,6 +10,7 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     solari = (root / "app" / "static" / "solari.js").read_text(encoding="utf-8")
     workflow = (root / "app" / "static" / "workflow-builder.js").read_text(encoding="utf-8")
     raw_inspector = (root / "app" / "static" / "raw-inspector.js").read_text(encoding="utf-8")
+    globe = (root / "app" / "static" / "globe.js").read_text(encoding="utf-8")
     for identifier in (
         "graphCanvas", "sourceHealth", "executions", "aggregateStats", "sourceAttribution", "evidence",
         "confidenceFilter", "entitySearchResults", "provenanceChain", "jobTimeline", "workspacePreset",
@@ -18,13 +19,15 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
         "solariExecutionState", "solariExecutions", "workflowState", "workflowDefinition", "workflowGraph",
         "workflowAddEvents", "workflowAddEntities", "workflowAddCount", "workflowAddCategory", "workflowRemoveLast",
         "workflowRender", "workflowRun", "workflowRerun", "workflowOutput", "rawAcquisitionState",
-        "rawAcquisitionList", "rawAcquisitionDetail",
+        "rawAcquisitionList", "rawAcquisitionDetail", "globeCanvas", "globeState", "globeTime",
+        "globeTimeLabel", "globeReset",
     ):
         assert f'id="{identifier}"' in html
     assert '/static/dossier.js' in html
     assert '/static/solari.js' in html
     assert '/static/workflow-builder.js' in html
     assert '/static/raw-inspector.js' in html
+    assert '/static/globe.js' in html
     assert "/api/v1/entities?limit=500" in script
     assert "/api/v1/relationships?limit=1000" in script
     assert "selectGraphForEvent" in script
@@ -69,3 +72,11 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "detail.textContent = JSON.stringify" in raw_inspector
     assert "Source response bodies are not rendered here" in raw_inspector
     assert "innerHTML" not in raw_inspector
+    assert "/api/v1/events?category=satellite-orbit&limit=1000" in globe
+    assert "two-body-kepler" in globe
+    assert "MAX_PROPAGATION_HOURS = 24" in globe
+    assert "not SGP4" in html
+    assert "map.setView" in globe
+    assert "selectEventFromStream" in globe
+    assert "selectGraphForEvent" in globe
+    assert "innerHTML" not in globe
