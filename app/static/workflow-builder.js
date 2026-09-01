@@ -20,6 +20,36 @@ function workflowRequest(){
   const playbook=JSON.parse(workflowDefinition.value);
   return{playbook,inputs:{limit:100},approvals:[]};
 }
+function readPlaybook(){
+  const value=JSON.parse(workflowDefinition.value);
+  if(!Array.isArray(value.steps))value.steps=[];
+  return value;
+}
+function writePlaybook(playbook){workflowDefinition.value=JSON.stringify(playbook,null,2)}
+function nextNodeId(playbook,prefix){
+  const used=new Set(playbook.steps.map(step=>String(step.id)));
+  if(!used.has(prefix))return prefix;
+  let index=2;while(used.has(`${prefix}${index}`))index+=1;return`${prefix}${index}`;
+}
+function addWorkflowNode(action,prefix,dependencyMode='none'){
+  try{
+    const playbook=readPlaybook();
+    if(playbook.steps.length>=50)throw new Error('Workflow is limited to 50 nodes.');
+    const last=playbook.steps.at(-1);
+    const depends_on=dependencyMode==='last'&&last?[String(last.id)]:[];
+    playbook.steps.push({id:nextNodeId(playbook,prefix),action,depends_on});
+    writePlaybook(playbook);validateWorkflow().catch(()=>{});
+  }catch(error){workflowState.textContent=`Cannot add node: ${error.message}`}
+}
+function removeLastWorkflowNode(){
+  try{
+    const playbook=readPlaybook();
+    const removed=playbook.steps.pop();
+    if(!removed){workflowState.textContent='Workflow has no node to remove.';return}
+    for(const step of playbook.steps)step.depends_on=(step.depends_on||[]).filter(id=>id!==removed.id);
+    writePlaybook(playbook);validateWorkflow().catch(()=>{});
+  }catch(error){workflowState.textContent=`Cannot remove node: ${error.message}`}
+}
 async function workflowApi(path,payload){
   const response=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   const data=await response.json().catch(()=>({detail:`HTTP ${response.status}`}));
@@ -67,6 +97,11 @@ async function executeWorkflow(path){
   }catch(error){workflowOutput.textContent='';workflowState.textContent=`Workflow execution failed: ${error.message}`}
 }
 
+document.getElementById('workflowAddEvents')?.addEventListener('click',()=>addWorkflowNode('current_events','events'));
+document.getElementById('workflowAddEntities')?.addEventListener('click',()=>addWorkflowNode('current_entities','entities'));
+document.getElementById('workflowAddCount')?.addEventListener('click',()=>addWorkflowNode('row_count','count','last'));
+document.getElementById('workflowAddCategory')?.addEventListener('click',()=>addWorkflowNode('category_counts','categories','last'));
+document.getElementById('workflowRemoveLast')?.addEventListener('click',removeLastWorkflowNode);
 document.getElementById('workflowRender')?.addEventListener('click',()=>validateWorkflow().catch(()=>{}));
 document.getElementById('workflowRun')?.addEventListener('click',()=>executeWorkflow('/api/v1/workflows/run'));
 document.getElementById('workflowRerun')?.addEventListener('click',()=>executeWorkflow('/api/v1/workflows/rerun'));
