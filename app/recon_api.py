@@ -1,0 +1,171 @@
+from __future__ import annotations
+
+from datetime import datetime
+from typing import Any, Literal
+
+from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel, Field, HttpUrl
+
+from app.geocoding import reverse_geocode, search_places
+from app.observables import ObservableRecord, link_observable, list_observables, make_observable, observable_links, save_observable
+from app.public_enrichment import network_geolocation, public_code_search_pivots
+from app.public_enrichment_api import router as public_enrichment_router
+from app.recon import (
+    asn_network_lookup,
+    certificate_transparency,
+    dns_lookup,
+    email_domain_security,
+    http_header_fingerprint,
+    rdap_lookup,
+    redirect_chain,
+    reverse_dns,
+    tls_certificate_metadata,
+    web_archive_history,
+)
+from app.stix import export_stix_bundle, import_stix_bundle
+
+router = APIRouter(prefix="/api/v1", tags=["recon"])
+router.include_router(public_enrichment_router)
+
+
+class ObservableInput(BaseModel):
+    type: Literal["domain", "ip", "url", "email", "username", "phone", "hash", "other"]
+    value: str = Field(min_length=1, max_length=4000)
+    first_seen: datetime | None = None
+    last_seen: datetime | None = None
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    properties: dict[str, Any] = Field(default_factory=dict)
+
+
+class ObservableLinkInput(BaseModel):
+    object_type: str = Field(min_length=1, max_length=40)
+    object_id: str = Field(min_length=1, max_length=256)
+    relation: str = Field(default="observed_in", min_length=1, max_length=120)
+
+
+def _error(exc: Exception) -> HTTPException:
+    if isinstance(exc, KeyError): return HTTPException(404, str(exc).strip("'"))
+    if isinstance(exc, ValueError): return HTTPException(400, str(exc))
+    return HTTPException(502, type(exc).__name__)
+
+
+@router.get("/observables")
+def observables(type: str | None = None, q: str | None = Query(None, max_length=200), limit: int = Query(500, ge=1, le=1000)) -> list[dict[str, object]]:
+    return list_observables(observable_type=type, query=q, limit=limit)
+
+
+@router.post("/observables")
+def add_observable(body: ObservableInput) -> dict[str, object]:
+    try:
+        record = make_observable(body.type, body.value, first_seen=body.first_seen, last_seen=body.last_seen, confidence=body.confidence, properties=body.properties)
+        return save_observable(record)
+    except Exception as exc:
+        raise _error(exc) from exc
+
+
+@router.get("/observables/export/stix")
+def export_observables_stix(type: str | None = None, q: str | None = Query(None, max_length=200), limit: int = Query(500, ge=1, le=1000)) -> dict[str, Any]:
+    records = [ObservableRecord.model_validate(item) for item in list_observables(observable_type=type, query=q, limit=limit)]
+    return export_stix_bundle(records)
+
+
+@router.post("/observables/import/stix")
+def import_observables_stix(body: dict[str, Any], persist: bool = True) -> dict[str, Any]:
+    try:
+        result = import_stix_bundle(body)
+        saved = [save_observable(record) for record in result["records"]] if persist else [record.model_dump(mode="json") for record in result["records"]]
+        return {"imported": saved, "skipped": result["skipped"], "persisted": persist}
+    except Exception as exc:
+        raise _error(exc) from exc
+
+
+@router.get("/observables/{observable_id}/links")
+def get_observable_links(observable_id: str) -> list[dict[str, object]]: return observable_links(observable_id)
+
+
+@router.post("/observables/{observable_id}/links")
+def add_observable_link(observable_id: str, body: ObservableLinkInput) -> dict[str, object]:
+    try: return link_observable(observable_id, body.object_type, body.object_id, relation=body.relation)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/dns/{hostname}")
+def dns(hostname: str, record_type: Literal["A", "AAAA"] = "A") -> dict[str, object]: return dns_lookup(hostname, record_type=record_type)
+
+
+@router.get("/recon/reverse-dns/{ip_value}")
+def ptr(ip_value: str) -> dict[str, object]:
+    try: return reverse_dns(ip_value)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/rdap")
+def rdap(value: str = Query(..., max_length=1000), kind: Literal["domain", "ip"] = "domain") -> dict[str, object]:
+    try: return rdap_lookup(value, kind=kind)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/certificate-transparency/{domain}")
+def ct(domain: str, limit: int = Query(200, ge=1, le=1000)) -> dict[str, object]:
+    try: return certificate_transparency(domain, limit=limit)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/tls/{hostname}")
+def tls(hostname: str, port: int = Query(443, ge=1, le=65535)) -> dict[str, object]:
+    try: return tls_certificate_metadata(hostname, port=port)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/http-headers")
+def http_headers(url: HttpUrl) -> dict[str, object]:
+    try: return http_header_fingerprint(str(url))
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/email-domain-security/{domain}")
+def mail_security(domain: str) -> dict[str, object]:
+    try: return email_domain_security(domain)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/asn-network/{ip_value}")
+def asn(ip_value: str) -> dict[str, object]:
+    try: return asn_network_lookup(ip_value)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/network-geolocation")
+def network_geo(resource: str = Query(..., min_length=2, max_length=100)) -> dict[str, object]:
+    try: return network_geolocation(resource)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/code-search-pivots")
+def code_search_pivots(q: str = Query(..., min_length=2, max_length=200)) -> list[dict[str, str]]:
+    try: return public_code_search_pivots(q)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/redirect-chain")
+def redirects(url: HttpUrl, max_redirects: int = Query(10, ge=0, le=30)) -> dict[str, object]:
+    try: return redirect_chain(str(url), max_redirects=max_redirects)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/web-archive")
+def archive(url: HttpUrl, limit: int = Query(50, ge=1, le=500)) -> dict[str, object]:
+    try: return web_archive_history(str(url), limit=limit)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/place-search")
+def place_search(q: str = Query(..., min_length=2, max_length=200), limit: int = Query(5, ge=1, le=10)) -> list[dict[str, object]]:
+    try: return [item.model_dump(mode="json") for item in search_places(q, limit=limit)]
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/reverse-geocode")
+def reverse_place(latitude: float = Query(..., ge=-90, le=90), longitude: float = Query(..., ge=-180, le=180), zoom: int = Query(18, ge=0, le=18)) -> dict[str, object]:
+    try: return reverse_geocode(latitude, longitude, zoom=zoom).model_dump(mode="json")
+    except Exception as exc: raise _error(exc) from exc
