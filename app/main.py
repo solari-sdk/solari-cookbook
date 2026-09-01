@@ -6,7 +6,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.openapi.docs import get_swagger_ui_html
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.alerts_api import router as alerts_router
@@ -34,12 +34,14 @@ from app.storage import (
 from app.tracking_api import router as tracking_router
 from app.workspace_api import router as workspace_router
 
-VERSION = "0.12.0"
+VERSION = "0.13.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 install_observability(app)
 for router in (graph_router,pagination_router,correlation_router,workspace_router,notes_router,artifact_router,alerts_router,recon_router,tracking_router,jobs_router): app.include_router(router)
 STATIC_DIR = Path(__file__).parent / "static"
+CANONICAL_FRONTEND_DIR = Path(__file__).resolve().parent.parent / "static-console"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.mount("/workspace", StaticFiles(directory=CANONICAL_FRONTEND_DIR, html=True), name="workspace")
 SOURCE_BREAKERS = {source_id: CircuitBreaker(failure_threshold=3, cooldown_seconds=60) for source_id in ADAPTERS}
 COLLECTION_RETRY_POLICY = RetryPolicy(max_attempts=3, base_delay_seconds=0.5, max_delay_seconds=4.0)
 
@@ -83,15 +85,22 @@ def _read_only_openapi() -> dict[str, object]:
     return {**spec, "info": {**spec["info"], "title": f"{spec['info']['title']} — read-only explorer"}, "paths": paths}
 
 
-@app.get("/")
-def dashboard() -> FileResponse: return FileResponse(STATIC_DIR / "index.html")
+@app.get("/", include_in_schema=False)
+def dashboard() -> RedirectResponse:
+    return RedirectResponse(url="/workspace/", status_code=307)
+
+
+@app.get("/server-dashboard", include_in_schema=False)
+def server_dashboard() -> FileResponse:
+    return FileResponse(STATIC_DIR / "index.html")
+
 
 @app.get("/api/v1/health")
 def health() -> dict[str, object]: return {"status":"ok","service":"solari-osint-operations-center","version":VERSION,"sources_registered":len(SOURCES)}
 
 @app.get("/api/v1/ready")
 def ready() -> dict[str, object]:
-    checks={"static_dashboard":(STATIC_DIR/"index.html").is_file(),"sqlite":False}
+    checks={"static_dashboard":(CANONICAL_FRONTEND_DIR/"index.html").is_file(),"sqlite":False}
     try:
         with connect() as db: checks["sqlite"]=db.execute("SELECT 1").fetchone()[0]==1
     except Exception: checks["sqlite"]=False
