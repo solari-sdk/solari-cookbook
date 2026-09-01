@@ -37,15 +37,20 @@
 - **Static stack:** dependency-free HTML/CSS/ES modules + IndexedDB + Web Crypto + service worker/PWA shell.
 - **Implemented public adapters:** USGS earthquakes, NWS active alerts, NOAA SWPC alerts, and NOAA/NHC Atlantic-basin tropical cyclone RSS products; adapters publish explicit capability/dependency descriptors and parser/record/response telemetry.
 - **Collection orchestration:** bounded concurrent multi-source collection with deterministic result ordering and per-source failure preservation; persistence remains serialized for auditability. Source runtime adds spacing, rolling-window quotas, cache TTLs, retry-after state and per-source diagnostics.
-- **Normalized storage:** acquisitions, current event records, first/last seen, sighting counts, event-history snapshots, entities, relationships, cases, and case-object links.
+- **Normalized storage:** acquisitions, current event records, first/last seen, sighting counts, event-history snapshots, entities, relationships, cases, and case-object links. Versioned event-contract migrations and a separate immutable SHA-256 raw-object archive now define explicit schema/raw preservation boundaries.
+- **Normalization/enrichment:** timezone-aware UTC normalization with source/assumption provenance; documented CRS/geocoding rules; bounded parallel fan-out/fan-in enrichers with per-step timing, partial-failure state, and retained conflicts.
 - **Analyst workspace:** persisted case activity, safe Markdown notes, annotations/dispositions, allow/block annotations, bookmarks, templates, cloning, archive/restore, evidence attachments/links, correction overlays, validation-error inbox, source reliability and suppression rules.
-- **Correlation/geospatial:** explainable cross-source correlation candidates without auto-merge; haversine distance, initial bearing, antimeridian-aware bounding boxes, simple polygon filtering and great-circle interpolation.
-- **Job model:** explicit failure taxonomy, bounded exponential retry policy, terminal job state, attempt timings, and reusable circuit-breaker/cooldown primitive.
+- **Collaboration foundation:** optional shared-mode architecture/RBAC design plus append-only analyst audit records, secret-safe saved views, prioritized assignments/work queues, handoff notes, and review decisions. Local single-user mode remains the default.
+- **Knowledge graph:** persisted typed entities/relationships, bounded neighborhood/path/component queries, alias canonicalization/deduplication suggestions, relationship staleness, explicit inferred-link review/hypothesis labels, and audited merge/split operations.
+- **Correlation/geospatial:** explainable cross-source correlation candidates without auto-merge; per-field conflict/preferred-value support; explainable suppression rules; haversine distance, initial bearing, event/entity proximity, tracks/position history/replay, geofences and enter/exit events, administrative-boundary intersection, antimeridian-aware bounding boxes, simple polygon filtering, great-circle interpolation, and explicit map-layer attribution policy.
+- **Workflow engine:** reusable versioned playbooks, dependency/pivot context, declarative conditions, bounded parallel steps, retry/fallback, human-review gates, batch runs, result diffs, priority queueing, reusable preset registry, and schedule/event/source-health trigger matching. No untrusted expressions are evaluated.
+- **Job model:** explicit failure taxonomy, bounded exponential retry policy, terminal job state, attempt timings, and reusable circuit-breaker/cooldown primitive. Structured logging can bind both correlation and job IDs to the same execution trail.
 - **Alert/watchlist foundation:** persisted source/category/severity/geographic/entity/observable/correlation/change rules, suppression windows, acknowledgement/history, and public-HTTPS webhook/JSON output validation.
 - **Reconnaissance foundation:** generic observables plus bounded public-target DNS/reverse-DNS, RDAP, CT, TLS, HTTP-header, SPF/DMARC, ASN/prefix, redirect-chain and Internet Archive enrichment.
-- **Artifact/evidence vault:** content-addressed SHA-256 catalog, deduplication/integrity verification, MIME/size metadata, safe text previews, tags, typed links, custody records, retention cleanup, and manifest/checksum ZIP evidence bundles.
-- **Static workspace stores:** cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, and artifacts.
-- **Portable investigation:** versioned JSON contract, manifest/source IDs, logical-member SHA-256 integrity checks, AES-256-GCM optional encryption, import preview/conflict analysis, safe merge/read-only open, JSON/CSV/GeoJSON/GraphML output, and standalone offline HTML report generation.
+- **Artifact/evidence vault:** content-addressed SHA-256 catalog, deduplication/integrity verification, MIME/size metadata, safe text previews, tags, typed links, custody records, retention cleanup, manifest/checksum ZIP evidence bundles, and a backend protocol suitable for future S3-compatible implementations.
+- **Debug/data quality:** schema-drift detection/quarantine, validation-error inbox, source reliability, warning/suppression rules, correction overlays, raw-vs-normalized field comparison, source freshness, parser/response/record telemetry, and conflict-preserving enrichment/correlation behavior.
+- **Static workspace stores:** cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, acquisitions, transformations, and content-addressed artifacts.
+- **Portable investigation:** version-3 contract with case metadata, events, entities, relationships, evidence, artifact bytes, acquisitions, transformations, provenance, notes and saved views; logical-member SHA-256 integrity, AES-256-GCM optional encryption, secret/session scanning, conflict-safe all-store merge, isolated read-only open, alternate-hypothesis cloning, JSON/CSV/GeoJSON/GraphML output, and standalone offline HTML report generation.
 - **API surfaces:** events, evidence, event history, entities, relationships, cases/workspace, graph queries, correlation candidates, alerts/watchlists, artifacts, observables/reconnaissance, jobs, sources/dependencies/health, acquisitions with decoded telemetry, dashboard metrics, liveness, readiness, version, JSON schema, OpenAPI/read-only explorer, CSV, and GeoJSON.
 - **Solari direct browser-mode caveat:** browser-side CORS/client support has not yet been verified, so direct static Solari Browser/Sandbox/Desktop orchestration is not claimed.
 
@@ -61,7 +66,7 @@
 - Bound response sizes and reject risky XML constructs before parsing where XML feeds are used.
 - Run risky/generated processing in Solari Sandbox rather than host/browser execution.
 - Human-verifiable output and observability are first-class requirements.
-- Correlation candidates never destructively merge independent source records without a future explicit review decision.
+- Correlation candidates never destructively merge independent source records without an explicit review decision.
 
 ## Static / No-Hosting Security Boundary
 - Solari/API credentials must never be embedded in static assets or repository content.
@@ -69,6 +74,7 @@
 - Static CSP permits only self-hosted script/style execution and blocks object/frame/form execution paths.
 - No third-party runtime CDN dependencies are required by the static console.
 - Imported portable cases are size/schema/integrity/secret checked before mutation and can be opened read-only.
+- Divergent imported objects without comparable timestamps are retained as unresolved instead of silently overwriting local state.
 - Memory-only privacy mode bypasses persistent workspace storage for new session state.
 - Purge controls remove the local IndexedDB database and Cache Storage entries.
 - Offline HTML reports escape case/source content and contain no executable script.
@@ -99,23 +105,23 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## TODO / Remediation Tracking
 - **TODO path:** `TODO.md`
-- **TODO review status:** Reconciled through the current 2026-09-01 implementation pass; implemented items are checked only where repository tests/code/CI evidence exists and live/manual items remain open.
+- **TODO review status:** Reconciled through the current 2026-09-01 implementation pass; implemented items are checked only where repository code/tests/docs provide evidence and live/manual items remain open.
 - **TODO last reviewed:** 2026-09-01
 - **Central TODO mirror:** Pending; not mutated because the current task is single-repository scoped.
 
 ## Repository Security Hygiene
 - **Security-hygiene audit status:** Partial
-- **Security-hygiene audit completed:** Current-tree automated secret-pattern scan passes; history and final private/proprietary-content review remain pending.
-- **Current-tree secret scan:** Passed in CI on the active development tree after current feature/test changes.
+- **Security-hygiene audit completed:** Current-tree automated secret-pattern scan passed before this run's final head; final current-head CI and history/final private/proprietary-content review remain pending.
+- **Current-tree secret scan:** CI scanner configured and passing on the preceding active development tree; revalidation required on final current head.
 - **Git-history secret scan:** Not yet completed
 - **`.gitignore` review:** Reviewed and updated 2026-09-01T08:02:49Z
-- **Sensitive-file tracking review:** Current-tree automated filename/pattern scan passes; Git-history and configured private-name/identifier review remain pending.
+- **Sensitive-file tracking review:** Automated filename/pattern scan is configured; Git-history and configured private-name/identifier review remain pending.
 - **Example-config review:** No live example credential identified by the current-tree scanner.
 - **Generated/runtime data review:** Runtime SQLite/data, logs/temp/backups, dist output, caches, and local environments are ignored.
 - **Security findings/remediation reference:** `TODO.md`
-- **Live credential remediation required/status:** None identified by current-tree scanner / history scan still pending.
+- **Live credential remediation required/status:** None identified by the preceding scanner / history scan still pending.
 - **Live credential remediation completed:** N/A
-- **Repository/current-tree credential cleanup:** No current-tree finding from the automated scanner.
+- **Repository/current-tree credential cleanup:** No preceding current-tree finding from the automated scanner.
 - **Git-history remediation:** Pending full history scan
 - **Post-remediation verification:** N/A unless findings occur
 
@@ -139,4 +145,4 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## Maintenance
 - **Metadata last updated:** 2026-09-01
-- **Metadata updated for:** NOAA/NHC tropical-cyclone adapter, analyst workspace/case-management surfaces, alert/watchlist engine, observable/reconnaissance enrichment, evidence-vault retention/bundles, current-tree CI secret scan, source-runtime controls, and TODO reconciliation.
+- **Metadata updated for:** immutable raw archive/schema migration/time normalization, fan-out enrichment and schema-drift quarantine, reusable workflows/triggers, audited entity review/merge/split, collaboration audit/work queues/handoffs/reviews, correlation suppression, tracking/boundaries/map attribution, structured job/correlation logs, raw-vs-normalized debug comparison, version-3 portable case cloning/conflict-safe merge, and TODO reconciliation.
