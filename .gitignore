@@ -1,8 +1,5 @@
 node_modules/
-package-lock.json
+dist/
 .env
-__pycache__/
-*.pyc
-.venv/
-venv/
-screenshot.png
+*.log
+.DS_Store

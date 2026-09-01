@@ -1,91 +1,74 @@
-# Solari Cookbook
+# pulse
 
-Short, runnable examples for [Solari](https://getsolari.com) — cloud browsers,
-sandboxes, and desktops behind one API key.
+A live, verifiable benchmark of Solari browsers, sandboxes, and desktops.
 
-Every example in this repo is a complete program you can run in under a minute.
-They are deliberately small: one idea each, no framework, no scaffolding to read
-past. Copy one into your project and change the parts you care about.
+Solari publishes a benchmark table on getsolari.com claiming it is faster
+than Kernel, Steel, Browserbase, E2B, Modal, Daytona, and CodeSandbox. That
+table is a static screenshot of a number someone ran once. Pulse is the same
+benchmark, except it runs against the real Solari API when you click the
+button, times itself stage by stage, and shows you the live number next to
+Solari's own published reference - so the claim is something you can check
+instead of something you have to trust.
 
-## Examples
+## What it measures
 
-### Cloud browser
+- **Browser**: create session, connect over CDP, navigate to a page, release.
+  Same four stages Solari lists on its own homepage.
+- **Sandbox**: create the machine, run a command, tear it down. Same three
+  stages as Solari's own sandbox benchmark.
+- **Desktop**: create, wait for the display and VNC agent to report healthy,
+  release. Solari has not published a cross-provider desktop benchmark, so
+  this tab only measures Solari against itself.
 
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [browser-quickstart-ts](examples/browser-quickstart-ts) | TypeScript | Launch a browser, open a page, read it |
-| [browser-quickstart-py](examples/browser-quickstart-py) | Python | Launch a browser, open a page, read it |
-| [browser-stealth-proxy-ts](examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
-| [browser-profiles-ts](examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
-| [browser-session-recording-py](examples/browser-session-recording-py) | Python | Record a session, download the replay |
+Every stage timing comes from a real call to the Solari SDK. Nothing is
+simulated. The competitor numbers shown next to the live result are static,
+copied from getsolari.com, and clearly labeled as such - this server never
+calls Browserbase, E2B, or anyone else.
 
-### Sandbox
+## Setup
 
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [sandbox-quickstart-ts](examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
-| [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
-| [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
+You need Node 20 or later and a Solari API key from console.getsolari.com.
 
-### Desktop
-
-| Example | Language | What it shows |
-| --- | --- | --- |
-| [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
-
-## Running an example
-
-Each directory is self-contained.
-
-```bash
-git clone https://github.com/solari-sdk/solari-cookbook.git
-cd solari-cookbook/examples/browser-quickstart-ts
-
-npm install                          # or: pip install -r requirements.txt
-export SOLARI_API_KEY=slr_live_...   # grab one at console.getsolari.com
-npm start                            # or: python main.py
+```
+npm install
+cp .env.example .env
+# edit .env and set SOLARI_API_KEY=slr_live_...
+npm run dev
 ```
 
-One `slr_live_` key works across browsers, sandboxes, and desktops, and every
-product bills to the same balance.
+Open `http://localhost:8787`.
 
-## Which product do I want?
+For a production build:
 
-- **Cloud browser** — you need a *web page*: scraping, testing, filling forms,
-  anything Playwright or Puppeteer would do locally. Adds stealth, managed
-  proxies, captcha solving, profiles, and session recording.
-- **Sandbox** — you need to *run code*: an LLM's Python, an untrusted build, a
-  data job. A headless microVM that boots from a snapshot in about a second.
-- **Desktop** — you need a *screen*: computer-use agents, GUI apps, anything
-  that has to be clicked. A sandbox plus X11 and a live VNC stream.
+```
+npm run build
+npm start
+```
 
-## Gotchas the examples encode
+## How it is built
 
-Things that cost you an afternoon if you meet them cold:
+- `src/config.ts` reads `SOLARI_API_KEY` and resolves the gateway URL
+  (defaults to `https://api.getsolari.com`, Solari's live us-west region).
+- `src/benchmarks/browserPulse.ts` uses `@solarisdk/browser`'s lower-level
+  path (`sessions.create()` then `chromium.connectOverCDP()`, both documented
+  in the SDK's own README) instead of `solari.launch()`, so create and
+  connect can be timed as two separate stages rather than one.
+- `src/benchmarks/sandboxPulse.ts` and `desktopPulse.ts` use
+  `@solarisdk/sandbox`'s `SandboxClient`.
+- `src/server.ts` is a single Express app. `GET /api/pulse?mode=browser`
+  (or `sandbox` / `desktop`) streams each stage's timing over
+  Server-Sent Events as soon as it finishes. `GET /api/reference` serves the
+  static comparison table.
+- `public/` is plain HTML, CSS, and one JS file. No build step, no framework.
 
-- **TypeScript: call `await solari.close()`.** The browser client keeps a
-  loopback proxy open for connection retries. Skip the close and your script
-  prints its output and then hangs forever instead of exiting.
-- **Recording is per session, not per account.** Pass `recording: true` when you
-  create the session; without it the replay endpoint 404s forever. The upload is
-  async after release, so poll for ~30s before giving up.
-- **Sandbox commands are not shell-interpreted.** `run("ls -la")` looks for a
-  binary named `ls -la`. Put argv in `args`, or run `sh -c` explicitly.
-- **`kill()`, not `close()`, ends a VM.** `close()` drops your local control
-  channel; the VM keeps running until its idle timeout.
-- **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
-  every use.
+## Why this shape
 
-## Links
+It is small enough to read start to finish in a few minutes, it uses
+primitives from all three Solari products (browsers, sandboxes, desktops)
+rather than picking one, and it produces something Solari could plausibly
+embed on their own site: a "verify it yourself" widget standing next to the
+benchmark table they already publish.
 
-- Docs — [docs.getsolari.com](https://docs.getsolari.com)
-- Console — [console.getsolari.com](https://console.getsolari.com)
-- Changelog — [changelog.getsolari.com](https://changelog.getsolari.com)
-- Questions — [hello@getsolari.com](mailto:hello@getsolari.com)
+## License
 
-## Contributing
-
-New examples are welcome. Keep them small, make them run end-to-end against the
-real API, and put anything surprising in a comment right where it bites.
-
-MIT licensed.
+MIT
