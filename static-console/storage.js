@@ -1,6 +1,6 @@
 const DB_NAME = 'solari-static-osint';
-const DB_VERSION = 2;
-export const STORES = ['cases','events','entities','relationships','evidence','saved_views','source_state','notes','watchlists','layouts','preferences','artifacts'];
+const DB_VERSION = 3;
+export const STORES = ['cases','events','entities','relationships','evidence','saved_views','source_state','notes','watchlists','layouts','preferences','artifacts','acquisitions','transformations'];
 let privacyMode = false;
 const memory = new Map(STORES.map((name) => [name, new Map()]));
 
