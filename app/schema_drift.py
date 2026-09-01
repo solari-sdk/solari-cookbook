@@ -42,9 +42,12 @@ def quarantine_record(
 ) -> Path:
     if not report.drift:
         raise ValueError("only drifted records may be quarantined")
+    if not source_id:
+        raise ValueError("source_id is required")
     canonical = json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     digest = sha256(canonical).hexdigest()
-    path = root / source_id / f"{digest}.json"
+    source_digest = sha256(source_id.encode("utf-8")).hexdigest()
+    path = root / source_digest / f"{digest}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     envelope = {
         "source_id": source_id,
