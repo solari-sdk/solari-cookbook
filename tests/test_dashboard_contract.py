@@ -6,13 +6,15 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     html = (root / "app" / "static" / "index.html").read_text(encoding="utf-8")
     script = (root / "app" / "static" / "app.js").read_text(encoding="utf-8")
     advanced = (root / "app" / "static" / "advanced.js").read_text(encoding="utf-8")
+    dossier = (root / "app" / "static" / "dossier.js").read_text(encoding="utf-8")
     for identifier in (
         "graphCanvas", "sourceHealth", "executions", "aggregateStats", "sourceAttribution", "evidence",
         "confidenceFilter", "entitySearchResults", "provenanceChain", "jobTimeline", "workspacePreset",
         "commandOpen", "commandPalette", "commandQuery", "commandResults", "severityFilter",
-        "playbackRange", "playbackLabel", "playbackPlay", "playbackReset",
+        "playbackRange", "playbackLabel", "playbackPlay", "playbackReset", "regionDossier",
     ):
         assert f'id="{identifier}"' in html
+    assert '/static/dossier.js' in html
     assert "/api/v1/entities?limit=500" in script
     assert "/api/v1/relationships?limit=1000" in script
     assert "selectGraphForEvent" in script
@@ -28,6 +30,9 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "freshness-badge" in script
     assert "/api/v1/source-health" in script
     assert "/api/v1/acquisitions?limit=20" in script
+    assert "renderRegionDossier" in dossier
+    assert "Observed coordinate bounds" in dossier
+    assert "no country, jurisdiction, or causal attribution is inferred" in dossier
     assert "/api/v1/entities?${params}" in advanced
     assert "/api/v1/events?${params}" in advanced
     assert "/api/v1/jobs?limit=40" in advanced
