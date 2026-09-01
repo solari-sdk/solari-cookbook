@@ -9,6 +9,7 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     dossier = (root / "app" / "static" / "dossier.js").read_text(encoding="utf-8")
     solari = (root / "app" / "static" / "solari.js").read_text(encoding="utf-8")
     workflow = (root / "app" / "static" / "workflow-builder.js").read_text(encoding="utf-8")
+    raw_inspector = (root / "app" / "static" / "raw-inspector.js").read_text(encoding="utf-8")
     for identifier in (
         "graphCanvas", "sourceHealth", "executions", "aggregateStats", "sourceAttribution", "evidence",
         "confidenceFilter", "entitySearchResults", "provenanceChain", "jobTimeline", "workspacePreset",
@@ -16,12 +17,14 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
         "playbackRange", "playbackLabel", "playbackPlay", "playbackReset", "regionDossier",
         "solariExecutionState", "solariExecutions", "workflowState", "workflowDefinition", "workflowGraph",
         "workflowAddEvents", "workflowAddEntities", "workflowAddCount", "workflowAddCategory", "workflowRemoveLast",
-        "workflowRender", "workflowRun", "workflowRerun", "workflowOutput",
+        "workflowRender", "workflowRun", "workflowRerun", "workflowOutput", "rawAcquisitionState",
+        "rawAcquisitionList", "rawAcquisitionDetail",
     ):
         assert f'id="{identifier}"' in html
     assert '/static/dossier.js' in html
     assert '/static/solari.js' in html
     assert '/static/workflow-builder.js' in html
+    assert '/static/raw-inspector.js' in html
     assert "/api/v1/entities?limit=500" in script
     assert "/api/v1/relationships?limit=1000" in script
     assert "selectGraphForEvent" in script
@@ -62,3 +65,7 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "addWorkflowNode" in workflow
     assert "removeLastWorkflowNode" in workflow
     assert "50 nodes" in workflow
+    assert "/api/v1/acquisitions?limit=100" in raw_inspector
+    assert "detail.textContent = JSON.stringify" in raw_inspector
+    assert "Source response bodies are not rendered here" in raw_inspector
+    assert "innerHTML" not in raw_inspector
