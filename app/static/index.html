@@ -24,7 +24,11 @@
     <article class="panel metric"><span>Latest event</span><strong id="latestEvent">—</strong></article>
     <article class="panel metric"><span>Stale sources</span><strong id="staleCount">0</strong></article>
   </section>
-  <section class="workspace"><div id="map" class="panel"></div><aside class="panel event-panel"><div class="panel-title"><h2>Event stream</h2><span id="streamState"></span></div><div id="events"></div></aside></section>
+  <section class="workspace">
+    <div id="map" class="panel"></div>
+    <article class="panel graph-panel"><div class="panel-title"><h2>Relationship graph</h2><span id="graphState">Loading…</span></div><canvas id="graphCanvas" width="640" height="520" aria-label="Interactive entity relationship graph"></canvas><p id="graphSelection" class="graph-selection">Select a node or event.</p></article>
+    <aside class="panel event-panel"><div class="panel-title"><h2>Event stream</h2><span id="streamState"></span></div><div id="events"></div></aside>
+  </section>
   <section class="ops-grid">
     <article class="panel"><div class="panel-title padded"><h2>Source health</h2><span>freshness / failures / latency</span></div><div class="table-wrap"><table><thead><tr><th>Source</th><th>Status</th><th>Age</th><th>Runs</th><th>Failures</th><th>Events</th><th>Latency</th></tr></thead><tbody id="sourceHealth"></tbody></table></div></article>
     <article class="panel"><div class="panel-title padded"><h2>Collector executions</h2><span>latest acquisitions</span></div><div id="executions" class="execution-list"></div></article>
