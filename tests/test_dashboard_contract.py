@@ -7,14 +7,17 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     script = (root / "app" / "static" / "app.js").read_text(encoding="utf-8")
     advanced = (root / "app" / "static" / "advanced.js").read_text(encoding="utf-8")
     dossier = (root / "app" / "static" / "dossier.js").read_text(encoding="utf-8")
+    solari = (root / "app" / "static" / "solari.js").read_text(encoding="utf-8")
     for identifier in (
         "graphCanvas", "sourceHealth", "executions", "aggregateStats", "sourceAttribution", "evidence",
         "confidenceFilter", "entitySearchResults", "provenanceChain", "jobTimeline", "workspacePreset",
         "commandOpen", "commandPalette", "commandQuery", "commandResults", "severityFilter",
         "playbackRange", "playbackLabel", "playbackPlay", "playbackReset", "regionDossier",
+        "solariExecutionState", "solariExecutions",
     ):
         assert f'id="{identifier}"' in html
     assert '/static/dossier.js' in html
+    assert '/static/solari.js' in html
     assert "/api/v1/entities?limit=500" in script
     assert "/api/v1/relationships?limit=1000" in script
     assert "selectGraphForEvent" in script
@@ -43,3 +46,7 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "ctrlKey" in advanced and "metaKey" in advanced
     assert "setWorkspacePreset" in advanced
     assert "showModal" in advanced
+    assert "/api/v1/solari/executions?limit=50" in solari
+    assert "artifact_sha256s" in solari
+    assert "replay available" in solari
+    assert "/api/v1/artifacts/" in solari
