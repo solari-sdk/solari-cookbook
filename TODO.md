@@ -41,7 +41,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Demonstrate a JavaScript-heavy public source.
 - [ ] Demonstrate stateful browser profile/session use where lawful and useful.
 - [ ] Demonstrate stealth/proxy capability against an appropriate public test/source without bypassing access restrictions.
-- [ ] Add bounded retry/timeout/error taxonomy.
+- [x] Add bounded retry/timeout/error taxonomy with stage-aware failure classes, attempt bounds, exponential backoff and cleanup tests.
 - [ ] Surface browser executions in operations/debug UI.
 
 ## Solari Sandbox
@@ -49,9 +49,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Run parsing/transformation in isolated sandbox.
 - [x] Demonstrate generated parser/extraction logic safely inside sandbox.
 - [x] Demonstrate document/data transformation.
-- [ ] Demonstrate geospatial/enrichment computation inside the sandbox.
+- [ ] Demonstrate geospatial/enrichment computation inside the live sandbox; bounded deterministic geospatial program generation is implemented and unit-tested.
 - [x] Capture stdout/stderr/result/error/timing and safe diagnostic artifacts.
-- [ ] Reuse stateful code contexts for bounded multi-step analysis where useful.
+- [x] Reuse one stateful Python code context for bounded multi-step analysis; context reuse, step bounds and cleanup are unit-tested with a fake Solari client.
 - [x] Ensure VM termination/cleanup on success and failure.
 - [ ] Surface sandbox executions in operations/debug UI.
 
@@ -67,21 +67,21 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] USGS earthquakes.
 - [x] NOAA/NWS weather alerts.
 - [x] NOAA/NHC tropical cyclone public RSS products (Atlantic-basin baseline).
-- [ ] NOAA tsunami products.
+- [x] NOAA tsunami public RSS products.
 - [x] NOAA space weather.
-- [ ] NASA FIRMS wildfire.
-- [ ] GDACS disasters.
-- [ ] ReliefWeb humanitarian events.
-- [ ] FEMA/public emergency-management datasets.
+- [x] NASA FIRMS wildfire/active-fire-detection adapter; live pull requires evaluator/user-owned FIRMS key and explicit bounded area.
+- [x] GDACS disasters.
+- [x] ReliefWeb humanitarian events adapter; live pull requires an approved evaluator/user appname.
+- [x] FEMA/OpenFEMA public emergency-management datasets.
 - [ ] EPA/environmental datasets.
 - [ ] Public flood/hydrology feeds.
 - [ ] Public volcano data.
 - [ ] Public aviation operational/status data.
 - [ ] Public maritime safety/environmental data.
 - [ ] Public GTFS/transportation feeds.
-- [ ] Public sanctions/watchlists.
-- [ ] Open geospatial/boundary/gazetteer sources.
-- [ ] Public satellite/orbital data.
+- [x] Public sanctions/watchlists baseline through the official OFAC SDN CSV feed with explicit identity-resolution boundary.
+- [x] Open geospatial/boundary/gazetteer sources through Nominatim plus provenance-bearing boundary foundations.
+- [x] Public satellite/orbital data baseline through bounded CelesTrak weather-group GP data.
 - [ ] Public internet-health/outage telemetry where lawful and free.
 - [ ] Public infrastructure status datasets.
 - [ ] Public air-quality and environmental sensor feeds.
@@ -125,27 +125,27 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 ## Dashboard
 - [x] Responsive application shell.
 - [x] Global/regional interactive map.
-- [ ] Marker clustering.
-- [ ] Heat/density layer.
+- [x] Marker clustering with zoom-sensitive bounded grid clustering in server mode.
+- [x] Heat/density layer foundation using severity/magnitude-weighted density circles.
 - [x] Source/category filter controls.
-- [ ] Rich layer toggles and source overlays.
-- [ ] Time-window slider.
+- [x] Map-layer toggle between markers, clusters and density plus shared source/category filtering.
+- [x] Time-window controls: server from/to filters plus static-console retained-time range slider.
 - [ ] Historical playback.
 - [x] Timeline/event stream foundation.
-- [ ] Faceted filters.
-- [ ] Geographic filters.
-- [ ] Source/category/severity/quality/confidence filters.
-- [ ] Full-text/entity search.
-- [ ] Saved views/query state UI.
+- [x] Faceted source/category filter controls populated from retained/current events.
+- [x] Geographic bounding-box filters in the static analyst console and API.
+- [ ] Source/category/severity/quality/confidence filters; source/category/severity/quality are implemented, confidence remains to be added where semantically applicable.
+- [ ] Full-text/entity search; event/property full-text search and entity query APIs exist, unified UI search remains unfinished.
+- [x] Saved views/query state UI in the static analyst console.
 - [x] Event detail/evidence inspector foundation.
 - [x] Normalized properties inspection.
 - [ ] Raw-source view.
 - [ ] Provenance/transformation chain visualization.
-- [ ] Related-event/entity relationship graph.
-- [ ] Aggregate charts/statistics.
-- [ ] Geographic drill-down.
-- [ ] Source health dashboard UI.
-- [ ] Collector execution dashboard UI.
+- [x] Related entity relationship graph with event-to-graph selection linking.
+- [x] Aggregate category statistics with bounded visual meters.
+- [x] Geographic drill-down through clickable clusters that increase map zoom.
+- [x] Source health dashboard UI.
+- [x] Collector execution dashboard UI.
 - [ ] Browser/Sandbox/Desktop execution views.
 - [ ] Failure/retry/debug trace view.
 - [ ] Screenshot/session-recording references.
@@ -155,14 +155,14 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] CSV export.
 - [x] GeoJSON export.
 - [x] GraphML graph export through portable/static investigation export.
-- [ ] STIX 2.x export/import where semantically appropriate.
+- [x] STIX 2.1 observable export/import with bounded object count, explicit supported mappings and skip reporting.
 - [x] Read-only API explorer/documentation.
 - [ ] 3D globe mode for global situational awareness.
 - [ ] 2D/3D synchronized selection state.
-- [ ] Shared selection context across dashboard modules.
-- [ ] Shared time context across dashboard modules.
+- [x] Shared selection context across event cards, map markers/clusters and the entity relationship graph.
+- [x] Shared time/filter context across static-console map and event table.
 - [ ] Position/event replay UI from retained history.
-- [ ] Side-by-side map and graph analysis mode.
+- [x] Side-by-side map, graph and event-stream analysis mode in the server dashboard.
 - [ ] Country/region dossier view built only from public structured sources.
 - [ ] Data freshness badges on every major widget.
 - [ ] Analyst workspace layout presets.
@@ -189,7 +189,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Case archive/restore workflow.
 - [x] Case export bundle.
 - [x] Analyst-ready offline HTML report generation from a case.
-- [ ] Graph snapshot in generated reports.
+- [x] Graph snapshot in generated reports through bounded, escaped inline SVG relationship visualization.
 - [x] Timeline snapshot/table in generated reports.
 - [x] Source/evidence appendix in generated reports.
 - [x] Reproducibility manifest showing source IDs, acquisition IDs and transformations used in a case.
@@ -201,7 +201,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Edge confidence scoring.
 - [x] Edge provenance.
 - [x] First-seen and last-seen on entities/relationships.
-- [ ] Interactive graph visualization.
+- [x] Interactive graph visualization with keyboard/click node selection in server mode and accessible SVG selection in static mode.
 - [x] Node expansion/pivoting through bounded neighborhood queries.
 - [x] Neighborhood exploration with depth limits.
 - [x] Graph path finding between entities.
@@ -210,7 +210,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Graph clustering/community detection foundation through connected components.
 - [x] Relationship inference state separated visibly from observed relationships.
 - [x] Auto-correlation rules create explicit reviewable alias-correlation hypotheses without merging source entities.
-- [ ] Correlation explanation UI view.
+- [x] Correlation explanation UI shows score, reasons, time delta and distance while explicitly preserving independent source records.
 - [x] Merge/split entities with before/after audit history and explicit reason.
 - [x] Alias resolution.
 - [x] Entity canonicalization.
@@ -232,9 +232,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Reusable scan templates/presets through the playbook registry.
 - [x] Pivot chains through dependency-output context.
 - [x] Pluggable analyzers.
-- [ ] Executable pluggable ingestors.
-- [ ] Executable pluggable visualizers.
-- [ ] Executable pluggable exporters/connectors.
+- [x] Executable pluggable ingestors through kind-specific sandbox `ingest(payload)` entrypoints.
+- [x] Executable pluggable visualizers through kind-specific sandbox `visualize(payload)` entrypoints.
+- [x] Executable pluggable exporters/connectors through kind-specific sandbox `export(payload)` / `connect(payload)` entrypoints.
 - [x] Plugin manifest/schema.
 - [x] Plugin capability discovery.
 - [x] Plugin isolation through Solari Sandbox when practical.
@@ -291,17 +291,17 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] HTTP technology/header fingerprinting for user-supplied public targets.
 - [x] SPF/DMARC/DNS security metadata checks.
 - [x] Public ASN/network ownership lookup.
-- [ ] Public geolocation of network prefixes with uncertainty metadata.
-- [ ] Username/alias correlation only against lawful public sources.
-- [ ] Public repository/code search pivots.
-- [ ] Public document metadata extraction.
-- [ ] PDF metadata/text extraction in sandbox.
-- [ ] Image EXIF metadata extraction for user-supplied/public artifacts.
+- [x] Public geolocation of network IPs/prefixes through RIPEstat MaxMind GeoLite with explicit approximate/unknown-radius uncertainty semantics.
+- [x] Username/alias correlation over caller-supplied lawful public HTTPS observations with review-required hypotheses and no identity assertion.
+- [x] Public repository/code-search navigation pivots for GitHub, GitLab and Sourcegraph without credentialed scraping.
+- [x] Public/user-supplied document metadata extraction with bounded size and non-executable parsing.
+- [ ] PDF metadata/text extraction in Solari Sandbox; local bounded PDF metadata extraction exists, but live sandbox text extraction remains unfinished.
+- [x] Image EXIF metadata extraction for user-supplied/public artifacts with bounded image/byte limits.
 - [ ] OCR pipeline for public/user-supplied evidence where appropriate.
 - [ ] QR/barcode extraction from public/user-supplied artifacts.
 - [x] URL redirect-chain analysis.
 - [x] Web archive/history lookup using lawful public archive services.
-- [ ] Screenshot comparison / visual change detection.
+- [x] Screenshot/image comparison and visual change scoring with dimension mismatch handling.
 
 ## Geospatial / situational-awareness backlog
 - [x] Track moving objects with timestamped positions for caller-supplied lawful public observations.
@@ -313,8 +313,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Proximity correlation between events and entities without automatically inferring relationships.
 - [x] Bounding-box and simple polygon filters; antimeridian-crossing polygons must be split explicitly.
 - [x] Administrative boundary intersection against provenance-bearing boundary datasets supplied to the engine.
-- [ ] Reverse geocoding from open datasets.
-- [ ] Place-name gazetteer lookup.
+- [x] Reverse geocoding through bounded, throttled OpenStreetMap Nominatim with attribution and uncertainty metadata.
+- [x] Place-name gazetteer lookup through bounded, throttled OpenStreetMap Nominatim.
 - [ ] Coordinate precision/uncertainty visualization.
 - [x] Great-circle route calculation/interpolation.
 - [ ] Public satellite orbital/TLE visualization.
@@ -335,7 +335,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Alert history.
 - [x] Webhook output connector.
 - [x] Generic REST/JSON output connector foundation with public-HTTPS destination validation.
-- [ ] Optional email/Slack-style connector interfaces without embedding credentials in repository.
+- [x] Optional email/Slack-style credential-neutral connector envelopes plus transport protocol and in-memory recording transport; no credentials are embedded.
 
 ## Debugging / observability
 - [x] Structured logs carry both correlation and job IDs through a shared execution context without logging request bodies or credentials.
@@ -348,7 +348,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Last acquisition per source backend query.
 - [x] Schema drift detection.
 - [x] Raw-vs-normalized field comparison utility with explicit source-path mappings and missing/change state.
-- [ ] Deduplication/correlation explanation UI view.
+- [x] Deduplication/correlation explanation UI through explicit score/reason/time/distance candidate cards.
 - [x] Health endpoint.
 - [x] Source-health backend endpoint.
 - [x] Readiness endpoint distinct from liveness.
@@ -381,9 +381,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Artifact/evidence endpoint including stored artifact metadata, preview, retrieval, tagging, linking, retention and bundle export.
 - [x] Job/execution endpoint with filtering, metrics and detail retrieval.
 - [x] OpenAPI generation through FastAPI.
-- [ ] WebSocket/SSE live updates.
+- [x] SSE live job-metrics stream with bounded interval/count options and no-store buffering headers.
 - [x] GraphQL evaluated and deferred until compound client queries justify the added query/authorization/cost-control surface.
-- [ ] STIX 2.x interoperability where appropriate.
+- [x] STIX 2.1 interoperability for supported observables with bounded import/export, deterministic IDs, confidence preservation and explicit unsupported-object skips.
 - [x] MISP-compatible export/import evaluated and intentionally deferred until semantically compatible cyber observables exist.
 - [x] Generic JSON schema export.
 - [x] API versioning/deprecation policy.
@@ -397,7 +397,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Investigation assignment/work queue with priority/status ordering.
 - [x] Analyst handoff notes.
 - [x] Review/approval status on derived conclusions.
-- [ ] Data/source license and attribution registry surfaced in UI.
+- [x] Data/source license and attribution registry surfaced in the server dashboard from public source descriptors.
 - [x] Per-source terms/usage notes maintained in source registry/descriptors.
 - [x] Public-source legal/ethical boundary page.
 
