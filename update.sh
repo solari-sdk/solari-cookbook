@@ -25,16 +25,25 @@ stage "Check runtime tools"
 if [[ -f package-lock.json ]]; then command -v npm >/dev/null || fail "npm is required by package-lock.json"; fi
 if [[ -f requirements.txt || -f pyproject.toml ]]; then command -v python3 >/dev/null || fail "python3 is required"; fi
 
-stage "Install locked dependencies"
+stage "Create Python environment"
+if [[ -f requirements.txt || -f pyproject.toml ]]; then
+  python3 -m venv .venv
+  # shellcheck disable=SC1091
+  source .venv/bin/activate
+  python -m pip install --upgrade pip
+fi
+
+stage "Install dependencies"
 if [[ -f package-lock.json ]]; then npm ci; fi
-if [[ -f requirements.txt ]]; then python3 -m pip install -r requirements.txt; fi
+if [[ -f requirements.txt ]]; then python -m pip install -r requirements.txt; fi
+if [[ -f requirements-dev.txt ]]; then python -m pip install -r requirements-dev.txt; fi
 
 stage "Build"
 if [[ -f package.json ]] && npm run | grep -qE '^  build'; then npm run build; fi
 
 stage "Test"
 if [[ -f package.json ]] && npm run | grep -qE '^  test'; then npm test; fi
-if [[ -d tests ]] && command -v pytest >/dev/null; then pytest; fi
+if [[ -d tests ]]; then python -m pytest; fi
 
 stage "Configuration check"
 if [[ -z "${SOLARI_API_KEY:-}" ]]; then
