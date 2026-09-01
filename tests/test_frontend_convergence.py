@@ -21,13 +21,13 @@ def test_server_root_redirects_to_canonical_backend_independent_frontend() -> No
 
 
 def test_server_mount_serves_the_same_checked_in_static_console_assets() -> None:
-    expected = (CANONICAL_FRONTEND_DIR / "server-runtime.js").read_text(encoding="utf-8")
+    expected = (CANONICAL_FRONTEND_DIR / "server-runtime.js").read_bytes()
     response = client.get("/workspace/server-runtime.js")
     assert response.status_code == 200
-    assert response.text == expected
+    assert response.content == expected
 
-    local_index = Path("static-console/index.html").read_text(encoding="utf-8")
-    served_index = client.get("/workspace/").text
+    local_index = Path("static-console/index.html").read_bytes()
+    served_index = client.get("/workspace/").content
     assert served_index == local_index
 
 
