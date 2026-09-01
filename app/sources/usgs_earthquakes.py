@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from datetime import datetime, timezone
 from hashlib import sha256
 from typing import Any
@@ -26,6 +27,8 @@ SOURCE = SourceDescriptor(
     method=AcquisitionMethod.FEED,
     poll_interval_seconds=300,
     license_note="Public U.S. government earthquake feed; see USGS terms and attribution guidance.",
+    capabilities=["events", "geospatial", "public-feed", "deterministic-normalization"],
+    depends_on=[],
 )
 
 DEFAULT_FEED = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
@@ -55,6 +58,7 @@ def fetch(timeout_seconds: int = 20) -> tuple[AcquisitionEnvelope, dict[str, Any
             http_status=status,
             content_type=content_type,
             content_sha256=sha256(payload).hexdigest(),
+            metadata={"response_bytes": len(payload)},
         )
         return envelope, json.loads(payload)
     except Exception as exc:
@@ -127,7 +131,15 @@ def normalize(payload: dict[str, Any], acquisition_id: str) -> list[EventRecord]
 
 def collect(timeout_seconds: int = 20) -> tuple[AcquisitionEnvelope, list[EventRecord]]:
     acquisition, payload = fetch(timeout_seconds=timeout_seconds)
-    return acquisition, normalize(payload, acquisition.id)
+    parser_started = time.perf_counter()
+    events = normalize(payload, acquisition.id)
+    acquisition.metadata.update({
+        "parser_duration_ms": (time.perf_counter() - parser_started) * 1000.0,
+        "records_received": len(payload.get("features", [])),
+        "records_accepted": len(events),
+        "records_rejected": max(0, len(payload.get("features", [])) - len(events)),
+    })
+    return acquisition, events
 
 
 def _millis_to_datetime(value: Any) -> datetime:
