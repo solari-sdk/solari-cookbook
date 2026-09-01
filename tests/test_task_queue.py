@@ -45,11 +45,12 @@ def test_failed_task_retries_then_becomes_terminal(tmp_path):
 
 def test_queue_metrics_include_worker_utilization_and_timings(tmp_path):
     path = tmp_path / "queue.sqlite3"
-    now = datetime.now(timezone.utc)
     task = enqueue_task("workflow-run", {}, path=path)
+    now = datetime.now(timezone.utc) + timedelta(seconds=1)
     heartbeat_worker("worker:busy", status="running", current_task_id=task["id"], path=path, now=now)
     heartbeat_worker("worker:idle", status="idle", path=path, now=now)
     claimed = claim_task("worker:busy", path=path, now=now)
+    assert claimed is not None
     complete_task(claimed["id"], {"done": True}, path=path, now=now + timedelta(seconds=2))
     metrics = queue_metrics(path=path, now=now + timedelta(seconds=2))
     assert metrics["active_workers"] == 2
