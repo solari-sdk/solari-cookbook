@@ -19,6 +19,7 @@ from app.recon import (
     tls_certificate_metadata,
     web_archive_history,
 )
+from app.stix import export_stix_bundle, import_stix_bundle
 
 router = APIRouter(prefix="/api/v1", tags=["recon"])
 
@@ -54,6 +55,22 @@ def add_observable(body: ObservableInput) -> dict[str, object]:
     try:
         record = make_observable(body.type, body.value, first_seen=body.first_seen, last_seen=body.last_seen, confidence=body.confidence, properties=body.properties)
         return save_observable(record)
+    except Exception as exc:
+        raise _error(exc) from exc
+
+
+@router.get("/observables/export/stix")
+def export_observables_stix(type: str | None = None, q: str | None = Query(None, max_length=200), limit: int = Query(500, ge=1, le=1000)) -> dict[str, Any]:
+    records = [ObservableRecord.model_validate(item) for item in list_observables(observable_type=type, query=q, limit=limit)]
+    return export_stix_bundle(records)
+
+
+@router.post("/observables/import/stix")
+def import_observables_stix(body: dict[str, Any], persist: bool = True) -> dict[str, Any]:
+    try:
+        result = import_stix_bundle(body)
+        saved = [save_observable(record) for record in result["records"]] if persist else [record.model_dump(mode="json") for record in result["records"]]
+        return {"imported": saved, "skipped": result["skipped"], "persisted": persist}
     except Exception as exc:
         raise _error(exc) from exc
 
