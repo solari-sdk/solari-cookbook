@@ -23,8 +23,13 @@ git pull --ff-only origin "$BRANCH"
 
 stage "Check runtime tools"
 command -v python3 >/dev/null || fail "Python 3 is required. Install it with Homebrew or python.org, then rerun."
+python3 tools/runtime_check.py || fail "unsupported Python runtime"
 if [[ -f package-lock.json ]]; then command -v npm >/dev/null || fail "npm is required by package-lock.json"; fi
-if [[ -d static-console/tests ]]; then command -v node >/dev/null || fail "Node.js is required to run static-console tests"; fi
+if [[ -d static-console/tests ]]; then
+  command -v node >/dev/null || fail "Node.js is required to run static-console tests"
+  NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+  [[ "$NODE_MAJOR" =~ ^[0-9]+$ && "$NODE_MAJOR" -ge 20 ]] || fail "Node.js 20+ is required for static-console tests (found: $(node --version))"
+fi
 
 stage "Create Python environment"
 python3 -m venv .venv
