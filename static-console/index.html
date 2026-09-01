@@ -16,6 +16,10 @@
   </header>
   <main>
     <section class="panel">
+      <h2>Capabilities</h2>
+      <pre id="capabilities"></pre>
+    </section>
+    <section class="panel">
       <h2>Session</h2>
       <label>Solari API key <input id="solari-key" type="password" autocomplete="off" placeholder="Stored in memory only"></label>
       <button id="clear-key">Clear key</button>
@@ -28,11 +32,25 @@
       <p id="fetch-status"></p>
     </section>
     <section class="panel">
+      <h2>World view</h2>
+      <canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas>
+      <p>Dependency-free equirectangular view of locally stored geolocated events.</p>
+    </section>
+    <section class="panel">
+      <h2>Portable investigation</h2>
+      <label>Case title <input id="case-title" type="text" value="Portable investigation"></label>
+      <label>Encryption passphrase <input id="case-passphrase" type="password" autocomplete="new-password" placeholder="10+ characters"></label>
+      <div class="actions">
+        <button id="export-case">Export case JSON</button>
+        <button id="export-encrypted">Export encrypted case</button>
+        <label class="file-button">Import case<input id="import-case" type="file" accept="application/json,.solari-case"></label>
+      </div>
+      <p id="case-status"></p>
+    </section>
+    <section class="panel">
       <h2>Local workspace</h2>
       <div class="actions">
         <button id="refresh-events">Refresh</button>
-        <button id="export-case">Export case JSON</button>
-        <label class="file-button">Import case JSON<input id="import-case" type="file" accept="application/json"></label>
         <button id="clear-data">Clear local data</button>
       </div>
       <p id="storage-status"></p>
