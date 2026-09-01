@@ -77,6 +77,15 @@ Things that cost you an afternoon if you meet them cold:
 - **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
   every use.
 
+- **Pointing a Playwright runner at a session? Use `/cdp/`, not `/ws/`.** The
+  Playwright wire protocol is version-gated on Playwright's own `User-Agent`
+  header and the server speaks v1.59 — anything else gets HTTP 428 before a test
+  runs. CDP has no gate.
+
+- **`sessions.create()` gives you a loopback URL, not a remote one.** The SDK runs
+  an in-process relay, so the endpoint it returns is useless to any other process.
+  A spawned test runner needs the real endpoint from a raw `POST /sessions`.
+
 ## Links
 
 - Docs — [docs.getsolari.com](https://docs.getsolari.com)
