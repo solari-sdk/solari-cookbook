@@ -35,6 +35,8 @@ class SourceDescriptor(BaseModel):
     method: AcquisitionMethod
     poll_interval_seconds: int | None = Field(default=None, ge=1)
     license_note: str | None = None
+    capabilities: list[str] = Field(default_factory=list)
+    depends_on: list[str] = Field(default_factory=list)
 
 
 class AcquisitionEnvelope(BaseModel):
