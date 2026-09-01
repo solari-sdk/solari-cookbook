@@ -151,9 +151,9 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Screenshot/session-recording references.
 - [x] Acquisition latency backend telemetry.
 - [ ] Cost telemetry when Solari exposes sufficient billing/job data.
-- [ ] JSON export.
-- [ ] CSV export.
-- [ ] GeoJSON export.
+- [x] JSON export foundation through existing event endpoint.
+- [x] CSV export.
+- [x] GeoJSON export.
 - [ ] GEXF/GraphML graph export.
 - [ ] STIX 2.x export/import where semantically appropriate.
 - [ ] Read-only API explorer/documentation.
@@ -401,6 +401,72 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Per-source terms/usage notes.
 - [ ] Public-source legal/ethical boundary page.
 
+## No-hosting static console mode
+- [ ] Make the primary analyst console capable of running as a fully static browser application with no application server required.
+- [ ] Keep the frontend backend-independent so the same UI can operate in static-local mode or FastAPI team/server mode.
+- [ ] Define one shared domain/data contract across static and server modes so cases, events, entities, relationships, evidence, artifacts, filters, and provenance remain portable.
+- [ ] Add browser-side IndexedDB persistence for cases, events, entities, relationships, evidence metadata, saved views, source state, notes, watchlists, layouts, and preferences.
+- [ ] Add IndexedDB schema versioning and migrations.
+- [ ] Add browser-side content-addressed artifact storage using IndexedDB/OPFS where supported.
+- [ ] Add a pure-static source adapter layer for public APIs that permit browser-side CORS access.
+- [ ] Detect CORS-incompatible public sources and route them through Solari Browser or optional broker rather than failing opaquely.
+- [ ] Add static-mode direct Solari Browser orchestration where Solari browser-side API access is supported.
+- [ ] Add static-mode direct Solari Sandbox orchestration where Solari browser-side API access is supported.
+- [ ] Add static-mode direct Solari Desktop orchestration where Solari browser-side API access is supported.
+- [ ] Verify Solari API CORS/browser-client support before claiming direct static operation.
+- [ ] Add bring-your-own Solari API key mode for developer/evaluator use.
+- [ ] Keep the Solari API key in memory by default; never embed it in static assets or repository content.
+- [ ] Evaluate optional Web Crypto-encrypted local key persistence with explicit opt-in and prominent risk warning.
+- [ ] Add one-click clear/forget local credentials and cached session material.
+- [ ] Add a visible credential/session-state indicator in static mode without exposing secret values.
+- [ ] Add optional tiny credential-broker mode for deployments that should not expose provider credentials to browser JavaScript.
+- [ ] Keep broker functionality narrowly scoped to credential delegation/request signing rather than recreating the full application server.
+- [ ] Add support for user-configurable broker endpoint without hard-coding private infrastructure.
+- [ ] Add static deployment targets/documentation for GitHub Pages, Cloudflare Pages, Netlify, S3-compatible static hosting, generic web servers, and local-file/localhost use where browser restrictions permit.
+- [ ] Add downloadable ZIP build that can be unpacked and run without installing a backend service.
+- [ ] Add Progressive Web App manifest/service worker for installable/offline-capable analyst shell.
+- [ ] Add offline-first loading for the application shell and locally retained investigations.
+- [ ] Add explicit offline/online/source-availability indicators.
+- [ ] Add optional local map/cache packaging where map/data licenses permit offline storage.
+- [ ] Ensure static mode never requires PHP, Python, Docker, a database server, a permanent VM, or a daemon.
+- [ ] Preserve FastAPI/server mode for shared/team deployments without making it a prerequisite for single-user use.
+- [ ] Add local-only analyst workstation mode that uses the same static frontend and browser storage without publishing anything externally.
+- [ ] Evaluate Tauri packaging using the same frontend for an optional desktop build with OS credential storage.
+- [ ] Evaluate Electron only if Tauri/browser mode cannot meet a required capability; avoid duplicative desktop stacks without justification.
+
+## Portable investigation bundle
+- [ ] Define a portable case bundle format that can move between static, local-workstation, and server deployments.
+- [ ] Use a neutral portable extension such as `.solari-case` or another project-owned format after naming review.
+- [ ] Bundle case metadata, events, entities, relationships, evidence references, artifacts, screenshots, acquisitions, transformations, provenance, notes, saved views, and reproducibility manifest.
+- [ ] Include a manifest with schema version, creation timestamp, tool version, source identifiers, content hashes, and required capabilities.
+- [ ] Include per-file SHA-256 checksums and bundle integrity verification.
+- [ ] Add optional Web Crypto encryption for portable case bundles using a user-supplied passphrase/key.
+- [ ] Never include Solari/API credentials, browser cookies, authenticated session tokens, or unrelated local secrets in exported bundles.
+- [ ] Add export-time secret/session scanner before bundle creation.
+- [ ] Add import preview showing bundle contents, schema version, checksums, source provenance, and warnings before mutation of local state.
+- [ ] Add import conflict handling for duplicate IDs, newer/older records, incompatible schemas, and divergent analyst edits.
+- [ ] Add safe merge mode and isolated-open/read-only mode for imported bundles.
+- [ ] Add case cloning from imported bundles for alternate hypotheses without mutating the original evidence package.
+- [ ] Add reproducible report generation directly from a portable bundle while offline.
+- [ ] Add bundle-to-JSON/CSV/GeoJSON/GraphML export where applicable.
+- [ ] Add bundle test fixtures and round-trip compatibility tests.
+- [ ] Document the portable format so third-party tools can inspect or produce compatible bundles without running the application.
+
+## Static-mode security and privacy
+- [ ] Define static-mode threat model covering XSS, malicious imported bundles, hostile source content, compromised third-party scripts, browser storage theft, API-key exposure, and service-worker cache poisoning.
+- [ ] Eliminate inline executable code where practical and use a strict Content Security Policy compatible with static hosting.
+- [ ] Minimize third-party CDN runtime dependencies; support vendored/pinned frontend assets for high-assurance/offline mode.
+- [ ] Add Subresource Integrity where third-party hosted assets remain.
+- [ ] Sanitize all source-derived HTML/text before rendering.
+- [ ] Never execute source-provided JavaScript inside the analyst console origin.
+- [ ] Keep generated/untrusted parsing code confined to Solari Sandbox rather than browser `eval`/`Function` execution.
+- [ ] Validate imported bundle schemas and size limits before storing content.
+- [ ] Add decompression-bomb/oversized-artifact protections for portable bundles.
+- [ ] Add explicit purge controls for local cases, artifacts, caches, service-worker data, and IndexedDB databases.
+- [ ] Add privacy mode that disables persistent local storage and keeps investigation state memory-only for the session.
+- [ ] Add storage-usage dashboard and quota warnings.
+- [ ] Add browser capability checks for IndexedDB, OPFS, Web Crypto, service workers, File System Access API, and required Solari/CORS behavior.
+
 ## Packaging / deployment — competitive backlog
 - [ ] Dockerfile.
 - [ ] Docker Compose stack.
@@ -451,6 +517,14 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Report reproducibility tests.
 - [ ] Public-release/private-name scanner test.
 - [ ] Secret-pattern scanner in CI.
+- [ ] Static-mode first-run test with no backend process available.
+- [ ] Static-mode offline-shell test.
+- [ ] IndexedDB persistence/migration tests.
+- [ ] Portable case bundle round-trip tests.
+- [ ] Encrypted bundle import/export tests.
+- [ ] Static-mode credential purge tests.
+- [ ] Static-mode CSP/XSS regression tests.
+- [ ] Browser capability/fallback tests.
 
 ## Documentation / submission
 - [ ] Expand README with project showcase while preserving attribution/upstream context.
@@ -462,7 +536,12 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Investigation/case workflow guide.
 - [ ] Security/public-data boundary documentation.
 - [ ] Cross-platform quickstart.
+- [ ] Static/no-hosting quickstart: clone/download, open/build static console, optionally enter evaluator-owned Solari key, begin work.
+- [ ] Static architecture diagram showing browser console → public APIs / Solari Browser / Solari Sandbox / Solari Desktop → IndexedDB/OPFS.
+- [ ] Portable investigation bundle format documentation.
+- [ ] Static-mode security/threat-model documentation.
 - [ ] Demo scenario that exercises Browser + Sandbox + Desktop.
+- [ ] Demo scenario that runs without an application server.
 - [ ] Screenshots/GIF/video as appropriate.
 - [ ] Reproducible sample output.
 - [ ] Known limitations.
@@ -475,4 +554,4 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 Feature ideas in the backlog were independently re-expressed after reviewing public OSINT/intelligence projects including OSIF, OpenCTI, IntelOwl, SpiderFoot, Axiom, Velocity, Palantir-OSINT, Strategic OSINT Dashboard, and MISP warning-list concepts. Do not copy source code or proprietary implementation details; use these only as public feature/architecture references.
 
 ## Definition of ready
-The project is ready only when the major dashboard and operations surfaces work, representative open sources are live, all three Solari products have meaningful tested roles, setup is reproducible, evidence is human-verifiable, tests are green, resource cleanup is proven, and the public repository has passed privacy/secret/proprietary-material review.
+The project is ready only when the major dashboard and operations surfaces work, representative open sources are live, all three Solari products have meaningful tested roles, setup is reproducible, evidence is human-verifiable, tests are green, resource cleanup is proven, the static/no-hosting console can operate without an application server for its documented use cases, and the public repository has passed privacy/secret/proprietary-material review.
