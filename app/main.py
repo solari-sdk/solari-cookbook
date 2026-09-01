@@ -25,6 +25,7 @@ from app.observability import current_correlation_id, install_observability
 from app.observables import ObservableRecord
 from app.pagination_api import router as pagination_router
 from app.recon_api import router as recon_router
+from app.solari_api import router as solari_router
 from app.sources.registry import ADAPTERS, SOURCES
 from app.storage import (
     case_contents, connect, list_acquisitions, list_cases, list_entities, list_event_history,
@@ -32,12 +33,26 @@ from app.storage import (
     save_relationships, source_health,
 )
 from app.tracking_api import router as tracking_router
+from app.workflow_api import router as workflow_router
 from app.workspace_api import router as workspace_router
 
 VERSION = "0.12.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 install_observability(app)
-for router in (graph_router, pagination_router, correlation_router, workspace_router, notes_router, artifact_router, alerts_router, recon_router, tracking_router, jobs_router):
+for router in (
+    graph_router,
+    pagination_router,
+    correlation_router,
+    workspace_router,
+    notes_router,
+    artifact_router,
+    alerts_router,
+    recon_router,
+    tracking_router,
+    jobs_router,
+    solari_router,
+    workflow_router,
+):
     app.include_router(router)
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
