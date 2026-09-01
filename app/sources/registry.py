@@ -16,6 +16,7 @@ from app.sources import (
     ofac_sdn,
     reliefweb_disasters,
     swpc_alerts,
+    usdot_wzdx_workzones,
     usgs_earthquakes,
     usgs_volcano_elevated,
     usgs_water_latest,
@@ -37,6 +38,7 @@ REGISTERED_ADAPTERS: tuple[ModuleType, ...] = (
     ndbc_latest_observations,
     usgs_water_latest,
     airnow_daily_quality,
+    usdot_wzdx_workzones,
 )
 
 ADAPTERS: dict[str, ModuleType] = {adapter.SOURCE.id: adapter for adapter in REGISTERED_ADAPTERS}
