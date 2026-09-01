@@ -4,62 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https:; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https:; img-src 'self' data: blob: https:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
   <title>Solari Static OSINT Console</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Solari Static OSINT Console</h1>
-    <p>No application server required. Local data stays in this browser unless you export it.</p>
-  </header>
-  <main>
-    <section class="panel">
-      <h2>Capabilities</h2>
-      <pre id="capabilities"></pre>
-    </section>
-    <section class="panel">
-      <h2>Session</h2>
-      <label>Solari API key <input id="solari-key" type="password" autocomplete="off" placeholder="Stored in memory only"></label>
-      <button id="clear-key">Clear key</button>
-      <p id="key-status">No Solari key loaded.</p>
-    </section>
-    <section class="panel">
-      <h2>Public source import</h2>
-      <label>GeoJSON URL <input id="source-url" type="url" value="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"></label>
-      <button id="fetch-source">Fetch and store</button>
-      <p id="fetch-status"></p>
-    </section>
-    <section class="panel">
-      <h2>World view</h2>
-      <canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas>
-      <p>Dependency-free equirectangular view of locally stored geolocated events.</p>
-    </section>
-    <section class="panel">
-      <h2>Portable investigation</h2>
-      <label>Case title <input id="case-title" type="text" value="Portable investigation"></label>
-      <label>Encryption passphrase <input id="case-passphrase" type="password" autocomplete="new-password" placeholder="10+ characters"></label>
-      <div class="actions">
-        <button id="export-case">Export case JSON</button>
-        <button id="export-encrypted">Export encrypted case</button>
-        <label class="file-button">Import case<input id="import-case" type="file" accept="application/json,.solari-case"></label>
-      </div>
-      <p id="case-status"></p>
-    </section>
-    <section class="panel">
-      <h2>Local workspace</h2>
-      <div class="actions">
-        <button id="refresh-events">Refresh</button>
-        <button id="clear-data">Clear local data</button>
-      </div>
-      <p id="storage-status"></p>
-      <table>
-        <thead><tr><th>Time</th><th>Category</th><th>Title</th><th>Source</th></tr></thead>
-        <tbody id="events"></tbody>
-      </table>
-    </section>
-  </main>
-  <script type="module" src="app.js"></script>
-</body>
-</html>
+<header><h1>Solari Static OSINT Console</h1><p>No application server required. Local data stays in this browser unless you export it.</p></header>
+<main>
+  <section class="panel"><h2>Capabilities & storage</h2><p id="network-status"></p><p id="quota-status"></p><pre id="capabilities"></pre></section>
+  <section class="panel"><h2>Session & privacy</h2>
+    <label>Solari API key <input id="solari-key" type="password" autocomplete="off" placeholder="Stored in memory only"></label><button id="clear-key">Clear key</button><p id="key-status">No Solari key loaded.</p>
+    <label class="toggle"><input id="privacy-mode" type="checkbox"> Memory-only privacy mode</label><p id="privacy-status">Persistent browser storage enabled.</p>
+  </section>
+  <section class="panel"><h2>Public source import</h2>
+    <label>Adapter <select id="source-adapter"></select></label><label>Public HTTPS URL <input id="source-url" type="url" value="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"></label>
+    <button id="fetch-source">Fetch and store</button><p id="fetch-status"></p>
+  </section>
+  <section class="panel"><h2>World view</h2><canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas><p>Dependency-free equirectangular view of locally stored geolocated events.</p></section>
+  <section class="panel"><h2>Portable investigation</h2>
+    <label>Case title <input id="case-title" type="text" value="Portable investigation"></label><label>Encryption passphrase <input id="case-passphrase" type="password" autocomplete="new-password" placeholder="10+ characters"></label>
+    <div class="actions"><button id="export-case">Export JSON</button><button id="export-encrypted">Export encrypted .solari-case</button><button id="export-csv">CSV</button><button id="export-geojson">GeoJSON</button><button id="export-graphml">GraphML</button><label class="file-button">Import case<input id="import-case" type="file" accept="application/json,.solari-case"></label></div>
+    <pre id="import-preview" aria-live="polite"></pre><div class="actions"><button id="confirm-import">Merge preview</button><button id="open-readonly">Open preview read-only</button><button id="close-readonly">Return to local workspace</button></div><p id="case-status"></p>
+  </section>
+  <section class="panel"><h2>Local workspace</h2><div class="actions"><button id="refresh-events">Refresh</button><button id="purge-data">Purge local database & caches</button></div><p id="storage-status"></p>
+    <div class="table-wrap"><table><thead><tr><th>Time</th><th>Category</th><th>Title</th><th>Source</th></tr></thead><tbody id="events"></tbody></table></div>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body></html>
