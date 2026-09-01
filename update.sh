@@ -11,8 +11,8 @@ stage "Verify repository"
 command -v git >/dev/null || fail "git is required"
 REMOTE="$(git remote get-url origin 2>/dev/null || true)"
 case "$REMOTE" in
-  *tocsindata/solari-cookbook.git|*tocsindata/solari-cookbook) ;;
-  *) fail "origin does not identify tocsindata/solari-cookbook: $REMOTE" ;;
+  *tocsindata/solari-osint-cookbook.git|*tocsindata/solari-osint-cookbook) ;;
+  *) fail "origin does not identify tocsindata/solari-osint-cookbook: $REMOTE" ;;
 esac
 BRANCH="$(git branch --show-current)"
 [[ "$BRANCH" == "develop" || "$BRANCH" == develop/* ]] || fail "Run development updates from develop or develop/* (current: $BRANCH)"
