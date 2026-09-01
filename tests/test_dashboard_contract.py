@@ -8,16 +8,19 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     advanced = (root / "app" / "static" / "advanced.js").read_text(encoding="utf-8")
     dossier = (root / "app" / "static" / "dossier.js").read_text(encoding="utf-8")
     solari = (root / "app" / "static" / "solari.js").read_text(encoding="utf-8")
+    workflow = (root / "app" / "static" / "workflow-builder.js").read_text(encoding="utf-8")
     for identifier in (
         "graphCanvas", "sourceHealth", "executions", "aggregateStats", "sourceAttribution", "evidence",
         "confidenceFilter", "entitySearchResults", "provenanceChain", "jobTimeline", "workspacePreset",
         "commandOpen", "commandPalette", "commandQuery", "commandResults", "severityFilter",
         "playbackRange", "playbackLabel", "playbackPlay", "playbackReset", "regionDossier",
-        "solariExecutionState", "solariExecutions",
+        "solariExecutionState", "solariExecutions", "workflowState", "workflowDefinition", "workflowGraph",
+        "workflowRender", "workflowRun", "workflowRerun", "workflowOutput",
     ):
         assert f'id="{identifier}"' in html
     assert '/static/dossier.js' in html
     assert '/static/solari.js' in html
+    assert '/static/workflow-builder.js' in html
     assert "/api/v1/entities?limit=500" in script
     assert "/api/v1/relationships?limit=1000" in script
     assert "selectGraphForEvent" in script
@@ -50,3 +53,8 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "artifact_sha256s" in solari
     assert "replay available" in solari
     assert "/api/v1/artifacts/" in solari
+    assert "/api/v1/workflows/validate" in workflow
+    assert "/api/v1/workflows/run" in workflow
+    assert "/api/v1/workflows/rerun" in workflow
+    assert "createElementNS" in workflow
+    assert "topological_order" in workflow
