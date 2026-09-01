@@ -28,6 +28,15 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Fixture normalization coverage now includes MBTA static GTFS and NOAA/SPC preliminary hail adapters in addition to the previously implemented public adapters.
 - [x] `sources.md` documents access mode, cadence, bounds, schema/provenance, interpretation limits, terms/attribution, and live-test state for the new GTFS and SPC adapters.
 - [x] `meta.md` and source registry were reconciled with the current adapter/workflow/Solari execution state.
+- [x] Dashboard now includes a safe raw-acquisition metadata inspector that preserves the raw-vs-normalized boundary without rendering source response bodies as active content.
+- [x] Dashboard now includes a dependency-free orthographic 3D globe for global situational awareness.
+- [x] 2D/3D analyst selection is synchronized through event-stream/map/globe/evidence/graph pivots, including globe-to-Leaflet recentering and 2D event selection-to-globe focus.
+- [x] Public weather-satellite orbital visualization uses retained CelesTrak general-perturbations elements with a bounded ±24-hour two-body Kepler approximation, explicit epoch handling, and a visible warning that it is not SGP4 or operational navigation data.
+- [x] Static and server modes now share a generated domain-contract manifest derived from the server Pydantic models; the static console validates/consumes the checked-in contract and tests fail on model/manifest drift.
+- [x] A durable local SQLite task queue now provides atomic claims, bounded payloads/results, retry state, schedule-slot deduplication, worker heartbeats, queue wait/runtime telemetry, and read-only API visibility without claiming distributed-queue semantics.
+- [x] A separate background worker process now executes durable registered-public-source collection and bounded declarative workflow tasks.
+- [x] A separate scheduler process now persists interval schedules and enqueues due public-source/workflow tasks with slot-level deduplication and missed-interval catch-up bounds.
+- [x] Persistent local queue depth, active/busy worker counts, utilization, oldest-pending age, queue-wait timing, and run-duration timing are exposed through API/SSE telemetry.
 
 ## Governance / public-release boundary
 - [ ] Create/synchronize the central Prime Prompts TODO mirror. **Blocked by current single-repository scope unless cross-repository authorization is explicitly granted.**
@@ -49,11 +58,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Continue adding additional lawful free/open sources when they materially broaden the showcase and have defensible provenance/terms.
 
 ## Dashboard / visualization
-- [ ] Add a raw-source/raw-acquisition view that preserves the observed-vs-normalized boundary without rendering active source content unsafely.
 - [ ] Add cost telemetry only when Solari/provider billing or job-cost data are available through a defensible interface.
-- [ ] Add optional 3D globe/terrain visualization for global situational awareness.
-- [ ] Synchronize selection state between 2D and future 3D views.
-- [ ] Add public satellite orbital/TLE visualization using a defensible propagation/epoch model rather than plotting orbital elements as fake current coordinates.
 
 ## Evidence vault / raw acquisition
 - [ ] Wire immutable HTML/text raw capture retention to all applicable server collectors; current content-addressed raw/archive primitives and Solari execution artifacts do not yet cover every direct API/feed collector payload.
@@ -64,14 +69,12 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Add QR/barcode extraction for lawful public/user-supplied evidence with explicit size/type/resource bounds.
 
 ## Debugging / observability
-- [ ] Add queue/job timing telemetry if/when a persistent distributed queue is introduced.
-- [ ] Add persistent queue depth and worker-utilization telemetry if/when background workers are introduced.
+- [ ] Add distributed-queue-specific timing/capacity telemetry if/when a persistent distributed queue is introduced; the new local SQLite queue already exposes queue wait, run duration, depth, and worker-utilization telemetry.
 - [ ] Add remote Solari Browser/Sandbox/Desktop resource-leak detection validated against real provider sessions.
 - [ ] Add cost-per-job/source telemetry when provider data make this possible without guessing.
 
 ## Static / no-hosting mode
-- [ ] Converge static-local and FastAPI/server modes onto one backend-independent frontend; today they share contracts/portable data but remain separate frontends.
-- [ ] Generate/consume one shared domain/data contract across static and server modes rather than maintaining aligned-but-separate implementations.
+- [ ] Converge static-local and FastAPI/server modes onto one backend-independent frontend; today they share a generated domain contract and portable data but remain separate frontends.
 - [ ] Verify Solari API browser/CORS/client support before claiming direct static Solari operation.
 - [ ] Add direct static Solari Browser orchestration if provider browser/CORS support permits it safely.
 - [ ] Add direct static Solari Sandbox orchestration if provider browser/CORS support permits it safely.
@@ -79,10 +82,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 
 ## Packaging / deployment
 - [ ] Add optional PostgreSQL backend for larger/shared deployments when the SQLite boundary becomes insufficient.
-- [ ] Add optional Redis queue/cache for concurrent/distributed jobs when justified by deployment requirements.
+- [ ] Add optional Redis queue/cache for concurrent/distributed jobs when justified by deployment requirements; the current durable queue is intentionally single-host SQLite.
 - [ ] Introduce a broader database migration framework if schema evolution outgrows the current bootstrap/versioned migration approach.
-- [ ] Add a background worker process for durable asynchronous jobs.
-- [ ] Add a scheduler process for durable scheduled workflows/collections.
 
 ## Cross-platform setup/update validation
 - [ ] Test a fresh Linux checkout through the documented root updater.
