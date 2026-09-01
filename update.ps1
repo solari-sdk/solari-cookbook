@@ -26,6 +26,9 @@ if (Test-Path 'package-lock.json') {
 if ((Test-Path 'requirements.txt') -or (Test-Path 'pyproject.toml')) {
     if (-not (Get-Command python -ErrorAction SilentlyContinue)) { Fail 'python is required' }
 }
+if (Test-Path 'static-console\tests') {
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) { Fail 'Node.js is required to run static-console tests' }
+}
 
 if ((Test-Path 'requirements.txt') -or (Test-Path 'pyproject.toml')) {
     Stage 'Create Python environment'
@@ -49,6 +52,7 @@ if (Test-Path 'package.json') {
     if ($scripts -match '(?m)^\s+build\b') { npm run build; if ($LASTEXITCODE -ne 0) { Fail 'npm build failed' } }
     if ($scripts -match '(?m)^\s+test\b') { npm test; if ($LASTEXITCODE -ne 0) { Fail 'npm test failed' } }
 }
+if (Test-Path 'static-console\tests') { node --test static-console/tests/*.test.mjs; if ($LASTEXITCODE -ne 0) { Fail 'static-console tests failed' } }
 if (Test-Path 'tests') { & $pythonExe -m pytest; if ($LASTEXITCODE -ne 0) { Fail 'pytest failed' } }
 
 Stage 'Configuration check'
