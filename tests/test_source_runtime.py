@@ -7,7 +7,11 @@ def test_source_runtime_cache_and_spacing():
     runtime = SourceRuntime()
     policy = SourceRuntimePolicy(min_interval_seconds=2, max_calls_per_window=10, window_seconds=60, cache_ttl_seconds=1)
     calls = {"count": 0}
-    times = iter([0.0, 0.5, 1.5, 2.1, 2.1])
+    # Network execution starts at 0.0 and completes at 0.1. The second call is
+    # served from cache at 0.5. At 1.2 the cache is expired but the source
+    # spacing window is still active, so a network call must be rate limited.
+    # At 2.1 the spacing window has elapsed and a second network call succeeds.
+    times = iter([0.0, 0.1, 0.5, 1.2, 2.1, 2.2])
 
     def clock(): return next(times)
     def operation(): calls["count"] += 1; return f"value-{calls['count']}"
