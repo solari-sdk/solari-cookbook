@@ -35,6 +35,12 @@
     <article class="panel graph-panel"><div class="panel-title"><h2>Relationship graph</h2><span id="graphState">Loading…</span></div><canvas id="graphCanvas" width="640" height="520" aria-label="Interactive entity relationship graph"></canvas><p id="graphSelection" class="graph-selection">Select a node or event.</p></article>
     <aside class="panel event-panel"><div class="panel-title"><h2>Event stream</h2><span id="streamState"></span></div><div id="events"></div></aside>
   </section>
+  <section class="panel">
+    <div class="panel-title padded"><h2>3D globe / orbital view</h2><span id="globeState">Loading public orbital snapshots…</span></div>
+    <div class="actions"><label>Element-epoch offset <input id="globeTime" type="range" min="-24" max="24" step="0.5" value="0"><span id="globeTimeLabel">+0.0 h from each source element epoch</span></label><button id="globeReset" type="button">Reset globe</button></div>
+    <canvas id="globeCanvas" width="960" height="520" aria-label="Interactive orthographic 3D globe with public events and bounded satellite orbital visualization" style="width:100%;height:auto;touch-action:none"></canvas>
+    <p>Drag to rotate. Blue points are geolocated public events; amber points are weather-satellite positions derived from retained CelesTrak general perturbations elements. Satellite positions use a visualization-only two-body Kepler approximation bounded to ±24 hours from each element epoch; this is not SGP4 and is not suitable for navigation or operational tracking.</p>
+  </section>
   <section class="ops-grid">
     <article class="panel"><div class="panel-title padded"><h2>Source health</h2><span>freshness / failures / latency</span></div><div class="table-wrap"><table><thead><tr><th>Source</th><th>Status</th><th>Age</th><th>Runs</th><th>Failures</th><th>Events</th><th>Latency</th></tr></thead><tbody id="sourceHealth"></tbody></table></div></article>
     <article class="panel"><div class="panel-title padded"><h2>Collector executions</h2><span>latest acquisitions</span></div><div id="executions" class="execution-list"></div></article>
@@ -59,5 +65,5 @@
   <section class="panel evidence-panel"><div class="panel-title"><h2>Evidence / provenance</h2><span>Select an event</span></div><pre id="evidence">No event selected.</pre></section>
 </main>
 <dialog id="commandPalette" aria-labelledby="commandPaletteTitle"><div class="command-shell"><div class="panel-title"><h2 id="commandPaletteTitle">Command palette & quick open</h2><button id="commandClose" type="button">Close</button></div><label>Command, event, or entity <input id="commandQuery" type="search" autocomplete="off" placeholder="Type to search; Ctrl/Cmd+K opens"></label><div id="commandResults" class="command-results"></div></div></dialog>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/app.js"></script><script src="/static/dossier.js"></script><script src="/static/correlation.js"></script><script src="/static/advanced.js"></script><script src="/static/solari.js"></script><script src="/static/workflow-builder.js"></script><script src="/static/raw-inspector.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/app.js"></script><script src="/static/globe.js"></script><script src="/static/dossier.js"></script><script src="/static/correlation.js"></script><script src="/static/advanced.js"></script><script src="/static/solari.js"></script><script src="/static/workflow-builder.js"></script><script src="/static/raw-inspector.js"></script>
 </body></html>
