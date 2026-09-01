@@ -1,0 +1,4 @@
+# Release watch: (run me)
+
+This file is a placeholder. After `python main.py`, the sandbox kernel
+overwrites `out/brief.md` with stats from the live page.
