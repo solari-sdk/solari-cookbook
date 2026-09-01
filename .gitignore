@@ -6,5 +6,4 @@ __pycache__/
 .venv/
 venv/
 screenshot.png
-.session-state/
 screenshots/
