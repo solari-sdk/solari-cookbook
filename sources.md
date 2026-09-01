@@ -17,6 +17,11 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Earthquakes | USGS Earthquake Hazards Program | API/feed + static CORS | Implemented |
 | Weather alerts | NOAA/NWS public alerts | API/feed | Implemented |
 | Space weather | NOAA Space Weather Prediction Center | API/feed | Implemented |
+| Observable registration/network | RDAP bootstrap services, RIPEstat | public API | Implemented enrichment |
+| DNS/email-domain posture | system DNS plus Google Public DNS JSON API for TXT lookups | DNS/API | Implemented enrichment |
+| Certificate transparency | crt.sh public certificate search | public web/API-style JSON | Implemented enrichment |
+| TLS/HTTP metadata | user-supplied public HTTPS targets | direct network | Implemented enrichment |
+| Web history | Internet Archive CDX API for user-supplied public URLs | public API | Implemented enrichment |
 | Volcanoes | USGS Volcano Hazards Program / Smithsonian public volcano data where terms permit | API/web | Planned |
 | Wildfire | NASA FIRMS and public fire/perimeter datasets | API/download | Planned |
 | Tropical cyclones | NOAA/NHC and other authoritative public warning centers | API/feed/web | Planned |
@@ -72,6 +77,63 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Terms:** public NOAA space-weather products; preserve source attribution.
 - **Known limits:** products are not inherently geospatial and remain non-map events unless a later deterministic product model supports location.
 - **Status:** implemented; live network validation is tracked separately.
+
+## Implemented observable-enrichment sources
+These are analyst-invoked enrichment adapters rather than continuously polled event feeds. They accept user-supplied public observables, impose bounded response sizes/timeouts, and retain the source URL/provider in returned provenance. They must not be used to probe private/internal targets.
+
+### RDAP.org bootstrap service
+- **Endpoint family:** `https://rdap.org/domain/{domain}` and `https://rdap.org/ip/{address}`.
+- **Acquisition:** unauthenticated HTTPS JSON; analyst-invoked.
+- **Data:** public registration/network allocation fields returned through RDAP.
+- **Rate/cadence:** no project polling cadence; calls occur only on analyst request. Respect provider policies and downstream registry limits.
+- **Health:** request failure is explicit; response is bounded before parsing.
+- **Terms/limits:** RDAP data originates from registry/RIR services and may have registry-specific terms or redactions; this tool does not treat RDAP as ownership proof.
+- **Status:** implemented with mocked parsing/safety tests; live network validation tracked separately.
+
+### crt.sh certificate transparency search
+- **Endpoint:** `https://crt.sh/?q=...&output=json`.
+- **Acquisition:** unauthenticated public HTTPS JSON-style response; analyst-invoked.
+- **Data:** certificate transparency observations including names, issuer text, validity timestamps and serial metadata.
+- **Rate/cadence:** no background polling; bounded analyst requests only. Avoid high-rate or bulk harvesting.
+- **Health:** bounded response and JSON-shape validation.
+- **Terms/limits:** CT observations show certificate issuance/visibility, not necessarily current control of a hostname.
+- **Status:** implemented with mocked parsing tests; live network validation tracked separately.
+
+### Google Public DNS JSON API
+- **Endpoint:** `https://dns.google/resolve`.
+- **Acquisition:** unauthenticated HTTPS DNS-over-JSON queries, presently limited to TXT lookups for SPF/DMARC enrichment.
+- **Data:** DNS TXT answers used to identify published SPF and DMARC records.
+- **Rate/cadence:** analyst-invoked; no continuous polling.
+- **Health:** explicit request/parse failure and bounded response.
+- **Terms/limits:** published DNS posture is descriptive only; presence of a record is not a full mail-security assessment.
+- **Status:** implemented with mocked tests; live network validation tracked separately.
+
+### RIPEstat prefix overview
+- **Endpoint:** `https://stat.ripe.net/data/prefix-overview/data.json`.
+- **Acquisition:** unauthenticated HTTPS JSON, analyst-invoked for a public IP observable.
+- **Data:** announced prefix, originating ASNs and holder text exposed by the endpoint.
+- **Rate/cadence:** no automatic polling; bounded interactive requests.
+- **Health:** explicit request failure and bounded response.
+- **Terms/limits:** routing/holder metadata is network context, not proof of physical location or operator identity.
+- **Status:** implemented with mocked tests; live network validation tracked separately.
+
+### Internet Archive CDX
+- **Endpoint family:** `https://web.archive.org/cdx/search/cdx`.
+- **Acquisition:** public HTTPS query for a user-supplied public HTTPS URL.
+- **Data:** capture timestamps, original URL, HTTP status and digest for deduplicated historical captures.
+- **Rate/cadence:** analyst-invoked and result-limited; no crawler or bulk history harvesting in this project.
+- **Health:** explicit parse failure and bounded response.
+- **Terms/limits:** archive availability is incomplete and must not be interpreted as proof that a page did or did not exist outside captured timestamps.
+- **Status:** implemented with mocked tests; live network validation tracked separately.
+
+### Direct DNS, TLS and HTTPS metadata
+- **Targets:** user-supplied public hostnames/IPs/HTTPS URLs only.
+- **Acquisition:** system DNS/reverse DNS, TLS handshake metadata, HTTPS HEAD/header inspection and redirect-chain observation.
+- **Safety boundary:** targets must resolve only to public addresses; private, loopback, link-local, multicast, reserved and unspecified destinations are rejected. Embedded URL credentials are rejected.
+- **Data:** DNS addresses/PTR, peer certificate metadata, TLS version/cipher, selected response headers and redirect hops.
+- **Rate/cadence:** analyst-invoked only; bounded timeouts and redirect limits.
+- **Terms/limits:** passive connection metadata is descriptive; fingerprint fields are hints, not definitive software identification.
+- **Status:** implemented with deterministic/mocked safety tests; live network validation tracked separately.
 
 ## Solari acquisition routing
 Use the least-complex reliable acquisition method:
