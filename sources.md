@@ -28,12 +28,13 @@ Each implemented adapter must record canonical provider/source, public documenta
 | Certificate transparency | crt.sh public certificate search | public web/API-style JSON | Implemented enrichment |
 | TLS/HTTP metadata | user-supplied public HTTPS targets | direct network | Implemented enrichment |
 | Web history | Internet Archive CDX API for user-supplied public URLs | public API | Implemented enrichment |
-| Volcanoes | USGS Volcano Hazards Program / Smithsonian public volcano data where terms permit | API/web | Planned |
+| Volcanoes | USGS Volcano Hazards Program HANS | API | Implemented elevated-status baseline |
 | Wildfire | NASA FIRMS and public fire/perimeter datasets | API/download | Implemented credential-gated FIRMS Area API baseline; live collection requires a user-supplied MAP_KEY and bounded area |
-| Flood/hydrology | NOAA/NWS/NWPS and public river/gauge sources | API/feed | Planned |
+| Flood/hydrology | USGS Water Data APIs and public river/gauge sources | API/feed | Implemented bounded latest-continuous baseline |
 | Aviation | FAA/public airport/status datasets and other lawful open aviation data | API/download/web | Planned |
-| Maritime | NOAA/USCG/public maritime safety and environmental datasets; AIS only where a lawful free/open source explicitly permits reuse | API/feed/web | Planned |
-| Environmental | EPA and other public air/water/environmental sensor datasets | API/download | Planned |
+| Maritime | NOAA NDBC environmental observations; additional public maritime safety sources where reuse is permitted | API/feed/web | Implemented NDBC environmental-observation baseline; safety/vessel/port expansion planned |
+| Environmental | EPA AirNow and NOAA NDBC public environmental observations | API/download/feed | Implemented AirNow + NDBC baselines |
+| Air quality | EPA AirNow public daily data | feed/download | Implemented daily preliminary-observation baseline |
 | Infrastructure/public status | Public government infrastructure/outage/status datasets where redistribution is permitted | API/web | Planned |
 | Transportation | Public GTFS/GTFS-Realtime and government transportation feeds | API/feed | Planned |
 | Sanctions/watchlists | Official public government sanctions/watchlists where lawful for demonstration | API/download | Implemented OFAC SDN CSV baseline |
@@ -51,7 +52,7 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Deduplication:** deterministic source ID + USGS feature ID.
 - **Health:** persisted acquisition status/duration and source-health endpoint; stale threshold is three configured poll intervals.
 - **Terms:** public U.S. government earthquake feed; retain USGS attribution and review current USGS terms before redistribution changes.
-- **Static mode:** the documented GeoJSON endpoint is the first browser-side CORS adapter; browser network/CORS failures are reported as routing limitations.
+- **Static mode:** the documented GeoJSON endpoint is the first browser-side CORS adapter; browser network/CORS failures can optionally route through the bounded static broker rather than being treated as empty data.
 - **Known limits:** point epicenter representation does not model shakemap polygons or uncertainty surfaces.
 - **Status:** implemented with deterministic fixture/unit coverage; live network validation is tracked separately.
 
@@ -180,6 +181,55 @@ Each implemented adapter must record canonical provider/source, public documenta
 - **Terms:** official U.S. Treasury data; preserve OFAC attribution and current guidance.
 - **Status:** implemented with deterministic fixture tests; live network validation tracked separately.
 
+### EPA AirNow daily air-quality data
+- **Adapter ID:** `airnow-daily-quality`
+- **Authoritative documentation:** `https://files.airnowtech.org/airnow/docs/DailyDataFactSheet.pdf`.
+- **Baseline endpoint:** `https://files.airnowtech.org/airnow/today/daily_data_v2.dat`.
+- **Acquisition:** public pipe-delimited daily data; no authentication; nominal poll interval 1800 seconds; 10 MiB response and 50,000-record bounds.
+- **Scope/category:** preliminary AirNow monitor observations/aggregates; `air-quality` events.
+- **Raw/normalized mapping:** valid date, AQS/site identifiers, site name, parameter, units, value, averaging period, reporting data source, AQI/category code and monitor coordinates are retained. The daily local-standard-time date is anchored deterministically at 00:00 UTC only for storage; no exact observation clock time is invented.
+- **Evidence/deduplication:** deterministic source + date + AQS/site ID + parameter + averaging period; acquisition ID and source-row path retained.
+- **Interpretation:** AirNow data are preliminary and are not represented as certified regulatory AQS observations. AQI values are mapped only to coarse display severity categories; missing `-999` values remain null.
+- **Health:** common acquisition/job/source-health telemetry applies, including parser timing and accepted/rejected counts.
+- **Terms:** preserve EPA/AirNow and reporting-agency attribution and current AirNow use guidance.
+- **Status:** implemented, registered, and covered by deterministic parser/normalization/boundary tests; live network validation is tracked separately.
+
+### USGS Water Data latest continuous observations
+- **Adapter ID:** `usgs-water-latest`
+- **Authoritative collection:** `https://api.waterdata.usgs.gov/ogcapi/v0/collections/latest-continuous`.
+- **Baseline endpoint:** `https://api.waterdata.usgs.gov/ogcapi/v0/collections/latest-continuous/items`.
+- **Acquisition:** modern public USGS Water Data OGC API. The adapter intentionally requires an explicit bounded `USGS_WATER_SITE_IDS` list (maximum 25 sites) and at most 10 five-digit parameter codes; default parameters are discharge (`00060`) and gage height (`00065`). A user-owned `USGS_WATER_API_KEY` is optional for applicable rate-limit behavior and is never persisted.
+- **Scope/category:** latest continuous observations for explicitly selected USGS monitoring locations; `water-observation` events.
+- **Raw/normalized mapping:** monitoring location ID, parameter code, value, unit, approval status, qualifier, series ID, observation/update timestamps and source point coordinates are retained.
+- **Evidence/deduplication:** deterministic source + feature/site + parameter + observation timestamp; acquisition ID and GeoJSON feature path retained.
+- **Interpretation:** latest continuous data may be provisional. Raw discharge/gage-height values do not automatically become flood alerts or severity labels; flood interpretation requires an authoritative threshold/status source.
+- **Health/safety:** 5 MiB response cap, 5,000-feature limit, bounded explicit sites/parameters, response/parser telemetry and common source-health handling.
+- **Status:** implemented, registered, and fixture-tested against the modern API contract; live endpoint validation is tracked separately.
+
+### USGS Hazard Notification System elevated volcanoes
+- **Adapter ID:** `usgs-volcano-elevated`
+- **Authoritative API family:** `https://volcanoes.usgs.gov/hans-public/api/volcano/default`.
+- **Baseline endpoint:** `https://volcanoes.usgs.gov/hans-public/api/volcano/getElevatedVolcanoes`.
+- **Acquisition:** public USGS HANS JSON API; no project credential; nominal poll interval 900 seconds; 2 MiB response and 1,000-record bounds.
+- **Scope/category:** volcanoes in elevated USGS status and their public notification metadata; `volcano-status` events.
+- **Raw/normalized mapping:** Smithsonian volcano number, volcano name, official aviation color code, alert level, observatory name/abbreviation, notice identity/type/URL and notice timestamp are retained.
+- **Evidence/deduplication:** deterministic source + volcano number + notice identity/timestamp; acquisition ID and array path retained.
+- **Interpretation:** display severity follows official HANS color/alert levels conservatively. The elevated-status response does not provide coordinates in this adapter, so no coordinates are inferred from volcano name or prose.
+- **Terms:** preserve USGS and issuing-observatory attribution; use official observatory notices for authoritative hazard interpretation.
+- **Status:** implemented, registered, and fixture-tested; live endpoint validation is tracked separately.
+
+### NOAA National Data Buoy Center latest observations
+- **Adapter ID:** `ndbc-latest-observations`
+- **Authoritative data guide:** `https://www.ndbc.noaa.gov/docs/ndbc_web_data_guide.pdf`.
+- **Baseline endpoint:** `https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt`.
+- **Acquisition:** public fixed-format/latest-observation text feed; no authentication; nominal poll interval 300 seconds; 2 MiB response and 5,000-record bounds.
+- **Scope/category:** latest public NDBC station environmental observations; `marine-observation` events.
+- **Raw/normalized mapping:** station ID and coordinates plus UTC observation time, wind direction/speed/gust, wave height/period/direction, pressure/tendency, air/water/dewpoint temperature, visibility and tide where present. `MM` missing values remain null.
+- **Evidence/deduplication:** deterministic source + station + observation timestamp; acquisition ID and parsed-record path retained.
+- **Interpretation:** station measurements are environmental observations, not inferred hazard warnings. The adapter does not infer vessel movements, port status, or marine-warning severity.
+- **Terms:** preserve NOAA/NDBC attribution; use official NOAA/NWS warning products for safety-critical decisions.
+- **Status:** implemented, registered, and fixture-tested; live endpoint validation is tracked separately.
+
 ## Implemented observable/reference enrichment sources
 These are analyst-invoked enrichment adapters rather than continuously polled event feeds. They accept user-supplied public observables/places, impose bounded requests where applicable, and retain the source URL/provider in returned provenance. They must not be used to probe private/internal targets.
 
@@ -259,7 +309,7 @@ Use the least-complex reliable acquisition method:
 3. Solari Desktop only when the source/workflow genuinely requires GUI/screen interaction that is not cleanly represented through an API or browser workflow.
 4. Solari Sandbox for isolated parsing, transformation, generated extraction logic, document processing, enrichment, and untrusted-input handling when isolation adds value.
 
-Static-browser adapters use the same principle. A browser-side network/CORS failure is not silently treated as an empty source: the console reports that the source requires Browser or optional broker routing. Direct Solari browser-side orchestration remains unclaimed until provider CORS/browser-client behavior is verified.
+Static-browser adapters use the same principle. A browser-side network/CORS failure is not silently treated as an empty source: when an evaluator/operator supplies the optional broker endpoint, the console can retry the allowlisted public source through the bounded broker. The broker address is session-only and not hard-coded. Direct Solari browser-side orchestration remains unclaimed until provider CORS/browser-client behavior is verified.
 
 ## Prohibited source material
 Do not register private customer feeds, proprietary internal feeds, credentialed sources without explicit public-demo authorization, leaked datasets, private personal data, or source lists copied from unrelated private systems.

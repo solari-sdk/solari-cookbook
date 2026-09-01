@@ -1,0 +1,58 @@
+{
+  "sample_format": "solari-normalized-public-source-fixture",
+  "version": 1,
+  "generated_from": "deterministic test fixture; not a claimed live observation",
+  "acquisition": {
+    "id": "sample-usgs-acquisition",
+    "source_id": "usgs-earthquakes",
+    "method": "feed",
+    "requested_url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson",
+    "final_url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson",
+    "started_at": "2026-09-01T12:00:00Z",
+    "completed_at": "2026-09-01T12:00:01Z",
+    "status": "success",
+    "http_status": 200,
+    "content_type": "application/geo+json",
+    "content_sha256": "5db0f45c7505288569ff47a79aef2475f891e690e13fd3ab71a3562b3105f5a3",
+    "metadata": {
+      "fixture": true,
+      "records_received": 1,
+      "records_accepted": 1,
+      "records_rejected": 0
+    }
+  },
+  "events": [
+    {
+      "id": "sample-earthquake-event",
+      "source_id": "usgs-earthquakes",
+      "source_record_id": "fixture-quake-001",
+      "category": "earthquake",
+      "title": "M4.2 — Public fixture location",
+      "summary": "earthquake",
+      "observed_at": "2026-09-01T11:58:00Z",
+      "updated_at": "2026-09-01T11:59:00Z",
+      "location": {
+        "latitude": 47.6,
+        "longitude": -122.3,
+        "precision": "fixture point"
+      },
+      "severity": "moderate",
+      "quality_score": 1.0,
+      "properties": {
+        "magnitude": 4.2,
+        "depth_km": 10.0,
+        "tsunami": false,
+        "fixture": true
+      },
+      "evidence": [
+        {
+          "acquisition_id": "sample-usgs-acquisition",
+          "field": "*",
+          "kind": "observed",
+          "source_path": "features[0]",
+          "note": "Deterministic public-source fixture used to demonstrate the normalized contract."
+        }
+      ]
+    }
+  ]
+}

@@ -1,40 +1,49 @@
-# Submission readiness checklist
+# Submission Checklist
 
-Use this checklist before representing the repository as submission-ready. Repository-local deterministic checks may be completed autonomously; provider-credential and platform-specific checks must remain explicitly unverified until exercised in the relevant environment.
+This checklist is the final release gate for the public OSINT operations-center showcase. A checked item requires repository or live-run evidence; documentation alone does not prove a runtime claim.
 
-## Repository and public-release review
-- Confirm the final `develop` head and intended submission ref.
-- Run the complete Python and static-console test suites.
-- Run the current-tree public-release scanner on the final tree.
-- Scan Git history for credentials/secrets and review any findings before publication.
-- Review the final tree for unrelated private names, project identifiers, proprietary material, restricted information, and generated runtime artifacts.
-- Verify `.gitignore`, example configuration, generated output exclusions, and dependency lock/version policy.
+## Repository and governance
 
-## Reproducibility
-- Exercise Linux fresh-install and repeat-update paths.
-- Exercise Windows fresh-install and repeat-update paths.
-- Exercise macOS fresh-install/repeat-update where a macOS validation environment is available; otherwise document the limitation explicitly.
-- Verify missing-credential behavior remains safe and understandable.
-- Verify static/no-hosting mode starts with no FastAPI/database process and retains local investigations offline.
+- [ ] `develop` has been reviewed and is ready for the intended submission branch.
+- [ ] Applicable repository rules and current Prime Prompts checkpoint have been reviewed.
+- [ ] Current-tree secret/public-release scan passes.
+- [ ] Git-history secret scan passes.
+- [ ] Final public-release review finds no private names, unrelated project/company identifiers, credentials, proprietary material, restricted data, or media-monitoring functionality.
+- [ ] `meta.md`, `TODO.md`, `sources.md`, README, architecture, security, operations, and known-limitations documentation agree with the final tree.
 
-## Public-source and Solari demonstrations
-- Run representative live public-source smoke tests and retain non-sensitive results/log evidence.
-- With evaluator/operator-owned credentials, run the documented Solari Browser integration path and verify resource cleanup.
-- Run the Solari Sandbox integration path and verify cleanup plus captured execution diagnostics.
-- Run the selected Solari Desktop GUI workflow and verify evidence normalization plus cleanup.
-- Verify Browser + Sandbox + Desktop are each used for a concrete requirement rather than merely invoked.
+## Functional demonstration
 
-## Product review
-- Exercise map, filters, timeline, evidence/provenance, source health, collector execution, graph, case, portable bundle, alert/watchlist, and export workflows.
-- Verify imported portable bundles do not overwrite unresolved divergent local records.
-- Verify encrypted portable case round trips and secret/session scanning.
-- Verify offline reports escape untrusted source text and contain the reproducibility manifest.
-- Run accessibility and representative-volume performance passes.
-- Capture current screenshots or a short demonstration recording only after the final UI is stable.
+- [ ] Representative direct public-source collectors complete successfully against live sources.
+- [ ] Credential/configuration-gated public sources are either demonstrated with evaluator-owned values or explicitly identified as blocked/not exercised.
+- [ ] Solari Browser has a legitimate live public-source workflow and remote resources clean up on success/failure.
+- [ ] Solari Sandbox has a legitimate live isolated transformation/enrichment workflow and remote resources clean up on success/failure.
+- [ ] Solari Desktop has a legitimate live GUI/screen-driven public workflow and remote resources clean up on success/failure.
+- [ ] Browser/Sandbox/Desktop evidence and execution telemetry are visible and human-verifiable.
+- [ ] Static/no-hosting console completes its documented direct-CORS workflow with no application backend running.
+- [ ] Portable case export/import/integrity/encryption workflow is demonstrated.
+- [ ] Server dashboard map, filters, event/evidence inspection, source health, execution/debug surfaces, graph, and exports are demonstrated.
 
-## Final evidence
-- Record test/CI result for the exact submission commit.
-- Record live smoke-test date and source set.
-- Record Solari Browser/Sandbox/Desktop live-test evidence without credentials/session material.
-- Reconcile `TODO.md`, `meta.md`, `sources.md`, README limitations, and this checklist.
-- Do not mark the repository submission-ready while any required live/manual/public-release item above remains unverified.
+## Quality gates
+
+- [ ] Python test suite passes on the final commit.
+- [ ] Static-console Node test suite passes on the final commit.
+- [ ] Public-release scanner passes on the final commit.
+- [ ] Browser UI smoke/accessibility checks pass in supported browsers.
+- [ ] Representative-volume performance check passes or measured limits are documented.
+- [ ] Fresh and repeat update paths are tested on Linux and Windows.
+- [ ] macOS fresh/repeat update is tested, or the unavailable validation environment is stated explicitly.
+- [ ] No stale remote Browser/Sandbox/Desktop resources remain after failure-path tests.
+
+## Reviewer package
+
+- [ ] README quickstart works from a fresh checkout.
+- [ ] Static/no-hosting quickstart works from a fresh checkout/download.
+- [ ] Checked-in deterministic sample output validates against current contracts.
+- [ ] Reviewer walkthrough matches the final feature set and does not claim untested capabilities.
+- [ ] Screenshots/GIF/video, if included, reflect the current UI and contain no sensitive data.
+- [ ] Known limitations and evaluator-required credentials/configuration are explicit.
+- [ ] Final end-to-end demonstration has been run from the exact submission commit.
+
+## Release decision
+
+The project is submission-ready only when every required item above is either checked with evidence or explicitly documented as a non-required limitation accepted for the submission. Do not convert an untested external dependency into a completed claim.
