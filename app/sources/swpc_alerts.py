@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 from hashlib import sha256
 from typing import Any
 from urllib.request import Request, urlopen
@@ -15,6 +16,8 @@ SOURCE = SourceDescriptor(
     method=AcquisitionMethod.API,
     poll_interval_seconds=300,
     license_note="Public NOAA space-weather products.",
+    capabilities=["events", "public-api", "deterministic-normalization"],
+    depends_on=[],
 )
 DEFAULT_FEED = "https://services.swpc.noaa.gov/products/alerts.json"
 
@@ -54,5 +57,13 @@ def collect(timeout_seconds: int = 20) -> tuple[AcquisitionEnvelope, list[EventR
     req = Request(DEFAULT_FEED, headers={"User-Agent": "solari-osint-operations-center/0.3"})
     with urlopen(req, timeout=timeout_seconds) as response:  # nosec B310 - fixed HTTPS public source
         raw = response.read(); payload: list[dict[str, Any]] = json.loads(raw); completed = utc_now()
-        acquisition = AcquisitionEnvelope(id=acquisition_id, source_id=SOURCE.id, method=SOURCE.method, requested_url=DEFAULT_FEED, final_url=response.geturl(), started_at=started, completed_at=completed, status="success", http_status=getattr(response, "status", 200), content_type=response.headers.get("Content-Type"), content_sha256=sha256(raw).hexdigest())
-    return acquisition, normalize(payload, acquisition_id)
+        acquisition = AcquisitionEnvelope(id=acquisition_id, source_id=SOURCE.id, method=SOURCE.method, requested_url=DEFAULT_FEED, final_url=response.geturl(), started_at=started, completed_at=completed, status="success", http_status=getattr(response, "status", 200), content_type=response.headers.get("Content-Type"), content_sha256=sha256(raw).hexdigest(), metadata={"response_bytes": len(raw)})
+    parser_started = time.perf_counter()
+    events = normalize(payload, acquisition_id)
+    acquisition.metadata.update({
+        "parser_duration_ms": (time.perf_counter() - parser_started) * 1000.0,
+        "records_received": len(payload),
+        "records_accepted": len(events),
+        "records_rejected": max(0, len(payload) - len(events)),
+    })
+    return acquisition, events
