@@ -1,4 +1,4 @@
-from app.sources import nws_alerts, swpc_alerts
+from app.sources import nws_alerts, swpc_alerts, usgs_earthquakes
 
 
 def test_nws_normalization():
@@ -18,6 +18,15 @@ def test_swpc_normalization():
     assert rows[0].source_record_id=="ALTTEST"
     assert rows[0].title=="Space Weather Alert"
     assert rows[0].evidence[0].acquisition_id=="acq"
+
+
+def test_source_capabilities_and_dependencies_are_explicit():
+    sources=[usgs_earthquakes.SOURCE,nws_alerts.SOURCE,swpc_alerts.SOURCE]
+    for source in sources:
+        assert "events" in source.capabilities
+        assert "deterministic-normalization" in source.capabilities
+        assert source.depends_on == []
+    assert "geospatial" in usgs_earthquakes.SOURCE.capabilities
 
 
 def test_swpc_descriptor_is_public_api():
