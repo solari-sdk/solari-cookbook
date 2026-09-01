@@ -23,7 +23,10 @@
   </section>
   <section class="panel"><h2>Source health</h2><p id="source-health-summary"></p><div class="table-wrap"><table><thead><tr><th>Source</th><th>Last success</th><th>Age</th><th>Records</th><th>URL</th></tr></thead><tbody id="source-health"></tbody></table></div></section>
   <section class="panel"><h2>Collector executions</h2><div class="table-wrap"><table><thead><tr><th>Source</th><th>Started</th><th>Status</th><th>Accepted</th><th>Rejected</th><th>Bytes</th></tr></thead><tbody id="collector-executions"></tbody></table></div></section>
-  <section class="panel"><h2>World view</h2><p id="map-freshness"></p><canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas><p>Dependency-free equirectangular view of the current filtered geolocated events.</p></section>
+  <section class="visual-grid">
+    <article class="panel"><h2>World view</h2><p id="map-freshness"></p><canvas id="world-map" width="1200" height="520" aria-label="World event map"></canvas><p>Dependency-free equirectangular view of the current filtered geolocated events.</p></article>
+    <article class="panel"><h2>Relationship graph</h2><p id="graph-status">No graph loaded.</p><svg id="knowledge-graph" viewBox="0 0 720 520" role="img" aria-label="Case relationship graph"></svg><pre id="graph-selection">Select an entity to inspect it.</pre></article>
+  </section>
   <section class="panel"><h2>Portable investigation</h2>
     <label>Case title <input id="case-title" type="text" value="Portable investigation"></label><label>Encryption passphrase <input id="case-passphrase" type="password" autocomplete="new-password" placeholder="10+ characters"></label>
     <div class="actions"><button id="export-case">Export JSON</button><button id="export-encrypted">Export encrypted .solari-case</button><button id="export-csv">CSV</button><button id="export-geojson">GeoJSON</button><button id="export-graphml">GraphML</button><button id="export-report">Offline HTML report</button><label class="file-button">Import case<input id="import-case" type="file" accept="application/json,.solari-case"></label></div>
