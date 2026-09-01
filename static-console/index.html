@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https:; img-src 'self' data: blob: https:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'">
+  <title>Solari Static OSINT Console</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Solari Static OSINT Console</h1>
+    <p>No application server required. Local data stays in this browser unless you export it.</p>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>Session</h2>
+      <label>Solari API key <input id="solari-key" type="password" autocomplete="off" placeholder="Stored in memory only"></label>
+      <button id="clear-key">Clear key</button>
+      <p id="key-status">No Solari key loaded.</p>
+    </section>
+    <section class="panel">
+      <h2>Public source import</h2>
+      <label>GeoJSON URL <input id="source-url" type="url" value="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"></label>
+      <button id="fetch-source">Fetch and store</button>
+      <p id="fetch-status"></p>
+    </section>
+    <section class="panel">
+      <h2>Local workspace</h2>
+      <div class="actions">
+        <button id="refresh-events">Refresh</button>
+        <button id="export-case">Export case JSON</button>
+        <label class="file-button">Import case JSON<input id="import-case" type="file" accept="application/json"></label>
+        <button id="clear-data">Clear local data</button>
+      </div>
+      <p id="storage-status"></p>
+      <table>
+        <thead><tr><th>Time</th><th>Category</th><th>Title</th><th>Source</th></tr></thead>
+        <tbody id="events"></tbody>
+      </table>
+    </section>
+  </main>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
