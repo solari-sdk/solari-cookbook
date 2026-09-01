@@ -1,0 +1,35 @@
+name: Git history public-release scan
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [develop]
+    paths:
+      - tools/history_release_scan.py
+      - tools/public_release_scan.py
+      - tests/test_history_release_scan.py
+      - .github/workflows/history-scan.yml
+
+permissions:
+  contents: read
+
+jobs:
+  history-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout complete reachable history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Test history scanner
+        run: python -m pytest -q tests/test_history_release_scan.py
+
+      - name: Scan reachable Git history
+        run: python tools/history_release_scan.py .
