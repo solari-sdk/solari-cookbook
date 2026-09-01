@@ -32,7 +32,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Define source/collector health model.
 - [x] Define full execution/job/retry model.
 - [x] Define configuration and secret boundary.
-- [ ] Define retention/cleanup policy for browser sessions, recordings, screenshots, raw acquisitions, sandbox outputs, and desktop artifacts.
+- [x] Define retention/cleanup policy for browser sessions, recordings, screenshots, raw acquisitions, sandbox outputs, desktop artifacts, server/static state, and portable cases in `docs/retention-cleanup-policy.md`.
 
 ## Solari Browser
 - [x] Implement generic browser acquisition adapter foundation.
@@ -100,25 +100,25 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Deterministic identifiers/idempotence.
 - [x] Duplicate/correlation candidate detection across different source IDs without destructive auto-merge.
 - [x] Cross-source correlation.
-- [ ] Geographic normalization/geocoding strategy.
-- [ ] Time normalization and timezone provenance.
+- [x] Geographic normalization/geocoding strategy documented with observed-vs-transformed boundary and explicit CRS/precision rules.
+- [x] Time normalization and timezone provenance with UTC normalization, original values, source offsets, and explicit assumptions.
 - [x] Entity extraction where appropriate.
 - [x] Baseline confidence/quality scoring field.
 - [x] Distinguish observed facts from transformed/inferred evidence types.
 - [x] Field/source-path evidence references.
 - [x] First-seen / last-seen tracking.
 - [x] Observation frequency / sighting counts.
-- [ ] Immutable raw-object archive with content-addressed lookup.
-- [ ] Schema versioning and migrations for normalized event contracts.
+- [x] Immutable raw-object archive with SHA-256 content addressing, integrity checks, and per-acquisition immutable metadata.
+- [x] Schema versioning and migrations for normalized event contracts.
 - [x] Source-specific rate limiting and quotas with explicit retry-after state.
 - [x] Result caching with explicit freshness TTLs.
 - [x] Parallel/concurrent multi-source collection.
 - [x] Multi-target collection jobs.
-- [ ] Fan-out/fan-in enrichment pipelines.
+- [x] Fan-out/fan-in enrichment pipelines with bounded concurrency, timing, partial-failure state, and explicit conflicts.
 - [x] Source adapter capability descriptors.
 - [x] Source adapter dependency graph.
-- [ ] Per-field conflict tracking when sources disagree.
-- [ ] Preferred-value selection with provenance preserved.
+- [x] Per-field conflict tracking when sources disagree.
+- [x] Preferred-value selection with provenance preserved.
 - [x] Confidence aggregation across independent-source reliability, record-quality and corroboration inputs.
 - [x] Observation supersession/history rather than destructive overwrite.
 
@@ -136,7 +136,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Geographic filters.
 - [ ] Source/category/severity/quality/confidence filters.
 - [ ] Full-text/entity search.
-- [ ] Saved views/query state.
+- [ ] Saved views/query state UI.
 - [x] Event detail/evidence inspector foundation.
 - [x] Normalized properties inspection.
 - [ ] Raw-source view.
@@ -161,7 +161,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] 2D/3D synchronized selection state.
 - [ ] Shared selection context across dashboard modules.
 - [ ] Shared time context across dashboard modules.
-- [ ] Position/event replay from retained history.
+- [ ] Position/event replay UI from retained history.
 - [ ] Side-by-side map and graph analysis mode.
 - [ ] Country/region dossier view built only from public structured sources.
 - [ ] Data freshness badges on every major widget.
@@ -209,28 +209,28 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Geographic graph filtering.
 - [x] Graph clustering/community detection foundation through connected components.
 - [x] Relationship inference state separated visibly from observed relationships.
-- [ ] Auto-correlation rules that create/review graph relationships.
+- [x] Auto-correlation rules create explicit reviewable alias-correlation hypotheses without merging source entities.
 - [ ] Correlation explanation UI view.
-- [ ] Merge/split entities with audit history.
-- [ ] Alias resolution.
-- [ ] Entity canonicalization.
-- [ ] Entity deduplication suggestions.
-- [ ] Manual accept/reject of inferred relationships.
-- [ ] Hypothesis labels on inferred links.
-- [ ] Confidence decay / staleness rules for old relationships.
+- [x] Merge/split entities with before/after audit history and explicit reason.
+- [x] Alias resolution.
+- [x] Entity canonicalization.
+- [x] Entity deduplication suggestions.
+- [x] Manual accept/reject of inferred relationships while preserving `observed=false` provenance semantics.
+- [x] Hypothesis labels on inferred links.
+- [x] Confidence decay / staleness rules for old relationships.
 
 ## Analyst automation / workflows — competitive backlog
-- [ ] Reusable playbooks for repeatable analyses.
+- [x] Reusable playbooks for repeatable analyses.
 - [ ] Visual node-graph workflow builder.
-- [ ] Conditional workflow branches.
-- [ ] Parallel workflow steps.
-- [ ] Retry/fallback workflow nodes.
-- [ ] Human-review/approval workflow node.
-- [ ] Scheduleable workflows.
-- [ ] Event-triggered workflows.
-- [ ] Source-health-triggered workflows.
-- [ ] Reusable scan templates/presets.
-- [ ] Pivot chains that launch follow-up analysis from prior results.
+- [x] Conditional workflow branches with bounded declarative operators and no `eval`.
+- [x] Parallel workflow steps with bounded worker concurrency.
+- [x] Retry/fallback workflow nodes.
+- [x] Human-review/approval workflow node.
+- [x] Scheduleable workflow trigger descriptors/evaluator; background scheduler remains separately optional.
+- [x] Event-triggered workflow matching.
+- [x] Source-health-triggered workflow matching.
+- [x] Reusable scan templates/presets through the playbook registry.
+- [x] Pivot chains through dependency-output context.
 - [x] Pluggable analyzers.
 - [ ] Executable pluggable ingestors.
 - [ ] Executable pluggable visualizers.
@@ -240,10 +240,10 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Plugin isolation through Solari Sandbox when practical.
 - [x] Per-plugin timeout/resource limits.
 - [x] Per-plugin provenance and execution trace.
-- [ ] One-click re-run of prior analysis with current source data.
-- [ ] Diff previous vs current analysis results.
-- [ ] Batch/multi-target analysis jobs.
-- [ ] Queue prioritization and concurrency controls.
+- [ ] One-click re-run UI of prior analysis with current source data; engine-level rerun exists.
+- [x] Diff previous vs current analysis results.
+- [x] Batch/multi-target analysis jobs.
+- [x] Queue prioritization and concurrency controls for the single-node engine; distributed durability remains a deployment concern.
 
 ## Data quality / false-positive controls — competitive backlog
 - [x] Warning-list framework for known benign/public/common values.
@@ -255,18 +255,18 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Analyst allowlist/blocklist annotations.
 - [x] False-positive triage state.
 - [x] True-positive / false-positive / suspicious analyst disposition where applicable.
-- [ ] Duplicate/correlation suppression rules.
+- [x] Duplicate/correlation suppression rules with preserved, explainable suppressed candidates.
 - [x] Persisted source reliability scoring separate from event confidence.
 - [x] Data completeness score.
 - [x] Staleness score.
-- [ ] Contradiction/conflict flag when authoritative sources disagree.
-- [ ] Schema-drift quarantine instead of silent ingestion.
+- [x] Contradiction/conflict flag when authoritative sources disagree.
+- [x] Schema-drift quarantine instead of silent ingestion.
 - [x] Validation error inbox for malformed source records with explicit resolution state.
 - [x] Manual correction overlay preserving original source data/value alongside corrected value and rationale.
 
 ## Evidence vault / artifact management — competitive backlog
 - [x] Content-addressed artifact store.
-- [ ] HTML/text raw capture retention wired to collectors.
+- [ ] HTML/text raw capture retention wired to all server collectors.
 - [ ] Screenshot artifact retention wired to browser executions.
 - [ ] Browser recording artifact retention.
 - [ ] Sandbox output artifact retention wired to executions.
@@ -279,7 +279,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Artifact retention policies and cleanup workflow.
 - [x] Deduplicate identical artifacts by hash.
 - [x] Export evidence bundle with manifest/checksums and artifact bytes.
-- [ ] Object-storage backend abstraction for future S3-compatible storage.
+- [x] Object-storage backend abstraction for future S3-compatible storage through the `ArtifactBackend` protocol.
 
 ## Reconnaissance / observable enrichment — competitive backlog
 - [x] Generic observable model distinct from situational events.
@@ -304,22 +304,22 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Screenshot comparison / visual change detection.
 
 ## Geospatial / situational-awareness backlog
-- [ ] Track moving objects with timestamped positions when free/public sources permit.
-- [ ] Position trails/history.
-- [ ] Replay moving-object history.
-- [ ] Geofences and region-of-interest definitions.
-- [ ] Enter/exit geofence events.
+- [x] Track moving objects with timestamped positions for caller-supplied lawful public observations.
+- [x] Position trails/history.
+- [x] Replay moving-object history.
+- [x] Geofences and region-of-interest definitions.
+- [x] Enter/exit geofence events.
 - [x] Distance/bearing calculations.
-- [ ] Proximity correlation between both events and entities.
+- [x] Proximity correlation between events and entities without automatically inferring relationships.
 - [x] Bounding-box and simple polygon filters; antimeridian-crossing polygons must be split explicitly.
-- [ ] Administrative boundary intersection.
+- [x] Administrative boundary intersection against provenance-bearing boundary datasets supplied to the engine.
 - [ ] Reverse geocoding from open datasets.
 - [ ] Place-name gazetteer lookup.
 - [ ] Coordinate precision/uncertainty visualization.
 - [x] Great-circle route calculation/interpolation.
 - [ ] Public satellite orbital/TLE visualization.
 - [ ] Optional 3D terrain/globe visualization.
-- [ ] Tile/layer attribution management.
+- [x] Tile/layer attribution management with explicit license/source/offline-policy metadata.
 - [x] Offline/local baseline map works without external tile assets; richer licensed offline map cache remains optional.
 
 ## Alerts / watchlists
@@ -338,16 +338,16 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Optional email/Slack-style connector interfaces without embedding credentials in repository.
 
 ## Debugging / observability
-- [ ] Structured logs with both correlation and job IDs on the same execution trail; request correlation logging and persisted job IDs exist separately.
+- [x] Structured logs carry both correlation and job IDs through a shared execution context without logging request bodies or credentials.
 - [x] Source acquisition timings in persistence layer.
 - [x] Parser timings recorded in acquisition metadata for implemented API/feed collectors.
-- [ ] Queue/job timings for a persistent queue if one is introduced.
+- [ ] Queue/job timings for a persistent distributed queue if one is introduced.
 - [x] Failure taxonomy.
 - [x] Retry counters and terminal-failure state in bounded job executions.
 - [x] Source freshness/staleness detection.
 - [x] Last acquisition per source backend query.
-- [ ] Schema drift detection.
-- [ ] Raw-vs-normalized comparison.
+- [x] Schema drift detection.
+- [x] Raw-vs-normalized field comparison utility with explicit source-path mappings and missing/change state.
 - [ ] Deduplication/correlation explanation UI view.
 - [x] Health endpoint.
 - [x] Source-health backend endpoint.
@@ -382,32 +382,32 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Job/execution endpoint with filtering, metrics and detail retrieval.
 - [x] OpenAPI generation through FastAPI.
 - [ ] WebSocket/SSE live updates.
-- [ ] GraphQL evaluation for graph-heavy client queries.
+- [x] GraphQL evaluated and deferred until compound client queries justify the added query/authorization/cost-control surface.
 - [ ] STIX 2.x interoperability where appropriate.
-- [ ] MISP-compatible export/import evaluation for relevant cyber observables only.
+- [x] MISP-compatible export/import evaluated and intentionally deferred until semantically compatible cyber observables exist.
 - [x] Generic JSON schema export.
 - [x] API versioning/deprecation policy.
 
 ## Collaboration / governance backlog
 - [x] Local single-user mode remains default for demo simplicity.
-- [ ] Optional multi-user architecture design.
-- [ ] Role-based access control design if multi-user mode is implemented.
-- [ ] Immutable analyst action audit log.
-- [ ] Shareable saved views without leaking secrets.
-- [ ] Investigation assignment/work queue.
-- [ ] Analyst handoff notes.
-- [ ] Review/approval status on derived conclusions.
+- [x] Optional multi-user architecture design.
+- [x] Role-based access control design for a future shared deployment, including per-case authorization as a second dimension.
+- [x] Immutable analyst action audit log foundation with before/after hashes and correlation IDs.
+- [x] Shareable saved views with recursive sensitive-field rejection.
+- [x] Investigation assignment/work queue with priority/status ordering.
+- [x] Analyst handoff notes.
+- [x] Review/approval status on derived conclusions.
 - [ ] Data/source license and attribution registry surfaced in UI.
 - [x] Per-source terms/usage notes maintained in source registry/descriptors.
 - [x] Public-source legal/ethical boundary page.
 
 ## No-hosting static console mode
 - [x] Make the primary single-user analyst console capable of running as a fully static browser application with no application server required.
-- [ ] Keep one identical frontend backend-independent so the same UI can operate in static-local mode or FastAPI team/server mode; current modes are separate frontends sharing concepts/portable data.
+- [ ] Keep one identical frontend backend-independent so the same UI can operate in static-local mode or FastAPI team/server mode; current modes remain separate frontends sharing contracts/portable data.
 - [ ] Define one fully shared generated domain/data contract across static and server modes; current portable semantics align but remain separately implemented.
 - [x] Add browser-side IndexedDB persistence for cases, events, entities, relationships, evidence metadata, saved views, source state, notes, watchlists, layouts, preferences, and artifacts.
 - [x] Add IndexedDB schema versioning and migrations.
-- [ ] Add browser-side content-addressed artifact storage using IndexedDB/OPFS where supported.
+- [x] Add browser-side content-addressed artifact storage using IndexedDB with SHA-256 addressing and deduplication; OPFS remains an optional future large-object backend.
 - [x] Add a pure-static source adapter layer for public APIs that permit browser-side CORS access.
 - [ ] Detect CORS-incompatible public sources and actually route them through Solari Browser or optional broker rather than only explaining the fallback.
 - [ ] Add static-mode direct Solari Browser orchestration where Solari browser-side API access is supported.
@@ -416,7 +416,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Verify Solari API CORS/browser-client support before claiming direct static operation.
 - [x] Add bring-your-own Solari API key mode for developer/evaluator use.
 - [x] Keep the Solari API key in memory by default; never embed it in static assets or repository content.
-- [ ] Evaluate optional Web Crypto-encrypted local key persistence with explicit opt-in and prominent risk warning.
+- [x] Evaluate optional Web Crypto-encrypted local key persistence; documented decision is to keep keys memory-only unless a future requirement justifies the residual XSS/origin risk.
 - [x] Add one-click clear/forget local credentials and cached session material.
 - [x] Add a visible credential/session-state indicator in static mode without exposing secret values.
 - [ ] Add optional tiny credential-broker mode for deployments that should not expose provider credentials to browser JavaScript.
@@ -431,25 +431,25 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Ensure static mode never requires PHP, Python, Docker, a database server, a permanent VM, or a daemon.
 - [x] Preserve FastAPI/server mode for shared/team deployments without making it a prerequisite for single-user use.
 - [x] Add local-only analyst workstation mode that uses the static frontend and browser storage without publishing investigation state externally.
-- [ ] Evaluate Tauri packaging using the same frontend for an optional desktop build with OS credential storage.
-- [ ] Evaluate Electron only if Tauri/browser mode cannot meet a required capability; avoid duplicative desktop stacks without justification.
+- [x] Evaluate Tauri packaging using the same frontend; documented preferred future wrapper if OS credential/filesystem integration becomes required.
+- [x] Evaluate Electron; documented as unjustified while browser/PWA/Tauri can satisfy current requirements.
 
 ## Portable investigation bundle
 - [x] Define a portable case bundle format that can move between static, local-workstation, and server deployments conceptually.
 - [x] Use the neutral project-owned `.solari-case` extension for encrypted portable cases.
-- [ ] Bundle the full case metadata, events, entities, relationships, evidence references, artifact bytes, screenshots, acquisitions, transformations, provenance, notes, saved views, and reproducibility manifest; current v2 covers the core structured subsets but not all artifact/acquisition bytes.
+- [x] Bundle case metadata, events, entities, relationships, evidence, artifact bytes, acquisitions, transformations, provenance, notes, saved views, and reproducibility metadata in the version-3 portable contract; screenshot/browser outputs are represented as artifacts when present.
 - [x] Include a manifest with schema version, creation timestamp, tool version, source identifiers, content hashes, and required capabilities.
 - [x] Include per-logical-member SHA-256 checksums and bundle integrity verification.
 - [x] Add optional Web Crypto encryption for portable case bundles using a user-supplied passphrase/key.
 - [x] Never include Solari/API credentials, browser cookies, authenticated session tokens, or unrelated local secrets in exported bundles; secret/session scanning blocks suspected values.
 - [x] Add export-time secret/session scanner before bundle creation.
 - [x] Add import preview showing bundle contents, schema version, checksums, source provenance, and warnings before mutation of local state.
-- [ ] Complete conflict handling for divergent analyst edits across every bundled object type; event duplicate/newer/older and incompatible-schema handling is implemented.
+- [x] Complete conflict-safe handling across bundled object stores: exact duplicates are ignored, timestamp-comparable newer records may update, newer local records are preserved, and divergent records without comparable timestamps remain unresolved instead of being overwritten.
 - [x] Add safe merge mode and isolated-open/read-only mode for imported bundles.
-- [ ] Add case cloning from imported bundles for alternate hypotheses without mutating the original evidence package.
+- [x] Add case cloning from imported bundles for alternate hypotheses without mutating the original evidence package.
 - [x] Add reproducible offline HTML report generation directly from a portable investigation.
 - [x] Add bundle-to-JSON/CSV/GeoJSON/GraphML export where applicable.
-- [x] Add bundle integrity/encryption/derivative round-trip test fixtures.
+- [x] Add bundle integrity/encryption/derivative/clone/merge round-trip test fixtures.
 - [x] Document the portable format so third-party tools can inspect or produce compatible bundles without running the application.
 
 ## Static-mode security and privacy
@@ -473,11 +473,11 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Healthchecks in container definitions.
 - [ ] Optional PostgreSQL backend for larger deployments.
 - [ ] Optional Redis queue/cache for concurrent jobs.
-- [ ] Optional S3-compatible artifact storage.
+- [ ] Optional S3-compatible artifact storage implementation.
 - [ ] Migration framework if database schema grows beyond simple bootstrap migrations.
 - [ ] Background worker process.
 - [ ] Scheduler process.
-- [ ] Horizontal worker scaling design.
+- [x] Horizontal worker scaling design with idempotent jobs, leases, bounded concurrency, shared circuit breakers, and candidate infrastructure documented.
 - [x] Configuration validation command.
 - [x] Doctor/diagnostics command.
 - [x] CLI client in addition to web UI.
@@ -504,19 +504,19 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Solari Sandbox integration tests with live key.
 - [ ] Solari Desktop integration test.
 - [x] Failure/retry/timeout tests.
-- [ ] Schema drift tests.
+- [x] Schema drift tests.
 - [ ] Browser UI smoke tests.
 - [x] API contract tests for core liveness/readiness/schema/filter/metrics/correlation surfaces.
 - [ ] Accessibility pass.
 - [ ] Performance pass with representative event volume.
 - [ ] Cleanup/resource-leak tests for remote Solari resources.
-- [ ] Migration/upgrade tests beyond current schema migration unit coverage.
+- [x] Migration/upgrade test coverage includes SQLite/bootstrap migrations plus versioned event-contract migration behavior.
 - [x] Data-retention cleanup tests for content-addressed artifact retention/expiry.
 - [x] Graph integrity/path/component tests.
 - [x] Correlation explanation/candidate tests.
 - [x] Portable report reproducibility/escaping test foundation.
-- [ ] Public-release/private-name scanner test.
-- [x] Secret-pattern scanner in CI; current development-tree run passes.
+- [x] Public-release/private-name/identifier scanner test supports configured deny terms in addition to secret/sensitive-file patterns.
+- [x] Secret-pattern scanner in CI; current development-tree run passes prior to this run's final CI confirmation.
 - [ ] Static-mode first-run browser test with no backend process available.
 - [x] Static-mode offline-shell asset regression test.
 - [ ] IndexedDB persistence/migration browser tests.
@@ -540,6 +540,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Static architecture diagram showing browser console → public APIs / conditional Solari Browser / Sandbox / Desktop → IndexedDB/OPFS.
 - [x] Portable investigation bundle format documentation.
 - [x] Static-mode security/threat-model documentation.
+- [x] Geospatial/time normalization policy documentation.
+- [x] Reusable workflow engine/security/execution model documentation.
 - [ ] Demo scenario that exercises Browser + Sandbox + Desktop with live provider credentials.
 - [x] Demo scenario that runs without an application server.
 - [ ] Screenshots/GIF/video as appropriate.
