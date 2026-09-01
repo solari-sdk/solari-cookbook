@@ -2,14 +2,14 @@
 
 ## Project
 - **Project name:** Solari OSINT Operations Center
-- **Repository:** `tocsindata/solari-cookbook`
+- **Repository:** `tocsindata/solari-osint-cookbook`
 - **Purpose:** Public engineering showcase and production-minded OSINT operations center demonstrating Solari cloud browsers, sandboxes, and desktops across lawful public-source acquisition, isolated processing, evidence preservation, visualization, observability, and debugging.
 - **Status / lifecycle:** Active development
 - **Work type:** Public engineering challenge / portfolio project
 - **Information handling:** Public-source information only. Do not ingest private, proprietary, customer, FCI, CUI, classified, credentialed-private, or personally sensitive datasets.
 
 ## Repository
-- **Repository URL:** https://github.com/tocsindata/solari-cookbook
+- **Repository URL:** https://github.com/tocsindata/solari-osint-cookbook
 - **Visibility:** Public
 - **Primary branch:** `main`
 - **Development branch:** `develop`
@@ -56,7 +56,7 @@
 - **Static workspace stores:** cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, acquisitions, transformations, and content-addressed artifacts.
 - **Portable investigation:** version-3 contract with case metadata, events, entities, relationships, evidence, artifact bytes, acquisitions, transformations, provenance, notes and saved views; logical-member SHA-256 integrity, AES-256-GCM optional encryption, secret/session scanning, conflict-safe all-store merge, isolated read-only open, alternate-hypothesis cloning, JSON/CSV/GeoJSON/GraphML output, and standalone offline HTML report generation.
 - **API surfaces:** events, evidence, event history, entities, relationships, cases/workspace, graph queries, correlation candidates, alerts/watchlists, artifacts, observables/reconnaissance, Nominatim place/reverse-geocoding, STIX observable import/export, jobs plus SSE metrics, durable queue/schedule telemetry, shared domain contract, sources/dependencies/health, acquisitions with decoded telemetry, Solari execution/artifact APIs, workflow validate/run/rerun APIs, dashboard metrics, liveness, readiness, version, JSON schema, OpenAPI/read-only explorer, CSV, and GeoJSON.
-- **Operations UI:** the canonical analyst frontend provides the backend-independent local/server workspace, while `/server-dashboard` preserves advanced server-only source/category/severity/time/quality filtering, full-text/event/entity search, historical playback, marker/cluster/density map modes, precision cues, map/graph/event synchronized selection, safe raw-acquisition inspection, context pivots, evidence/provenance, region dossier, aggregate statistics, source health, collector/job execution telemetry, Solari Browser/Sandbox/Desktop execution artifacts, source attribution, visual workflow editing/rerun controls, workspace presets, command palette/quick-open, per-panel freshness badges, and a dependency-free orthographic 3D globe. The globe displays geolocated public events and bounded weather-satellite positions derived from retained CelesTrak elements with explicit epoch semantics and a visible warning that the two-body Kepler approximation is not SGP4 or navigation-grade.
+- **Operations UI:** the canonical analyst frontend provides the backend-independent local/server workspace, while `/server-dashboard` preserves advanced server-only source/category/severity/time/quality filtering, full-text/event/entity search, historical playback, marker/cluster/density map modes, precision cues, map/graph/event synchronized selection, safe raw-acquisition inspection, context pivots, evidence/provenance, region dossier, aggregate statistics, source health, collector/job execution telemetry, Solari Browser/Sandbox/Desktop execution artifacts, source attribution, visual workflow editing/rerun controls, workspace presets, command palette/quick-open, per-panel freshness badges, and a dependency-free orthographic 3D globe. The globe displays geolocated public events and bounded weather-satellite positions derived from retained CelesTrak elements with explicit epoch semantics and a visible warning that the two-body Kepler approximation is not SGP4 or operational navigation data.
 - **Solari direct static-client boundary:** current official Solari Browser/Sandbox TypeScript cookbook examples are Node/process-environment clients, Browser maintains a Node-side loopback proxy, and the Desktop example is process-environment based. No browser-script/short-lived browser credential flow is currently published. The project therefore does not expose a durable provider key to static JavaScript or claim direct static Browser/Sandbox/Desktop orchestration; `docs/static-solari-client-verification.md` records the verification and broker/server delegation boundary.
 
 ## Architecture Principles
@@ -108,7 +108,7 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## Prime Prompts Governance
 - **Governing repository:** `tocsindata/prime-prompts`
-- **Prime Prompts revision reviewed:** `2766813375b227177e722c52498fc789a87ff7a0`
+- **Prime Prompts revision reviewed:** `51907fd028486c48b75b417f45beb189d718212b`
 - **Compliance review status:** Remediation required — repository-specific public/data/configuration/update/TODO/security requirements reviewed; central mirror/registry and final public-release gates remain open under the current single-repository scope.
 - **Compliance review timestamp:** 2026-09-01
 - **Compliance exceptions/remediation reference:** `TODO.md`
@@ -116,7 +116,7 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## TODO / Remediation Tracking
 - **TODO path:** `TODO.md`
-- **TODO review status:** Reconciled through the frontend-convergence autonomous pass; implemented items are removed from unresolved sections only where repository code/tests/docs provide evidence, while live/manual/conditional deployment items remain open.
+- **TODO review status:** Reconciled through the repository-rename/updater identity pass; implemented items are removed from unresolved sections only where repository code/tests/docs provide evidence, while live/manual/conditional deployment items remain open.
 - **TODO last reviewed:** 2026-09-01
 - **Central TODO mirror:** Pending; not mutated because the current task is single-repository scoped.
 
@@ -156,4 +156,4 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## Maintenance
 - **Metadata last updated:** 2026-09-01
-- **Metadata updated for:** canonical frontend convergence across static/no-hosting and FastAPI-backed modes, server runtime normalization/synchronization, preserved advanced server operations route, service-worker API cache boundary, and current Prime Prompts revision review.
+- **Metadata updated for:** canonical repository rename to `tocsindata/solari-osint-cookbook`, cross-platform updater identity reconciliation, canonical frontend convergence across static/no-hosting and FastAPI-backed modes, server runtime normalization/synchronization, preserved advanced server operations route, service-worker API cache boundary, and current Prime Prompts revision review.
