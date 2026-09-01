@@ -1,6 +1,6 @@
 # Solari Cookbook + OSINT Operations Center
 
-This public fork preserves the upstream Solari cookbook examples while developing a production-minded OSINT operations-center showcase around them. The showcase demonstrates public-source acquisition, normalized evidence, isolated transformations, geospatial visualization, observability, portable investigations, and two deployment modes: a FastAPI server mode and a static/no-hosting analyst console.
+This public fork preserves the upstream Solari cookbook examples while developing a production-minded OSINT operations-center showcase around them. The showcase demonstrates public-source acquisition, normalized evidence, isolated transformations, geospatial visualization, explainable correlation, observability, portable investigations, and two deployment modes: a FastAPI server mode and a static/no-hosting analyst console.
 
 The project uses only lawful public/open sources for the demonstration. It is not a media-monitoring product and does not include private source inventories, credentials, customer data, or unrelated proprietary logic.
 
@@ -14,12 +14,12 @@ Current static capabilities include:
 - versioned IndexedDB stores for cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, and artifacts;
 - memory-only privacy mode plus local database/cache purge controls;
 - browser capability, online/offline, and storage-quota diagnostics;
-- a dependency-free global event canvas;
+- a dependency-free global event canvas with no external tile requirement;
 - a pure-static USGS earthquake adapter with explicit CORS/network fallback messaging;
 - portable investigation manifests and logical-member SHA-256 integrity checks;
 - optional AES-256-GCM `.solari-case` encryption using a user passphrase;
 - import preview, integrity/secret checks, conflict counts, deterministic merge, and isolated read-only open;
-- JSON, CSV, GeoJSON, and GraphML derivative exports;
+- JSON, CSV, GeoJSON, GraphML, and standalone offline HTML report exports;
 - a service-worker/PWA shell for offline-capable local analysis.
 
 For reproducible local use, serve `static-console/` from any localhost static-file server. Some browsers restrict ES modules, service workers, and secure storage APIs on `file://` origins. The same folder can be deployed unchanged to GitHub Pages, Cloudflare Pages, Netlify, S3-compatible static hosting, or a generic HTTPS server. `python tools/build_static_zip.py` creates a distributable ZIP under ignored `dist/`.
@@ -29,14 +29,21 @@ Direct browser-side Solari Browser/Sandbox/Desktop calls are deliberately **not*
 ### Server mode
 
 The FastAPI application under `app/` currently provides:
-- typed acquisition, source, event, geospatial, and evidence contracts;
-- implemented public adapters for USGS earthquakes, NWS active alerts, and NOAA SWPC alerts;
-- SQLite persistence with deterministic IDs, first/last seen state, sighting counts, and retained event snapshots;
-- source/acquisition health telemetry and source staleness calculation;
-- read-only event queries with source/category, time-window, bounding-box, and text filters;
-- evidence and event-history endpoints;
-- JSON, CSV, and GeoJSON output;
-- liveness, readiness, version, OpenAPI, and JSON-schema surfaces.
+- typed acquisition, source, event, geospatial, evidence, entity, relationship, and case contracts;
+- implemented public adapters for USGS earthquakes, NWS active alerts, and NOAA SWPC alerts, with explicit capabilities/dependencies and acquisition/parser/record telemetry;
+- bounded concurrent multi-source collection with deterministic result ordering and per-source failure preservation;
+- SQLite persistence with deterministic IDs, first/last seen state, sighting counts, retained event snapshots, entities/relationships, cases, and case-object links;
+- deterministic event-to-source/location graph projection plus bounded neighborhood/path/component queries;
+- explainable cross-source correlation candidates using time, title similarity, and optional geographic separation without destructive auto-merge;
+- dependency-free geospatial distance, initial bearing, bounding-box/antimeridian, and radius primitives;
+- content-addressed SHA-256 artifact storage with MIME/size metadata and load-time integrity verification;
+- warning-list matchers, completeness/staleness scoring, and confidence aggregation foundations;
+- bounded job/retry/circuit-breaker primitives with explicit failure taxonomy and attempt timing;
+- source/acquisition health telemetry, source staleness calculation, parser/response-size/accepted/rejected metrics, and dashboard-safe aggregate metrics;
+- read-only event queries with source/category, time-window, bounding-box, and text filters plus cursor pagination;
+- evidence, event-history, entity, relationship, case, graph, and correlation endpoints;
+- JSON, CSV, GeoJSON, OpenAPI, and typed JSON-schema output;
+- liveness, readiness, version, source-dependency, metrics, and configuration/doctor surfaces.
 
 Run the server after installing requirements:
 
@@ -44,7 +51,7 @@ Run the server after installing requirements:
 python -m uvicorn app.main:app --reload
 ```
 
-The project root update scripts remain the normal setup/update entrypoints on Linux, macOS, and Windows.
+The project root update scripts remain the normal setup/update entrypoints on Linux, macOS, and Windows. They validate the repository/branch, require Python 3.11+ and Node.js 20+ where applicable, install dependencies, and run the Python/static-console test suites.
 
 ## Project documentation
 
@@ -55,10 +62,17 @@ The project root update scripts remain the normal setup/update entrypoints on Li
 - `docs/architecture.md` — initial architecture
 - `docs/data-evidence-model.md` — normalized acquisition/event/evidence semantics
 - `docs/collector-guide.md` — public source adapter requirements
+- `docs/plugin-analyzer-guide.md` — sandboxed analyzer/plugin contract
 - `docs/operations-debugging.md` — health/readiness and debugging guidance
+- `docs/investigation-case-workflow.md` — case/investigation model and workflow
+- `docs/security-public-data-boundary.md` — public-data/security boundary
+- `docs/api-versioning.md` — API compatibility and deprecation policy
 - `docs/static-no-hosting.md` — static deployment and privacy modes
+- `docs/static-architecture.md` — static/no-hosting architecture diagram
 - `docs/portable-case-format.md` — portable investigation schema, integrity, and encryption
 - `docs/static-threat-model.md` — browser/static security model
+- `docs/demo-static-no-hosting.md` — reproducible no-application-server demo
+- `docs/competitive-feature-research.md` — public feature references and independent design conclusions
 
 ---
 
