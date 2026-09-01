@@ -13,7 +13,7 @@ from pathlib import Path
 from urllib.request import urlopen
 
 import pytest
-from playwright.sync_api import Browser, Page, Route, expect, sync_playwright
+from playwright.sync_api import Browser, Error as PlaywrightError, Page, Route, expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_ROOT = ROOT / "static-console"
@@ -50,6 +50,19 @@ def _free_port() -> int:
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         sock.bind(("127.0.0.1", 0))
         return int(sock.getsockname()[1])
+
+
+def _goto_local(page: Page, url: str, *, wait_until: str = "networkidle") -> None:
+    """Navigate to a loopback test server, retrying only Windows' transient socket-buffer error."""
+    for attempt in range(3):
+        try:
+            page.goto(url, wait_until=wait_until)
+            return
+        except PlaywrightError as exc:
+            transient_windows_socket_error = sys.platform == "win32" and "ERR_NO_BUFFER_SPACE" in str(exc)
+            if not transient_windows_socket_error or attempt == 2:
+                raise
+            time.sleep(0.5 * (attempt + 1))
 
 
 @pytest.fixture(scope="module")
@@ -120,7 +133,7 @@ def test_converged_server_workspace_real_browser_smoke(browser: Browser, dashboa
     page = browser.new_page()
     page_errors: list[str] = []
     page.on("pageerror", lambda error: page_errors.append(str(error)))
-    page.goto(dashboard_url, wait_until="networkidle")
+    _goto_local(page, dashboard_url)
     expect(page.locator("h1")).to_contain_text("Solari Static OSINT Console")
     expect(page.locator("#runtime-status")).to_contain_text("Server mode active", timeout=10_000)
     expect(page.locator("#server-runtime-controls")).to_be_visible()
@@ -135,7 +148,7 @@ def test_advanced_server_dashboard_remains_available(browser: Browser, dashboard
     page_errors: list[str] = []
     page.on("pageerror", lambda error: page_errors.append(str(error)))
     page.route("https://unpkg.com/**", _leaflet_stub)
-    page.goto(f"{dashboard_url}/server-dashboard", wait_until="domcontentloaded")
+    _goto_local(page, f"{dashboard_url}/server-dashboard", wait_until="domcontentloaded")
     expect(page.locator("h1")).to_have_text("Solari OSINT Operations Center")
     expect(page.locator("#health")).to_contain_text("OK · READY", timeout=10_000)
     expect(page.locator("#streamState")).to_have_text("Current", timeout=10_000)
@@ -152,7 +165,7 @@ def test_static_console_first_run_requires_no_backend(browser: Browser, static_u
     page = context.new_page()
     backend_requests: list[str] = []
     page.on("request", lambda request: backend_requests.append(request.url) if "/api/v1/" in request.url else None)
-    page.goto(f"{static_url}/", wait_until="networkidle")
+    _goto_local(page, f"{static_url}/")
     expect(page.locator("h1")).to_contain_text("Solari Static OSINT Console")
     expect(page.locator("#runtime-status")).to_contain_text("Local/static mode")
     expect(page.locator("#storage-status")).to_contain_text("0 of 0", timeout=10_000)
@@ -167,7 +180,7 @@ def test_static_console_first_run_requires_no_backend(browser: Browser, static_u
 def test_static_console_indexeddb_v1_migrates_and_persists(browser: Browser, static_url: str) -> None:
     context = browser.new_context()
     page = context.new_page()
-    page.goto(f"{static_url}/manifest.webmanifest")
+    _goto_local(page, f"{static_url}/manifest.webmanifest", wait_until="load")
     page.evaluate(
         """
         async () => {
@@ -201,7 +214,7 @@ def test_static_console_indexeddb_v1_migrates_and_persists(browser: Browser, sta
         }
         """
     )
-    page.goto(f"{static_url}/", wait_until="networkidle")
+    _goto_local(page, f"{static_url}/")
     expect(page.locator("#storage-status")).to_contain_text("1 of 1", timeout=10_000)
     database = page.evaluate(
         """
@@ -228,7 +241,7 @@ def test_static_console_indexeddb_v1_migrates_and_persists(browser: Browser, sta
 def test_static_console_credentials_and_session_configuration_are_not_persisted(browser: Browser, static_url: str) -> None:
     context = browser.new_context()
     page = context.new_page()
-    page.goto(f"{static_url}/", wait_until="networkidle")
+    _goto_local(page, f"{static_url}/")
     page.locator("#solari-key").fill("browser-qa-placeholder-key")
     page.locator("#case-passphrase").fill("browser-qa-placeholder-passphrase")
     page.locator("#broker-endpoint").fill(f"{static_url}/broker")
@@ -241,7 +254,7 @@ def test_static_console_credentials_and_session_configuration_are_not_persisted(
     page.close()
 
     reopened = context.new_page()
-    reopened.goto(f"{static_url}/", wait_until="networkidle")
+    _goto_local(reopened, f"{static_url}/")
     expect(reopened.locator("#solari-key")).to_have_value("")
     expect(reopened.locator("#case-passphrase")).to_have_value("")
     expect(reopened.locator("#broker-endpoint")).to_have_value("")
@@ -277,7 +290,7 @@ def test_static_console_cors_failure_uses_explicit_broker_fallback(browser: Brow
         )
 
     page.route(f"{static_url}/broker", broker)
-    page.goto(f"{static_url}/", wait_until="networkidle")
+    _goto_local(page, f"{static_url}/")
     page.locator("#broker-endpoint").fill(f"{static_url}/broker")
     page.locator("#fetch-source").click()
     expect(page.locator("#fetch-status")).to_contain_text("Stored 1 event(s)", timeout=10_000)
