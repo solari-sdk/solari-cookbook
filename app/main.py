@@ -7,12 +7,28 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.contracts import AcquisitionEnvelope, EventRecord, SourceDescriptor
+from app.contracts import AcquisitionEnvelope, CaseRecord, EntityRecord, EventRecord, RelationshipRecord, SourceDescriptor
+from app.entities import derive_graph
 from app.exports import events_csv, events_geojson
 from app.sources import nws_alerts, swpc_alerts, usgs_earthquakes
-from app.storage import connect, list_acquisitions, list_event_history, list_events, list_evidence, save_acquisition, save_events, source_health
+from app.storage import (
+    case_contents,
+    connect,
+    list_acquisitions,
+    list_cases,
+    list_entities,
+    list_event_history,
+    list_events,
+    list_evidence,
+    list_relationships,
+    save_acquisition,
+    save_entities,
+    save_events,
+    save_relationships,
+    source_health,
+)
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 app = FastAPI(title="Solari OSINT Operations Center", version=VERSION, description="Public-source OSINT operations dashboard and Solari execution showcase.")
 STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
@@ -38,8 +54,7 @@ def ready() -> dict[str, object]:
             checks["sqlite"] = db.execute("SELECT 1").fetchone()[0] == 1
     except Exception:
         checks["sqlite"] = False
-    status = "ready" if all(checks.values()) else "not_ready"
-    return {"status": status, "checks": checks, "version": VERSION}
+    return {"status": "ready" if all(checks.values()) else "not_ready", "checks": checks, "version": VERSION}
 
 
 @app.get("/api/v1/version")
@@ -49,7 +64,14 @@ def version() -> dict[str, object]:
 
 @app.get("/api/v1/schema")
 def schemas() -> dict[str, object]:
-    return {"event": EventRecord.model_json_schema(), "source": SourceDescriptor.model_json_schema(), "acquisition": AcquisitionEnvelope.model_json_schema()}
+    return {
+        "event": EventRecord.model_json_schema(),
+        "source": SourceDescriptor.model_json_schema(),
+        "acquisition": AcquisitionEnvelope.model_json_schema(),
+        "entity": EntityRecord.model_json_schema(),
+        "relationship": RelationshipRecord.model_json_schema(),
+        "case": CaseRecord.model_json_schema(),
+    }
 
 
 @app.get("/api/v1/sources", response_model=list[SourceDescriptor])
@@ -104,6 +126,26 @@ def evidence(limit: int = Query(500, ge=1, le=1000), source_id: str | None = Non
     return list_evidence(limit, source_id)
 
 
+@app.get("/api/v1/entities")
+def entities(limit: int = Query(500, ge=1, le=1000), type: str | None = None, q: str | None = Query(None, max_length=200)) -> list[dict[str, object]]:
+    return list_entities(limit, type, q)
+
+
+@app.get("/api/v1/relationships")
+def relationships(limit: int = Query(500, ge=1, le=1000), entity_id: str | None = None) -> list[dict[str, object]]:
+    return list_relationships(limit, entity_id)
+
+
+@app.get("/api/v1/cases")
+def cases(limit: int = Query(100, ge=1, le=1000), status: str | None = None) -> list[dict[str, object]]:
+    return list_cases(limit, status)
+
+
+@app.get("/api/v1/cases/{case_id}/contents")
+def contents(case_id: str) -> dict[str, list[str]]:
+    return case_contents(case_id)
+
+
 @app.get("/api/v1/export/events.csv", response_class=PlainTextResponse)
 def export_csv(limit: int = Query(1000, ge=1, le=1000)) -> PlainTextResponse:
     return PlainTextResponse(events_csv(list_events(limit)), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=events.csv"})
@@ -123,7 +165,17 @@ def collect_and_store(source_id: str) -> dict[str, object]:
         acquisition, events = adapter.collect()
         save_acquisition(acquisition)
         count = save_events(events)
-        return {"source_id": source_id, "acquisition_id": acquisition.id, "status": acquisition.status, "events_saved": count}
+        entities_out, relationships_out = derive_graph(events)
+        save_entities(entities_out)
+        save_relationships(relationships_out)
+        return {
+            "source_id": source_id,
+            "acquisition_id": acquisition.id,
+            "status": acquisition.status,
+            "events_saved": count,
+            "entities_saved": len(entities_out),
+            "relationships_saved": len(relationships_out),
+        }
     except Exception as exc:
         raise HTTPException(502, f"collector failed: {type(exc).__name__}") from exc
 
