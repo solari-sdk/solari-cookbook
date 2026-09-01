@@ -113,8 +113,8 @@ The following unresolved work cannot be truthfully completed from repository-onl
 
 ## Maintenance
 - **TODO last reviewed:** 2026-09-02
-- **Reviewed with `meta.md`:** Follow-up reconciliation required for this pass.
-- **Reviewed with `sources.md`:** Follow-up reconciliation required for this pass.
+- **Reviewed with `meta.md`:** Yes — reconciled 2026-09-02.
+- **Reviewed with `sources.md`:** Yes — reconciled 2026-09-02.
 - **Prime Prompts revision reviewed:** `0c499baad9f2b8dcf42e78deb6086174d000a90f`
 - **Prime Prompts TODO standard:** completed tasks may be removed when their history is preserved elsewhere; unresolved findings remain visible until remediated, explicitly accepted as an exception, or determined not applicable.
 
