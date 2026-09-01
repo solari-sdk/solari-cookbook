@@ -95,11 +95,15 @@ class CircuitBreaker:
 def classify_exception(exc: Exception) -> FailureClass:
     name = type(exc).__name__.lower()
     message = str(exc).lower()
-    if "429" in message or "rate" in name and "limit" in name:
+    if "429" in message or ("rate" in name and "limit" in name) or "rate_limited" in message or "rate limited" in message:
         return FailureClass.RATE_LIMITED
-    if isinstance(exc, (ValueError, TypeError, KeyError)):
+    if isinstance(exc, (ValueError, TypeError, KeyError)) or "validation" in name or '"error_type":"validation' in message:
         return FailureClass.VALIDATION
-    if isinstance(exc, (TimeoutError, ConnectionError)):
+    transient_markers = (
+        "timeout", "timed out", "network_error", "connection", "temporary", "temporarily",
+        "502", "503", "504", "connection reset", "connection refused", "remote disconnected",
+    )
+    if isinstance(exc, (TimeoutError, ConnectionError)) or any(marker in message for marker in transient_markers):
         return FailureClass.TRANSIENT
     return FailureClass.PERMANENT
 
