@@ -1,58 +1,35 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Solari OSINT Operations Center</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <header>
-    <div>
-      <p class="eyebrow">PUBLIC-SOURCE OPERATIONS</p>
-      <h1>Solari OSINT Operations Center</h1>
-    </div>
-    <div id="health" class="status">Checking…</div>
-  </header>
-
-  <main>
-    <section class="controls panel">
-      <label>Source
-        <select id="sourceFilter"><option value="">All</option></select>
-      </label>
-      <label>Category
-        <select id="categoryFilter"><option value="">All</option></select>
-      </label>
-      <label>Limit
-        <input id="limitFilter" type="number" min="1" max="1000" value="250">
-      </label>
-      <button id="refreshBtn">Refresh</button>
-      <button id="collectBtn">Collect USGS now</button>
-    </section>
-
-    <section class="metrics">
-      <article class="panel metric"><span>Events</span><strong id="eventCount">0</strong></article>
-      <article class="panel metric"><span>Sources</span><strong id="sourceCount">0</strong></article>
-      <article class="panel metric"><span>Latest event</span><strong id="latestEvent">—</strong></article>
-      <article class="panel metric"><span>Data mode</span><strong>Public only</strong></article>
-    </section>
-
-    <section class="workspace">
-      <div id="map" class="panel"></div>
-      <aside class="panel event-panel">
-        <div class="panel-title"><h2>Event stream</h2><span id="streamState"></span></div>
-        <div id="events"></div>
-      </aside>
-    </section>
-
-    <section class="panel evidence-panel">
-      <div class="panel-title"><h2>Evidence / provenance</h2><span>Select an event</span></div>
-      <pre id="evidence">No event selected.</pre>
-    </section>
-  </main>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="/static/app.js"></script>
-</body>
-</html>
+<header><div><p class="eyebrow">PUBLIC-SOURCE OPERATIONS</p><h1>Solari OSINT Operations Center</h1></div><div id="health" class="status">Checking…</div></header>
+<main>
+  <section class="controls panel">
+    <label>Source<select id="sourceFilter"><option value="">All</option></select></label>
+    <label>Category<select id="categoryFilter"><option value="">All</option></select></label>
+    <label>Search<input id="searchFilter" type="search" maxlength="200" placeholder="title, summary, properties"></label>
+    <label>From<input id="startFilter" type="datetime-local"></label>
+    <label>To<input id="endFilter" type="datetime-local"></label>
+    <label>Min quality<input id="qualityFilter" type="number" min="0" max="1" step="0.1" value="0"></label>
+    <label>Limit<input id="limitFilter" type="number" min="1" max="1000" value="250"></label>
+    <button id="refreshBtn">Refresh</button><button id="collectBtn">Collect USGS now</button>
+  </section>
+  <section class="metrics">
+    <article class="panel metric"><span>Events</span><strong id="eventCount">0</strong></article>
+    <article class="panel metric"><span>Sources</span><strong id="sourceCount">0</strong></article>
+    <article class="panel metric"><span>Latest event</span><strong id="latestEvent">—</strong></article>
+    <article class="panel metric"><span>Stale sources</span><strong id="staleCount">0</strong></article>
+  </section>
+  <section class="workspace"><div id="map" class="panel"></div><aside class="panel event-panel"><div class="panel-title"><h2>Event stream</h2><span id="streamState"></span></div><div id="events"></div></aside></section>
+  <section class="ops-grid">
+    <article class="panel"><div class="panel-title padded"><h2>Source health</h2><span>freshness / failures / latency</span></div><div class="table-wrap"><table><thead><tr><th>Source</th><th>Status</th><th>Age</th><th>Runs</th><th>Failures</th><th>Events</th><th>Latency</th></tr></thead><tbody id="sourceHealth"></tbody></table></div></article>
+    <article class="panel"><div class="panel-title padded"><h2>Collector executions</h2><span>latest acquisitions</span></div><div id="executions" class="execution-list"></div></article>
+  </section>
+  <section class="panel evidence-panel"><div class="panel-title"><h2>Evidence / provenance</h2><span>Select an event</span></div><pre id="evidence">No event selected.</pre></section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script src="/static/app.js"></script>
+</body></html>
