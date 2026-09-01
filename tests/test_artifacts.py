@@ -1,8 +1,9 @@
+from io import BytesIO
 from pathlib import Path
 
 import pytest
 
-from app.artifacts import artifact_manifest, load_artifact, store_artifact
+from app.artifacts import S3CompatibleArtifactBackend, artifact_manifest, load_artifact, store_artifact
 
 
 class MemoryBackend:
@@ -16,6 +17,18 @@ class MemoryBackend:
 
     def get(self, key: str) -> bytes:
         return self.objects[key]
+
+
+class FakeS3Client:
+    def __init__(self) -> None:
+        self.objects: dict[tuple[str, str], bytes] = {}
+
+    def put_object(self, *, Bucket: str, Key: str, Body: bytes):
+        self.objects[(Bucket, Key)] = bytes(Body)
+        return {"ETag": "fixture"}
+
+    def get_object(self, *, Bucket: str, Key: str):
+        return {"Body": BytesIO(self.objects[(Bucket, Key)])}
 
 
 def test_artifact_store_is_content_addressed_and_deduplicated(tmp_path: Path) -> None:
@@ -43,3 +56,21 @@ def test_artifact_backend_can_be_replaced_without_changing_manifest_contract() -
     assert record.relative_path.startswith("sha256/")
     assert load_artifact(record, backend=backend) == b"portable bytes"
     assert len(backend.objects) == 1
+
+
+def test_s3_compatible_backend_uses_content_addressed_prefix_without_credentials() -> None:
+    client = FakeS3Client()
+    backend = S3CompatibleArtifactBackend(client=client, bucket="public-demo-artifacts", prefix="evidence")
+    record = store_artifact(b"object-store evidence", original_name="evidence.bin", backend=backend)
+    assert record.relative_path == f"evidence/sha256/{record.sha256[:2]}/{record.sha256}"
+    assert load_artifact(record, backend=backend) == b"object-store evidence"
+    assert list(client.objects) == [("public-demo-artifacts", record.relative_path)]
+
+
+def test_s3_compatible_backend_rejects_invalid_prefix_and_keys() -> None:
+    client = FakeS3Client()
+    with pytest.raises(ValueError, match="prefix"):
+        S3CompatibleArtifactBackend(client=client, bucket="demo", prefix="../escape")
+    backend = S3CompatibleArtifactBackend(client=client, bucket="demo")
+    with pytest.raises(ValueError, match="outside"):
+        backend.get("other/sha256/value")

@@ -5,14 +5,14 @@ import mimetypes
 from dataclasses import asdict, dataclass
 from hashlib import sha256
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 DEFAULT_ROOT = Path("data/artifacts")
 MAX_ARTIFACT_BYTES = 50 * 1024 * 1024
 
 
 class ArtifactBackend(Protocol):
-    """Minimal content-addressed byte-store contract for local or future object storage."""
+    """Minimal content-addressed byte-store contract for local or object storage."""
 
     def put(self, digest: str, data: bytes) -> str: ...
     def get(self, key: str) -> bytes: ...
@@ -35,6 +35,74 @@ class LocalArtifactBackend:
         if root_resolved not in path.parents:
             raise ValueError("artifact path escapes store root")
         return path.read_bytes()
+
+
+@dataclass(slots=True)
+class S3CompatibleArtifactBackend:
+    """Content-addressed artifact backend for an injected S3-compatible client.
+
+    The injected client must expose ``put_object(Bucket=..., Key=..., Body=...)`` and
+    ``get_object(Bucket=..., Key=...)``. Credentials stay in the client's normal
+    provider/instance-role configuration and are never accepted or persisted here.
+    """
+
+    client: Any
+    bucket: str
+    prefix: str = "artifacts"
+
+    def __post_init__(self) -> None:
+        self.bucket = self.bucket.strip()
+        self.prefix = self.prefix.strip("/")
+        if not self.bucket:
+            raise ValueError("S3-compatible artifact bucket is required")
+        if not self.prefix or self.prefix in {".", ".."} or ".." in self.prefix.split("/"):
+            raise ValueError("invalid S3-compatible artifact prefix")
+
+    def _key(self, digest: str) -> str:
+        if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest):
+            raise ValueError("artifact digest must be a lowercase SHA-256 hex value")
+        return f"{self.prefix}/sha256/{digest[:2]}/{digest}"
+
+    def put(self, digest: str, data: bytes) -> str:
+        key = self._key(digest)
+        self.client.put_object(Bucket=self.bucket, Key=key, Body=data)
+        return key
+
+    def get(self, key: str) -> bytes:
+        expected = f"{self.prefix}/sha256/"
+        if not key.startswith(expected) or ".." in key.split("/"):
+            raise ValueError("artifact key is outside the configured object-storage prefix")
+        response = self.client.get_object(Bucket=self.bucket, Key=key)
+        body = response.get("Body") if isinstance(response, dict) else None
+        if body is None or not hasattr(body, "read"):
+            raise ValueError("S3-compatible client returned no readable Body")
+        data = body.read()
+        if not isinstance(data, (bytes, bytearray)):
+            raise ValueError("S3-compatible artifact body must be bytes")
+        return bytes(data)
+
+
+def s3_backend_from_boto3(*, bucket: str, prefix: str = "artifacts", endpoint_url: str | None = None, region_name: str | None = None) -> S3CompatibleArtifactBackend:
+    """Create the optional backend using boto3 when the deployment provides it.
+
+    No access key/secret arguments are accepted. boto3's normal environment, profile,
+    workload-identity or instance-role credential chain remains outside repository data.
+    """
+    try:
+        import boto3  # type: ignore[import-not-found]
+    except ImportError as exc:
+        raise RuntimeError("boto3 is required to construct the optional S3-compatible backend") from exc
+    if endpoint_url:
+        from urllib.parse import urlparse
+
+        parsed = urlparse(endpoint_url)
+        local = parsed.scheme == "http" and parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+        if parsed.scheme != "https" and not local:
+            raise ValueError("S3-compatible endpoint must use HTTPS except for localhost development")
+        if parsed.username or parsed.password:
+            raise ValueError("S3-compatible endpoint must not embed credentials")
+    client = boto3.client("s3", endpoint_url=endpoint_url, region_name=region_name)
+    return S3CompatibleArtifactBackend(client=client, bucket=bucket, prefix=prefix)
 
 
 @dataclass(frozen=True, slots=True)
