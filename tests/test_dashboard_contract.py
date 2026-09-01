@@ -15,6 +15,7 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
         "commandOpen", "commandPalette", "commandQuery", "commandResults", "severityFilter",
         "playbackRange", "playbackLabel", "playbackPlay", "playbackReset", "regionDossier",
         "solariExecutionState", "solariExecutions", "workflowState", "workflowDefinition", "workflowGraph",
+        "workflowAddEvents", "workflowAddEntities", "workflowAddCount", "workflowAddCategory", "workflowRemoveLast",
         "workflowRender", "workflowRun", "workflowRerun", "workflowOutput",
     ):
         assert f'id="{identifier}"' in html
@@ -58,3 +59,6 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "/api/v1/workflows/rerun" in workflow
     assert "createElementNS" in workflow
     assert "topological_order" in workflow
+    assert "addWorkflowNode" in workflow
+    assert "removeLastWorkflowNode" in workflow
+    assert "50 nodes" in workflow
