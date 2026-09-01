@@ -37,7 +37,17 @@ class FakeResponse:
         return None
 
 
-def fake_module(payload: bytes, *, bad_digest: bool = False) -> ModuleType:
+class FakeOpener:
+    def __init__(self, payload: bytes) -> None:
+        self.payload = payload
+
+    def open(self, request: Request, timeout: int = 20) -> FakeResponse:
+        assert request.full_url == "https://example.org/public.json"
+        assert timeout == 20
+        return FakeResponse(self.payload)
+
+
+def fake_module(payload: bytes, *, bad_digest: bool = False, explicit_opener: bool = False) -> ModuleType:
     module = ModuleType("fixture_public_source")
     module.SOURCE = SourceDescriptor(
         id="fixture-public-source",
@@ -48,16 +58,27 @@ def fake_module(payload: bytes, *, bad_digest: bool = False) -> ModuleType:
     )
     counter = {"value": 0}
 
-    def urlopen(request: Request, timeout: int = 20) -> FakeResponse:
-        assert request.full_url == "https://example.org/public.json"
-        assert timeout == 20
-        return FakeResponse(payload)
+    if explicit_opener:
+        def build_opener(*handlers):
+            assert handlers == ()
+            return FakeOpener(payload)
+        module.build_opener = build_opener
+    else:
+        def urlopen(request: Request, timeout: int = 20) -> FakeResponse:
+            assert request.full_url == "https://example.org/public.json"
+            assert timeout == 20
+            return FakeResponse(payload)
+        module.urlopen = urlopen
 
     def collect(timeout_seconds: int = 20):
         counter["value"] += 1
         started = utc_now()
         request = Request("https://example.org/public.json")
-        with module.urlopen(request, timeout=timeout_seconds) as response:
+        if explicit_opener:
+            response_context = module.build_opener().open(request, timeout=timeout_seconds)
+        else:
+            response_context = module.urlopen(request, timeout=timeout_seconds)
+        with response_context as response:
             raw = response.read()
         completed = utc_now()
         digest = "0" * 64 if bad_digest else sha256(raw).hexdigest()
@@ -85,15 +106,15 @@ def fake_module(payload: bytes, *, bad_digest: bool = False) -> ModuleType:
         )
         return acquisition, [event]
 
-    module.urlopen = urlopen
     module.collect = collect
     return module
 
 
-def test_raw_capture_retains_exact_consumed_bytes_and_deduplicates(tmp_path: Path) -> None:
+@pytest.mark.parametrize("explicit_opener", [False, True])
+def test_raw_capture_retains_exact_consumed_bytes_and_deduplicates(tmp_path: Path, explicit_opener: bool) -> None:
     payload = b'{"public":"payload"}'
-    root = tmp_path / "raw"
-    adapter = RawCapturingAdapter(fake_module(payload), archive_root=root)
+    root = tmp_path / ("raw-opener" if explicit_opener else "raw-urlopen")
+    adapter = RawCapturingAdapter(fake_module(payload, explicit_opener=explicit_opener), archive_root=root)
 
     first, _ = adapter.collect()
     second, _ = adapter.collect()

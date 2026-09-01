@@ -102,18 +102,33 @@ class _CapturingResponse:
         return getattr(self._response, name)
 
 
+class _CapturingOpener:
+    """Proxy for urllib opener objects used by allowlisted/custom redirect collectors."""
+
+    def __init__(self, opener: Any, wrap_response: Callable[[Any], _CapturingResponse]) -> None:
+        self._opener = opener
+        self._wrap_response = wrap_response
+
+    def open(self, *args: Any, **kwargs: Any) -> _CapturingResponse:
+        return self._wrap_response(self._opener.open(*args, **kwargs))
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._opener, name)
+
+
 def _archive_root_from_environment() -> Path:
     configured = os.getenv("SOLARI_RAW_ARCHIVE_DIR", "").strip()
     return Path(configured) if configured else DEFAULT_RAW_ARCHIVE_ROOT
 
 
 class RawCapturingAdapter:
-    """Registry adapter proxy that retains consumed HTTP response bytes immutably.
+    """Registry proxy that retains consumed public-source response bytes immutably.
 
-    Source modules remain unchanged and directly unit-testable. Server/runtime callers
-    use this proxy from ``app.sources.registry``. A per-adapter lock makes temporary
-    interception of the module's imported ``urlopen`` symbol deterministic even when
-    the application receives concurrent requests for the same source.
+    Source modules remain independently unit-testable. Registry/runtime callers use
+    this proxy, which serializes same-source collection while temporarily wrapping
+    either the module's imported ``urlopen`` function or an explicit ``build_opener``
+    boundary. This covers the registered direct urllib collectors without replacing
+    their source-specific request validation or redirect policy.
     """
 
     def __init__(self, module: ModuleType, *, archive_root: Path | None = None) -> None:
@@ -121,7 +136,8 @@ class RawCapturingAdapter:
         self._archive_root = archive_root
         self._collect_lock = threading.RLock()
         self.SOURCE = module.SOURCE
-        self.raw_capture_supported = callable(getattr(module, "urlopen", None)) and callable(getattr(module, "collect", None))
+        has_network_boundary = callable(getattr(module, "urlopen", None)) or callable(getattr(module, "build_opener", None))
+        self.raw_capture_supported = has_network_boundary and callable(getattr(module, "collect", None))
 
     def __getattr__(self, name: str) -> Any:
         return getattr(self._module, name)
@@ -131,23 +147,36 @@ class RawCapturingAdapter:
 
     def collect(self, *args: Any, **kwargs: Any) -> tuple[AcquisitionEnvelope, list[EventRecord]]:
         if not self.raw_capture_supported:
-            raise RawCaptureError(f"registered source {self.SOURCE.id} does not expose a capturable urllib urlopen boundary")
+            raise RawCaptureError(f"registered source {self.SOURCE.id} does not expose a capturable urllib network boundary")
 
         captures: list[CapturedResponse] = []
+
+        def wrap_response(response: Any) -> _CapturingResponse:
+            capture = CapturedResponse(index=len(captures))
+            captures.append(capture)
+            return _CapturingResponse(response, capture)
+
         with self._collect_lock:
-            original_urlopen: Callable[..., Any] = getattr(self._module, "urlopen")
+            original_urlopen = getattr(self._module, "urlopen", None)
+            original_build_opener = getattr(self._module, "build_opener", None)
 
-            def capturing_urlopen(*open_args: Any, **open_kwargs: Any) -> _CapturingResponse:
-                response = original_urlopen(*open_args, **open_kwargs)
-                capture = CapturedResponse(index=len(captures))
-                captures.append(capture)
-                return _CapturingResponse(response, capture)
+            if callable(original_urlopen):
+                def capturing_urlopen(*open_args: Any, **open_kwargs: Any) -> _CapturingResponse:
+                    return wrap_response(original_urlopen(*open_args, **open_kwargs))
+                setattr(self._module, "urlopen", capturing_urlopen)
 
-            setattr(self._module, "urlopen", capturing_urlopen)
+            if callable(original_build_opener):
+                def capturing_build_opener(*open_args: Any, **open_kwargs: Any) -> _CapturingOpener:
+                    return _CapturingOpener(original_build_opener(*open_args, **open_kwargs), wrap_response)
+                setattr(self._module, "build_opener", capturing_build_opener)
+
             try:
                 acquisition, events = self._module.collect(*args, **kwargs)
             finally:
-                setattr(self._module, "urlopen", original_urlopen)
+                if callable(original_urlopen):
+                    setattr(self._module, "urlopen", original_urlopen)
+                if callable(original_build_opener):
+                    setattr(self._module, "build_opener", original_build_opener)
 
         if acquisition.status != "success":
             return acquisition, events
