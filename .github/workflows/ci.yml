@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, "develop/**"]
+  pull_request:
+    branches: [main, develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: solari-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate runtime policy
+        run: python tools/runtime_check.py
+
+      - name: Install Python dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -r requirements-dev.txt
+
+      - name: Run Python tests
+        run: python -m pytest -q
+
+      - name: Run static-console tests
+        run: |
+          if [ -d static-console/tests ]; then
+            node --test static-console/tests/*.test.mjs
+          fi
+
+      - name: Scan current tree for likely secrets
+        run: python tools/public_release_scan.py .
