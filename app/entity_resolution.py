@@ -38,7 +38,10 @@ def resolve_alias(query: str, entities: Iterable[EntityRecord]) -> list[EntityRe
         canonical = canonical_entity(entity)
         if needle in canonical["canonical_aliases"]:
             matches.append(entity)
-    return sorted(matches, key=lambda item: (item.type, canonical_text(item.label), item.id))
+    # Resolution may legitimately span entity types (for example, an organization
+    # and a place can share a label). Return stable identity order rather than
+    # implying a semantic ranking by entity type.
+    return sorted(matches, key=lambda item: item.id)
 
 
 def suggest_entity_duplicates(entities: Iterable[EntityRecord], *, minimum_score: float = 0.8) -> list[dict[str, object]]:
