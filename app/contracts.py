@@ -78,6 +78,44 @@ class EventRecord(BaseModel):
     evidence: list[EvidenceReference] = Field(default_factory=list)
 
 
+class EntityRecord(BaseModel):
+    id: str
+    type: str
+    label: str
+    aliases: list[str] = Field(default_factory=list)
+    first_seen: datetime | None = None
+    last_seen: datetime | None = None
+    location: GeoPoint | None = None
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    properties: dict[str, Any] = Field(default_factory=dict)
+    evidence: list[EvidenceReference] = Field(default_factory=list)
+
+
+class RelationshipRecord(BaseModel):
+    id: str
+    source_entity_id: str
+    target_entity_id: str
+    type: str
+    first_seen: datetime | None = None
+    last_seen: datetime | None = None
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0)
+    observed: bool = True
+    properties: dict[str, Any] = Field(default_factory=dict)
+    evidence: list[EvidenceReference] = Field(default_factory=list)
+
+
+class CaseRecord(BaseModel):
+    id: str
+    title: str
+    status: Literal["open", "paused", "closed", "archived"] = "open"
+    priority: Literal["low", "normal", "high", "critical"] = "normal"
+    owner: str | None = None
+    tags: list[str] = Field(default_factory=list)
+    notes: str = ""
+    created_at: datetime
+    updated_at: datetime
+
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
