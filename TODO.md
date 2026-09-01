@@ -16,7 +16,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Create/synchronize central Prime Prompts TODO mirror. Blocked by single-repository scope unless cross-repository authorization is explicitly granted.
 - [ ] Add repository to applicable Prime Prompts work-repository registry. Blocked by single-repository scope unless cross-repository authorization is explicitly granted.
 - [ ] Complete applicable Prime Prompts compliance review.
-- [ ] Complete current-tree secret scan.
+- [x] Complete current-tree secret scan through the CI public-release scanner on the current development tree.
 - [ ] Complete Git-history secret scan.
 - [x] Review `.gitignore` and sensitive/generated-file exclusions.
 - [ ] Perform final public-release scan for private names, unrelated project/company identifiers, credentials, proprietary material, and restricted data.
@@ -66,7 +66,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 ## Public source adapters
 - [x] USGS earthquakes.
 - [x] NOAA/NWS weather alerts.
-- [ ] NOAA/NHC tropical cyclone products.
+- [x] NOAA/NHC tropical cyclone public RSS products (Atlantic-basin baseline).
 - [ ] NOAA tsunami products.
 - [x] NOAA space weather.
 - [ ] NASA FIRMS wildfire.
@@ -174,29 +174,29 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Investigation/case containers.
 - [x] Case priority, status, owner and tags.
 - [x] Case-scoped event/entity/evidence/relationship collections.
-- [ ] Case activity timeline.
-- [ ] Case notes with Markdown rendering.
-- [ ] Analyst comments and annotations.
-- [ ] Manual entity creation.
-- [ ] Manual relationship creation.
-- [ ] Evidence attachments with provenance metadata.
-- [ ] Evidence-to-entity links.
-- [ ] Evidence-to-event links.
-- [ ] Investigation trail/history of pivots and actions.
-- [ ] Bookmarks/pins/starred evidence.
-- [ ] Case templates.
-- [ ] Case cloning/branching for alternate hypotheses.
-- [ ] Case archive/restore workflow.
+- [x] Case activity timeline/history through persisted case activity records and API.
+- [x] Case notes with safe Markdown rendering.
+- [x] Analyst comments and annotations.
+- [x] Manual entity creation.
+- [x] Manual relationship creation.
+- [x] Evidence attachments with provenance metadata.
+- [x] Evidence-to-entity links.
+- [x] Evidence-to-event links.
+- [x] Investigation trail/history foundation for pivots/actions through explicit case activity records.
+- [x] Bookmarks/pins/starred evidence.
+- [x] Case templates.
+- [x] Case cloning/branching for alternate hypotheses.
+- [x] Case archive/restore workflow.
 - [x] Case export bundle.
 - [x] Analyst-ready offline HTML report generation from a case.
 - [ ] Graph snapshot in generated reports.
 - [x] Timeline snapshot/table in generated reports.
 - [x] Source/evidence appendix in generated reports.
-- [ ] Reproducibility manifest showing source IDs, timestamps and transformations used in a report.
+- [x] Reproducibility manifest showing source IDs, acquisition IDs and transformations used in a case.
 
 ## Knowledge graph / entity intelligence — competitive backlog
 - [x] Persistent knowledge graph abstraction over entities and relationships.
-- [ ] Entity types for location, organization, infrastructure, domain, IP, URL, email, username/alias, phone, vessel, aircraft, satellite and other lawful public identifiers.
+- [x] Entity types for location, organization, infrastructure, domain, IP, URL, email, username/alias, phone, vessel, aircraft, satellite and other lawful public identifiers.
 - [x] Typed relationship edges.
 - [x] Edge confidence scoring.
 - [x] Edge provenance.
@@ -252,17 +252,17 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Hostname/domain warning-list matching.
 - [x] CIDR warning-list matching.
 - [x] Regex warning-list matching.
-- [ ] Analyst allowlist/blocklist annotations.
-- [ ] False-positive triage state.
-- [ ] True-positive / false-positive / suspicious analyst disposition where applicable.
+- [x] Analyst allowlist/blocklist annotations.
+- [x] False-positive triage state.
+- [x] True-positive / false-positive / suspicious analyst disposition where applicable.
 - [ ] Duplicate/correlation suppression rules.
-- [ ] Persisted source reliability scoring separate from event confidence.
+- [x] Persisted source reliability scoring separate from event confidence.
 - [x] Data completeness score.
 - [x] Staleness score.
 - [ ] Contradiction/conflict flag when authoritative sources disagree.
 - [ ] Schema-drift quarantine instead of silent ingestion.
-- [ ] Validation error inbox for malformed source records.
-- [ ] Manual correction overlay preserving original source data.
+- [x] Validation error inbox for malformed source records with explicit resolution state.
+- [x] Manual correction overlay preserving original source data/value alongside corrected value and rationale.
 
 ## Evidence vault / artifact management — competitive backlog
 - [x] Content-addressed artifact store.
@@ -338,7 +338,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [ ] Optional email/Slack-style connector interfaces without embedding credentials in repository.
 
 ## Debugging / observability
-- [ ] Structured logs with correlation/job IDs.
+- [ ] Structured logs with both correlation and job IDs on the same execution trail; request correlation logging and persisted job IDs exist separately.
 - [x] Source acquisition timings in persistence layer.
 - [x] Parser timings recorded in acquisition metadata for implemented API/feed collectors.
 - [ ] Queue/job timings for a persistent queue if one is introduced.
@@ -516,7 +516,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Correlation explanation/candidate tests.
 - [x] Portable report reproducibility/escaping test foundation.
 - [ ] Public-release/private-name scanner test.
-- [ ] Secret-pattern scanner in CI.
+- [x] Secret-pattern scanner in CI; current development-tree run passes.
 - [ ] Static-mode first-run browser test with no backend process available.
 - [x] Static-mode offline-shell asset regression test.
 - [ ] IndexedDB persistence/migration browser tests.
