@@ -111,13 +111,11 @@ def client_id() -> str:
     value = os.environ.get("X_CLIENT_ID", "").strip().strip("'\"")
     if not value:
         raise SystemExit("Set X_CLIENT_ID from your X developer app (OAuth 2.0 Client ID).")
-    if not re.fullmatch(r"[A-Za-z0-9_-]+", value):
+    # X Client IDs are often like "xxxx:yyyy" (colon). Reject only non-ASCII junk.
+    if not re.fullmatch(r"[A-Za-z0-9_.:/=+-]+", value):
         raise SystemExit(
-            "X_CLIENT_ID is not a valid OAuth 2.0 Client ID.\n"
-            "It must be ASCII letters, numbers, _ or - only.\n"
-            "You likely pasted the Consumer Key, a Bearer token, or a mangled copy.\n"
-            "In the X console open the app → Keys and tokens → "
-            "OAuth 2.0 Client ID and Client Secret. Copy Client ID only."
+            "X_CLIENT_ID has invalid characters (not a normal OAuth 2.0 Client ID).\n"
+            "Copy OAuth 2.0 Client ID only — not the Bearer token."
         )
     return value
 
