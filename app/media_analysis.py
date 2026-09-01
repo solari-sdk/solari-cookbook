@@ -2,15 +2,25 @@ from __future__ import annotations
 
 import io
 import mimetypes
+import re
+import shutil
+import subprocess
+import tempfile
 from hashlib import sha256
 from pathlib import Path
 from typing import Any
 
+import cv2
+import numpy as np
 from PIL import ExifTags, Image, ImageChops, ImageStat
 from pypdf import PdfReader
 
 MAX_ARTIFACT_BYTES = 25 * 1024 * 1024
 MAX_IMAGE_PIXELS = 50_000_000
+MAX_OCR_BYTES = 10 * 1024 * 1024
+MAX_OCR_PIXELS = 20_000_000
+MAX_OCR_TEXT_CHARS = 1_000_000
+MAX_CODE_RESULTS = 100
 Image.MAX_IMAGE_PIXELS = MAX_IMAGE_PIXELS
 
 
@@ -86,6 +96,133 @@ def image_metadata(data: bytes, *, filename: str | None = None) -> dict[str, obj
             "sha256": sha256(data).hexdigest(),
             "exif": normalized,
         }
+
+
+def _bounded_image(data: bytes, *, max_bytes: int, max_pixels: int) -> Image.Image:
+    _bounded(data)
+    if len(data) > max_bytes:
+        raise ValueError(f"image exceeds {max_bytes // (1024 * 1024)} MiB operation limit")
+    try:
+        image = Image.open(io.BytesIO(data))
+        image.load()
+    except Exception as exc:
+        raise ValueError("unsupported or malformed image") from exc
+    if image.width * image.height > max_pixels:
+        image.close()
+        raise ValueError(f"image exceeds {max_pixels:,} pixel operation limit")
+    return image
+
+
+def ocr_image(
+    data: bytes,
+    *,
+    language: str = "eng",
+    timeout_seconds: int = 15,
+) -> dict[str, object]:
+    """OCR a bounded user/public image with a locally installed Tesseract engine.
+
+    The input is decoded by Pillow and rewritten to a temporary PNG before the OCR
+    process receives it. No shell is used, language input is allowlisted, execution
+    has a hard timeout, and returned text is capped.
+    """
+    if not re.fullmatch(r"[A-Za-z0-9_+.-]{1,100}", language):
+        raise ValueError("invalid OCR language selector")
+    if not 1 <= timeout_seconds <= 30:
+        raise ValueError("OCR timeout must be between 1 and 30 seconds")
+    executable = shutil.which("tesseract")
+    if not executable:
+        raise RuntimeError("Tesseract OCR engine is not installed or not on PATH")
+
+    image = _bounded_image(data, max_bytes=MAX_OCR_BYTES, max_pixels=MAX_OCR_PIXELS)
+    try:
+        rgb = image.convert("RGB")
+        with tempfile.TemporaryDirectory(prefix="solari-ocr-") as directory:
+            input_path = Path(directory) / "input.png"
+            rgb.save(input_path, format="PNG")
+            try:
+                completed = subprocess.run(
+                    [executable, str(input_path), "stdout", "-l", language, "--psm", "6"],
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout_seconds,
+                    check=False,
+                    env={"PATH": str(Path(executable).parent)},
+                )
+            except subprocess.TimeoutExpired as exc:
+                raise RuntimeError("OCR execution exceeded the configured timeout") from exc
+    finally:
+        image.close()
+
+    if completed.returncode != 0:
+        error = completed.stderr.strip()[:1000] or f"exit status {completed.returncode}"
+        raise RuntimeError(f"OCR engine failed: {error}")
+    text = completed.stdout[:MAX_OCR_TEXT_CHARS]
+    return {
+        "engine": "tesseract",
+        "language": language,
+        "text": text,
+        "truncated": len(completed.stdout) > MAX_OCR_TEXT_CHARS,
+        "sha256": sha256(data).hexdigest(),
+    }
+
+
+def extract_codes(data: bytes) -> dict[str, object]:
+    """Extract bounded QR and common barcode payloads from a user/public image."""
+    image = _bounded_image(data, max_bytes=MAX_OCR_BYTES, max_pixels=MAX_OCR_PIXELS)
+    try:
+        array = cv2.cvtColor(np.asarray(image.convert("RGB")), cv2.COLOR_RGB2BGR)
+    finally:
+        image.close()
+
+    decoded: list[dict[str, str]] = []
+    qr = cv2.QRCodeDetector()
+    try:
+        ok, values, _points, _straight = qr.detectAndDecodeMulti(array)
+    except (cv2.error, ValueError):
+        ok, values = False, ()
+    if ok:
+        for value in values:
+            if value:
+                decoded.append({"type": "QR_CODE", "value": str(value)})
+    if not decoded:
+        try:
+            value, _points, _straight = qr.detectAndDecode(array)
+        except cv2.error:
+            value = ""
+        if value:
+            decoded.append({"type": "QR_CODE", "value": str(value)})
+
+    detector_factory = getattr(cv2, "barcode_BarcodeDetector", None)
+    if detector_factory is not None:
+        try:
+            detector = detector_factory()
+            result = detector.detectAndDecodeWithType(array)
+            if isinstance(result, tuple) and len(result) >= 3:
+                ok = bool(result[0])
+                values = result[1] if isinstance(result[1], (tuple, list)) else (result[1],)
+                types = result[2] if isinstance(result[2], (tuple, list)) else (result[2],)
+                if ok:
+                    for value, code_type in zip(values, types):
+                        if value:
+                            decoded.append({"type": str(code_type or "BARCODE"), "value": str(value)})
+        except cv2.error:
+            pass
+
+    unique: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for item in decoded:
+        key = (item["type"], item["value"])
+        if key not in seen:
+            seen.add(key)
+            unique.append(item)
+        if len(unique) >= MAX_CODE_RESULTS:
+            break
+    return {
+        "codes": unique,
+        "count": len(unique),
+        "truncated": len(decoded) > MAX_CODE_RESULTS,
+        "sha256": sha256(data).hexdigest(),
+    }
 
 
 def compare_images(left: bytes, right: bytes) -> dict[str, object]:
