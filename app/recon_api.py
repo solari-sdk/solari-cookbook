@@ -6,6 +6,7 @@ from typing import Any, Literal
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field, HttpUrl
 
+from app.geocoding import reverse_geocode, search_places
 from app.observables import ObservableRecord, link_observable, list_observables, make_observable, observable_links, save_observable
 from app.recon import (
     asn_network_lookup,
@@ -140,4 +141,16 @@ def redirects(url: HttpUrl, max_redirects: int = Query(10, ge=0, le=30)) -> dict
 @router.get("/recon/web-archive")
 def archive(url: HttpUrl, limit: int = Query(50, ge=1, le=500)) -> dict[str, object]:
     try: return web_archive_history(str(url), limit=limit)
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/place-search")
+def place_search(q: str = Query(..., min_length=2, max_length=200), limit: int = Query(5, ge=1, le=10)) -> list[dict[str, object]]:
+    try: return [item.model_dump(mode="json") for item in search_places(q, limit=limit)]
+    except Exception as exc: raise _error(exc) from exc
+
+
+@router.get("/recon/reverse-geocode")
+def reverse_place(latitude: float = Query(..., ge=-90, le=90), longitude: float = Query(..., ge=-180, le=180), zoom: int = Query(18, ge=0, le=18)) -> dict[str, object]:
+    try: return reverse_geocode(latitude, longitude, zoom=zoom).model_dump(mode="json")
     except Exception as exc: raise _error(exc) from exc
