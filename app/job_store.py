@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import json
-from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from app.collection import CollectionResult
 from app.jobs import JobExecution
 from app.storage import DB_PATH, connect
 
@@ -61,6 +61,38 @@ def _safe_result_summary(result: object) -> object | None:
     return {"type": type(result).__name__}
 
 
+def _insert(
+    *,
+    name: str,
+    source_id: str | None,
+    correlation_id: str | None,
+    status: str,
+    attempts: int,
+    started_at: str | None,
+    completed_at: str | None,
+    failure_class: str | None,
+    error_type: str | None,
+    error_message: str | None,
+    attempt_durations_ms: list[float],
+    result_summary: object | None,
+    path: Path,
+) -> dict[str, object]:
+    job_id = uuid4().hex
+    created_text = completed_at or started_at or ""
+    with _db(path) as db:
+        db.execute(
+            "INSERT INTO job_executions (id,name,source_id,correlation_id,status,attempts,started_at,completed_at,failure_class,error_type,error_message,attempt_durations_json,result_summary_json,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (
+                job_id, name, source_id, correlation_id, status, attempts, started_at, completed_at,
+                failure_class, error_type, error_message[:4000] if error_message else None,
+                json.dumps(attempt_durations_ms),
+                json.dumps(result_summary, sort_keys=True, default=str) if result_summary is not None else None,
+                created_text,
+            ),
+        )
+    return get_job_execution(job_id, path=path)
+
+
 def record_job_execution(
     execution: JobExecution[Any],
     *,
@@ -68,31 +100,42 @@ def record_job_execution(
     correlation_id: str | None = None,
     path: Path = DB_PATH,
 ) -> dict[str, object]:
-    job_id = uuid4().hex
-    created_at = (execution.completed_at or execution.started_at)
-    created_text = created_at.isoformat() if created_at else ""
-    summary = _safe_result_summary(execution.result)
-    with _db(path) as db:
-        db.execute(
-            "INSERT INTO job_executions (id,name,source_id,correlation_id,status,attempts,started_at,completed_at,failure_class,error_type,error_message,attempt_durations_json,result_summary_json,created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            (
-                job_id,
-                execution.name,
-                source_id,
-                correlation_id,
-                execution.status.value,
-                execution.attempts,
-                execution.started_at.isoformat() if execution.started_at else None,
-                execution.completed_at.isoformat() if execution.completed_at else None,
-                execution.failure_class.value if execution.failure_class else None,
-                execution.error_type,
-                execution.error_message[:4000] if execution.error_message else None,
-                json.dumps(execution.attempt_durations_ms),
-                json.dumps(summary, sort_keys=True, default=str) if summary is not None else None,
-                created_text,
-            ),
-        )
-    return get_job_execution(job_id, path=path)
+    return _insert(
+        name=execution.name,
+        source_id=source_id,
+        correlation_id=correlation_id,
+        status=execution.status.value,
+        attempts=execution.attempts,
+        started_at=execution.started_at.isoformat() if execution.started_at else None,
+        completed_at=execution.completed_at.isoformat() if execution.completed_at else None,
+        failure_class=execution.failure_class.value if execution.failure_class else None,
+        error_type=execution.error_type,
+        error_message=execution.error_message,
+        attempt_durations_ms=execution.attempt_durations_ms,
+        result_summary=_safe_result_summary(execution.result),
+        path=path,
+    )
+
+
+def record_collection_result(result: CollectionResult, *, correlation_id: str | None = None, path: Path = DB_PATH) -> dict[str, object]:
+    summary = None
+    if result.acquisition is not None:
+        summary = {"acquisition_id": result.acquisition.id, "source_id": result.source_id, "events": len(result.events)}
+    return _insert(
+        name=f"collect:{result.source_id}",
+        source_id=result.source_id,
+        correlation_id=correlation_id,
+        status="succeeded" if result.succeeded else "failed",
+        attempts=result.attempts,
+        started_at=result.started_at.isoformat() if result.started_at else None,
+        completed_at=result.completed_at.isoformat() if result.completed_at else None,
+        failure_class=result.failure_class.value if result.failure_class else None,
+        error_type=result.error_type,
+        error_message=result.error_message,
+        attempt_durations_ms=result.attempt_durations_ms,
+        result_summary=summary,
+        path=path,
+    )
 
 
 def _decode(row) -> dict[str, object]:
