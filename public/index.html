@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pulse - solari, measured live</title>
+  <meta name="description" content="A live, verifiable benchmark of Solari browsers, sandboxes, and desktops." />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <div class="mark">solari <span class="dot">&middot;</span> pulse</div>
+      <a class="back" href="https://www.getsolari.com" target="_blank" rel="noopener">getsolari.com</a>
+    </header>
+
+    <main>
+      <p class="lede">
+        a live proof, not a slide. pick a product below, then run it - the
+        number comes from a real session against the solari api, timed just now.
+      </p>
+
+      <nav class="tabs" role="tablist" aria-label="product">
+        <button class="tab is-active" data-mode="browser" role="tab" aria-selected="true">browser</button>
+        <button class="tab" data-mode="sandbox" role="tab" aria-selected="false">sandbox</button>
+        <button class="tab" data-mode="desktop" role="tab" aria-selected="false">desktop</button>
+      </nav>
+
+      <section class="stage-card">
+        <div class="steps" id="steps"></div>
+
+        <div class="readout">
+          <div class="readout-number" id="total">0<span class="unit">ms</span></div>
+          <div class="readout-label" id="methodLabel">create &rarr; connect &rarr; navigate &rarr; release</div>
+        </div>
+
+        <div class="actions">
+          <button class="run" id="runBtn" type="button">run pulse</button>
+          <button class="copy" id="copyBtn" type="button" disabled>copy result</button>
+        </div>
+
+        <p class="status" id="status">idle</p>
+      </section>
+
+      <section class="reference" id="reference">
+        <div class="reference-head">
+          <span id="referenceTitle">end-to-end browser latency</span>
+          <span id="referenceUnit">ms</span>
+        </div>
+        <div class="reference-rows" id="referenceRows"></div>
+        <p class="reference-note" id="referenceNote"></p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span>built on the solari sdk</span>
+      <a href="https://github.com/solari-sdk/solari-cookbook" target="_blank" rel="noopener">solari-cookbook</a>
+    </footer>
+  </div>
+
+  <script src="/pulse.js"></script>
+</body>
+</html>
