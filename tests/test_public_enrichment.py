@@ -46,3 +46,23 @@ def test_public_code_search_pivots_are_navigation_only():
     assert "example+parser" in pivots[0]["url"]
     with pytest.raises(ValueError):
         enrichment.public_code_search_pivots("x")
+
+
+def test_alias_correlation_requires_multiple_public_evidence_urls_and_never_asserts_identity():
+    candidates = enrichment.correlate_alias_observations([
+        {"alias": "Example_User", "source_name": "Public A", "source_url": "https://example.org/a"},
+        {"username": "example_user", "source_name": "Public B", "source_url": "https://example.net/b"},
+        {"alias": "different", "source_name": "Public C", "source_url": "https://example.com/c"},
+    ])
+    assert len(candidates) == 1
+    assert candidates[0]["canonical_alias"] == "example_user"
+    assert candidates[0]["review_required"] is True
+    assert candidates[0]["identity_asserted"] is False
+    assert candidates[0]["source_count"] == 2
+
+
+def test_alias_correlation_rejects_non_https_and_embedded_credentials():
+    with pytest.raises(ValueError, match="public HTTPS"):
+        enrichment.correlate_alias_observations([{"alias": "example", "source_url": "http://example.org/u"}])
+    with pytest.raises(ValueError, match="embedded credentials"):
+        enrichment.correlate_alias_observations([{"alias": "example", "source_url": "https://user:pass@example.org/u"}])
