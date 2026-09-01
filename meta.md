@@ -17,7 +17,7 @@
 - **Local source checkout:** User-defined; do not infer from repository name
 - **Production URL:** Not assigned
 - **Production deployment branch/ref:** Not selected
-- **Deployment model:** Dual-mode: static/no-hosting browser analyst console plus optional FastAPI team/server mode
+- **Deployment model:** One canonical backend-independent analyst frontend in `static-console/`, runnable unchanged as static/no-hosting mode or mounted unchanged by FastAPI at `/workspace/`; advanced server-only operational surfaces remain available at `/server-dashboard`.
 
 ## Product Scope
 1. **Browser acquisition:** dynamic public pages, browser state where permitted, screenshots/recordings, and browser-level evidence when a direct API/feed is insufficient.
@@ -35,6 +35,7 @@
 ## Current Architecture State
 - **Server stack:** FastAPI + Pydantic + SQLite.
 - **Static stack:** dependency-free HTML/CSS/ES modules + IndexedDB + Web Crypto + service worker/PWA shell.
+- **Canonical frontend:** `static-console/` is the single analyst frontend. Static hosts serve those files directly; FastAPI mounts those exact checked-in files at `/workspace/` and redirects `/` there. `server-runtime.js` activates only under the server mount, normalizes server API rows back into the shared browser contract, synchronizes events/entities/relationships/evidence/acquisitions/source health into the same browser stores, and exposes bounded registered-source collection controls. Static hosting at other paths performs no FastAPI discovery call. The historical rich server UI remains at `/server-dashboard` as an advanced server-operations surface rather than a second analyst frontend.
 - **Implemented public event/reference adapters:** USGS earthquakes, NWS active alerts, NOAA SWPC alerts, NOAA/NHC Atlantic-basin tropical cyclone RSS products, NOAA/NWS tsunami bulletins, OpenFEMA disaster declarations, GDACS multi-hazard events, CelesTrak weather-group orbital GP data, NASA FIRMS active-fire detections when user credentials/area are supplied, ReliefWeb disasters when an approved appname is supplied, OFAC SDN, USGS elevated-volcano status, NOAA NDBC environmental observations, USGS Water latest-continuous observations, EPA AirNow daily air-quality data, AviationWeather.gov METAR observations, FAA NAS airport operational-status events, an exact-host-allowlisted public WZDx work-zone feed, MBTA static GTFS planned-service routes, NOAA/SPC preliminary hail storm observations, Georgia Tech IODA country-level outage signals, U.S. Coast Guard Navigation Center port-status rows, and OpenStreetMap/Nominatim reference enrichment. Event adapters publish explicit capability/dependency descriptors and parser/record/response telemetry.
 - **Source registration:** public collection adapters are centralized in `app.sources.registry`; duplicate source IDs fail at import instead of silently replacing one another.
 - **Collection orchestration:** bounded concurrent multi-source collection with deterministic result ordering and per-source failure preservation; persistence remains serialized for auditability. Source runtime adds spacing, rolling-window quotas, cache TTLs, retry-after state and per-source diagnostics.
@@ -55,7 +56,7 @@
 - **Static workspace stores:** cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, acquisitions, transformations, and content-addressed artifacts.
 - **Portable investigation:** version-3 contract with case metadata, events, entities, relationships, evidence, artifact bytes, acquisitions, transformations, provenance, notes and saved views; logical-member SHA-256 integrity, AES-256-GCM optional encryption, secret/session scanning, conflict-safe all-store merge, isolated read-only open, alternate-hypothesis cloning, JSON/CSV/GeoJSON/GraphML output, and standalone offline HTML report generation.
 - **API surfaces:** events, evidence, event history, entities, relationships, cases/workspace, graph queries, correlation candidates, alerts/watchlists, artifacts, observables/reconnaissance, Nominatim place/reverse-geocoding, STIX observable import/export, jobs plus SSE metrics, durable queue/schedule telemetry, shared domain contract, sources/dependencies/health, acquisitions with decoded telemetry, Solari execution/artifact APIs, workflow validate/run/rerun APIs, dashboard metrics, liveness, readiness, version, JSON schema, OpenAPI/read-only explorer, CSV, and GeoJSON.
-- **Operations UI:** server dashboard exposes source/category/severity/time/quality filtering, full-text/event/entity search, historical playback, marker/cluster/density map modes, precision cues, map/graph/event synchronized selection, safe raw-acquisition inspection, context pivots, evidence/provenance, region dossier, aggregate statistics, source health, collector/job execution telemetry, Solari Browser/Sandbox/Desktop execution artifacts, source attribution, visual workflow editing/rerun controls, workspace presets, command palette/quick-open, per-panel freshness badges, and a dependency-free orthographic 3D globe. The globe displays geolocated public events and bounded weather-satellite positions derived from retained CelesTrak elements with explicit epoch semantics and a visible warning that the two-body Kepler approximation is not SGP4 or navigation-grade.
+- **Operations UI:** the canonical analyst frontend provides the backend-independent local/server workspace, while `/server-dashboard` preserves advanced server-only source/category/severity/time/quality filtering, full-text/event/entity search, historical playback, marker/cluster/density map modes, precision cues, map/graph/event synchronized selection, safe raw-acquisition inspection, context pivots, evidence/provenance, region dossier, aggregate statistics, source health, collector/job execution telemetry, Solari Browser/Sandbox/Desktop execution artifacts, source attribution, visual workflow editing/rerun controls, workspace presets, command palette/quick-open, per-panel freshness badges, and a dependency-free orthographic 3D globe. The globe displays geolocated public events and bounded weather-satellite positions derived from retained CelesTrak elements with explicit epoch semantics and a visible warning that the two-body Kepler approximation is not SGP4 or navigation-grade.
 - **Solari direct static-client boundary:** current official Solari Browser/Sandbox TypeScript cookbook examples are Node/process-environment clients, Browser maintains a Node-side loopback proxy, and the Desktop example is process-environment based. No browser-script/short-lived browser credential flow is currently published. The project therefore does not expose a durable provider key to static JavaScript or claim direct static Browser/Sandbox/Desktop orchestration; `docs/static-solari-client-verification.md` records the verification and broker/server delegation boundary.
 
 ## Architecture Principles
@@ -87,6 +88,7 @@
 - Memory-only privacy mode bypasses persistent workspace storage for new session state.
 - Purge controls remove the local IndexedDB database and Cache Storage entries.
 - Offline HTML reports escape case/source content and contain no executable script.
+- The service worker caches the application shell but explicitly excludes `/api/` requests so server-backed runtime data is never treated as an offline shell asset.
 - Provider operations that require durable credentials or Node/process-local client machinery remain server/broker responsibilities unless Solari later publishes an explicit browser-targeted safe credential/client model.
 
 ## Cross-Platform Operator Workflow
@@ -106,7 +108,7 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## Prime Prompts Governance
 - **Governing repository:** `tocsindata/prime-prompts`
-- **Prime Prompts revision reviewed:** `0c499baad9f2b8dcf42e78deb6086174d000a90f`
+- **Prime Prompts revision reviewed:** `2766813375b227177e722c52498fc789a87ff7a0`
 - **Compliance review status:** Remediation required — repository-specific public/data/configuration/update/TODO/security requirements reviewed; central mirror/registry and final public-release gates remain open under the current single-repository scope.
 - **Compliance review timestamp:** 2026-09-01
 - **Compliance exceptions/remediation reference:** `TODO.md`
@@ -114,8 +116,8 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 
 ## TODO / Remediation Tracking
 - **TODO path:** `TODO.md`
-- **TODO review status:** Reconciled through the 2026-09-02 autonomous implementation pass; implemented items are removed from unresolved sections only where repository code/tests/docs provide evidence, while live/manual/conditional deployment items remain open.
-- **TODO last reviewed:** 2026-09-02
+- **TODO review status:** Reconciled through the frontend-convergence autonomous pass; implemented items are removed from unresolved sections only where repository code/tests/docs provide evidence, while live/manual/conditional deployment items remain open.
+- **TODO last reviewed:** 2026-09-01
 - **Central TODO mirror:** Pending; not mutated because the current task is single-repository scoped.
 
 ## Repository Security Hygiene
@@ -153,5 +155,5 @@ Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where a
 - **Issue/task tracking:** Root `TODO.md`; central mirror pending by repository-scope rule
 
 ## Maintenance
-- **Metadata last updated:** 2026-09-02
-- **Metadata updated for:** FAA NAS airport operational status, USCG Navigation Center port status, bounded OCR/QR-barcode processing, representative live source smoke validation, accessibility/retained-volume QA, and verified static Solari client/security boundary.
+- **Metadata last updated:** 2026-09-01
+- **Metadata updated for:** canonical frontend convergence across static/no-hosting and FastAPI-backed modes, server runtime normalization/synchronization, preserved advanced server operations route, service-worker API cache boundary, and current Prime Prompts revision review.
