@@ -35,12 +35,15 @@
 ## Current Architecture State
 - **Server stack:** FastAPI + Pydantic + SQLite.
 - **Static stack:** dependency-free HTML/CSS/ES modules + IndexedDB + Web Crypto + service worker/PWA shell.
-- **Implemented public adapters:** USGS earthquakes, NWS active alerts, NOAA SWPC alerts.
-- **Static public adapter:** USGS earthquake GeoJSON with explicit browser/CORS fallback diagnostics.
-- **Normalized storage:** acquisitions, current event records, first/last seen, sighting counts, and event-history snapshots.
+- **Implemented public adapters:** USGS earthquakes, NWS active alerts, NOAA SWPC alerts; each now publishes explicit capability/dependency descriptors and parser/record/response telemetry.
+- **Collection orchestration:** bounded concurrent multi-source collection with deterministic result ordering and per-source failure preservation; persistence remains serialized for auditability.
+- **Normalized storage:** acquisitions, current event records, first/last seen, sighting counts, event-history snapshots, entities, relationships, cases, and case-object links.
+- **Correlation/geospatial:** explainable cross-source correlation candidates without auto-merge; haversine distance, initial bearing, antimeridian-aware bounding boxes, and radius checks.
+- **Job model:** explicit failure taxonomy, bounded exponential retry policy, terminal job state, attempt timings, and reusable circuit-breaker/cooldown primitive.
 - **Static workspace stores:** cases, events, entities, relationships, evidence, saved views, source state, notes, watchlists, layouts, preferences, and artifacts.
-- **Portable investigation:** versioned JSON contract, manifest/source IDs, logical-member SHA-256 integrity checks, AES-256-GCM optional encryption, import preview/conflict analysis, safe merge/read-only open, JSON/CSV/GeoJSON/GraphML output.
-- **API surfaces:** events, evidence, event history, sources, source health, acquisitions, liveness, readiness, version, JSON schema, OpenAPI, CSV, and GeoJSON.
+- **Portable investigation:** versioned JSON contract, manifest/source IDs, logical-member SHA-256 integrity checks, AES-256-GCM optional encryption, import preview/conflict analysis, safe merge/read-only open, JSON/CSV/GeoJSON/GraphML output, and standalone offline HTML report generation.
+- **API surfaces:** events, evidence, event history, entities, relationships, cases, graph queries, correlation candidates, sources/dependencies/health, acquisitions with decoded telemetry, dashboard metrics, liveness, readiness, version, JSON schema, OpenAPI, CSV, and GeoJSON.
+- **Artifact foundation:** server-side content-addressed SHA-256 store with MIME/size metadata, deduplication and load-time integrity verification.
 - **Solari direct browser-mode caveat:** browser-side CORS/client support has not yet been verified, so direct static Solari Browser/Sandbox/Desktop orchestration is not claimed.
 
 ## Architecture Principles
@@ -54,6 +57,7 @@
 - Treat web content, imported bundles, uploaded documents, and generated parsers as untrusted.
 - Run risky/generated processing in Solari Sandbox rather than host/browser execution.
 - Human-verifiable output and observability are first-class requirements.
+- Correlation candidates never destructively merge independent source records without a future explicit review decision.
 
 ## Static / No-Hosting Security Boundary
 - Solari/API credentials must never be embedded in static assets or repository content.
@@ -63,6 +67,7 @@
 - Imported portable cases are size/schema/integrity/secret checked before mutation and can be opened read-only.
 - Memory-only privacy mode bypasses persistent workspace storage for new session state.
 - Purge controls remove the local IndexedDB database and Cache Storage entries.
+- Offline HTML reports escape case/source content and contain no executable script.
 
 ## Cross-Platform Operator Workflow
 Root single-entrypoint scripts:
@@ -70,7 +75,7 @@ Root single-entrypoint scripts:
 - macOS: `./update-macos.sh`
 - Windows PowerShell: `.\update.ps1`
 
-Scripts validate repository/branch, install Python dependencies, run dependency-free static Node tests when present, run Python tests, and report missing `SOLARI_API_KEY` without inventing credentials.
+Scripts validate repository/branch, enforce Python 3.11+ and Node.js 20+ where applicable, install Python dependencies, run dependency-free static Node tests when present, run Python tests, and report missing `SOLARI_API_KEY` without inventing credentials.
 
 ## Configuration / Secrets
 - Never commit live API keys, tokens, credentials, cookies, private keys, authenticated session material, runtime databases, exports, logs, or generated credential artifacts.
@@ -83,19 +88,19 @@ Scripts validate repository/branch, install Python dependencies, run dependency-
 - **Prime Prompts revision reviewed:** `39318ae0dc0b7311cfd10bfd201e6ccb11a47161`
 - **Prime Prompts revision timestamp verified:** 2026-09-01T08:02:49Z review session; branch commit dated 2026-09-01T07:18:59Z
 - **Compliance review status:** Partial — repository-specific public/data/configuration/update/TODO/security requirements reviewed; central mirror/registry and full security scan remain pending
-- **Compliance review timestamp:** 2026-09-01T08:02:49Z
+- **Compliance review timestamp:** 2026-09-01T08:15:24Z
 - **Compliance exceptions/remediation reference:** `TODO.md`
 - **Current META_TEMPLATE blob SHA in registry header:** `f4e3bfe4c3b25e8ca78cd972edfca546caa383db`
 
 ## TODO / Remediation Tracking
 - **TODO path:** `TODO.md`
-- **TODO review status:** Active; product/static/API backlog preserved, completion synchronization pending for this development pass
-- **TODO last reviewed:** 2026-09-01T08:02:49Z
-- **Central TODO mirror:** Pending
+- **TODO review status:** Reconciled through the 2026-09-01 implementation pass; implemented items are checked only where repository evidence exists and live/manual items remain open.
+- **TODO last reviewed:** 2026-09-01T08:15:24Z
+- **Central TODO mirror:** Pending; not mutated because the current task is single-repository scoped.
 
 ## Repository Security Hygiene
 - **Security-hygiene audit status:** Partial
-- **Security-hygiene audit completed:** Partial review 2026-09-01T08:02:49Z
+- **Security-hygiene audit completed:** Partial review 2026-09-01T08:15:24Z
 - **Current-tree secret scan:** Not yet completed as a full scan
 - **Git-history secret scan:** Not yet completed
 - **`.gitignore` review:** Reviewed and updated 2026-09-01T08:02:49Z
@@ -125,8 +130,8 @@ Scripts validate repository/branch, install Python dependencies, run dependency-
 ## Administrative
 - **Owner / operator:** Tocsin Data
 - **Approval authority:** Repository owner
-- **Issue/task tracking:** Root `TODO.md`; central mirror pending
+- **Issue/task tracking:** Root `TODO.md`; central mirror pending by repository-scope rule
 
 ## Maintenance
-- **Metadata last updated:** 2026-09-01T08:02:49Z
-- **Metadata updated for:** Static/no-hosting expansion, portable-case security/integrity, server API/history/filter expansion, source-registry review, exact Prime Prompts revision, and `.gitignore` review
+- **Metadata last updated:** 2026-09-01T08:15:24Z
+- **Metadata updated for:** Explainable correlation/geospatial primitives, bounded job/retry model, concurrent collection, source telemetry/capabilities, metrics/correlation API surfaces, runtime-version validation, content-addressed artifact tests, offline portable-case report generation, documentation expansion, and TODO reconciliation.
