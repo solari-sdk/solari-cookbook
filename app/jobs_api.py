@@ -10,6 +10,7 @@ from fastapi.responses import StreamingResponse
 
 from app.job_store import get_job_execution, job_metrics, list_job_executions
 from app.solari_api import router as solari_router
+from app.workflow_api import router as workflow_router
 
 router = APIRouter()
 jobs_router = APIRouter(prefix="/api/v1", tags=["jobs"])
@@ -60,3 +61,4 @@ def job(job_id: str) -> dict[str, object]:
 
 router.include_router(jobs_router)
 router.include_router(solari_router)
+router.include_router(workflow_router)
