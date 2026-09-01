@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field, HttpUrl
 from app.geocoding import reverse_geocode, search_places
 from app.observables import ObservableRecord, link_observable, list_observables, make_observable, observable_links, save_observable
 from app.public_enrichment import network_geolocation, public_code_search_pivots
+from app.public_enrichment_api import router as public_enrichment_router
 from app.recon import (
     asn_network_lookup,
     certificate_transparency,
@@ -24,6 +25,7 @@ from app.recon import (
 from app.stix import export_stix_bundle, import_stix_bundle
 
 router = APIRouter(prefix="/api/v1", tags=["recon"])
+router.include_router(public_enrichment_router)
 
 
 class ObservableInput(BaseModel):
