@@ -8,6 +8,8 @@ on:
       - update.sh
       - update.ps1
       - update-macos.sh
+      - requirements.txt
+      - requirements-dev.txt
       - .github/workflows/platform-update.yml
       - tools/runtime_check.py
 
