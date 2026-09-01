@@ -17,6 +17,15 @@ class PluginKind(str, Enum):
     CONNECTOR = "connector"
 
 
+ENTRYPOINTS: dict[PluginKind, str] = {
+    PluginKind.INGESTOR: "ingest",
+    PluginKind.ANALYZER: "analyze",
+    PluginKind.VISUALIZER: "visualize",
+    PluginKind.EXPORTER: "export",
+    PluginKind.CONNECTOR: "connect",
+}
+
+
 class PluginManifest(BaseModel):
     id: str = Field(pattern=r"^[a-z0-9][a-z0-9._-]{1,63}$")
     name: str
@@ -46,14 +55,20 @@ class PluginRegistry:
         return sorted(plugins, key=lambda plugin: plugin.id)
 
 
-def _sandbox_program(payload: dict[str, Any], plugin_code: str, max_output_bytes: int) -> str:
+def plugin_entrypoint(kind: PluginKind) -> str:
+    return ENTRYPOINTS[kind]
+
+
+def _sandbox_program(payload: dict[str, Any], plugin_code: str, max_output_bytes: int, entrypoint: str = "analyze") -> str:
+    if entrypoint not in set(ENTRYPOINTS.values()):
+        raise ValueError("unsupported plugin entrypoint")
     serialized = json.dumps(payload, ensure_ascii=False)
     return (
         "import json\n"
         f"payload = json.loads({serialized!r})\n"
         f"MAX_OUTPUT = {max_output_bytes}\n"
         + plugin_code
-        + "\nresult = analyze(payload)\n"
+        + f"\nresult = {entrypoint}(payload)\n"
         "encoded = json.dumps(result, ensure_ascii=False, sort_keys=True).encode('utf-8')\n"
         "if len(encoded) > MAX_OUTPUT: raise ValueError('plugin output exceeds configured limit')\n"
         "print(encoded.decode('utf-8'))\n"
@@ -63,10 +78,11 @@ def _sandbox_program(payload: dict[str, Any], plugin_code: str, max_output_bytes
 def run_sandbox_plugin(manifest: PluginManifest, plugin_code: str, payload: dict[str, Any]) -> dict[str, Any]:
     if not manifest.sandbox_required:
         raise ValueError("this runner accepts sandbox-required plugins only")
-    if "def analyze(" not in plugin_code:
-        raise ValueError("plugin code must define analyze(payload)")
+    entrypoint = plugin_entrypoint(manifest.kind)
+    if f"def {entrypoint}(" not in plugin_code:
+        raise ValueError(f"{manifest.kind.value} plugin code must define {entrypoint}(payload)")
     execution: SandboxExecution = run_python_sync(
-        _sandbox_program(payload, plugin_code, manifest.max_output_bytes),
+        _sandbox_program(payload, plugin_code, manifest.max_output_bytes, entrypoint),
         timeout_ms=manifest.timeout_seconds * 1000,
     )
     parsed = None
@@ -77,6 +93,8 @@ def run_sandbox_plugin(manifest: PluginManifest, plugin_code: str, payload: dict
     return {
         "plugin_id": manifest.id,
         "plugin_version": manifest.version,
+        "plugin_kind": manifest.kind.value,
+        "entrypoint": entrypoint,
         "sandbox_id": execution.sandbox_id,
         "duration_ms": execution.duration_ms,
         "stdout": execution.stdout,
