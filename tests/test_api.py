@@ -60,6 +60,28 @@ def test_correlation_endpoint_is_bounded_and_never_auto_merges() -> None:
     assert client.get("/api/v1/correlation/candidates?limit=1").status_code == 422
 
 
+def test_stix_observable_import_can_validate_without_persisting() -> None:
+    bundle = {
+        "type": "bundle",
+        "id": "bundle--00000000-0000-4000-8000-000000000001",
+        "objects": [
+            {
+                "type": "domain-name",
+                "spec_version": "2.1",
+                "id": "domain-name--00000000-0000-4000-8000-000000000002",
+                "value": "example.com",
+            }
+        ],
+    }
+    response = client.post("/api/v1/observables/import/stix?persist=false", json=bundle)
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["persisted"] is False
+    assert payload["skipped"] == []
+    assert payload["imported"][0]["type"] == "domain"
+    assert payload["imported"][0]["canonical_value"] == "example.com"
+
+
 def test_unknown_live_source_returns_404() -> None:
     response = client.get("/api/v1/events/live/not-a-source")
     assert response.status_code == 404
