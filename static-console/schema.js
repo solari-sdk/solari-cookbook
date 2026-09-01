@@ -1,9 +1,27 @@
 export const CASE_FORMAT = 'solari-portable-case';
 export const CASE_VERSION = 3;
 export const TOOL_VERSION = 'static-console/0.3';
+export const DOMAIN_CONTRACT_NAME = 'solari-osint-domain';
+export const DOMAIN_CONTRACT_VERSION = 1;
 const V2_MEMBER_NAMES = ['events','entities','relationships','evidence','provenance','saved_views'];
 const MEMBER_NAMES = [...V2_MEMBER_NAMES,'artifacts','acquisitions','transformations','notes'];
 const encoder = new TextEncoder();
+
+export function validateDomainContract(payload) {
+  if (!payload || payload.contract !== DOMAIN_CONTRACT_NAME || payload.version !== DOMAIN_CONTRACT_VERSION) throw new Error('Unsupported shared domain contract.');
+  if (payload.portable_case?.format !== CASE_FORMAT || payload.portable_case?.version !== CASE_VERSION) throw new Error('Shared domain contract portable-case version does not match this client.');
+  for (const name of ['event','source','acquisition','entity','relationship','case','observable']) {
+    if (!Array.isArray(payload.models?.[name]?.fields) || !Array.isArray(payload.models?.[name]?.required)) throw new Error(`Shared domain contract is missing ${name}.`);
+  }
+  return payload;
+}
+
+export const DOMAIN_CONTRACT_PROMISE = fetch('./domain-contract.json', { cache: 'no-store' })
+  .then(async (response) => {
+    if (!response.ok) throw new Error(`domain contract HTTP ${response.status}`);
+    return validateDomainContract(await response.json());
+  })
+  .catch((error) => ({ error: String(error?.message || error) }));
 
 async function sha256Json(value) {
   if (!crypto?.subtle) return null;
@@ -12,6 +30,8 @@ async function sha256Json(value) {
 }
 
 export async function buildCase(events, extra = {}) {
+  const shared = await DOMAIN_CONTRACT_PROMISE;
+  if (!shared?.error) validateDomainContract(shared);
   const payload = {
     case: { id: extra.id || crypto.randomUUID(), title: extra.title || 'Portable investigation', notes: extra.case_notes || '', tags: Array.isArray(extra.tags) ? extra.tags : [] },
     events: Array.isArray(events) ? structuredClone(events) : [],
@@ -32,7 +52,7 @@ export async function buildCase(events, extra = {}) {
   return {
     format: CASE_FORMAT, version: CASE_VERSION, exported_at: new Date().toISOString(),
     manifest: {
-      schema_version: CASE_VERSION, tool_version: TOOL_VERSION, created_at: new Date().toISOString(), source_ids: sourceIds,
+      schema_version: CASE_VERSION, tool_version: TOOL_VERSION, domain_contract: { name: DOMAIN_CONTRACT_NAME, version: DOMAIN_CONTRACT_VERSION }, created_at: new Date().toISOString(), source_ids: sourceIds,
       transformation_ids: transformationIds, required_capabilities: ['json','sha256'], files,
     },
     ...payload,
@@ -61,6 +81,10 @@ export function validateCase(data) {
   if (!data || data.format !== CASE_FORMAT || ![1,2,CASE_VERSION].includes(data.version)) throw new Error('Unsupported portable case format.');
   if (!Array.isArray(data.events)) throw new Error('Portable case is missing events.');
   if (data.events.length > 100000) throw new Error('Portable case exceeds the event safety limit.');
+  if (data.version >= 3 && data.manifest?.domain_contract) {
+    const domain = data.manifest.domain_contract;
+    if (domain.name !== DOMAIN_CONTRACT_NAME || domain.version > DOMAIN_CONTRACT_VERSION) throw new Error('Portable case requires an unsupported shared domain contract.');
+  }
   const members=data.version>=3?MEMBER_NAMES.filter((name)=>name!=='events'):V2_MEMBER_NAMES.filter((name)=>name!=='events');
   for (const name of members) {
     if (data[name] != null && !Array.isArray(data[name])) throw new Error(`Portable case ${name} must be an array.`);
