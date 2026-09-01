@@ -83,7 +83,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Open geospatial/boundary/gazetteer sources through Nominatim plus provenance-bearing boundary foundations.
 - [x] Public satellite/orbital data baseline through bounded CelesTrak weather-group GP data.
 - [ ] Public internet-health/outage telemetry where lawful and free.
-- [ ] Public infrastructure status datasets.
+- [x] Public infrastructure status baseline through an explicitly allowlisted public WZDx/CWZ work-zone feed adapter with bounded GeoJSON normalization and no inferred safety severity.
 - [x] Public air-quality and environmental sensor feeds through EPA AirNow plus NOAA NDBC environmental observations.
 - [ ] Public lightning/storm observation feeds.
 - [x] Public river gauge/water-level feeds through bounded USGS latest-continuous discharge/gage-height observations.
@@ -163,8 +163,8 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Shared time/filter context across static-console map and event table.
 - [x] Position/event replay UI foundation through retained timestamp playback; moving-object track replay remains separately implemented in the geospatial engine.
 - [x] Side-by-side map, graph and event-stream analysis mode in the server dashboard.
-- [ ] Country/region dossier view built only from public structured sources.
-- [ ] Data freshness badges on every major widget.
+- [x] Region dossier view derived only from the current filtered public structured event set, with source/category/time/bounds summaries and no inferred jurisdiction or causal attribution.
+- [x] Data freshness badges on every major server-dashboard panel after successful refresh.
 - [x] Analyst workspace layout presets for balanced, map-focus and stream-focus views.
 - [x] Keyboard-driven command palette with Ctrl/Cmd+K access.
 - [x] Universal event/entity quick-open from the command palette.
@@ -315,7 +315,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Administrative boundary intersection against provenance-bearing boundary datasets supplied to the engine.
 - [x] Reverse geocoding through bounded, throttled OpenStreetMap Nominatim with attribution and uncertainty metadata.
 - [x] Place-name gazetteer lookup through bounded, throttled OpenStreetMap Nominatim.
-- [ ] Coordinate precision/uncertainty visualization.
+- [x] Coordinate precision/uncertainty visualization using source precision labels plus symbolic dashed halos that explicitly do not assert a numeric radius.
 - [x] Great-circle route calculation/interpolation.
 - [ ] Public satellite orbital/TLE visualization.
 - [ ] Optional 3D terrain/globe visualization.
@@ -498,7 +498,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 
 ## Tests / QA
 - [x] Unit tests for baseline normalization/idempotence/provenance.
-- [x] Fixture normalization tests for every currently implemented source adapter.
+- [x] Fixture normalization tests for every currently implemented source adapter, including the configurable public WZDx work-zone adapter.
 - [ ] Live smoke tests for representative public sources.
 - [ ] Solari Browser integration tests with live key.
 - [ ] Solari Sandbox integration tests with live key.
@@ -516,7 +516,7 @@ Build and publicly demonstrate a comprehensive OSINT operations center that uses
 - [x] Correlation explanation/candidate tests.
 - [x] Portable report reproducibility/escaping test foundation.
 - [x] Public-release/private-name/identifier scanner test supports configured deny terms in addition to secret/sensitive-file patterns.
-- [x] Secret-pattern scanner in CI; current development-tree run passes prior to this run's final CI confirmation.
+- [x] Secret-pattern scanner in CI; CI run for the WZDx/dashboard batch passed Python, static-console and current-tree secret scans.
 - [ ] Static-mode first-run browser test with no backend process available.
 - [x] Static-mode offline-shell asset regression test.
 - [ ] IndexedDB persistence/migration browser tests.
