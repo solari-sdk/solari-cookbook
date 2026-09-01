@@ -146,7 +146,6 @@ def ocr_image(
                     text=True,
                     timeout=timeout_seconds,
                     check=False,
-                    env={"PATH": str(Path(executable).parent)},
                 )
             except subprocess.TimeoutExpired as exc:
                 raise RuntimeError("OCR execution exceeded the configured timeout") from exc
