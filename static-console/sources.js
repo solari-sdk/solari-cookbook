@@ -1,4 +1,7 @@
+import { fetchViaBroker, normalizeBrokerEndpoint } from './broker.js';
+
 const encoder = new TextEncoder();
+const MAX_STATIC_RESPONSE_BYTES = 12 * 1024 * 1024;
 
 async function sha256Text(value) {
   if (!crypto?.subtle) return null;
@@ -36,27 +39,52 @@ export const STATIC_SOURCES = {
   },
 };
 
-export async function fetchStaticSource(sourceId, urlValue) {
+function parseJson(rawText) {
+  if (encoder.encode(rawText).byteLength > MAX_STATIC_RESPONSE_BYTES) throw new Error('Source response exceeds the static-console safety limit.');
+  try { return JSON.parse(rawText); } catch { throw new Error('Source returned invalid JSON.'); }
+}
+
+function brokerFromPage() {
+  return globalThis.document?.querySelector?.('#broker-endpoint')?.value || '';
+}
+
+export async function fetchStaticSource(sourceId, urlValue, { brokerEndpoint = '' } = {}) {
   const adapter = STATIC_SOURCES[sourceId];
   if (!adapter) throw new Error('Unknown static source adapter.');
   const url = new URL(urlValue || adapter.defaultUrl);
   if (url.protocol !== 'https:') throw new Error('Only HTTPS public sources are allowed.');
   const startedAt=new Date().toISOString();
-  let response;
-  try { response = await fetch(url, { headers: { Accept: adapter.accept }, mode: 'cors' }); }
-  catch (error) { throw new Error(`Browser fetch unavailable (network or CORS). Use Solari Browser or a configured broker for this source. ${error.message}`); }
-  if (!response.ok) throw new Error(`Source returned HTTP ${response.status}.`);
-  const rawText=await response.text();
-  let payload;
-  try { payload=JSON.parse(rawText); } catch { throw new Error('Source returned invalid JSON.'); }
+  let rawText;
+  let finalUrl=url.toString();
+  let status=200;
+  let contentType=null;
+  let route='direct-browser';
+  try {
+    const response = await fetch(url, { headers: { Accept: adapter.accept }, mode: 'cors', credentials: 'omit' });
+    if (!response.ok) throw new Error(`Source returned HTTP ${response.status}.`);
+    rawText=await response.text();
+    finalUrl=response.url||url.toString();
+    status=response.status;
+    contentType=response.headers.get('content-type');
+  } catch (error) {
+    const endpoint=normalizeBrokerEndpoint(brokerEndpoint || brokerFromPage());
+    if (!endpoint) throw new Error(`Browser fetch unavailable (network or CORS). Configure the optional broker for this source when direct browser access is not available. ${error.message}`);
+    const brokered=await fetchViaBroker(endpoint,{sourceId,sourceUrl:url.toString(),accept:adapter.accept});
+    rawText=brokered.body_text;
+    finalUrl=brokered.final_url||url.toString();
+    status=brokered.status;
+    contentType=brokered.content_type||null;
+    route='broker-fallback';
+  }
+  const payload=parseJson(rawText);
   const completedAt=new Date().toISOString();
   const acquisitionId=`${sourceId}:${startedAt}`;
-  const events=adapter.normalize(payload,response.url||url.toString(),acquisitionId);
+  const events=adapter.normalize(payload,finalUrl,acquisitionId);
   const received=Array.isArray(payload?.features)?payload.features.length:Array.isArray(payload)?payload.length:events.length;
   const acquisition={
-    id:acquisitionId,source_id:sourceId,method:adapter.method,requested_url:url.toString(),final_url:response.url||url.toString(),
-    started_at:startedAt,completed_at:completedAt,status:'success',http_status:response.status,content_type:response.headers.get('content-type'),
-    content_sha256:await sha256Text(rawText),metadata:{response_bytes:encoder.encode(rawText).byteLength,records_received:received,records_accepted:events.length,records_rejected:Math.max(0,received-events.length)},
+    id:acquisitionId,source_id:sourceId,method:adapter.method,requested_url:url.toString(),final_url:finalUrl,
+    started_at:startedAt,completed_at:completedAt,status:'success',http_status:status,content_type:contentType,
+    content_sha256:await sha256Text(rawText),metadata:{route,response_bytes:encoder.encode(rawText).byteLength,records_received:received,records_accepted:events.length,records_rejected:Math.max(0,received-events.length)},
   };
-  return { source: adapter, url: url.toString(), events, acquisition, rawText };
+  return { source: adapter, url: url.toString(), events, acquisition, rawText, route };
 }

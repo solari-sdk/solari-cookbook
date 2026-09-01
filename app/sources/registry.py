@@ -4,6 +4,7 @@ from types import ModuleType
 
 from app.contracts import SourceDescriptor
 from app.sources import (
+    airnow_daily_quality,
     celestrak_weather_satellites,
     fema_disaster_declarations,
     gdacs_disasters,
@@ -35,6 +36,7 @@ REGISTERED_ADAPTERS: tuple[ModuleType, ...] = (
     usgs_volcano_elevated,
     ndbc_latest_observations,
     usgs_water_latest,
+    airnow_daily_quality,
 )
 
 ADAPTERS: dict[str, ModuleType] = {adapter.SOURCE.id: adapter for adapter in REGISTERED_ADAPTERS}

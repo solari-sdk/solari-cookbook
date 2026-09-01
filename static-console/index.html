@@ -19,6 +19,7 @@
   </section>
   <section class="panel"><h2>Public source import</h2>
     <label>Adapter <select id="source-adapter"></select></label><label>Public HTTPS URL <input id="source-url" type="url" value="https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"></label>
+    <label>Optional broker endpoint <input id="broker-endpoint" type="url" autocomplete="off" placeholder="https://broker.example.invalid/"></label><p>Direct browser access is attempted first. If the browser cannot complete the request because of network/CORS restrictions, this session-only endpoint can perform the allowlisted public-source fetch. No broker address is built into the application.</p>
     <button id="fetch-source">Fetch and store</button><p id="fetch-status"></p>
   </section>
   <section class="panel"><h2>Source health</h2><p id="source-health-summary"></p><div class="table-wrap"><table><thead><tr><th>Source</th><th>Last success</th><th>Age</th><th>Records</th><th>URL</th></tr></thead><tbody id="source-health"></tbody></table></div></section>
