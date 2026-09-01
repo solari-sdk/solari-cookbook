@@ -177,13 +177,19 @@ def save_tokens(doc: dict) -> None:
 
 def client_id() -> str:
     value = os.environ.get("X_CLIENT_ID", "").strip().strip("'\"")
+    value = urllib.parse.unquote(value)
+    value = re.sub(r"\s+", "", value)
+    for ch in ("\u2018", "\u2019", "\u201c", "\u201d", "\ufeff", "\u200b"):
+        value = value.replace(ch, "")
     if not value:
         raise SystemExit("Set X_CLIENT_ID from your X developer app (OAuth 2.0 Client ID).")
-    # X Client IDs are often like "xxxx:yyyy" (colon). Reject only non-ASCII junk.
     if not re.fullmatch(r"[A-Za-z0-9_.:/=+-]+", value):
+        bad = sorted({c for c in value if not re.fullmatch(r"[A-Za-z0-9_.:/=+-]", c)})
+        codes = " ".join(f"U+{ord(c):04X}" for c in bad)
         raise SystemExit(
-            "X_CLIENT_ID has invalid characters (not a normal OAuth 2.0 Client ID).\n"
-            "Copy OAuth 2.0 Client ID only — not the Bearer token."
+            "X_CLIENT_ID has unexpected characters: "
+            f"{codes} (len={len(value)}).\n"
+            "Re-copy OAuth 2.0 Client ID only, or use: python3 xauth.py login-v1"
         )
     return value
 
