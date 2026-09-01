@@ -1,8 +1,8 @@
-from datetime import timezone
+from datetime import datetime, timezone
 
 import pytest
 
-from app.sources import nasa_firms_fires, reliefweb_disasters
+from app.sources import nasa_firms_fires, ofac_sdn, reliefweb_disasters
 
 
 def test_firms_normalization_preserves_detection_semantics():
@@ -68,3 +68,22 @@ def test_reliefweb_disaster_normalization():
 def test_reliefweb_requires_data_array():
     with pytest.raises(ValueError, match="data array"):
         reliefweb_disasters.normalize({}, "acq-fixture")
+
+
+def test_ofac_sdn_normalization_preserves_listing_and_identity_boundary():
+    observed = datetime(2026, 9, 1, tzinfo=timezone.utc)
+    rows = [["123", "Sample Entity", "Entity", "TEST-PROGRAM", "-0-", "-0-", "-0-", "-0-", "-0-", "-0-", "-0-", "Public fixture remarks"]]
+    events = ofac_sdn.normalize(rows, "acq-fixture", observed)
+    assert len(events) == 1
+    event = events[0]
+    assert event.source_record_id == "123"
+    assert event.category == "sanctions-listing"
+    assert event.properties["name"] == "Sample Entity"
+    assert event.properties["program"] == "TEST-PROGRAM"
+    assert event.properties["identity_resolution_required"] is True
+    assert event.observed_at == observed
+
+
+def test_ofac_sdn_skips_header_and_incomplete_rows():
+    events = ofac_sdn.normalize([["ent_num", "SDN_Name", "SDN_Type", "Program"], ["1"]], "acq-fixture", datetime.now(timezone.utc))
+    assert events == []
