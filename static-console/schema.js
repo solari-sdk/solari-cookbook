@@ -39,6 +39,24 @@ export async function buildCase(events, extra = {}) {
   };
 }
 
+export async function cloneCaseBundle(data,{id=null,title=null,hypothesisLabel=null}={}) {
+  validateCase(data);
+  const original=structuredClone(data);
+  const cloned=await buildCase(original.events,{
+    id:id||crypto.randomUUID(),
+    title:title||`${original.case?.title||'Portable investigation'} — branch`,
+    case_notes:original.case?.notes||'',
+    tags:[...(original.case?.tags||[]),...(hypothesisLabel?[`hypothesis:${hypothesisLabel}`]:[])],
+    entities:original.entities||[],relationships:original.relationships||[],evidence:original.evidence||[],provenance:original.provenance||[],saved_views:original.saved_views||[],
+    artifacts:original.artifacts||[],acquisitions:original.acquisitions||[],transformations:original.transformations||[],notes:original.notes||[],
+  });
+  cloned.case.cloned_from=original.case?.id||null;
+  cloned.case.hypothesis_label=hypothesisLabel||null;
+  cloned.provenance.push({kind:'case-clone',source_case_id:original.case?.id||null,created_at:new Date().toISOString(),hypothesis_label:hypothesisLabel||null});
+  cloned.manifest.files['provenance.json']=await sha256Json(cloned.provenance);
+  return cloned;
+}
+
 export function validateCase(data) {
   if (!data || data.format !== CASE_FORMAT || ![1,2,CASE_VERSION].includes(data.version)) throw new Error('Unsupported portable case format.');
   if (!Array.isArray(data.events)) throw new Error('Portable case is missing events.');
