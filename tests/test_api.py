@@ -73,6 +73,21 @@ def test_metrics_endpoint_is_dashboard_safe() -> None:
     assert "sources_stale" in payload
 
 
+def test_durable_queue_and_schedule_telemetry_routes_are_read_only() -> None:
+    metrics = client.get("/api/v1/queue/metrics")
+    assert metrics.status_code == 200
+    assert {"depth", "running", "succeeded", "failed", "active_workers", "worker_utilization", "queue_wait_ms_average", "run_duration_ms_average"} <= set(metrics.json())
+    tasks = client.get("/api/v1/queue/tasks?limit=1")
+    assert tasks.status_code == 200
+    assert isinstance(tasks.json(), list)
+    schedules = client.get("/api/v1/schedules")
+    assert schedules.status_code == 200
+    assert isinstance(schedules.json(), list)
+    combined = client.get("/api/v1/jobs/metrics")
+    assert combined.status_code == 200
+    assert set(combined.json()) == {"executions", "queue"}
+
+
 def test_correlation_endpoint_is_bounded_and_never_auto_merges() -> None:
     response = client.get("/api/v1/correlation/candidates?limit=2&min_score=0.5")
     assert response.status_code == 200
