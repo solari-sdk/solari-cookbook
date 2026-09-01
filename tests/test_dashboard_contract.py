@@ -21,6 +21,11 @@ def test_server_dashboard_wires_graph_health_search_diagnostics_and_analyst_navi
     assert "playHistory" in script
     assert "contextmenu" in script
     assert "pivotToEvent" in script
+    assert "precisionHalo" in script
+    assert "Coordinate precision:" in script
+    assert "no numeric uncertainty radius is asserted" in script
+    assert "stampFreshness" in script
+    assert "freshness-badge" in script
     assert "/api/v1/source-health" in script
     assert "/api/v1/acquisitions?limit=20" in script
     assert "/api/v1/entities?${params}" in advanced
