@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import base64
 import hashlib
+import hmac
 import http.server
 import json
 import os
@@ -75,15 +76,45 @@ def _form(url: str, data: dict[str, str], headers: dict[str, str] | None = None)
         raise SystemExit(f"X token HTTP {exc.code}: {detail}") from exc
 
 
-def _api(
+def _pct(value: str) -> str:
+    return urllib.parse.quote(str(value), safe="")
+
+
+def _oauth1_header(
+    method: str,
+    url: str,
+    consumer_key: str,
+    consumer_secret: str,
+    token: str,
+    token_secret: str,
+) -> str:
+    params = {
+        "oauth_consumer_key": consumer_key,
+        "oauth_nonce": secrets.token_hex(16),
+        "oauth_signature_method": "HMAC-SHA1",
+        "oauth_timestamp": str(int(time.time())),
+        "oauth_token": token,
+        "oauth_version": "1.0",
+    }
+    encoded = "&".join(f"{_pct(k)}={_pct(v)}" for k, v in sorted(params.items()))
+    base = "&".join([method.upper(), _pct(url), _pct(encoded)])
+    key = f"{_pct(consumer_secret)}&{_pct(token_secret)}"
+    digest = hmac.new(key.encode("utf-8"), base.encode("utf-8"), hashlib.sha1).digest()
+    params["oauth_signature"] = base64.b64encode(digest).decode("ascii")
+    return "OAuth " + ", ".join(
+        f'{_pct(k)}="{_pct(v)}"' for k, v in sorted(params.items())
+    )
+
+
+def _request(
     method: str,
     path: str,
-    access_token: str,
+    authorization: str,
     payload: dict | None = None,
 ) -> dict:
     data = None if payload is None else json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(API + path, data=data, method=method)
-    req.add_header("Authorization", f"Bearer {access_token}")
+    req.add_header("Authorization", authorization)
     if payload is not None:
         req.add_header("Content-Type", "application/json")
     try:
@@ -93,6 +124,43 @@ def _api(
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")
         raise SystemExit(f"X API HTTP {exc.code}: {detail}") from exc
+
+
+def _api(
+    method: str,
+    path: str,
+    access_token: str,
+    payload: dict | None = None,
+) -> dict:
+    return _request(method, path, f"Bearer {access_token}", payload)
+
+
+def _api_oauth1(doc: dict, method: str, path: str, payload: dict | None = None) -> dict:
+    url = API + path
+    header = _oauth1_header(
+        method,
+        url,
+        doc["consumer_key"],
+        doc["consumer_secret"],
+        doc["access_token"],
+        doc["access_token_secret"],
+    )
+    return _request(method, path, header, payload)
+
+
+def _env(name: str) -> str:
+    value = os.environ.get(name, "").strip().strip("'\"")
+    if not value:
+        raise SystemExit(f"Set {name} in this Terminal (from X Keys and tokens).")
+    return value
+
+
+def authed_api(method: str, path: str, payload: dict | None = None) -> dict:
+    doc = load_tokens()
+    if doc.get("kind") == "oauth1":
+        return _api_oauth1(doc, method, path, payload)
+    doc = refresh_if_needed(doc)
+    return _api(method, path, doc["access_token"], payload)
 
 
 def load_tokens() -> dict:
@@ -252,12 +320,29 @@ def cmd_login(args: argparse.Namespace) -> int:
     return cmd_me(args)
 
 
+def cmd_login_v1(_args: argparse.Namespace) -> int:
+    """Store OAuth 1.0a user tokens from the X console (no browser)."""
+    save_tokens(
+        {
+            "kind": "oauth1",
+            "consumer_key": _env("X_API_KEY"),
+            "consumer_secret": _env("X_API_SECRET"),
+            "access_token": _env("X_ACCESS_TOKEN"),
+            "access_token_secret": _env("X_ACCESS_TOKEN_SECRET"),
+        }
+    )
+    print(f"Saved OAuth 1.0a user tokens to {TOKEN_PATH}")
+    return cmd_me(_args)
+
+
 def cmd_me(_args: argparse.Namespace) -> int:
-    doc = refresh_if_needed(load_tokens())
-    me = _api("GET", "/users/me", doc["access_token"])
+    doc = load_tokens()
+    me = authed_api("GET", "/users/me")
     data = me.get("data") or {}
     print(f"@{data.get('username', '?')}  id={data.get('id', '?')}  {data.get('name', '')}")
-    print("scopes:", doc.get("scope") or "(unknown)")
+    print("auth:", doc.get("kind", "oauth2"))
+    if doc.get("scope"):
+        print("scopes:", doc["scope"])
     return 0
 
 
@@ -266,8 +351,12 @@ def cmd_status(_args: argparse.Namespace) -> int:
         print("logged_out")
         return 1
     doc = json.loads(TOKEN_PATH.read_text(encoding="utf-8"))
-    left = int(float(doc.get("expires_at", 0)) - time.time())
     print(f"token_file={TOKEN_PATH}")
+    print(f"kind={doc.get('kind', 'oauth2')}")
+    if doc.get("kind") == "oauth1":
+        print("oauth1=yes")
+        return 0
+    left = int(float(doc.get("expires_at", 0)) - time.time())
     print(f"expires_in_s={left}")
     print(f"has_refresh={bool(doc.get('refresh_token'))}")
     print(f"scope={doc.get('scope')}")
@@ -283,8 +372,7 @@ def cmd_post(args: argparse.Namespace) -> int:
         raise SystemExit("Provide --text or --file")
     if len(text) > 280:
         print(f"Note: {len(text)} chars. X may reject or require Premium for long posts.", file=sys.stderr)
-    doc = refresh_if_needed(load_tokens())
-    res = _api("POST", "/tweets", doc["access_token"], {"text": text})
+    res = authed_api("POST", "/tweets", {"text": text})
     tweet = res.get("data") or {}
     print(f"posted id={tweet.get('id')}  https://x.com/i/web/status/{tweet.get('id')}")
     return 0
@@ -301,9 +389,14 @@ def main() -> int:
     p = argparse.ArgumentParser(description="X OAuth 2.0 user auth (official API)")
     sub = p.add_subparsers(dest="cmd", required=True)
 
-    login = sub.add_parser("login", help="Browser PKCE login")
+    login = sub.add_parser("login", help="Browser PKCE login (OAuth 2.0)")
     login.add_argument("--scopes", default=None, help="Override X_SCOPES / defaults")
     login.set_defaults(func=cmd_login)
+
+    sub.add_parser(
+        "login-v1",
+        help="Save OAuth 1.0a tokens from the X console (no browser)",
+    ).set_defaults(func=cmd_login_v1)
 
     sub.add_parser("me", help="GET /2/users/me").set_defaults(func=cmd_me)
     sub.add_parser("status", help="Token file status").set_defaults(func=cmd_status)

@@ -39,6 +39,23 @@ Default scopes: `tweet.read tweet.write users.read offline.access`.
 Tokens are written to `~/.config/x-user/tokens.json` (mode `0600`).
 Refresh happens automatically on `me` / `post`.
 
+## Alternative: OAuth 1.0a (no Safari window)
+
+If `login` keeps failing, use Access Token + Secret from the console:
+
+1. App → **Settings** → permissions **Read and write** → save.
+2. **Keys and tokens** → **Access Token and Secret** → **Generate**.
+3. On your Mac:
+
+```bash
+export X_API_KEY='Consumer Key'
+export X_API_SECRET='Consumer Secret'
+export X_ACCESS_TOKEN='Access Token'
+export X_ACCESS_TOKEN_SECRET='Access Token Secret'
+python3 xauth.py login-v1
+python3 xauth.py me
+```
+
 ## 3. Post the intern tweet
 
 ```bash
