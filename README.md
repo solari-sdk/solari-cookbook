@@ -25,6 +25,7 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [sandbox-quickstart-ts](examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
 | [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
+| [sandbox-flaky-test-detector-py](examples/sandbox-flaky-test-detector-py) | Python | Detect inconsistent pytest outcomes in an isolated micro-VM |
 | [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
 
 ### Desktop
