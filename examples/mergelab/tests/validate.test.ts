@@ -39,4 +39,13 @@ describe("validateConfig", () => {
       }),
     ).toThrow("Duplicate");
   });
+
+  it("accepts auto browser mode", () => {
+    expect(
+      validateConfig({
+        ...validConfig,
+        browser: { ...validConfig.browser, enabled: "auto" },
+      }),
+    ).toBeDefined();
+  });
 });

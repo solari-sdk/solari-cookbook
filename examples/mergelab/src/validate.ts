@@ -7,7 +7,7 @@ const viewportSchema = z.object({
 });
 
 const browserConfigSchema = z.object({
-  enabled: z.boolean(),
+  enabled: z.union([z.boolean(), z.literal("auto")]),
   startCommand: z.string().min(1),
   port: z.number().int().positive(),
   readyPath: z.string().min(1),

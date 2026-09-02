@@ -17,6 +17,7 @@ import {
   makeClient,
   prepareGitState,
   provisionWorker,
+  readPackageJson,
   runBrowserVerification,
   runChecks,
   runInstall,
@@ -24,6 +25,7 @@ import {
   type WorkerContext,
   writeArtifact,
 } from "./solari.js";
+import { resolveBrowserVerification } from "./detect.js";
 
 export type OrchestratorContext = {
   repo: GitHubRepo;
@@ -196,8 +198,23 @@ async function workerLoop(
       const allChecksPassed = candidateResult.commands
         .filter((c) => c.name !== "install")
         .every((c) => c.status === "passed");
-      if (installPassed && allChecksPassed && (ctx.config.browser?.enabled ?? false)) {
-        candidateResult.browser = await runBrowserVerification(worker, workerCtx);
+      if (installPassed && allChecksPassed && ctx.config.browser) {
+        const packageJson = await readPackageJson(worker);
+        const decision = resolveBrowserVerification(ctx.config.browser.enabled, packageJson);
+        if (decision.run) {
+          candidateResult.browser = await runBrowserVerification(worker, workerCtx);
+        } else {
+          candidateResult.browser = {
+            status: "skipped",
+            durationMs: 0,
+            stdout: "",
+            stderr: decision.reason,
+            screenshotPaths: [],
+            consoleErrors: [],
+            pageErrors: [],
+            skipReason: decision.reason,
+          };
+        }
       }
 
       // Save candidate logs as artifacts.

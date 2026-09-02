@@ -36,7 +36,7 @@ function renderHtml(report: MergeLabReport): string {
           <td>${prs}</td>
           <td>${c.outcome}</td>
           <td>${c.commands.map((cmd) => `${cmd.name}: ${cmd.status}`).join("<br>")}</td>
-          <td>${c.browser ? c.browser.status : "skipped"}</td>
+          <td>${c.browser ? `${c.browser.status}${c.browser.skipReason ? ` — ${escapeHtml(c.browser.skipReason)}` : ""}` : "skipped"}</td>
           <td>${c.treeSha ? c.treeSha.slice(0, 12) : "N/A"}</td>
         </tr>
       `;

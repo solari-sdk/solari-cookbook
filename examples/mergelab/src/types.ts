@@ -33,6 +33,8 @@ export type CommandResult = {
   stderr: string;
 };
 
+export type BrowserEnabledMode = boolean | "auto";
+
 export type BrowserResult = {
   status: CommandStatus;
   durationMs: number;
@@ -42,6 +44,7 @@ export type BrowserResult = {
   tracePath?: string;
   consoleErrors: string[];
   pageErrors: string[];
+  skipReason?: string;
 };
 
 export type ArtifactRef = {
@@ -127,7 +130,7 @@ export type MergeLabConfig = {
     required: boolean;
   }>;
   browser?: {
-    enabled: boolean;
+    enabled: BrowserEnabledMode;
     startCommand: string;
     port: number;
     readyPath: string;

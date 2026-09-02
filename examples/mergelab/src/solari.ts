@@ -194,6 +194,24 @@ export class GitStateError extends Error {
   }
 }
 
+export async function readPackageJson(worker: Worker): Promise<unknown> {
+  const res = await runInSandbox(
+    worker,
+    "cat",
+    [path.join(worker.workDir, "package.json")],
+    10_000,
+    worker.workDir,
+  );
+  if (res.exitCode !== 0 || !res.stdout.trim()) {
+    return null;
+  }
+  try {
+    return JSON.parse(res.stdout) as unknown;
+  } catch {
+    return null;
+  }
+}
+
 export async function runCheck(
   worker: Worker,
   name: string,
