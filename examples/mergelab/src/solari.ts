@@ -121,10 +121,6 @@ export async function prepareGitState(
 ): Promise<{ treeSha: string; mergeConflicts: string[] }> {
   await runInSandbox(worker, "mkdir", ["-p", worker.workDir], 10_000);
 
-  // Configure git user for any merges that create commits.
-  await runInSandbox(worker, "git", ["config", "--global", "user.email", "mergelab@example.com"], 10_000);
-  await runInSandbox(worker, "git", ["config", "--global", "user.name", "MergeLab"], 10_000);
-
   // Clone the repository.
   const cloneRes = await runInSandbox(worker, "git", ["clone", ctx.repoUrl, worker.workDir], 120_000);
   if (cloneRes.exitCode !== 0) {
@@ -154,7 +150,11 @@ export async function prepareGitState(
     const mergeRes = await runInSandbox(
       worker,
       "git",
-      ["merge", "--no-commit", "--no-ff", `pr/${pr.number}`],
+      [
+        "-c", "user.email=mergelab@example.com",
+        "-c", "user.name=MergeLab",
+        "merge", "--no-ff", "-m", `Merge PR #${pr.number}`, `pr/${pr.number}`,
+      ],
       60_000,
       worker.workDir,
     );
@@ -167,7 +167,16 @@ export async function prepareGitState(
         .map((s) => s.trim())
         .filter(Boolean);
       mergeConflicts.push(...conflicts);
-      throw new GitStateError("git_conflict", conflicts.join(", "));
+
+      if (conflicts.length > 0) {
+        throw new GitStateError("git_conflict", conflicts.join(", "));
+      }
+
+      // Not a file conflict — capture git's output for diagnosis.
+      const detail = mergeRes.timedOut
+        ? `git merge timed out after 60s`
+        : (mergeRes.stderr || mergeRes.stdout || `git merge exited ${mergeRes.exitCode}`).trim();
+      throw new GitStateError("merge_failed", detail);
     }
   }
 

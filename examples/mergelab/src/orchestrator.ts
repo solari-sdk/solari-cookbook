@@ -225,6 +225,9 @@ async function workerLoop(
       candidateResult.artifacts.push(logArtifact);
     } catch (err) {
       candidateResult.outcome = "infrastructure_failure";
+      const diagnostic = err instanceof Error
+        ? `${err.name}: ${err.message || "(no message)"}\n${err.stack ?? ""}`
+        : String(err);
       candidateResult.commands.push({
         name: "orchestrator",
         command: "",
@@ -232,7 +235,7 @@ async function workerLoop(
         exitCode: null,
         durationMs: 0,
         stdout: "",
-        stderr: err instanceof Error ? err.message : String(err),
+        stderr: diagnostic,
       });
     } finally {
       candidateResult.completedAt = new Date().toISOString();
