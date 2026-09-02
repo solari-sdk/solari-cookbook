@@ -1,0 +1,73 @@
+From 9890b5a190ed8ac86bdbcffee775dc791cd0a25d Mon Sep 17 00:00:00 2001
+From: sanketsingh27 <singh.sanket27@gmail.com>
+Date: Wed, 2 Sep 2026 16:43:46 +0530
+Subject: [PATCH] PR B: add checkout UI that reads the legacy count field
+
+---
+ index.html             |  2 ++
+ src/checkout.js        | 11 +++++++++++
+ tests/checkout.test.js | 20 ++++++++++++++++++++
+ 3 files changed, 33 insertions(+)
+ create mode 100644 src/checkout.js
+ create mode 100644 tests/checkout.test.js
+
+diff --git a/index.html b/index.html
+index ccc4ac2..c020607 100644
+--- a/index.html
++++ b/index.html
+@@ -9,7 +9,9 @@
+     <div id="app">
+       <h1>MergeLab Fixture Store</h1>
+       <p id="cart">Loading cart…</p>
++      <p id="checkout">Loading checkout…</p>
+     </div>
+     <script type="module" src="/src/main.js"></script>
++    <script type="module" src="/src/checkout.js"></script>
+   </body>
+ </html>
+diff --git a/src/checkout.js b/src/checkout.js
+new file mode 100644
+index 0000000..d6e3996
+--- /dev/null
++++ b/src/checkout.js
+@@ -0,0 +1,11 @@
++async function renderCheckout() {
++  const res = await fetch("/api/cart");
++  const data = await res.json();
++  const count = data.count;
++  const el = document.getElementById("checkout");
++  if (el) {
++    el.textContent = `Checkout items: ${count}`;
++  }
++}
++
++renderCheckout();
+diff --git a/tests/checkout.test.js b/tests/checkout.test.js
+new file mode 100644
+index 0000000..f801f73
+--- /dev/null
++++ b/tests/checkout.test.js
+@@ -0,0 +1,20 @@
++import { describe, it, expect } from "vitest";
++import request from "supertest";
++import express from "express";
++
++function makeApp() {
++  const app = express();
++  app.get("/api/cart", (_req, res) => {
++    res.json({ count: 2 });
++  });
++  return app;
++}
++
++describe("checkout api", () => {
++  it("sees the legacy count field", async () => {
++    const app = makeApp();
++    const res = await request(app).get("/api/cart");
++    expect(res.status).toBe(200);
++    expect(res.body.count).toBe(2);
++  });
++});
+-- 
+2.45.2
+

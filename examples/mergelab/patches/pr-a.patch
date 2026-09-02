@@ -1,0 +1,65 @@
+From 66d99dcba8277421a67814c859f819b5000eea83 Mon Sep 17 00:00:00 2001
+From: sanketsingh27 <singh.sanket27@gmail.com>
+Date: Wed, 2 Sep 2026 16:43:15 +0530
+Subject: [PATCH] PR A: change cart api response shape to { cart: { itemCount }
+ }
+
+---
+ server.js            | 2 +-
+ src/main.js          | 2 +-
+ tests/server.test.js | 6 +++---
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/server.js b/server.js
+index 4ec04b4..3cfee76 100644
+--- a/server.js
++++ b/server.js
+@@ -10,7 +10,7 @@ app.get("/health", (_req, res) => {
+ });
+ 
+ app.get("/api/cart", (_req, res) => {
+-  res.json({ count: 2 });
++  res.json({ cart: { itemCount: 2 } });
+ });
+ 
+ app.listen(PORT, "0.0.0.0", () => {
+diff --git a/src/main.js b/src/main.js
+index 718fc23..399d2aa 100644
+--- a/src/main.js
++++ b/src/main.js
+@@ -1,7 +1,7 @@
+ async function renderCart() {
+   const res = await fetch("/api/cart");
+   const data = await res.json();
+-  const count = data.count;
++  const count = data.cart.itemCount;
+   document.getElementById("cart")!.textContent = `Cart: ${count}`;
+ }
+ 
+diff --git a/tests/server.test.js b/tests/server.test.js
+index 6123382..77d836b 100644
+--- a/tests/server.test.js
++++ b/tests/server.test.js
+@@ -5,16 +5,16 @@ import express from "express";
+ function makeApp() {
+   const app = express();
+   app.get("/api/cart", (_req, res) => {
+-    res.json({ count: 2 });
++    res.json({ cart: { itemCount: 2 } });
+   });
+   return app;
+ }
+ 
+ describe("cart api", () => {
+-  it("returns the item count", async () => {
++  it("returns the item count in the new cart shape", async () => {
+     const app = makeApp();
+     const res = await request(app).get("/api/cart");
+     expect(res.status).toBe(200);
+-    expect(res.body.count).toBe(2);
++    expect(res.body.cart.itemCount).toBe(2);
+   });
+ });
+-- 
+2.45.2
+
