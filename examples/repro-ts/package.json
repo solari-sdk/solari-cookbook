@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "tsx src/index.ts",
-    "test": "tsx --test src/github.test.ts",
+    "test": "tsx --test src/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
