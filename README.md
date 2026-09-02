@@ -33,6 +33,12 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### Full applications
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [sentinel](examples/sentinel) | TypeScript | Browser and sandbox together: passive vendor security posture review |
+
 ## Running an example
 
 Each directory is self-contained.
