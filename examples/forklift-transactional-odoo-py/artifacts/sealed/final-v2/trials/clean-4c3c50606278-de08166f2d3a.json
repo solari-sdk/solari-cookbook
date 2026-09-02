@@ -1,0 +1,299 @@
+{
+  "accepted": true,
+  "action_log": [
+    {
+      "milestone": "before_login",
+      "sequence": 0
+    },
+    {
+      "milestone": "po_draft_saved",
+      "sequence": 1
+    },
+    {
+      "milestone": "po_confirmed",
+      "sequence": 2
+    },
+    {
+      "milestone": "receipt_quantity_entered",
+      "sequence": 3
+    },
+    {
+      "milestone": "receipt_validated",
+      "sequence": 4
+    },
+    {
+      "milestone": "bill_draft_created",
+      "sequence": 5
+    },
+    {
+      "milestone": "bill_posted",
+      "sequence": 6
+    },
+    {
+      "milestone": "payment_dialog_ready",
+      "sequence": 7
+    },
+    {
+      "milestone": "payment_submitted",
+      "sequence": 8
+    }
+  ],
+  "action_log_digest": "6446a4b2f7c2c80949b01b2ad73bd74b0bc7e0ee3598ba604088756288605bdb",
+  "audit_error": null,
+  "browser_runtime": {
+    "binary_version": "Google Chrome 150.0.7871.128",
+    "distributions": {
+      "greenlet": "3.5.5",
+      "playwright": "1.62.0",
+      "pyee": "13.0.1",
+      "typing-extensions": "4.16.0"
+    }
+  },
+  "candidate_snapshot_id": "snap_dl4dnageil1q",
+  "expected_acceptance": true,
+  "failed_codes": [],
+  "fault_schedule": {
+    "faults": [],
+    "schedule_id": "clean"
+  },
+  "fault_triggered": [],
+  "oracle_checks": [
+    {
+      "code": "query-clean",
+      "detail": "()",
+      "passed": true
+    },
+    {
+      "code": "no-unexpected-objects",
+      "detail": "()",
+      "passed": true
+    },
+    {
+      "code": "one-purchase-order",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "po-case_id",
+      "detail": "expected='FORKLIFT-SEALED-FINAL-V2-003-F25C4A68BF' actual='FORKLIFT-SEALED-FINAL-V2-003-F25C4A68BF'",
+      "passed": true
+    },
+    {
+      "code": "po-state",
+      "detail": "expected='purchase' actual='purchase'",
+      "passed": true
+    },
+    {
+      "code": "po-supplier_ref",
+      "detail": "expected='SUP-ACME-04' actual='SUP-ACME-04'",
+      "passed": true
+    },
+    {
+      "code": "po-currency",
+      "detail": "expected='USD' actual='USD'",
+      "passed": true
+    },
+    {
+      "code": "po-sku",
+      "detail": "expected='BEARING-6204' actual='BEARING-6204'",
+      "passed": true
+    },
+    {
+      "code": "po-ordered_qty",
+      "detail": "expected=Decimal('3.5') actual=Decimal('3.50')",
+      "passed": true
+    },
+    {
+      "code": "po-unit_price",
+      "detail": "expected=Decimal('0.01') actual=Decimal('0.01')",
+      "passed": true
+    },
+    {
+      "code": "po-tax_rate",
+      "detail": "expected=Decimal('0.19') actual=Decimal('0.19000000000000000000')",
+      "passed": true
+    },
+    {
+      "code": "all-pickings-linked",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "pickings-exist",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "one-completed-receipt",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "received-quantity",
+      "detail": "expected=3.5 actual=3.50",
+      "passed": true
+    },
+    {
+      "code": "incoming-correct-sku-only",
+      "detail": "(('incoming', 'BEARING-6204'),)",
+      "passed": true
+    },
+    {
+      "code": "open-backorders-unmoved",
+      "detail": "(('done', Decimal('3.50')),)",
+      "passed": true
+    },
+    {
+      "code": "bill-count",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "bill-purchase_order_id",
+      "detail": "expected=1 actual=1",
+      "passed": true
+    },
+    {
+      "code": "bill-state",
+      "detail": "expected='posted' actual='posted'",
+      "passed": true
+    },
+    {
+      "code": "bill-supplier_ref",
+      "detail": "expected='SUP-ACME-04' actual='SUP-ACME-04'",
+      "passed": true
+    },
+    {
+      "code": "bill-currency",
+      "detail": "expected='USD' actual='USD'",
+      "passed": true
+    },
+    {
+      "code": "bill-reference",
+      "detail": "expected='ACME-SEALED-FINAL-V2-003-F25C4A68BF' actual='ACME-SEALED-FINAL-V2-003-F25C4A68BF'",
+      "passed": true
+    },
+    {
+      "code": "bill-sku",
+      "detail": "expected='BEARING-6204' actual='BEARING-6204'",
+      "passed": true
+    },
+    {
+      "code": "bill-billed_qty",
+      "detail": "expected=Decimal('3.5') actual=Decimal('3.50')",
+      "passed": true
+    },
+    {
+      "code": "bill-untaxed",
+      "detail": "expected=Decimal('0.04') actual=Decimal('0.04')",
+      "passed": true
+    },
+    {
+      "code": "bill-tax",
+      "detail": "expected=Decimal('0.01') actual=Decimal('0.01')",
+      "passed": true
+    },
+    {
+      "code": "bill-total",
+      "detail": "expected=Decimal('0.05') actual=Decimal('0.05')",
+      "passed": true
+    },
+    {
+      "code": "bill-payment_state",
+      "detail": "expected='paid' actual='paid'",
+      "passed": true
+    },
+    {
+      "code": "bill-residual",
+      "detail": "expected=Decimal('0') actual=Decimal('0.00')",
+      "passed": true
+    },
+    {
+      "code": "journal-entry-present",
+      "detail": "2",
+      "passed": true
+    },
+    {
+      "code": "journal-entries-posted",
+      "detail": "('posted', 'posted')",
+      "passed": true
+    },
+    {
+      "code": "journal-entries-balanced",
+      "detail": "((Decimal('0.05'), Decimal('0.05')), (Decimal('0.05'), Decimal('0.05')))",
+      "passed": true
+    },
+    {
+      "code": "one-bill-journal-entry",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "journal-payable",
+      "detail": "expected=0.05 actual=0.05",
+      "passed": true
+    },
+    {
+      "code": "journal-tax",
+      "detail": "expected=0.01 actual=0.01",
+      "passed": true
+    },
+    {
+      "code": "payment-count",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "payment-bill_id",
+      "detail": "expected=1 actual=1",
+      "passed": true
+    },
+    {
+      "code": "payment-state",
+      "detail": "expected='paid' actual='paid'",
+      "passed": true
+    },
+    {
+      "code": "payment-supplier_ref",
+      "detail": "expected='SUP-ACME-04' actual='SUP-ACME-04'",
+      "passed": true
+    },
+    {
+      "code": "payment-currency",
+      "detail": "expected='USD' actual='USD'",
+      "passed": true
+    },
+    {
+      "code": "payment-journal",
+      "detail": "expected='FORKLIFT-BANK' actual='FORKLIFT-BANK'",
+      "passed": true
+    },
+    {
+      "code": "payment-amount",
+      "detail": "expected=Decimal('0.05') actual=Decimal('0.05')",
+      "passed": true
+    },
+    {
+      "code": "payment-reconciled",
+      "detail": "expected=True actual=True",
+      "passed": true
+    }
+  ],
+  "outcome": "valid_candidate",
+  "protocol_passed": true,
+  "receipt": {
+    "accepted": true,
+    "action_log_digest": "6446a4b2f7c2c80949b01b2ad73bd74b0bc7e0ee3598ba604088756288605bdb",
+    "candidate_id": "ZGVza3RvcC1wb29sLWktMDgxOGI5YTg2ZDkyNjFhNmE6dm1fMDAwMTM1OmNtdGl1ZTN5ZjAwNmRvNjAxaTdvZXRjaGw6MTc4ODMwNjE3MzM0OQ._YCKE2E80NnYNui7rUTpa4pC8L6ik7pnvvpiAaON1Zo",
+    "candidate_snapshot_id": "snap_dl4dnageil1q",
+    "canonical_snapshot_id": "snap_dl49cktgvkuw",
+    "case_digest": "4c3c5060627806d40b697367e889b9ff74d296db30d3e0959ca9baded2e63841",
+    "failed_checks": [],
+    "fault_schedule_digest": "cc28360cd512d5d66d6041f32935abbad363bfd8a12d0a31451828a1f88c9b9b",
+    "oracle_version": "forklift-oracle-v1"
+  },
+  "rejection_reasons": {},
+  "screenshot_bytes": 129376,
+  "trial_id": "de08166f2d3a",
+  "worker_exit_code": 0
+}

@@ -1,0 +1,14 @@
+{
+  "bill_reference": "ACME-SEALED-FINAL-V2-003-F25C4A68BF",
+  "case_id": "FORKLIFT-SEALED-FINAL-V2-003-F25C4A68BF",
+  "currency": "USD",
+  "currency_rounding": "0.01",
+  "ordered_qty": "3.5",
+  "pay_when_billable": true,
+  "payment_journal": "FORKLIFT-BANK",
+  "received_qty": "3.5",
+  "sku": "BEARING-6204",
+  "supplier_ref": "SUP-ACME-04",
+  "tax_rate": "0.19",
+  "unit_price": "0.01"
+}

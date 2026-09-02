@@ -1,0 +1,39 @@
+{
+  "case_count": 6,
+  "cases": [
+    {
+      "case_digest": "9a6d1f4d053c3979d09a36fb033539179872251d53cbdb20809b15d871501b00",
+      "file": "case-001-9a6d1f4d053c.json",
+      "receipt_mode": "zero"
+    },
+    {
+      "case_digest": "89a0bdd3eb03d8a5c10f08cfa0641ca27f11fbc67300bd32f8c560af99216664",
+      "file": "case-002-89a0bdd3eb03.json",
+      "receipt_mode": "partial"
+    },
+    {
+      "case_digest": "4c3c5060627806d40b697367e889b9ff74d296db30d3e0959ca9baded2e63841",
+      "file": "case-003-4c3c50606278.json",
+      "receipt_mode": "full"
+    },
+    {
+      "case_digest": "bad9d5b4230b87313f154b4a944d6b5f5407efb1649dcf327b2261c14260392a",
+      "file": "case-004-bad9d5b4230b.json",
+      "receipt_mode": "zero"
+    },
+    {
+      "case_digest": "0df6f5d4a2a884ea35bdffcd43565cd3ff34672ddd48689100d5c7f78c81f7bc",
+      "file": "case-005-0df6f5d4a2a8.json",
+      "receipt_mode": "partial"
+    },
+    {
+      "case_digest": "e4c0d77ce48a00ef6c6f9c7ebf1b7c6a98575e6150ff027230dd365209774134",
+      "file": "case-006-e4c0d77ce48a.json",
+      "receipt_mode": "full"
+    }
+  ],
+  "generator": "forklift.case_generation.generate_cases",
+  "manifest_digest": "deb37a6f8fa8f76c0d24bb9a0b939f76e2cbc353321976e2c6f8d235caf0bea7",
+  "namespace": "sealed-final-v2",
+  "seed_sha256": "0570277009a174d410255ce7c1f3c02d87773cd5c7940a96c2b51f19734dd0c5"
+}

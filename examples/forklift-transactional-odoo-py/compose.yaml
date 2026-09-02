@@ -1,0 +1,36 @@
+name: forklift
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    ports:
+      - "127.0.0.1:${FORKLIFT_DB_PORT:-5433}:5432"
+    volumes:
+      - forklift-postgres:/var/lib/postgresql/data
+
+  web:
+    image: odoo:19.0
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    ports:
+      - "${FORKLIFT_ODOO_PORT:-8069}:8069"
+    volumes:
+      - forklift-odoo:/var/lib/odoo
+
+volumes:
+  forklift-postgres:
+  forklift-odoo:

@@ -1,0 +1,175 @@
+{
+  "accepted": false,
+  "action_log": [
+    {
+      "milestone": "before_login",
+      "sequence": 0
+    },
+    {
+      "milestone": "po_draft_saved",
+      "sequence": 1
+    },
+    {
+      "milestone": "po_confirmed",
+      "sequence": 2
+    }
+  ],
+  "action_log_digest": "1ab1c03bef4d54902bff74fb9f802f7ad76fb496e3c0beb41af4d5a72d567101",
+  "audit_error": null,
+  "browser_runtime": {
+    "binary_version": "Google Chrome 150.0.7871.128",
+    "distributions": {
+      "greenlet": "3.5.5",
+      "playwright": "1.62.0",
+      "pyee": "13.0.1",
+      "typing-extensions": "4.16.0"
+    }
+  },
+  "candidate_snapshot_id": "snap_dl4doq85zmbm",
+  "expected_acceptance": false,
+  "failed_codes": [
+    "po-unit_price"
+  ],
+  "fault_schedule": {
+    "faults": [
+      {
+        "duration_ms": 0,
+        "kind": "mutate_field",
+        "milestone": "po_draft_saved",
+        "replacement": "unit_price_plus_0.01",
+        "target": "unit_price"
+      }
+    ],
+    "schedule_id": "wrong-unit-price"
+  },
+  "fault_triggered": [
+    "mutate_field@po_draft_saved"
+  ],
+  "oracle_checks": [
+    {
+      "code": "query-clean",
+      "detail": "()",
+      "passed": true
+    },
+    {
+      "code": "no-unexpected-objects",
+      "detail": "()",
+      "passed": true
+    },
+    {
+      "code": "one-purchase-order",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "po-case_id",
+      "detail": "expected='FORKLIFT-SEALED-FINAL-V2-004-2628556A20' actual='FORKLIFT-SEALED-FINAL-V2-004-2628556A20'",
+      "passed": true
+    },
+    {
+      "code": "po-state",
+      "detail": "expected='purchase' actual='purchase'",
+      "passed": true
+    },
+    {
+      "code": "po-supplier_ref",
+      "detail": "expected='SUP-ACME-04' actual='SUP-ACME-04'",
+      "passed": true
+    },
+    {
+      "code": "po-currency",
+      "detail": "expected='USD' actual='USD'",
+      "passed": true
+    },
+    {
+      "code": "po-sku",
+      "detail": "expected='BEARING-6204' actual='BEARING-6204'",
+      "passed": true
+    },
+    {
+      "code": "po-ordered_qty",
+      "detail": "expected=Decimal('100') actual=Decimal('100.00')",
+      "passed": true
+    },
+    {
+      "code": "po-unit_price",
+      "detail": "expected=Decimal('0.05') actual=Decimal('0.06')",
+      "passed": false
+    },
+    {
+      "code": "po-tax_rate",
+      "detail": "expected=Decimal('0') actual=Decimal('0E-20')",
+      "passed": true
+    },
+    {
+      "code": "all-pickings-linked",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "pickings-exist",
+      "detail": "1",
+      "passed": true
+    },
+    {
+      "code": "one-completed-receipt",
+      "detail": "0",
+      "passed": true
+    },
+    {
+      "code": "received-quantity",
+      "detail": "expected=0 actual=0",
+      "passed": true
+    },
+    {
+      "code": "incoming-correct-sku-only",
+      "detail": "(('incoming', 'BEARING-6204'),)",
+      "passed": true
+    },
+    {
+      "code": "open-backorders-unmoved",
+      "detail": "(('assigned', Decimal('0')),)",
+      "passed": true
+    },
+    {
+      "code": "bill-count",
+      "detail": "0",
+      "passed": true
+    },
+    {
+      "code": "no-zero-receipt-journal",
+      "detail": "0",
+      "passed": true
+    },
+    {
+      "code": "no-zero-receipt-payment",
+      "detail": "0",
+      "passed": true
+    }
+  ],
+  "outcome": "safe_refusal",
+  "protocol_passed": true,
+  "receipt": {
+    "accepted": false,
+    "action_log_digest": "1ab1c03bef4d54902bff74fb9f802f7ad76fb496e3c0beb41af4d5a72d567101",
+    "candidate_id": "ZGVza3RvcC1wb29sLWktMDgxOGI5YTg2ZDkyNjFhNmE6dm1fMDAwMTM3OmNtdGl1ZTN5ZjAwNmRvNjAxaTdvZXRjaGw6MTc4ODMwNjMwMDEyMQ.SNAYFkvxnK4621XtqvrBpC0eEsepq0z6TYJt1YUc-Lw",
+    "candidate_snapshot_id": "snap_dl4doq85zmbm",
+    "canonical_snapshot_id": "snap_dl49cktgvkuw",
+    "case_digest": "bad9d5b4230b87313f154b4a944d6b5f5407efb1649dcf327b2261c14260392a",
+    "failed_checks": [
+      "po-unit_price"
+    ],
+    "fault_schedule_digest": "1306a7a15c95e1fe96139d8cdecd30ee9f191ef1100132733e0bd461a4b667bd",
+    "oracle_version": "forklift-oracle-v1"
+  },
+  "rejection_reasons": {
+    "ZGVza3RvcC1wb29sLWktMDgxOGI5YTg2ZDkyNjFhNmE6dm1fMDAwMTM3OmNtdGl1ZTN5ZjAwNmRvNjAxaTdvZXRjaGw6MTc4ODMwNjMwMDEyMQ.SNAYFkvxnK4621XtqvrBpC0eEsepq0z6TYJt1YUc-Lw": [
+      "oracle-rejected",
+      "receipt-has-failures",
+      "receipt-rejected"
+    ]
+  },
+  "screenshot_bytes": 126776,
+  "trial_id": "15ce80b30eb3",
+  "worker_exit_code": 0
+}
