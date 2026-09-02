@@ -1,0 +1,15 @@
+{
+  "name": "solari-browser-broker-scan-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.1.1"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
