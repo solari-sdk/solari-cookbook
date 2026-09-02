@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "install": {
+    "command": "echo 'install skipped for cookbook root'",
+    "timeoutMs": 10000
+  },
+  "checks": [
+    {
+      "name": "merge-smoke",
+      "command": "ls -la",
+      "timeoutMs": 10000,
+      "required": true
+    }
+  ]
+}

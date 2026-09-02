@@ -3,6 +3,6 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts"],
-    exclude: ["node_modules", "dist", "fixture", "proof", "mergelab-results"],
+    exclude: ["node_modules", "dist"],
   },
 });

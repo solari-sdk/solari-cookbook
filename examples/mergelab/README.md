@@ -77,7 +77,7 @@ npm install
 
 ```bash
 npm start -- \
-  --repo https://github.com/example/mergelab-fixture \
+  --repo https://github.com/example/repo \
   --prs 21,22,23 \
   --config ./mergelab.config.json
 ```
@@ -97,22 +97,52 @@ npm start -- \
 | `--keep-sandboxes` | Retain environments for debugging |
 | `--no-ai` | Omit AI explanation |
 
-## Fixture repository
+## Configuration
 
-A ready-made fixture lives in [`fixture/`](fixture/). Patch files for the three
-PRs live in [`patches/`](patches/). PR A and PR B combine to break the checkout
-UI. See [`fixture/README.md`](fixture/README.md) for how to publish the fixture
-to GitHub and run MergeLab against it.
+Create a `mergelab.config.json` that tells MergeLab how to install, check, and
+optionally browser-test the target repository. Pass it to `--config` as a path.
 
-## Expected matrix
+This repo includes:
+
+- [`mergelab.config.example.json`](mergelab.config.example.json) — a full template
+- [`mergelab.config.solari-cookbook.json`](mergelab.config.solari-cookbook.json) — a real config used when running against `solari-sdk/solari-cookbook`
+
+```json
+{
+  "version": 1,
+  "install": { "command": "npm ci", "timeoutMs": 180000 },
+  "checks": [
+    { "name": "typecheck", "command": "npm run typecheck", "required": true },
+    { "name": "tests", "command": "npm test", "required": true },
+    { "name": "build", "command": "npm run build", "required": true }
+  ],
+  "browser": {
+    "enabled": true,
+    "startCommand": "npm run dev -- --host 0.0.0.0",
+    "port": 3000,
+    "readyPath": "/health",
+    "testFile": "./verification/cart-flow.spec.ts"
+  }
+}
+```
+
+## Project layout
 
 ```text
-✓ PR #21             compatible
-✓ PR #22             compatible
-✓ PR #23             compatible
-✗ PR #21 + PR #22    cross_pr_regression
-✓ PR #21 + PR #23    compatible
-✓ PR #22 + PR #23    compatible
+src/              # MergeLab engine
+tests/            # Unit tests
+verification/     # Playwright verification specs
+package.json
+tsconfig.json
+vitest.config.ts
+mergelab.config.example.json
+```
+
+## Run tests
+
+```bash
+npm test
+npm run typecheck
 ```
 
 ## Evidence and trust model
@@ -145,39 +175,6 @@ parallel spend.
 - Public repositories only; private repos and GitHub Apps are not supported.
 - Passing configured checks does not prove total compatibility.
 - AI explanations are evidence-backed but may be incomplete.
-
-## Project layout
-
-```text
-examples/mergelab/
-├── src/              # MergeLab engine
-├── tests/            # Unit tests
-├── verification/     # Playwright verification specs
-├── fixture/          # Example target repository with PR branches
-├── proof/            # Sample sanitized run output
-├── package.json
-├── tsconfig.json
-├── vitest.config.ts
-└── mergelab.config.example.json
-```
-
-## Run tests
-
-```bash
-npm test
-npm run typecheck
-```
-
-## Roadmap
-
-- GitHub App and private repository support
-- Webhook-triggered checks
-- Dependency-graph pruning
-- Higher-order combinations
-- Solari snapshot caching
-- Bidirectional merge-order testing
-- Proposed compatibility patches
-- GitHub status checks and comments
 
 ## License
 
