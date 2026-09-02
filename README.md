@@ -7,6 +7,14 @@ Every example in this repo is a complete program you can run in under a minute.
 They are deliberately small: one idea each, no framework, no scaffolding to read
 past. Copy one into your project and change the parts you care about.
 
+## Use cases
+
+Larger end-to-end builds that combine several Solari primitives:
+
+| Use case | Language | What it shows |
+| --- | --- | --- |
+| [worldline-py](use-cases/worldline-py) | Python | Snapshot-branch competing agent plans, verify their artifacts, and replay only the winner |
+
 ## Examples
 
 ### Cloud browser

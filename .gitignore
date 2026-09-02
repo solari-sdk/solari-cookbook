@@ -6,3 +6,9 @@ __pycache__/
 .venv/
 venv/
 screenshot.png
+output/
+use-cases/worldline-py/artifacts/
+use-cases/worldline-py/.pytest_cache/
+use-cases/worldline-py/.playwright-cli/
+use-cases/worldline-py/build/
+use-cases/worldline-py/*.egg-info/
