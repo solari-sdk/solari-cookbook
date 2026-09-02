@@ -38,9 +38,10 @@ the retry boundary, the report digest, and the zero-false-acceptance gate.
 - final report SHA-256: `4f9e1ccf0c49897afc9dc350d0e157a7b123c98944c784949ea29b15d396bb2b`
 - revealed-seed SHA-256: `0570277009a174d410255ce7c1f3c02d87773cd5c7940a96c2b51f19734dd0c5`
 
-This is adversarial verification in the builder's workspace, not independent
-replication. The exact claim is limited to the frozen Odoo/PostgreSQL state and
-oracle. Real bank transfers, emails, and facts outside oracle v1 are excluded.
+This is adversarial verification from the original implementation environment,
+not independent replication. The exact claim is limited to the frozen
+Odoo/PostgreSQL state and oracle. Real bank transfers, emails, and facts outside
+oracle v1 are excluded.
 
 ## Why the comparison matters
 
@@ -48,5 +49,5 @@ On the same 16 audited developmental GUI trials, a matched “trust the worker's
 completion signal” baseline accepted 3 invalid states. Forklift accepted 0.
 An accepted development snapshot was also promoted to a durable Solari
 template, booted as a new sandbox, and re-audited with an identical all-pass
-verdict. This shows both sides of the product: bad work does not escape, and
+verdict. This shows both sides of the mechanism: bad work does not escape, and
 good work can become the durable result.

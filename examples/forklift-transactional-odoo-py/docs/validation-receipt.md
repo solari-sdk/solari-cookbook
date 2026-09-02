@@ -1,4 +1,4 @@
-# Adversarial-verification receipt
+# Validation receipt
 
 **Claim and frozen artifact digests:** Across six frozen final Odoo
 purchase-to-pay case/fault positions, zero oracle-invalid candidate snapshots
@@ -8,10 +8,9 @@ precommitted liveness outcomes. Protocol digest
 report SHA-256
 `4f9e1ccf0c49897afc9dc350d0e157a7b123c98944c784949ea29b15d396bb2b`.
 
-**Declared and achieved independence level:** adversarial verification. The
-run shares the builder's implementation lineage, workspace, and conversational
-context. It is useful sealed evidence but is not independent reimplementation
-or external replication.
+**Independence level:** adversarial verification. The run used the original
+implementation and execution environment. The sealed result is reproducible,
+but it is not an independent reimplementation or external replication.
 
 **Custody and unblinding record:** v1 was retired unopened after preflight found
 incomplete dependency hashing and a ranged remote Playwright install. It has no
@@ -35,11 +34,11 @@ regimes; wrong-price refusal; crash-after-receipt refusal; duplicate-payment
 idempotency. A separate durable-promotion closure booted and re-audited the
 exact promoted snapshot.
 
-**Cold-start resource accounting:** 8 total attempts for 6 audited positions.
+**Resource accounting:** 8 total attempts for 6 audited positions.
 Two Chrome crashes occurred before login and before business mutation; both
 artifacts were retained and each received one permitted fresh retry. Zero
-post-mutation retries. Peak resources stayed at one desktop and two sandboxes.
-No top-up, plan change, or additional-dollar authorization was used.
+post-mutation retries. Peak resources stayed at one desktop and two sandboxes,
+with no plan change, balance top-up, or additional spend.
 
 **Raw result locations and digests:** `artifacts/sealed/final-v2/`; protocol
 file SHA-256
@@ -55,11 +54,11 @@ and false acceptances were zero.
 reduce operational smoothness and are not counted as safety wins. They did not
 cross the retry boundary. No evidentiary discrepancy or post-freeze repair.
 
-**Verdict:** survived at the adversarial-verification level; not independently
+**Verdict:** passed at the adversarial-verification level; not independently
 replicated.
 
-**Permitted next action:** publish the immutable evidence packet when the user
-authorizes it, then ask an external practitioner to clone and run the one-command
-local challenge or reimplement from the frozen public specification. Any
-runtime repair creates a new candidate version and requires new untouched
-evidence.
+**Reproduction path:** run `python -m scripts.verify_final_evidence` to verify
+the published packet offline, then run `python -m scripts.setup_local_lab` to
+exercise the local invalid-versus-valid discriminator. A change to frozen
+runtime code creates a new candidate version and requires new untouched final
+evidence for an equivalent claim.

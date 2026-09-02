@@ -1,11 +1,11 @@
 # Solari Cookbook
 
-Short, runnable examples for [Solari](https://getsolari.com) — cloud browsers,
+Runnable examples for [Solari](https://getsolari.com) — cloud browsers,
 sandboxes, and desktops behind one API key.
 
-Every example in this repo is a complete program you can run in under a minute.
-They are deliberately small: one idea each, no framework, no scaffolding to read
-past. Copy one into your project and change the parts you care about.
+Most examples are deliberately small: one idea each, no framework, and no
+scaffolding to read past. Advanced examples combine several Solari primitives
+and include their own setup and validation instructions.
 
 ## Examples
 
@@ -33,9 +33,16 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### Advanced patterns
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [forklift-transactional-odoo-py](examples/forklift-transactional-odoo-py) | Python | Audit and promote immutable Odoo state after fallible GUI automation |
+
 ## Running an example
 
-Each directory is self-contained.
+Each directory is self-contained. The quickstarts follow this general pattern;
+advanced examples document their own prerequisites and commands.
 
 ```bash
 git clone https://github.com/solari-sdk/solari-cookbook.git

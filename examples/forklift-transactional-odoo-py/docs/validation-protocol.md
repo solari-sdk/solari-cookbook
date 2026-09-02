@@ -1,14 +1,19 @@
-# Frozen hidden-test protocol (development version 0)
+# Validation protocol
+
+This document is a readable summary of the validation design. The authoritative
+machine-readable final protocol is
+`artifacts/sealed/final-v2/protocol.json`; its digest and all result identities
+are listed in [final-results.md](final-results.md).
 
 ## Question
 
 When the same fallible GUI worker faces the same Odoo purchase-to-pay cases and
-faults, does branch isolation plus an independent oracle eliminate invalid
+faults, does branch isolation plus a separate semantic oracle eliminate invalid
 promotions without collapsing into "reject everything"?
 
 ## Units and outcomes
 
-One trial is one hidden purchase case applied to one canonical snapshot. The
+One trial is one held-out purchase case applied to one canonical snapshot. The
 baseline mutates one copy directly. Forklift receives one disposable candidate
 from the same snapshot and budget. A trial outcome is classified from database
 evidence, never from the worker's status message:
@@ -34,10 +39,11 @@ tax rates including zero and fractional percentages, and unique/repeated-looking
 vendor references. Master data are synthetic. No real vendor, payment account,
 email endpoint, or bank rail is connected.
 
-The generator is deterministic from a custody-held seed. Receipts bind the
-canonical JSON case digest, and a run binds the ordered manifest digest. The
-sealed seed is not committed to the repository or exposed to the worker before
-the run; reproducibility comes from revealing it only after evidence is frozen.
+The generator is deterministic from a seed committed by SHA-256 before the
+run. Receipts bind the canonical JSON case digest, and the campaign binds the
+ordered manifest digest. The seed was withheld from the worker during execution
+and revealed only after the terminal report was sealed. It is now published in
+`artifacts/sealed/final-v2/seed-reveal.txt` for reproducibility.
 
 ## Fault strata
 
@@ -69,16 +75,18 @@ recovery rate, safe-refusal rate, latency, branch count, and resource use. Do
 not hide refusals inside an aggregate success score. The baseline comparison
 reports persistent invalid-state frequency after every injected interruption.
 
-The sealed final trial count and Solari spending cap must be frozen before final
-evidence is opened. The cap is zero additional dollars beyond the already
-authorized Starter subscription: no plan change, top-up, or automatic overage.
-Until then, developmental evidence is clearly labeled and may guide
-implementation.
+The final trial count, retry policy, stop rules, and resource cap were fixed
+before final evidence was opened. The run allowed no plan change, balance
+top-up, or automatic overage.
 
-## Evidence custody
+## Evidence handling
 
-Developmental cases, logs, screenshots, database extracts, and failures live in
-`artifacts/development/`. A later sealed run must use fresh case identifiers and
-an untouched output directory. Builder-run checks are adversarial verification,
-not independent replication. The project will not claim independence unless a
-separate implementation/evidence custodian actually performs it.
+Development artifacts were kept separate from the untouched final output
+directory. Every final attempt was retained, including infrastructure failures.
+The published verifier checks the revealed seed, generated cases, protocol,
+source and dependency hashes, raw attempts, retry boundary, and report digest.
+
+The final campaign was run in the original implementation environment. It is
+therefore described as adversarial verification, not independent replication.
+Independent replication would require a separate implementation or evidence
+custodian to repeat the protocol.

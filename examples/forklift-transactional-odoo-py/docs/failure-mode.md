@@ -1,8 +1,8 @@
-# Frozen phenomenon card: persistent partial purchase-to-pay state
+# Observed failure mode: persistent partial purchase-to-pay state
 
 Observed: 2026-09-01
 System: official `odoo:19.0` image (`19.0-20260817`) with PostgreSQL 15
-Evidence class: developmental reality anchor, not final evidence
+Evidence class: development observation, not final-campaign evidence
 
 ## Reproducible observation
 
@@ -15,7 +15,7 @@ Through Odoo's real web GUI, a worker:
 5. created backorder `WH/IN/00002` for the remaining 4; and
 6. was intentionally terminated before billing or payment.
 
-The independent database inspection after GUI termination showed:
+The separate database inspection after GUI termination showed:
 
 ```text
 purchase order: P00001, state=purchase, ordered=10, received=6, invoiced=0
@@ -35,8 +35,8 @@ self-reported success cannot establish that the requested purchase-to-pay
 transaction finished correctly.
 
 This observed state is **unfinished**, not internally corrupt: Odoo legitimately
-supports partial receipts and backorders. The consequential failure occurs if an
-agent or orchestrator accepts it as the completed requested result. Separate
+supports partial receipts and backorders. The failure occurs if an agent or
+orchestrator accepts it as the completed requested result. Separate
 wrong-quantity, wrong-vendor, overbilling, and duplicate-payment faults generate
 actually invalid results; the same semantic oracle must reject both unfinished
 and invalid outcomes.
@@ -60,15 +60,14 @@ A persistent case-scoped combination of:
 - **A custom toy app produced the effect:** false; the run used the official
   Odoo 19 container and native Purchase, Inventory, and Accounting modules.
 
-## Evidence caveat and next check
+## Evidence caveat and completed follow-up
 
-The first database was initialized with Odoo's changed boolean syntax for
-`--without-demo`; it contains unrelated demo records. Every observation above is
-scoped to unique case id `FORKLIFT-CASE-017`, PO `P00001`, and product id 1, so
-the phenomenon is not explained by those records. The canonical Solari image
-must nevertheless be rebuilt cleanly with `--without-demo` before final tests.
+The first development database contained unrelated demo records because of an
+Odoo command-line compatibility issue. The observation was scoped to the unique
+case ID `FORKLIFT-CASE-017`, PO `P00001`, and product ID 1, so those records do
+not explain it.
 
-The next discriminating experiment compares this direct-mutation baseline with
-the same workflow in disposable snapshot branches, including wrong quantity and
-duplicate-payment faults. Forklift advances only if it produces zero invalid
-promotions while still completing clean controls.
+The canonical image was subsequently rebuilt without demo data. Later
+development trials compared direct mutation with disposable snapshot branches
+under wrong-value, duplicate-action, and crash faults. The frozen final campaign
+then used fresh held-out cases; see [final-results.md](final-results.md).

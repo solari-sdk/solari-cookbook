@@ -1,137 +1,184 @@
 # Forklift: transactional computer use for Odoo
 
-Forklift makes a dangerous GUI workflow behave like a database transaction.
-It performs a real purchase-to-pay operation in Odoo, deliberately crashes or
-misleads the GUI worker, and only promotes a branch whose final database state
-passes an independent business oracle. A failed or uncertain branch is simply
-not accepted.
+Forklift adds a transaction-like acceptance boundary to stateful GUI
+automation. A visible browser worker performs a real purchase-to-pay workflow
+in Odoo on a disposable state branch. Forklift then freezes that branch, audits
+the exact frozen state from a fresh sandbox, and promotes it only when every
+business invariant passes. Failed or uncertain work never replaces the clean
+canonical state.
 
-It is packaged as a reusable safety harness, not a one-off competition demo.
-Any GUI-agent builder should be able to replace the worker and business oracle,
-run the same crash challenge, and receive a self-verifying acceptance receipt.
-The Odoo workflow is the first concrete product wedge because stock, payable,
-tax, and payment can visibly disagree after a partial failure.
+The example demonstrates four reusable ideas:
 
-The first target transaction is deliberately unforgiving:
+- isolate GUI work from the canonical state;
+- treat the worker's completion signal as untrusted;
+- validate business semantics from an immutable snapshot; and
+- bind promotion to the exact snapshot that was audited.
 
-1. create a purchase order with the exact supplier, product, quantities, price,
-   tax, and reference supplied by a hidden test case;
-2. receive only the quantity that actually arrived;
-3. create and post the matching vendor bill;
-4. register exactly one payment for exactly the amount due; and
-5. leave stock, payable, tax, and payment ledgers mutually consistent.
+The Odoo scenario checks a purchase order, stock receipt, vendor bill, tax,
+payable balance, and payment as one logical outcome. It intentionally includes
+partial receipts, duplicate actions, wrong values, timeouts, and worker crashes.
 
-The safety claim is narrow and testable: for the frozen case distribution,
-fault schedule, oracle, and Solari VM boundary, Forklift must accept zero
-invalid final states. It does **not** claim to undo effects outside the VM such
-as a real bank transfer or email.
+> [!IMPORTANT]
+> Forklift's rollback boundary is the snapshotted VM. It does not undo effects
+> that have already escaped that boundary, such as bank transfers, emails, or
+> calls to third-party services. Keep those effects staged until after a state
+> has been accepted, or protect them with a separate commit protocol.
 
-## Local lab
+## Try the local crash challenge
 
-The Docker lab is for fast development before the pruned Odoo/PostgreSQL runtime
-is placed on a Solari sandbox root snapshot. A separate disposable Solari
-desktop drives its signed web preview. The complete reproducible crash
-challenge is one command (the first Odoo initialization can take several
-minutes):
+Prerequisites:
+
+- Python 3.11 or newer
+- Docker with the Compose plugin
+
+From this directory, run:
 
 ```bash
 python -m pip install -r requirements.txt
 python -m scripts.setup_local_lab
 ```
 
-It needs Python 3.11+ and Docker Desktop, but no Solari account or API key. A
-successful run ends with one broken live Odoo database rejected, one balanced
-database accepted, and `RESULT: PASS`.
+No Solari account or API key is required. The first Odoo initialization can
+take several minutes. A successful run ends with one incomplete database
+rejected, one balanced database accepted, and `RESULT: PASS`.
 
 The setup is fail-closed: it reuses an already-correct lab, but refuses to
 overwrite an ambiguous or non-clean canonical database.
 
-The lower-level manual setup is:
+Open <http://localhost:8069> to inspect the local Odoo instance. The lab login
+is `admin` / `admin`; these synthetic credentials are intentionally non-secret
+and must not be reused outside this contained environment.
 
-```bash
-docker compose up -d db
-docker compose run --rm web odoo -d forklift -i purchase,stock,account \
-  --without-demo --stop-after-init
-docker compose up -d web
-```
-
-Open <http://localhost:8069>. The synthetic lab credentials are intentionally
-non-secret and must never be reused outside this contained test environment.
-
-To rerun only the developmental interrupted-versus-valid discriminator:
+To rerun only the interrupted-versus-valid comparison:
 
 ```bash
 python -m scripts.compare_live_states
 ```
 
-It exits successfully only when the real interrupted Odoo state is rejected
-and the independently constructed complete state is accepted. These are
-development fixtures, not sealed competition results.
+To stop the local services:
 
-## Acceptance rule
+```bash
+docker compose down
+```
 
-Forklift accepts a branch only when every required invariant is proven by a
-read-only PostgreSQL query and the execution receipt is complete. A crash,
-timeout, ambiguous screen, missing receipt, duplicate object, wrong value, or
-oracle error all mean `REJECT`. If every branch is rejected, the canonical
-snapshot remains the answer and no broken state is promoted.
+## How acceptance works
 
-The oracle never inspects a still-changing worker VM. Forklift first seals the
-state sandbox as an immutable snapshot, starts a fresh auditor sandbox from that exact
-snapshot, and runs the read-only oracle there. The promoter verifies the
-snapshot lineage and receipt bindings, then turns only the selected snapshot
-into a durable Solari template. This removes the usual check-then-change race:
-the bytes judged are the bytes promoted.
+```text
+clean snapshot
+      |
+      v
+disposable Odoo branch <-- visible GUI worker
+      |
+      v
+immutable candidate snapshot --> fresh read-only auditor
+      |
+      +-- all invariants + lineage + receipt pass --> durable template
+      |
+      `-- missing, invalid, or uncertain evidence ---> no promotion
+```
 
-## Sealed Solari result
+The auditor never inspects the worker's still-changing VM. It starts from the
+candidate snapshot and queries PostgreSQL read-only. The selector requires the
+expected case digest, fault-schedule digest, action-log digest, oracle version,
+canonical lineage, and a receipt bound to the candidate snapshot. This ordering
+prevents a check-then-change race: the snapshot inspected is the snapshot
+eligible for promotion.
 
-The frozen final campaign passed: **6/6 audited hidden positions completed, 0
-invalid states were accepted, and all 8 attempts were preserved**. The extra
-two attempts were Chrome crashes before login and before any business mutation;
-they were retained and retried under the precommitted policy. No post-mutation
-attempt was retried.
+The current oracle requires, as applicable:
 
-Three clean cases proved Forklift does not win by rejecting everything. A
-one-cent wrong-price case and a worker killed after receipt were both refused
-from restored database evidence. A duplicated payment submission finished with
-exactly one valid reconciled payment and was accepted.
+1. exactly one purchase order with the expected supplier, product, quantities,
+   price, currency, and taxes;
+2. the correct completed receipt and no unintended stock moves;
+3. exactly one correctly linked and posted vendor bill;
+4. balanced journal entries, expected tax lines, and the correct payable;
+5. exactly one correctly reconciled payment when payment is allowed; and
+6. a complete execution receipt with exact input, fault, lineage, and snapshot
+   bindings.
 
-Verify the sealed evidence offline:
+Any missing relation, duplicate object, wrong value, oracle error, or incomplete
+receipt is a rejection.
+
+## Verify the published evidence
+
+The frozen final campaign completed all six held-out positions with **zero
+invalid states accepted**. Four valid states were accepted, two invalid states
+were refused, and all eight attempts were retained. The two extra attempts were
+Chrome failures before login and before any business mutation; no
+post-mutation attempt was retried.
+
+The evidence verifier works offline and does not require a Solari key:
 
 ```bash
 python -m scripts.verify_final_evidence
 ```
 
-See [final-results.md](docs/final-results.md) for the matrix and hashes, and
-[judge-demo.md](docs/judge-demo.md) for the three-minute proof. This is sealed
-adversarial verification in the builder's workspace, not independent
-replication.
+Run the unit test suite with:
 
-## Developmental Solari result
+```bash
+python -m unittest discover -v
+```
 
-The current machine-recomputed campaign contains 16 audited real-GUI trials:
-8 invalid outcomes were safely refused, 8 valid outcomes were selectable, and
-0 invalid outcomes were selected. It includes a digest-frozen six-case
-developmental held-out plan spanning zero, partial, and full receipts. Four
-attempts without an audit verdict are labeled inconclusive and excluded rather
-than counted as safe.
+It recomputes the case generation, protocol and report digests, frozen source
+and dependency hashes, attempt hashes, retry rules, and acceptance outcomes.
+The published result is adversarial verification from the original
+implementation environment, not an independent replication.
 
-This development campaign justified the frozen final run but is not mixed into
-its score. External replication and stranger use remain separate product-fit
-gates.
-See [development-results.md](docs/development-results.md) for the exact matrix.
+For the result matrix and a short guided review, see
+[final-results.md](docs/final-results.md) and
+[evidence-walkthrough.md](docs/evidence-walkthrough.md).
 
-The public packet intentionally excludes bulky developmental scratch assets,
-temporary signed URLs, and local custody files. Re-running live Solari trials
-therefore requires rebuilding the canonical runtime/database artifacts and
-supplying your own `SOLARI_API_KEY`. The sealed final score does not require a
-key and is fully checked by `python -m scripts.verify_final_evidence`.
+## Run against Solari
 
-## Product-fit proof
+The repository includes the orchestration, adapter, remote worker, audit, and
+evidence-generation code used for the live campaign. To run new Solari trials,
+copy `.env.example` to `.env`, supply your own `SOLARI_API_KEY`, and rebuild the
+canonical Odoo runtime and database artifacts with the scripts in `scripts/`.
 
-The technical gate is zero false acceptance. The product gate is external
-reuse: a stranger can clone the repository, run the local before/after crash
-challenge with one command, understand why a branch was rejected, and adapt the
-oracle without talking to the author. Public validation will report completed
-external runs, forks/adaptations, issue reports, and reproducible receipts. It
-will not substitute social-media impressions for product use.
+> [!WARNING]
+> Live campaign scripts create Solari sandboxes, desktops, snapshots, and
+> templates and can consume billable account resources. Review their CPU,
+> memory, disk, and timeout settings before running them, and confirm cleanup in
+> the Solari console after an interrupted run.
+
+> [!NOTE]
+> The live-campaign adapter targets the pinned Solari Python SDK 0.2.0. It
+> isolates a small compatibility layer that uses the SDK's private `_hooks` and
+> `_request` members because the required desktop-from-snapshot and promotion
+> operations were not exposed by the typed client in that version. Treat the
+> live path as a version-pinned reference implementation and review
+> `forklift/solari_adapter.py` when upgrading the SDK. The local lab and offline
+> evidence verifier do not use these private paths.
+
+The committed evidence intentionally excludes temporary signed URLs, local
+credentials, and bulky development artifacts. Raw receipts retain Solari
+resource IDs because they are part of the snapshot-lineage bindings; no API
+keys or signed preview/control URLs are included. These omissions do not affect
+offline verification of the published result.
+
+## Adapt the pattern
+
+The Odoo implementation is an example, not a universal transaction layer. To
+adapt it to another workflow:
+
+- replace `forklift/gui_worker.py` with the visible-computer task;
+- model the expected outcome in `forklift/domain.py`;
+- replace `forklift/odoo_sql.py` and `forklift/oracle.py` with read-only,
+  domain-specific checks;
+- keep the snapshot-lineage and receipt checks in `forklift/promotion.py`; and
+- add both valid controls and realistic fault cases before relying on the gate.
+
+If the workflow can trigger external effects, design their commit boundary
+explicitly rather than assuming a VM snapshot can reverse them.
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [Design rationale](docs/design-rationale.md)
+- [Validation protocol](docs/validation-protocol.md)
+- [Final results](docs/final-results.md)
+- [Development results](docs/development-results.md)
+- [Evidence walkthrough](docs/evidence-walkthrough.md)
+- [Validation receipt](docs/validation-receipt.md)
+- [Observed failure mode](docs/failure-mode.md)
+
+The example is covered by the repository's MIT license.

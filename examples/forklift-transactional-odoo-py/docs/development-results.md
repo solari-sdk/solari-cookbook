@@ -58,18 +58,18 @@ The continuation policy allowed at most three fresh attempts only when the
 attempt artifact proved no business mutation or injected fault had occurred.
 No continuation retries were needed.
 
-## Why this is more than a demo video
+## Why screen-level completion is insufficient
 
 The browser can lie, crash, or finish a transaction containing the wrong
 numbers. Its nine milestone messages never authorize acceptance. The selector
-requires an independent verdict, snapshot lineage, the exact case digest,
+requires a separate auditor verdict, snapshot lineage, the exact case digest,
 fault-schedule digest, action-log digest, oracle version, and a receipt bound to
 the exact immutable snapshot. Missing evidence means no.
 
-In ten-year-old terms: the robot does the homework in pencil on a photocopy.
-Another computer locks that photocopy, checks every answer with the answer key,
-and only then decides whether it may replace the clean original. If the robot
-crashes, cheats by one cent, or says “done” too early, the original stays clean.
+In plain terms, the worker edits a disposable copy. A separate auditor freezes
+that copy, checks it against the expected business outcome, and only then
+decides whether it may replace the clean original. If the worker crashes, uses
+the wrong value, or reports completion too early, the original stays clean.
 
 ## Failures preserved during development
 
@@ -98,6 +98,6 @@ closed in final-v2:
 4. six completed positions with zero false acceptance.
 
 See [final-results.md](final-results.md) for the passed sealed campaign and its
-offline verification command. Independent replication and external adoption
-remain explicitly unclaimed; builder-run sealed evidence is adversarial
-verification, not independence.
+offline verification command. Independent replication remains explicitly
+unclaimed; sealed evidence from the original implementation environment is
+adversarial verification, not independence.
