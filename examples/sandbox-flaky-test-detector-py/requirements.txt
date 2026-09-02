@@ -1,0 +1,2 @@
+solari-sandbox>=0.2.0
+pytest>=8.0
