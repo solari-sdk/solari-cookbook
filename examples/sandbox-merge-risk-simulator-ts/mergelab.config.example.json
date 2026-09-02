@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "install": {
+    "command": "npm ci",
+    "timeoutMs": 180000
+  },
+  "checks": [
+    {
+      "name": "typecheck",
+      "command": "npm run typecheck",
+      "timeoutMs": 120000,
+      "required": true
+    },
+    {
+      "name": "tests",
+      "command": "npm test -- --runInBand",
+      "timeoutMs": 180000,
+      "required": true
+    },
+    {
+      "name": "build",
+      "command": "npm run build",
+      "timeoutMs": 180000,
+      "required": true
+    }
+  ],
+  "browser": {
+    "enabled": "auto",
+    "startCommand": "npm run dev -- --host 0.0.0.0",
+    "port": 3000,
+    "readyPath": "/health",
+    "readyTimeoutMs": 60000,
+    "testFile": "./verification/cart-flow.spec.ts",
+    "viewport": { "width": 1440, "height": 900 }
+  }
+}
