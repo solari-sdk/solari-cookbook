@@ -26,6 +26,7 @@ past. Copy one into your project and change the parts you care about.
 | [sandbox-quickstart-ts](examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
 | [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
 | [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
+| [dlq-sandboxed-replay-go](examples/dlq-sandboxed-replay-go) | Go | Sandboxed dry-run of a DLQ handler (pre-flight replay check) |
 
 ### Desktop
 
@@ -44,6 +45,7 @@ cd solari-cookbook/examples/browser-quickstart-ts
 npm install                          # or: pip install -r requirements.txt
 export SOLARI_API_KEY=slr_live_...   # grab one at console.getsolari.com
 npm start                            # or: python main.py
+# Go: cd examples/dlq-sandboxed-replay-go && go run . -payload testdata/payload.json -handler testdata/handler.py
 ```
 
 One `slr_live_` key works across browsers, sandboxes, and desktops, and every
