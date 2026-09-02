@@ -1,0 +1,7 @@
+node_modules/
+dist/
+mergelab-results/
+proof/sample-run/artifacts/
+*.log
+.DS_Store
+.env
