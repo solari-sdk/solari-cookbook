@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solari Voice Agent | War Room Observability</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Nav / Telemetry Bar -->
+    <header class="top-nav">
+        <div class="brand">
+            <div class="brand-icon">🎙️</div>
+            <div class="brand-text">
+                <span class="brand-title">SOLARI <span class="highlight">VOICE AGENT</span></span>
+                <span class="brand-sub">Autonomous Computer-Use Reasoning Engine</span>
+            </div>
+        </div>
+        <div class="nav-metrics">
+            <div class="metric-pill">
+                <span class="status-dot online" id="ws-status-dot"></span>
+                <span id="ws-status-text">War Room Live</span>
+            </div>
+            <div class="metric-pill">
+                <span class="label">DESKTOP:</span>
+                <span class="value" id="desktop-mode-badge">Solari Linux</span>
+            </div>
+            <div class="metric-pill">
+                <span class="label">RES:</span>
+                <span class="value" id="res-badge">1024x768</span>
+            </div>
+            <div class="metric-pill">
+                <span class="label">STEP:</span>
+                <span class="value" id="step-badge">0 / 15</span>
+            </div>
+            <button class="btn-danger-outline" id="btn-kill-vm" title="Calls kill() to terminate remote VM">
+                🛑 Kill VM
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Grid -->
+    <main class="war-room-container">
+        
+        <!-- Left: Desktop Viewport -->
+        <section class="panel viewport-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="icon">🖥️</span> Remote Desktop Stream
+                </div>
+                <div class="viewport-stats">
+                    <span id="coords-tracker">X: 0 | Y: 0</span>
+                    <span class="badge" id="viewport-state-badge">IDLE</span>
+                </div>
+            </div>
+            <div class="screen-wrapper" id="screen-wrapper">
+                <img id="desktop-feed" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1024' height='768' viewBox='0 0 1024 768'><rect width='1024' height='768' fill='%23111318'/><text x='512' y='384' fill='%23555' font-family='sans-serif' font-size='20' text-anchor='middle'>Desktop Stream Ready • Speak or Click a Demo Task</text></svg>" alt="Solari Desktop Stream">
+                
+                <div class="crosshair" id="action-crosshair"></div>
+                
+                <div class="viewport-overlay" id="viewport-overlay">
+                    <div class="spinner"></div>
+                    <div class="overlay-text" id="overlay-status-text">Awaiting Voice Command...</div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="footer-info">
+                    <span class="info-label">Solari Action API:</span>
+                    <span class="info-val" id="last-action-label">Ready</span>
+                </div>
+                <div class="footer-hint">Live frame streaming via WebSockets</div>
+            </div>
+        </section>
+
+        <!-- Center: Voice & Controls -->
+        <section class="panel voice-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="icon">🎙️</span> Voice Command Center
+                </div>
+                <div class="badge badge-cyan" id="mic-status-badge">Whisper STT</div>
+            </div>
+
+            <div class="mic-container">
+                <button class="mic-button" id="btn-mic" title="Click to Record Spoken Instruction">
+                    <svg class="mic-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </button>
+                <div class="mic-hint" id="mic-hint">Click microphone to speak</div>
+                <canvas id="waveform-canvas" width="280" height="45"></canvas>
+            </div>
+
+            <!-- Transcribed Spoken Text -->
+            <div class="voice-card">
+                <div class="card-label">🗣️ Transcribed Voice Instruction</div>
+                <div class="transcript-box" id="transcript-box">
+                    <em>No instruction spoken yet. Click the mic or choose a preset below.</em>
+                </div>
+            </div>
+
+            <!-- Text Input Fallback -->
+            <div class="input-fallback">
+                <input type="text" id="text-instruction-input" placeholder="Or type a computer-use command..." autocomplete="off">
+                <button class="btn-primary" id="btn-submit-text">Execute</button>
+            </div>
+
+            <!-- Quick Demo Presets -->
+            <div class="presets-section">
+                <div class="section-subtitle">🎯 Demo Task Presets</div>
+                <div class="preset-buttons">
+                    <button class="preset-btn" data-task="Search for the current weather in Tokyo and read back the temperature and condition.">
+                        ☀️ Tokyo Weather
+                    </button>
+                    <button class="preset-btn" data-task="Find the top post on Hacker News and summarize it.">
+                        📰 Top Hacker News Post
+                    </button>
+                    <button class="preset-btn" data-task="Open Wikipedia and search for Autonomous Agent Architecture.">
+                        📚 Wikipedia Search
+                    </button>
+                </div>
+            </div>
+
+            <!-- Spoken Response Output -->
+            <div class="voice-response-card">
+                <div class="card-label">🔊 Spoken Voice Summary (OpenAI TTS)</div>
+                <div class="response-box" id="response-box">
+                    <em>Awaiting task completion to play spoken summary...</em>
+                </div>
+                <audio id="tts-audio-player" controls style="display:none; width: 100%; margin-top: 8px;"></audio>
+            </div>
+        </section>
+
+        <!-- Right: LangGraph Reasoning Timeline -->
+        <section class="panel reasoning-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span class="icon">🧠</span> LangGraph Reasoning Loop
+                </div>
+                <div class="badge badge-purple">GPT-4o Vision</div>
+            </div>
+
+            <!-- Milestone Plan -->
+            <div class="plan-card">
+                <div class="card-label">📋 Milestone Execution Plan</div>
+                <ul class="plan-list" id="plan-list">
+                    <li class="empty-plan">Milestones will generate upon voice instruction.</li>
+                </ul>
+            </div>
+
+            <!-- Chain of Thought Inspector -->
+            <div class="thought-card">
+                <div class="card-label">👁️ Vision Agent Chain-of-Thought</div>
+                <div class="thought-box" id="thought-box">
+                    <em>Visual reasoning logs will appear here during execution.</em>
+                </div>
+            </div>
+
+            <!-- Step Action History Log -->
+            <div class="history-card">
+                <div class="card-label">⚡ Execution Timeline</div>
+                <div class="timeline-container" id="timeline-container">
+                    <div class="timeline-empty">No actions logged yet.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
