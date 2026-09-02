@@ -1,9 +1,9 @@
 {
-  "name": "mergelab",
+  "name": "sandbox-merge-risk-simulator-ts",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "AI-assisted integration-risk simulator for GitHub pull requests",
+  "description": "Solari sandbox example: test PR combinations before merging",
   "scripts": {
     "start": "tsx src/index.ts",
     "typecheck": "tsc --noEmit",
