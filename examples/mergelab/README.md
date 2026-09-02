@@ -43,7 +43,7 @@ Solari worker pool ──► isolated Git workspace
 Classify outcomes and detect cross-PR regressions
       │
       ▼
-result.json (+ optional index.html report)
+Terminal matrix (+ optional result.json / index.html)
 ```
 
 ## Why Solari is required
@@ -75,12 +75,27 @@ npm install
 
 ## Run
 
+By default MergeLab prints the compatibility matrix to the terminal and does not
+write any files.
+
 ```bash
 npm start -- \
   --repo https://github.com/example/repo \
   --prs 21,22,23 \
   --config ./mergelab.config.json
 ```
+
+To save the deterministic report, pass `--output`:
+
+```bash
+npm start -- \
+  --repo https://github.com/example/repo \
+  --prs 21,22,23 \
+  --config ./mergelab.config.json \
+  --output ./mergelab-results
+```
+
+Add `--html` to also generate `index.html` inside the output directory.
 
 ### Options
 
@@ -93,8 +108,8 @@ npm start -- \
 | `--mode` | `pairwise` (default) or `selected` |
 | `--combination` | Explicit candidate such as `21+22` |
 | `--concurrency` | Maximum simultaneous workers (default `2`) |
-| `--output` | Report directory (default `./mergelab-results`) |
-| `--html` | Generate an HTML report in addition to `result.json` |
+| `--output` | Write `result.json` and artifacts to this directory |
+| `--html` | Generate an HTML report (requires `--output`) |
 | `--keep-sandboxes` | Retain environments for debugging |
 | `--no-ai` | Omit AI explanation |
 
@@ -149,6 +164,9 @@ The agent only needs:
 - 2–3 PR numbers,
 - the path to a config file that knows how to build and test that repo.
 
+Add `--output ./mergelab-results` if you want the agent to save `result.json` for
+later inspection.
+
 ## Project layout
 
 ```text
@@ -172,7 +190,7 @@ npm run typecheck
 
 - Verdicts come from deterministic checks, not from the model.
 - AI only narrates evidence it can reference by candidate ID and log line.
-- Base and PR head SHAs are pinned and recorded in `result.json`.
+- Base and PR head SHAs are pinned and recorded in `result.json` when `--output` is used.
 - Every command's exit code, stdout, stderr, and duration are captured.
 - Browser failures include screenshots, console errors, and page errors.
 - All secrets are redacted from logs and artifacts.

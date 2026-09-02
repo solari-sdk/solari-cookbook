@@ -15,7 +15,7 @@ export function buildCli(): Command {
     .option("--mode <mode>", "pairwise or selected", "pairwise")
     .option("--combination <ids>", "explicit candidate such as 21+22")
     .option("--concurrency <n>", "maximum simultaneous workers", "2")
-    .option("--output <dir>", "report directory", "./mergelab-results")
+    .option("--output <dir>", "write result.json and artifacts to this directory")
     .option("--keep-sandboxes", "retain environments for debugging", false)
     .option("--html", "generate an HTML report in addition to result.json", false)
     .option("--no-ai", "omit AI explanation without disabling factual analysis");
@@ -64,7 +64,7 @@ export function parseCli(argv: string[]): CliOptions {
     mode,
     combination: opts.combination ? String(opts.combination) : undefined,
     concurrency,
-    output: String(opts.output),
+    output: opts.output ? String(opts.output) : undefined,
     keepSandboxes: Boolean(opts.keepSandboxes),
     ai: opts.ai,
     html: Boolean(opts.html),

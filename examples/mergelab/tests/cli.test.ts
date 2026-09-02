@@ -18,9 +18,25 @@ describe("parseCli", () => {
     expect(opts.config).toBe("./config.json");
     expect(opts.mode).toBe("pairwise");
     expect(opts.concurrency).toBe(2);
-    expect(opts.output).toBe("./mergelab-results");
+    expect(opts.output).toBeUndefined();
     expect(opts.ai).toBe(true);
     expect(opts.html).toBe(false);
+  });
+
+  it("honors --output", () => {
+    const opts = parseCli([
+      "node",
+      "mergelab",
+      "--repo",
+      "https://github.com/example/repo",
+      "--prs",
+      "21,22",
+      "--config",
+      "./config.json",
+      "--output",
+      "./reports",
+    ]);
+    expect(opts.output).toBe("./reports");
   });
 
   it("enables html report with --html", () => {

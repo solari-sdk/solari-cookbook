@@ -27,7 +27,9 @@ async function main(): Promise<void> {
   const { baseBranch, baseSha } = validatePullRequests(prs, options.baseSha);
   console.log(`Base         ${baseSha.slice(0, 12)} (${baseBranch})`);
   console.log(`PRs          ${prs.map((p) => `#${p.number}`).join(", ")}`);
-  console.log(`Output       ${options.output}`);
+  if (options.output) {
+    console.log(`Output       ${options.output}`);
+  }
 
   const report = await runOrchestrator({
     repo,
@@ -38,10 +40,12 @@ async function main(): Promise<void> {
     options,
   });
 
-  const outputDir = path.resolve(options.output, report.runId);
-  await writeResultJson(outputDir, report);
-  if (options.html) {
-    await writeHtmlReport(outputDir, report);
+  if (options.output) {
+    const outputDir = path.resolve(options.output, report.runId);
+    await writeResultJson(outputDir, report);
+    if (options.html) {
+      await writeHtmlReport(outputDir, report);
+    }
   }
 
   console.log("\nResults:");
@@ -62,9 +66,12 @@ async function main(): Promise<void> {
     console.log(`\nRecommended: ${report.recommendedMergeOrder.map((n) => `#${n}`).join(" → ")}`);
   }
 
-  console.log(`\nReport: ${outputDir}/result.json`);
-  if (options.html) {
-    console.log(`HTML:   ${outputDir}/index.html`);
+  if (options.output) {
+    const outputDir = path.resolve(options.output, report.runId);
+    console.log(`\nReport: ${outputDir}/result.json`);
+    if (options.html) {
+      console.log(`HTML:   ${outputDir}/index.html`);
+    }
   }
 
   const hasFailure = report.candidates.some((c) => c.outcome !== "compatible");

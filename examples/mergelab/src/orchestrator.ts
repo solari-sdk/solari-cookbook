@@ -1,4 +1,6 @@
 import { randomBytes } from "node:crypto";
+import { mkdtemp, rm } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import type {
   Candidate,
@@ -38,7 +40,9 @@ export type OrchestratorContext = {
 
 export async function runOrchestrator(ctx: OrchestratorContext): Promise<MergeLabReport> {
   const runId = `ml_${randomBytes(6).toString("hex")}`;
-  const outputDir = path.resolve(ctx.options.output, runId);
+  const outputDir = ctx.options.output
+    ? path.resolve(ctx.options.output, runId)
+    : await mkdtemp(path.join(os.tmpdir(), `mergelab-${runId}-`));
   await ensureOutputDir(outputDir);
 
   const candidates = ctx.options.mode === "selected" && ctx.options.combination
@@ -88,6 +92,11 @@ export async function runOrchestrator(ctx: OrchestratorContext): Promise<MergeLa
   const recommendedMergeOrder = recommendMergeOrder(ctx.prs, findings);
 
   cleanupComplete = results.every((r) => r.cleanupStatus === "complete");
+
+  // If the user did not ask for output, discard the temporary artifact directory.
+  if (!ctx.options.output && !ctx.options.keepSandboxes) {
+    await rm(outputDir, { recursive: true, force: true });
+  }
 
   const report: MergeLabReport = {
     schemaVersion: 1,

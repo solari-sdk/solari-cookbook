@@ -148,7 +148,7 @@ export type CliOptions = {
   mode: "pairwise" | "selected";
   combination?: string;
   concurrency: number;
-  output: string;
+  output?: string;
   keepSandboxes: boolean;
   ai: boolean;
   html: boolean;
