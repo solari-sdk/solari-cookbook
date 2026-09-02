@@ -33,6 +33,15 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+## Built with Solari
+
+Larger public tools live in their own repositories so the examples above stay
+small and copyable.
+
+| Project | What it shows | Links |
+| --- | --- | --- |
+| [AgentGate](showcases/agentgate) | Compare what plain, verified-bot, stealth, and proxied browsers can reach without inventing missing measurements | [Live tool](https://tryagentgate.fly.dev) · [Source](https://github.com/dibyo10/agentgate) |
+
 ## Running an example
 
 Each directory is self-contained.
