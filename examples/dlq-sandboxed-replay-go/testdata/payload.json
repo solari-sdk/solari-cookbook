@@ -1,0 +1,25 @@
+{
+  "message_id": "msg_9f2c1a7b",
+  "queue": "payments.webhooks.dlq",
+  "original_queue": "payments.webhooks",
+  "failed_at": "2026-08-29T11:42:07Z",
+  "attempt": 3,
+  "failure_reason": "handler panic: nil pointer on customer.metadata.plan_id",
+  "provider": "paystack",
+  "event": {
+    "event": "charge.success",
+    "data": {
+      "reference": "ref_7c1e9d0a",
+      "amount": 450000,
+      "currency": "NGN",
+      "status": "success",
+      "customer": {
+        "id": "cus_88213",
+        "email": "buyer@example.com",
+        "metadata": {
+          "plan_id": null
+        }
+      }
+    }
+  }
+}
