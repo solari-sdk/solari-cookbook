@@ -76,6 +76,12 @@ Things that cost you an afternoon if you meet them cold:
   binary named `ls -la`. Put argv in `args`, or run `sh -c` explicitly.
 - **`kill()`, not `close()`, ends a VM.** `close()` drops your local control
   channel; the VM keeps running until its idle timeout.
+- **The `base` sandbox template ships Node 18, but `@solarisdk/browser`
+  needs Node ≥ 20** (its patchright dependency). Code that only calls the
+  sandbox API is fine — but if your use case runs SDK code *inside* a
+  sandbox (agents building agents, CI-style reviews of repos that use
+  Solari), `npm install` crashes with EBADENGINE. Upgrade first:
+  `curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install -y nodejs`.
 - **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
   every use.
 
