@@ -43,6 +43,21 @@ try {
     // to a Solari profile and future runs start already past the wall.
     console.log("signed in — the agent has the session")
   }
+
+  // The other kind of wall: the agent could do the next step, but must not
+  // decide it alone. An approval needs no takeover — the human sees one
+  // screenshot and the action in words, and answers yes or no on the phone
+  // (or in a chat: pass `channels: [telegram({ botToken, chatId })]` from
+  // handraise-telegram and the same question arrives there with two buttons).
+  const answer = await raiseHand(page, {
+    mode: "approval",
+    reason: "The agent may not change account settings without a human",
+    action: "Save the new notification e-mail address",
+  })
+  console.log("approval:", answer.outcome) // "approved" | "denied" | "timeout" | "disconnected"
+  if (answer.outcome === "approved") {
+    // ... the agent clicks Save itself; nothing was injected while it waited.
+  }
 } finally {
   await browser.close()
   // Required in Node, easy to miss: the browser client keeps a loopback proxy

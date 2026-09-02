@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@solarisdk/browser": "^0.1.2",
-    "handraise": "^0.2.0"
+    "handraise": "^0.5.0"
   },
   "devDependencies": {
     "tsx": "^4.19.2",
