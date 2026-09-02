@@ -1,0 +1,86 @@
+<!doctype html><meta charset="utf-8"><title>ghostspec — log in as standard_user with password secret_sauce, add the Sauce Labs Backpack to the cart, open the cart and complete checkout with name Nikhil Jatt and zip 110001</title>
+<style>
+ :root{color-scheme:light dark;--bg:#fff;--fg:#111;--dim:#666;--line:#e5e5e5;--card:#fafafa}
+ @media(prefers-color-scheme:dark){:root{--bg:#0d0d0d;--fg:#eee;--dim:#999;--line:#262626;--card:#161616}}
+ *{box-sizing:border-box}
+ body{margin:0;padding:2.5rem 1.5rem;background:var(--bg);color:var(--fg);
+      font:15px/1.6 ui-sans-serif,system-ui,sans-serif;max-width:56rem;margin-inline:auto}
+ h1{font-size:1.5rem;margin:0 0 .25rem}
+ .goal{color:var(--dim);margin-bottom:1.5rem}
+ .badge{display:inline-block;padding:.15rem .6rem;border-radius:999px;color:#fff;font-size:.8rem;font-weight:600}
+ ol{padding-left:1.2rem} li{margin:.6rem 0}
+ code{background:var(--card);padding:.1rem .35rem;border-radius:4px;
+      font:13px ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+ .note{color:var(--dim);font-size:.88rem}
+ pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem;
+     overflow-x:auto;font:13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+ img{width:100%;border:1px solid var(--line);border-radius:8px;margin:.5rem 0}
+ a{color:inherit} hr{border:0;border-top:1px solid var(--line);margin:2rem 0}
+</style>
+<h1>log in as standard_user with password secret_sauce, add the Sauce Labs Backpack to the cart, open the cart and complete checkout with name Nikhil Jatt and zip 110001</h1>
+<div class="goal"><a href="https://www.saucedemo.com">https://www.saucedemo.com</a> ·
+  <span class="badge" style="background:#16a34a">verified · 1 passing</span></div>
+
+<p class="note">Session replay (rrweb NDJSON, plays in any rrweb player):
+         <a href="checkout.replay.ndjson.gz">checkout.replay.ndjson.gz</a></p>
+
+<h2>What it did</h2>
+<ol><li><code>goto → https://www.saucedemo.com</code><br><span class="note">start at https://www.saucedemo.com</span></li><li><code>fill getByRole('textbox', { name: 'Username' }) → standard_user</code><br><span class="note">Enter the username to begin login</span></li><li><code>fill getByRole('textbox', { name: 'Password' }) → secret_sauce</code><br><span class="note">Enter the password to complete login credentials</span></li><li><code>click getByRole('button', { name: 'Login' })</code><br><span class="note">Submit the login form with the filled credentials</span></li><li><code>expect getByText('Products') → Products</code><br><span class="note">Confirm login succeeded and inventory page loaded</span></li><li><code>click getByRole('button', { name: 'Add to cart' }).first()</code><br><span class="note">Add the Sauce Labs Backpack (first product) to the cart</span></li><li><code>expect getByText('1').first() → 1</code><br><span class="note">Confirm cart badge shows 1 item after adding Sauce Labs Backpack (badge is a generic node with no accessible role/name)</span></li><li><code>click getByText('1').first()</code><br><span class="note">Open the cart by clicking the cart icon/badge showing 1 item, since no link/button role wraps it in the snapshot</span></li><li><code>click getByRole('button', { name: 'Checkout' })</code><br><span class="note">Proceed from cart to checkout information page</span></li><li><code>fill getByRole('textbox', { name: 'First Name' }) → Nikhil</code><br><span class="note">Fill in first name to begin checkout information form</span></li><li><code>fill getByRole('textbox', { name: 'Last Name' }) → Jatt</code><br><span class="note">Fill in last name to continue the checkout information form</span></li><li><code>fill getByRole('textbox', { name: 'Zip/Postal Code' }) → 110001</code><br><span class="note">Fill in zip code to complete the checkout information form</span></li><li><code>click getByRole('button', { name: 'Continue' })</code><br><span class="note">Submit checkout information form with name and zip filled in</span></li><li><code>click getByRole('button', { name: 'Finish' })</code><br><span class="note">Submit the order to complete checkout</span></li><li><code>expect getByText('Thank you for your order!') → Thank you for your order!</code><br><span class="note">Confirm checkout completed and order confirmation is displayed</span></li></ol>
+
+<h2>Screens</h2><img src="01-start.png" alt=""><img src="02-final.png" alt="">
+
+<hr><h2>Generated spec</h2><pre>import { test, expect } from '@playwright/test';
+
+test('log in as standard_user with password secret_sauce, add the Sauce Labs Backpack to the cart, open the cart and complete checkout with name Nikhil Jatt and zip 110001', async ({ page }) =&gt; {
+  // Start at the SauceDemo login page
+  await page.goto('https://www.saucedemo.com');
+
+  // Enter the username to begin login
+  await page.getByRole('textbox', { name: 'Username' }).fill('standard_user');
+
+  // Enter the password to complete login credentials
+  await page.getByRole('textbox', { name: 'Password' }).fill('secret_sauce');
+
+  // Submit the login form
+  await page.getByRole('button', { name: 'Login' }).click();
+
+  // Confirm login succeeded and the inventory page loaded
+  await expect(page.getByText('Products')).toBeVisible();
+
+  // Add the Sauce Labs Backpack (first product) to the cart
+  await page.getByRole('button', { name: 'Add to cart' }).first().click();
+
+  // Confirm the cart badge shows 1 item after adding the product
+  await expect(page.getByText('1').first()).toBeVisible();
+
+  // Open the cart by clicking the cart icon/badge
+  await page.getByText('1').first().click();
+
+  // Proceed from the cart to the checkout information page
+  await page.getByRole('button', { name: 'Checkout' }).click();
+
+  // Fill in first name for checkout information
+  await page.getByRole('textbox', { name: 'First Name' }).fill('Nikhil');
+
+  // Fill in last name for checkout information
+  await page.getByRole('textbox', { name: 'Last Name' }).fill('Jatt');
+
+  // Fill in zip code to complete checkout information
+  await page.getByRole('textbox', { name: 'Zip/Postal Code' }).fill('110001');
+
+  // Submit checkout information form
+  await page.getByRole('button', { name: 'Continue' }).click();
+
+  // Submit the order to complete checkout
+  await page.getByRole('button', { name: 'Finish' }).click();
+
+  // Confirm checkout completed and order confirmation is displayed
+  await expect(page.getByText('Thank you for your order!')).toBeVisible();
+});
+</pre>
+<h2>Run output</h2><pre>Running 1 test using 1 worker
+
+[1/1] generated.spec.ts:3:1 › log in as standard_user with password secret_sauce, add the Sauce Labs Backpack to the cart, open the cart and complete checkout with name Nikhil Jatt and zip 110001
+  1 passed (28.8s)</pre>
+<hr><p class="note">Generated by <a href="https://github.com/badnikhil/ghostspec">ghostspec</a>,
+on a <a href="https://getsolari.com">Solari</a> cloud browser.</p>

@@ -18,6 +18,7 @@ past. Copy one into your project and change the parts you care about.
 | [browser-stealth-proxy-ts](examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
 | [browser-profiles-ts](examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
 | [browser-session-recording-py](examples/browser-session-recording-py) | Python | Record a session, download the replay |
+| [ghostspec](examples/ghostspec) | TypeScript | Describe a flow in English, get a Playwright test that is verified to pass |
 
 ### Sandbox
 
@@ -78,6 +79,15 @@ Things that cost you an afternoon if you meet them cold:
   channel; the VM keeps running until its idle timeout.
 - **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
   every use.
+
+- **Pointing a Playwright runner at a session? Use `/cdp/`, not `/ws/`.** The
+  Playwright wire protocol is version-gated on Playwright's own `User-Agent`
+  header and the server speaks v1.59 — anything else gets HTTP 428 before a test
+  runs. CDP has no gate.
+
+- **`sessions.create()` gives you a loopback URL, not a remote one.** The SDK runs
+  an in-process relay, so the endpoint it returns is useless to any other process.
+  A spawned test runner needs the real endpoint from a raw `POST /sessions`.
 
 ## Links
 
