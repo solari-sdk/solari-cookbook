@@ -20,6 +20,22 @@ describe("parseCli", () => {
     expect(opts.concurrency).toBe(2);
     expect(opts.output).toBe("./mergelab-results");
     expect(opts.ai).toBe(true);
+    expect(opts.html).toBe(false);
+  });
+
+  it("enables html report with --html", () => {
+    const opts = parseCli([
+      "node",
+      "mergelab",
+      "--repo",
+      "https://github.com/example/repo",
+      "--prs",
+      "21,22",
+      "--config",
+      "./config.json",
+      "--html",
+    ]);
+    expect(opts.html).toBe(true);
   });
 
   it("rejects fewer than 2 PRs", () => {

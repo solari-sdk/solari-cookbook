@@ -40,7 +40,9 @@ async function main(): Promise<void> {
 
   const outputDir = path.resolve(options.output, report.runId);
   await writeResultJson(outputDir, report);
-  await writeHtmlReport(outputDir, report);
+  if (options.html) {
+    await writeHtmlReport(outputDir, report);
+  }
 
   console.log("\nResults:");
   for (const c of report.candidates) {
@@ -60,7 +62,10 @@ async function main(): Promise<void> {
     console.log(`\nRecommended: ${report.recommendedMergeOrder.map((n) => `#${n}`).join(" → ")}`);
   }
 
-  console.log(`\nReport: ${outputDir}/index.html`);
+  console.log(`\nReport: ${outputDir}/result.json`);
+  if (options.html) {
+    console.log(`HTML:   ${outputDir}/index.html`);
+  }
 
   const hasFailure = report.candidates.some((c) => c.outcome !== "compatible");
   process.exit(hasFailure ? 1 : 0);

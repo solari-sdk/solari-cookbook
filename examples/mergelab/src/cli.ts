@@ -17,6 +17,7 @@ export function buildCli(): Command {
     .option("--concurrency <n>", "maximum simultaneous workers", "2")
     .option("--output <dir>", "report directory", "./mergelab-results")
     .option("--keep-sandboxes", "retain environments for debugging", false)
+    .option("--html", "generate an HTML report in addition to result.json", false)
     .option("--no-ai", "omit AI explanation without disabling factual analysis");
 
   return program;
@@ -66,5 +67,6 @@ export function parseCli(argv: string[]): CliOptions {
     output: String(opts.output),
     keepSandboxes: Boolean(opts.keepSandboxes),
     ai: opts.ai,
+    html: Boolean(opts.html),
   };
 }

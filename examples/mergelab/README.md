@@ -43,7 +43,7 @@ Solari worker pool ──► isolated Git workspace
 Classify outcomes and detect cross-PR regressions
       │
       ▼
-result.json + index.html report
+result.json (+ optional index.html report)
 ```
 
 ## Why Solari is required
@@ -94,6 +94,7 @@ npm start -- \
 | `--combination` | Explicit candidate such as `21+22` |
 | `--concurrency` | Maximum simultaneous workers (default `2`) |
 | `--output` | Report directory (default `./mergelab-results`) |
+| `--html` | Generate an HTML report in addition to `result.json` |
 | `--keep-sandboxes` | Retain environments for debugging |
 | `--no-ai` | Omit AI explanation |
 
@@ -101,6 +102,10 @@ npm start -- \
 
 Create a `mergelab.config.json` that tells MergeLab how to install, check, and
 optionally browser-test the target repository. Pass it to `--config` as a path.
+
+The `browser.testFile` path is relative to the target repository root and should
+point to a Playwright-style spec that exports a default `verify({ page, baseUrl })`
+function.
 
 This repo includes:
 
@@ -121,21 +126,39 @@ This repo includes:
     "startCommand": "npm run dev -- --host 0.0.0.0",
     "port": 3000,
     "readyPath": "/health",
-    "testFile": "./verification/cart-flow.spec.ts"
+    "testFile": "./e2e/merge-check.spec.ts"
   }
 }
 ```
+
+## Agent usage
+
+If you are running MergeLab from an agent or chat interface, copy and paste this
+template with the repo and PR numbers filled in:
+
+```bash
+npm start -- \
+  --repo https://github.com/<owner>/<repo> \
+  --prs <pr1>,<pr2> \
+  --config ./mergelab.config.solari-cookbook.json \
+  --concurrency 2
+```
+
+The agent only needs:
+- the repository URL,
+- 2–3 PR numbers,
+- the path to a config file that knows how to build and test that repo.
 
 ## Project layout
 
 ```text
 src/              # MergeLab engine
 tests/            # Unit tests
-verification/     # Playwright verification specs
 package.json
 tsconfig.json
 vitest.config.ts
 mergelab.config.example.json
+mergelab.config.solari-cookbook.json
 ```
 
 ## Run tests

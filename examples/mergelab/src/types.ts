@@ -151,6 +151,7 @@ export type CliOptions = {
   output: string;
   keepSandboxes: boolean;
   ai: boolean;
+  html: boolean;
 };
 
 export type GitHubRepo = {
