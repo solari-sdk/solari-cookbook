@@ -1,0 +1,21 @@
+{
+  "name": "one-in-twenty-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/run-pass1.ts",
+    "hunt": "tsx src/hunt.ts",
+    "test": "tsx --test src/checkout-machine.test.ts"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.1.1",
+    "@solarisdk/sdk": "^0.1.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true
+  }
+}

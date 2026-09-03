@@ -18,6 +18,7 @@ past. Copy one into your project and change the parts you care about.
 | [browser-stealth-proxy-ts](examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
 | [browser-profiles-ts](examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
 | [browser-session-recording-py](examples/browser-session-recording-py) | Python | Record a session, download the replay |
+| [one-in-twenty-ts](examples/one-in-twenty-ts) | TypeScript | Hunt an intermittent checkout race, then the state-driven fix |
 
 ### Sandbox
 
