@@ -1,0 +1,16 @@
+{
+  "name": "solari-browser-session-survival-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.1.3",
+    "outlive": "^0.1.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
