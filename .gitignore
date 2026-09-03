@@ -6,3 +6,4 @@ __pycache__/
 .venv/
 venv/
 screenshot.png
+use-cases/verified-agent-workspace-ts/artifacts/

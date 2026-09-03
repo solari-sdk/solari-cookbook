@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "name": "buddy-harmony-482-a11y",
+  "source": {
+    "repository": "https://github.com/Marthijs-Berfelo/buddy-harmony.git",
+    "ref": "9a6fea34db91d535b9d4e255d19c130704da3d61",
+    "issue": 482,
+    "issueSnapshotSha256": "1c85d0a268effc22c0f2603015c67bffa53067ca1f967552e2af9e6fb830191e",
+    "issueSnapshotPath": "jobs/buddy-harmony-482.issue.json"
+  },
+  "bootstrapCommands": [
+    "curl -fsSL https://nodejs.org/dist/v24.15.0/node-v24.15.0-linux-x64.tar.xz -o /tmp/node.tar.xz && echo '472655581fb851559730c48763e0c9d3bc25975c59d518003fc0849d3e4ba0f6  /tmp/node.tar.xz' | sha256sum -c - && rm -rf /opt/node && mkdir -p /opt/node && tar -xJf /tmp/node.tar.xz -C /opt/node --strip-components=1 && /opt/node/bin/node --version && PATH=/opt/node/bin:$PATH /opt/node/bin/npm --version",
+    "export PATH=/opt/node/bin:$PATH; npm ci"
+  ],
+  "agent": {
+    "endpoint": "https://api.z.ai/api/coding/paas/v4/chat/completions",
+    "model": "glm-5.3",
+    "secretEnv": "ZAI_CODING_PLAN_API_KEY",
+    "allowlist": [
+      "src/common/layout/Header.tsx",
+      "src/common/layout/components/LanguageSelector.tsx",
+      "src/common/toolbar/components/SettingsTools.tsx",
+      "src/common/toolbar/Toolbar.tsx",
+      "public/locales/en/common.json",
+      "public/locales/nl/common.json",
+      "public/locales/en/settings.json",
+      "public/locales/nl/settings.json"
+    ],
+    "systemPrompt": "You are a precise senior coding agent. Respect scope exactly. Prefer the smallest correct change. Output strict JSON only.",
+    "taskPrompt": "Fix GitHub issue Marthijs-Berfelo/buddy-harmony#482 at this exact immutable commit. Runtime evidence is the source of truth: /scale has exactly six buttons; four are unnamed (menu/hamburger, language selector, settings gear, print), while Key and Scale already have accessible names and MUST stay unchanged. Add localized accessible names through the existing i18n structure. react-flags-select renders its own button and its props do not accept aria-label, so solve that without changing the dependency or visual layout. Only edit allowlisted files. Preserve behavior and visuals. Match repository Prettier/ESLint formatting exactly; lint permits zero warnings.",
+    "maxTokens": 12000,
+    "maxAttempts": 3,
+    "reasoningMode": "disabled"
+  },
+  "verificationCommands": [
+    "export PATH=/opt/node/bin:$PATH; npm run typecheck",
+    "export PATH=/opt/node/bin:$PATH; npm run lint -- --max-warnings=0",
+    "export PATH=/opt/node/bin:$PATH; npm test -- --reporter=dot",
+    "export PATH=/opt/node/bin:$PATH; npm run build -- --base /"
+  ],
+  "preview": {
+    "port": 4173,
+    "baselineCommand": "export PATH=/opt/node/bin:$PATH; export __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=.preview.getsolari.com; npm run start -- --host 0.0.0.0 --port 4173 --base /",
+    "finalCommand": "export PATH=/opt/node/bin:$PATH; export __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS=.preview.getsolari.com; npm run preview -- --host 0.0.0.0 --port 4173 --base /"
+  },
+  "browser": {
+    "kind": "button-accessibility",
+    "route": "/scale",
+    "waitForSelector": "#scale-page",
+    "baseline": {
+      "buttonCount": 6,
+      "unnamedButtonCount": 4,
+      "mustIncludeNames": [
+        "Key",
+        "Scale"
+      ]
+    },
+    "final": {
+      "unnamedButtonCount": 0,
+      "preserveButtonCount": true,
+      "preserveNames": [
+        "Key",
+        "Scale"
+      ]
+    },
+    "localStorage": {
+      "i18nextLng": "en-US"
+    }
+  },
+  "analysis": {
+    "method": "pstack runtime-first blast-radius: issue text is a hypothesis; the running app is the source of truth",
+    "hypothesis": "Issue #482 correctly reports four unnamed controls but its affected-element list is stale: Key/Scale may already be named and the menu button may be the actual fourth failure",
+    "safetyInvariant": "Only eight allowlisted source/i18n files may change; six buttons remain six; existing Key and Scale names remain; the screenshot stays visually identical while unnamed buttons go 4 -> 0"
+  },
+  "artifactsDir": "artifacts-buddy"
+}

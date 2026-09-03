@@ -1,0 +1,323 @@
+{
+  "version": 2,
+  "engine": "verified-agent-runtime",
+  "startedAt": "2026-09-01T17:39:30.501Z",
+  "job": "buddy-harmony-482-a11y",
+  "source": {
+    "repository": "https://github.com/Marthijs-Berfelo/buddy-harmony.git",
+    "ref": "9a6fea34db91d535b9d4e255d19c130704da3d61",
+    "issue": 482,
+    "issueSnapshotPath": "jobs/buddy-harmony-482.issue.json",
+    "issueSnapshotSha256": "1c85d0a268effc22c0f2603015c67bffa53067ca1f967552e2af9e6fb830191e",
+    "headSha": "9a6fea34db91d535b9d4e255d19c130704da3d61"
+  },
+  "methodology": {
+    "method": "pstack runtime-first blast-radius: issue text is a hypothesis; the running app is the source of truth",
+    "hypothesis": "Issue #482 correctly reports four unnamed controls but its affected-element list is stale: Key/Scale may already be named and the menu button may be the actual fourth failure",
+    "safetyInvariant": "Only eight allowlisted source/i18n files may change; six buttons remain six; existing Key and Scale names remain; the screenshot stays visually identical while unnamed buttons go 4 -> 0"
+  },
+  "policy": {
+    "jobSpecSha256": "9931530b5d13f3e7a44bcb9b3fd249829b56b2a3dcb3ad90e9820dd7bc63ec8f",
+    "agent": {
+      "model": "glm-5.3",
+      "endpoint": "https://api.z.ai/api/coding/paas/v4/chat/completions",
+      "allowlist": [
+        "src/common/layout/Header.tsx",
+        "src/common/layout/components/LanguageSelector.tsx",
+        "src/common/toolbar/components/SettingsTools.tsx",
+        "src/common/toolbar/Toolbar.tsx",
+        "public/locales/en/common.json",
+        "public/locales/nl/common.json",
+        "public/locales/en/settings.json",
+        "public/locales/nl/settings.json"
+      ],
+      "maxAttempts": 3,
+      "reasoningMode": "disabled"
+    },
+    "verificationCommands": [
+      "export PATH=/opt/node/bin:$PATH; npm run typecheck",
+      "export PATH=/opt/node/bin:$PATH; npm run lint -- --max-warnings=0",
+      "export PATH=/opt/node/bin:$PATH; npm test -- --reporter=dot",
+      "export PATH=/opt/node/bin:$PATH; npm run build -- --base /"
+    ],
+    "browserKind": "button-accessibility"
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "{\"model\":\"glm-5.3\",\"changedFiles\":[\"public/locales/en/common.json\",\"public/locales/en/settings.json\",\"public/locales/nl/common.json\",\"public/locales/nl/settings.json\",\"src/common/layout/Header.tsx\",\"src/common/layout/components/LanguageSelector.tsx\",\"src/common/toolbar/Toolbar.tsx\",\"src/common/toolbar/components/SettingsTools.tsx\"],\"editCount\":8}",
+      "changedFiles": [
+        "public/locales/en/common.json",
+        "public/locales/en/settings.json",
+        "public/locales/nl/common.json",
+        "public/locales/nl/settings.json",
+        "src/common/layout/Header.tsx",
+        "src/common/layout/components/LanguageSelector.tsx",
+        "src/common/toolbar/Toolbar.tsx",
+        "src/common/toolbar/components/SettingsTools.tsx"
+      ],
+      "diffSha256": "4b87a90a3f13c2d95c0f305e3a71d177c34e8d8a77840c398331f07372c2aa19",
+      "gates": [
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm run typecheck",
+          "exitCode": 2,
+          "stdout": "\n> buddy-harmony@0.11.17 typecheck\n> tsc --noEmit\n\nsrc/common/layout/components/LanguageSelector.tsx(2,10): error TS2300: Duplicate identifier 'useTranslation'.\nsrc/common/layout/components/LanguageSelector.tsx(5,10): error TS2300: Duplicate identifier 'useTranslation'.\n",
+          "stderr": ""
+        },
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm run lint -- --max-warnings=0",
+          "exitCode": 0,
+          "stdout": "\n> buddy-harmony@0.11.17 lint\n> eslint src --max-warnings=0\n\n",
+          "stderr": ""
+        },
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm test -- --reporter=dot",
+          "exitCode": 1,
+          "stdout": "\n> buddy-harmony@0.11.17 test\n> vitest run --coverage --reporter=dot\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90m[workspace]\u001b[39m\n      \u001b[2mCoverage enabled with \u001b[22m\u001b[33mv8\u001b[39m\n\n\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[31m1 failed\u001b[39m\u001b[22m\u001b[2m | \u001b[22m\u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (3)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m37 passed\u001b[39m\u001b[22m\u001b[90m (37)\u001b[39m\n\u001b[2m   Start at \u001b[22m 17:40:37\n\u001b[2m   Duration \u001b[22m 3.94s\u001b[2m (transform 332ms, setup 251ms, import 436ms, tests 44ms, environment 1.92s)\u001b[22m\n\n",
+          "stderr": "(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:\n  - `__dirname` (vite.config.ts:11:25). Use `import.meta.dirname` instead\nSet `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.\nFailed to parse file://[workspace]/src/common/layout/components/LanguageSelector.tsx. Excluding it from coverage.\n Error [RolldownError]: Parse failed with 1 error:\nExpected `from` but found `{`\n1: import type { JSX } from 'react';\n               ^\n2: import { useTranslation } from 'react-i18next';\n3: import ReactFlagsSelect from 'react-flags-select';\n    at error (file://[workspace]/node_modules/rolldown/dist/shared/logs-DmYCAKcW.mjs:159:24)\n    at normalizeParseError (file://[workspace]/node_modules/rolldown/dist/parse-ast-index.mjs:25:9)\n    at wrap (file://[workspace]/node_modules/rolldown/dist/parse-ast-index.mjs:5:39)\n    at parseAstAsync (file://[workspace]/node_modules/rolldown/dist/parse-ast-index.mjs:54:9)\n    at V8CoverageProvider.remapCoverage (file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:133:10)\n    at file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:119:23\n    at async Promise.all (index 1)\n    at V8CoverageProvider.getCoverageMapForUncoveredFiles (file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:109:4)\n    at V8CoverageProvider.generateCoverage (file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:56:29)\n    at file://[workspace]/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13671:23 {\n  code: 'PARSE_ERROR',\n  id: undefined,\n  pos: 12\n}\n\n\u001b[31m⎯⎯⎯⎯⎯⎯\u001b[39m\u001b[1m\u001b[41m Failed Suites 1 \u001b[49m\u001b[22m\u001b[31m⎯⎯⎯⎯⎯⎯⎯\u001b[39m\n\n\u001b[41m\u001b[1m FAIL \u001b[22m\u001b[49m src/common/layout/components/__tests__/LanguageSelector.spec.tsx\u001b[2m [ src/common/layout/components/__tests__/LanguageSelector.spec.tsx ]\u001b[22m\n\u001b[31m\u001b[1mError\u001b[22m: Transform failed with 1 error:\n\n\u001b[31m[PARSE_ERROR] \u001b[0mIdentifier `useTranslation` has already been declared\n   \u001b[38;5;246m╭\u001b[0m\u001b[38;5;246m─\u001b[0m\u001b[38;5;246m[\u001b[0m src/common/layout/components/LanguageSelector.tsx:2:10 \u001b[38;5;246m]\u001b[0m\n   \u001b[38;5;246m│\u001b[0m\n \u001b[38;5;246m2 │\u001b[0m \u001b[38;5;249mi\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249m \u001b[0museTranslation\u001b[38;5;249m \u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m-\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249m1\u001b[0m\u001b[38;5;249m8\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m  │\u001b[0m          ───────┬──────  \n \u001b[38;5;240m  │\u001b[0m                 ╰──────── `useTranslation` has already been declared here\n \u001b[38;5;240m  │\u001b[0m \n \u001b[38;5;246m5 │\u001b[0m \u001b[38;5;249mi\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249m \u001b[0museTranslation\u001b[38;5;249m \u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m-\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249m1\u001b[0m\u001b[38;5;249m8\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m  │\u001b[0m          ───────┬──────  \n \u001b[38;5;240m  │\u001b[0m                 ╰──────── It can not be redeclared here\n\u001b[38;5;246m───╯\u001b[0m\n\u001b[39m\n  Plugin: \u001b[35mvite:oxc\u001b[39m\n  File: \u001b[36m[workspace]/src/common/layout/components/LanguageSelector.tsx\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m transformWithOxc node_modules/vite/dist/node/chunks/node.js:\u001b[2m4103:19\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:\u001b[2m4174:26\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:\u001b[2m30932:51\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m loadAndTransform node_modules/vite/dist/node/chunks/node.js:\u001b[2m20671:26\u001b[22m\u001b[39m\n\n\u001b[31m\u001b[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\u001b[22m\u001b[39m\n\n"
+        },
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm run build -- --base /",
+          "exitCode": 2,
+          "stdout": "\n> buddy-harmony@0.11.17 build\n> tsc && vite build --base /\n\nsrc/common/layout/components/LanguageSelector.tsx(2,10): error TS2300: Duplicate identifier 'useTranslation'.\nsrc/common/layout/components/LanguageSelector.tsx(5,10): error TS2300: Duplicate identifier 'useTranslation'.\n",
+          "stderr": ""
+        }
+      ],
+      "failures": [
+        "export PATH=/opt/node/bin:$PATH; npm run typecheck failed (2): stdout:\n> buddy-harmony@0.11.17 typecheck\n> tsc --noEmit\n\nsrc/common/layout/components/LanguageSelector.tsx(2,10): error TS2300: Duplicate identifier 'useTranslation'.\nsrc/common/layout/components/LanguageSelector.tsx(5,10): error TS2300: Duplicate identifier 'useTranslation'.",
+        "export PATH=/opt/node/bin:$PATH; npm test -- --reporter=dot failed (1): stdout:\n> buddy-harmony@0.11.17 test\n> vitest run --coverage --reporter=dot\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90m[workspace]\u001b[39m\n      \u001b[2mCoverage enabled with \u001b[22m\u001b[33mv8\u001b[39m\n\n\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[31m1 failed\u001b[39m\u001b[22m\u001b[2m | \u001b[22m\u001b[1m\u001b[32m2 passed\u001b[39m\u001b[22m\u001b[90m (3)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m37 passed\u001b[39m\u001b[22m\u001b[90m (37)\u001b[39m\n\u001b[2m   Start at \u001b[22m 17:40:37\n\u001b[2m   Duration \u001b[22m 3.94s\u001b[2m (transform 332ms, setup 251ms, import 436ms, tests 44ms, environment 1.92s)\u001b[22m\nstderr:\n(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:\n  - `__dirname` (vite.config.ts:11:25). Use `import.meta.dirname` instead\nSet `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.\nFailed to parse file://[workspace]/src/common/layout/components/LanguageSelector.tsx. Excluding it from coverage.\n Error [RolldownError]: Parse failed with 1 error:\nExpected `from` but found `{`\n1: import type { JSX } from 'react';\n               ^\n2: import { useTranslation } from 'react-i18next';\n3: import ReactFlagsSelect from 'react-flags-select';\n    at error (file://[workspace]/node_modules/rolldown/dist/shared/logs-DmYCAKcW.mjs:159:24)\n    at normalizeParseError (file://[workspace]/node_modules/rolldown/dist/parse-ast-index.mjs:25:9)\n    at wrap (file://[workspace]/node_modules/rolldown/dist/parse-ast-index.mjs:5:39)\n    at parseAstAsync (file://[workspace]/node_modules/rolldown/dist/parse-ast-index.mjs:54:9)\n    at V8CoverageProvider.remapCoverage (file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:133:10)\n    at file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:119:23\n    at async Promise.all (index 1)\n    at V8CoverageProvider.getCoverageMapForUncoveredFiles (file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:109:4)\n    at V8CoverageProvider.generateCoverage (file://[workspace]/node_modules/@vitest/coverage-v8/dist/provider.js:56:29)\n    at file://[workspace]/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13671:23 {\n  code: 'PARSE_ERROR',\n  id: undefined,\n  pos: 12\n}\n\n\u001b[31m⎯⎯⎯⎯⎯⎯\u001b[39m\u001b[1m\u001b[41m Failed Suites 1 \u001b[49m\u001b[22m\u001b[31m⎯⎯⎯⎯⎯⎯⎯\u001b[39m\n\n\u001b[41m\u001b[1m FAIL \u001b[22m\u001b[49m src/common/layout/components/__tests__/LanguageSelector.spec.tsx\u001b[2m [ src/common/layout/components/__tests__/LanguageSelector.spec.tsx ]\u001b[22m\n\u001b[31m\u001b[1mError\u001b[22m: Transform failed with 1 error:\n\n\u001b[31m[PARSE_ERROR] \u001b[0mIdentifier `useTranslation` has already been declared\n   \u001b[38;5;246m╭\u001b[0m\u001b[38;5;246m─\u001b[0m\u001b[38;5;246m[\u001b[0m src/common/layout/components/LanguageSelector.tsx:2:10 \u001b[38;5;246m]\u001b[0m\n   \u001b[38;5;246m│\u001b[0m\n \u001b[38;5;246m2 │\u001b[0m \u001b[38;5;249mi\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249m \u001b[0museTranslation\u001b[38;5;249m \u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m-\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249m1\u001b[0m\u001b[38;5;249m8\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m  │\u001b[0m          ───────┬──────  \n \u001b[38;5;240m  │\u001b[0m                 ╰──────── `useTranslation` has already been declared here\n \u001b[38;5;240m  │\u001b[0m \n \u001b[38;5;246m5 │\u001b[0m \u001b[38;5;249mi\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249mp\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m{\u001b[0m\u001b[38;5;249m \u001b[0museTranslation\u001b[38;5;249m \u001b[0m\u001b[38;5;249m}\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249mf\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249mo\u001b[0m\u001b[38;5;249mm\u001b[0m\u001b[38;5;249m \u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249mr\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249ma\u001b[0m\u001b[38;5;249mc\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m-\u001b[0m\u001b[38;5;249mi\u001b[0m\u001b[38;5;249m1\u001b[0m\u001b[38;5;249m8\u001b[0m\u001b[38;5;249mn\u001b[0m\u001b[38;5;249me\u001b[0m\u001b[38;5;249mx\u001b[0m\u001b[38;5;249mt\u001b[0m\u001b[38;5;249m'\u001b[0m\u001b[38;5;249m;\u001b[0m\n \u001b[38;5;240m  │\u001b[0m          ───────┬──────  \n \u001b[38;5;240m  │\u001b[0m                 ╰──────── It can not be redeclared here\n\u001b[38;5;246m───╯\u001b[0m\n\u001b[39m\n  Plugin: \u001b[35mvite:oxc\u001b[39m\n  File: \u001b[36m[workspace]/src/common/layout/components/LanguageSelector.tsx\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m transformWithOxc node_modules/vite/dist/node/chunks/node.js:\u001b[2m4103:19\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m TransformPluginContext.transform node_modules/vite/dist/node/chunks/node.js:\u001b[2m4174:26\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m EnvironmentPluginContainer.transform node_modules/vite/dist/node/chunks/node.js:\u001b[2m30932:51\u001b[22m\u001b[39m\n\u001b[90m \u001b[2m❯\u001b[22m loadAndTransform node_modules/vite/dist/node/chunks/node.js:\u001b[2m20671:26\u001b[22m\u001b[39m\n\n\u001b[31m\u001b[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\u001b[22m\u001b[39m",
+        "export PATH=/opt/node/bin:$PATH; npm run build -- --base / failed (2): stdout:\n> buddy-harmony@0.11.17 build\n> tsc && vite build --base /\n\nsrc/common/layout/components/LanguageSelector.tsx(2,10): error TS2300: Duplicate identifier 'useTranslation'.\nsrc/common/layout/components/LanguageSelector.tsx(5,10): error TS2300: Duplicate identifier 'useTranslation'."
+      ],
+      "accepted": false
+    },
+    {
+      "attempt": 2,
+      "result": "{\"model\":\"glm-5.3\",\"changedFiles\":[\"src/common/layout/components/LanguageSelector.tsx\"],\"editCount\":1}",
+      "changedFiles": [
+        "public/locales/en/common.json",
+        "public/locales/en/settings.json",
+        "public/locales/nl/common.json",
+        "public/locales/nl/settings.json",
+        "src/common/layout/Header.tsx",
+        "src/common/layout/components/LanguageSelector.tsx",
+        "src/common/toolbar/Toolbar.tsx",
+        "src/common/toolbar/components/SettingsTools.tsx"
+      ],
+      "diffSha256": "a8b0618a8ac786c6eb796b0fca54719199e9168571b64066ed039b7534c3c0c3",
+      "gates": [
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm run typecheck",
+          "exitCode": 0,
+          "stdout": "\n> buddy-harmony@0.11.17 typecheck\n> tsc --noEmit\n\n",
+          "stderr": ""
+        },
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm run lint -- --max-warnings=0",
+          "exitCode": 0,
+          "stdout": "\n> buddy-harmony@0.11.17 lint\n> eslint src --max-warnings=0\n\n",
+          "stderr": ""
+        },
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm test -- --reporter=dot",
+          "exitCode": 0,
+          "stdout": "\n> buddy-harmony@0.11.17 test\n> vitest run --coverage --reporter=dot\n\n\n\u001b[1m\u001b[30m\u001b[46m RUN \u001b[49m\u001b[39m\u001b[22m \u001b[36mv4.1.11 \u001b[39m\u001b[90m[workspace]\u001b[39m\n      \u001b[2mCoverage enabled with \u001b[22m\u001b[33mv8\u001b[39m\n\n\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\u001b[33m\u001b[39m\u001b[32m·\u001b[39m\n\n\u001b[2m Test Files \u001b[22m \u001b[1m\u001b[32m3 passed\u001b[39m\u001b[22m\u001b[90m (3)\u001b[39m\n\u001b[2m      Tests \u001b[22m \u001b[1m\u001b[32m40 passed\u001b[39m\u001b[22m\u001b[90m (40)\u001b[39m\n\u001b[2m   Start at \u001b[22m 17:41:00\n\u001b[2m   Duration \u001b[22m 3.91s\u001b[2m (transform 344ms, setup 268ms, import 630ms, tests 98ms, environment 1.81s)\u001b[22m\n\n\u001b[34m % \u001b[39m\u001b[2mCoverage report from \u001b[22m\u001b[33mv8\u001b[39m\n-------------------|---------|----------|---------|---------|-------------------\nFile               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s \n-------------------|---------|----------|---------|---------|-------------------\nAll files          |   19.33 |     9.92 |   10.08 |   19.48 |                   \n src               |       0 |        0 |       0 |       0 |                   \n  App.css          |       0 |        0 |       0 |       0 |                   \n  App.tsx          |       0 |      100 |       0 |       0 | 6                 \n  index.css        |       0 |        0 |       0 |       0 |                   \n  index.tsx        |       0 |      100 |     100 |       0 | 8-20              \n  logo.svg         |       0 |        0 |       0 |       0 |                   \n  ...tWebVitals.ts |       0 |        0 |       0 |       0 | 5-11              \n  translations.tsx |       0 |      100 |       0 |       0 | 8-25              \n  vite-env.d.ts    |       0 |        0 |       0 |       0 |                   \n src/common        |       0 |      100 |     100 |       0 |                   \n  Page.css         |       0 |        0 |       0 |       0 |                   \n  app-info.ts      |       0 |      100 |     100 |       0 | 3                 \n  index.ts         |       0 |        0 |       0 |       0 |                   \n ...mmon/fretboard |     100 |      100 |     100 |     100 |                   \n  index.ts         |       0 |        0 |       0 |       0 |                   \n  options.ts       |     100 |      100 |     100 |     100 |                   \n ...ard/components |    6.08 |        0 |       0 |    6.22 |                   \n  ChordShape.tsx   |    2.98 |        0 |       0 |    2.98 | 14-16,31-261      \n  DebugGrid.tsx    |      50 |      100 |       0 |      50 | 4                 \n  Diagram.tsx      |    4.54 |        0 |       0 |    4.76 | 36-40,83-162      \n  FretNumbers.tsx  |   10.34 |        0 |       0 |   10.34 | 25-27,37-109      \n  Fretboard.tsx    |    6.45 |        0 |       0 |    7.14 | 14-15,37-139      \n  ScaleShape.tsx   |    5.88 |        0 |       0 |    5.88 | 13-15,25-108      \n  Tuning.tsx       |    8.69 |        0 |       0 |    8.69 | 7-9,19-72         \n ...retboard/utils |   13.95 |    23.72 |    5.26 |   13.95 |                   \n  diagram-style.ts |   16.66 |    35.89 |    12.5 |   16.66 | ...07-110,118-154 \n  directional.ts   |       0 |        0 |       0 |       0 | 18-33             \n  index.ts         |       0 |        0 |       0 |       0 |                   \n  scale.ts         |       0 |        0 |       0 |       0 |                   \n  shape.ts         |    5.26 |        0 |       0 |    5.26 | 15-59             \n  svg.ts           |      50 |      100 |       0 |      50 | 2,5               \n src/common/layout |       0 |        0 |       0 |       0 |                   \n  Content.tsx      |       0 |      100 |       0 |       0 | 6-10              \n  Footer.tsx       |       0 |        0 |       0 |       0 | 11-76             \n  Header.tsx       |       0 |        0 |       0 |       0 | 16-41             \n  Layout.tsx       |       0 |      100 |       0 |       0 | 7-8               \n  index.ts         |       0 |        0 |       0 |       0 |                   \n ...out/components |    87.5 |       50 |   83.33 |    87.5 |                   \n  ...eSelector.tsx |    87.5 |       50 |   83.33 |    87.5 | 51-55,99          \n ...common/routing |       0 |      100 |       0 |       0 |                   \n  pages.ts         |       0 |      100 |       0 |       0 | 1-6               \n  router.tsx       |       0 |      100 |     100 |       0 | 7                 \n ...common/toolbar |       0 |      100 |       0 |       0 |                   \n  Toolbar.tsx      |       0 |      100 |       0 |       0 | 18-37             \n ...bar/components |       0 |        0 |       0 |       0 |                   \n  ...dSelector.tsx |       0 |        0 |       0 |       0 | 18-40             \n  KeySelector.tsx  |       0 |        0 |       0 |       0 | 17-39             \n  ...eSelector.tsx |       0 |        0 |       0 |       0 | 18-45             \n  ...ingsTools.tsx |       0 |        0 |       0 |       0 | 32-126            \n src/common/utils  |       0 |        0 |       0 |       0 |                   \n  enum-helper.ts   |       0 |        0 |       0 |       0 | 2-4               \n  index.ts         |       0 |        0 |       0 |       0 |                   \n src/components/ui |       0 |        0 |       0 |       0 |                   \n  button.tsx       |       0 |        0 |       0 |       0 | 7-56              \n  ...down-menu.tsx |       0 |        0 |       0 |       0 | 8-220             \n  select.tsx       |       0 |        0 |       0 |       0 | 8-158             \n  tooltip.tsx      |       0 |        0 |       0 |       0 | 1-35              \n src/hooks         |   57.37 |    31.25 |      30 |   61.53 |                   \n  base-context.ts  |       0 |        0 |       0 |       0 |                   \n  chord-db.ts      |   45.45 |    21.42 |   18.18 |      50 | ...-94,99,102,105 \n  constants.ts     |      76 |      100 |      50 |   80.95 | 34,76-78          \n  index.ts         |       0 |        0 |       0 |       0 |                   \n  use-keys.ts      |   33.33 |      100 |       0 |   33.33 | 11-13             \n ...hooks/settings |   12.82 |        0 |       0 |   13.15 |                   \n  ...tProvider.tsx |   12.82 |        0 |       0 |   13.15 | 50-54,63-131      \n  index.ts         |       0 |        0 |       0 |       0 |                   \n src/lib           |       0 |      100 |       0 |       0 |                   \n  utils.ts         |       0 |      100 |       0 |       0 | 5                 \n src/modules/caged |       0 |      100 |       0 |       0 |                   \n  CagedPage.tsx    |       0 |      100 |       0 |       0 | 8-12              \n  index.ts         |       0 |        0 |       0 |       0 |                   \n ...ged/components |       0 |        0 |       0 |       0 |                   \n  CagedContent.tsx |       0 |        0 |       0 |       0 | 7-15              \n  CagedToolBar.tsx |       0 |      100 |       0 |       0 | 8-19              \n ...es/caged/hooks |   29.33 |    46.15 |   14.28 |   29.72 |                   \n  ...-constants.ts |       0 |      100 |     100 |       0 | 37-110            \n  caged-utils.ts   |   43.13 |    66.66 |      20 |   43.13 | ...,91-96,121-122 \n  index.ts         |       0 |        0 |       0 |       0 |                   \n  use-caged.ts     |       0 |        0 |       0 |       0 | 22-64             \n src/modules/chord |       0 |      100 |       0 |       0 |                   \n  ChordPage.tsx    |       0 |      100 |       0 |       0 | 8-12              \n  index.ts         |       0 |        0 |       0 |       0 |                   \n ...ord/components |       0 |        0 |       0 |       0 |                   \n  ChordContent.tsx |       0 |        0 |       0 |       0 | 7-45              \n  ChordToolBar.tsx |       0 |      100 |       0 |       0 | 8-19              \n ...es/chord/hooks |       0 |        0 |       0 |       0 |                   \n  index.ts         |       0 |        0 |       0 |       0 |                   \n  ...itar-chord.ts |       0 |        0 |       0 |       0 | 19-49             \n src/modules/scale |       0 |      100 |       0 |       0 |                   \n  ScalePage.tsx    |       0 |      100 |       0 |       0 | 7-10              \n  index.ts         |       0 |        0 |       0 |       0 |                   \n ...ale/components |       0 |        0 |       0 |       0 |                   \n  ScaleContent.tsx |       0 |        0 |       0 |       0 | 7-16              \n  ScaleToolBar.tsx |       0 |      100 |       0 |       0 | 8-20              \n ...es/scale/hooks |       0 |        0 |       0 |       0 |                   \n  index.ts         |       0 |        0 |       0 |       0 |                   \n  ...itar-scale.ts |       0 |        0 |       0 |       0 | 13-38             \n-------------------|---------|----------|---------|---------|-------------------\n",
+          "stderr": "(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:\n  - `__dirname` (vite.config.ts:11:25). Use `import.meta.dirname` instead\nSet `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.\n\u001b[90mstderr\u001b[2m | src/common/layout/components/__tests__/LanguageSelector.spec.tsx\u001b[2m > \u001b[22m\u001b[2mLanguageSelector\u001b[2m > \u001b[22m\u001b[2mrenders immediately when i18n has already resolved a language before mount\n\u001b[22m\u001b[39mreact-i18next:: i18n.languages were undefined or empty { code: \u001b[32m'NO_LANGUAGES'\u001b[39m, languages: \u001b[90mundefined\u001b[39m }\n\n\u001b[90mstderr\u001b[2m | src/common/layout/components/__tests__/LanguageSelector.spec.tsx\u001b[2m > \u001b[22m\u001b[2mLanguageSelector\u001b[2m > \u001b[22m\u001b[2mpicks up the resolved language via languageChanged event when resolution happens after mount\n\u001b[22m\u001b[39mreact-i18next:: useTranslation: t was called before ready. When using useSuspense: false, make sure to check the ready flag before using t. { code: \u001b[32m'USE_T_BEFORE_READY'\u001b[39m }\n\n"
+        },
+        {
+          "command": "export PATH=/opt/node/bin:$PATH; npm run build -- --base /",
+          "exitCode": 0,
+          "stdout": "\n> buddy-harmony@0.11.17 build\n> tsc && vite build --base /\n\nvite v8.2.2 building client environment for production...\ntransforming...\n✓ 2081 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                                2.08 kB │ gzip:   1.00 kB\ndist/assets/geist-cyrillic-ext-wght-normal-DjL33-gN.woff2      7.42 kB\ndist/assets/geist-vietnamese-wght-normal-6IgcOCM7.woff2        8.00 kB\ndist/assets/geist-cyrillic-wght-normal-BEAKL7Jp.woff2         15.08 kB\ndist/assets/geist-latin-ext-wght-normal-DC-KSUi6.woff2        16.51 kB\ndist/assets/geist-latin-wght-normal-BgDaEnEv.woff2            29.40 kB\ndist/assets/index-B6bJQrQQ.css                                47.99 kB │ gzip:   9.44 kB\ndist/assets/chord-DrQU1PRU.js                                  1.88 kB │ gzip:   0.88 kB │ map:     6.81 kB\ndist/assets/caged-CuynmEue.js                                 46.48 kB │ gzip:   9.15 kB │ map:   193.00 kB\ndist/assets/index-D7LhPLoR.js                              2,016.22 kB │ gzip: 517.70 kB │ map: 5,635.00 kB\n\n✓ built in 1.85s\n",
+          "stderr": "(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:\n  - `__dirname` (vite.config.ts:11:25). Use `import.meta.dirname` instead\nSet `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.\n[plugin @tailwindcss/vite:generate:build] \u001b[33m[SOURCEMAP_BROKEN] \u001b[0mSourcemap is likely to be incorrect: a plugin (@tailwindcss/vite:generate:build) was used to transform files, but didn't generate a sourcemap for the transformation. Consult the plugin documentation for help: https://rolldown.rs/guide/troubleshooting#warning-sourcemap-is-likely-to-be-incorrect\n\n[plugin builtin:vite-reporter] \n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n"
+        }
+      ],
+      "failures": [],
+      "accepted": true,
+      "browser": {
+        "kind": "button-accessibility",
+        "buttonCount": 6,
+        "unnamedButtonCount": 0,
+        "buttonNames": [
+          "Menu",
+          "Settings",
+          "Print scale",
+          "Select language",
+          "Key",
+          "Scale"
+        ],
+        "title": "Buddy Harmony",
+        "screenshotPath": "artifacts-buddy/final.png",
+        "screenshotSha256": "33cc87c9c9673735e0ce734e1b0ec0a79f16f264555b9329f885bb23e1adc648"
+      }
+    }
+  ],
+  "events": [
+    {
+      "phase": "SOURCE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:39:30.504Z",
+      "detail": "https://github.com/Marthijs-Berfelo/buddy-harmony.git@9a6fea34db91"
+    },
+    {
+      "phase": "SOURCE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:39:39.947Z",
+      "detail": "9a6fea34db91d535b9d4e255d19c130704da3d61"
+    },
+    {
+      "phase": "BASELINE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:39:39.948Z"
+    },
+    {
+      "phase": "BASELINE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:40:07.280Z",
+      "detail": "4 unnamed / 6 buttons"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:40:08.558Z",
+      "detail": "attempt 1"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:40:27.823Z",
+      "detail": "attempt 1: 8 files"
+    },
+    {
+      "phase": "STATIC_VERIFY",
+      "state": "STARTED",
+      "at": "2026-09-01T17:40:27.823Z",
+      "detail": "attempt 1"
+    },
+    {
+      "phase": "STATIC_VERIFY",
+      "state": "FAILED",
+      "at": "2026-09-01T17:40:46.321Z",
+      "detail": "attempt 1: 3 failures"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:40:46.321Z",
+      "detail": "attempt 2"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:40:51.235Z",
+      "detail": "attempt 2: 8 files"
+    },
+    {
+      "phase": "STATIC_VERIFY",
+      "state": "STARTED",
+      "at": "2026-09-01T17:40:51.235Z",
+      "detail": "attempt 2"
+    },
+    {
+      "phase": "STATIC_VERIFY",
+      "state": "PASSED",
+      "at": "2026-09-01T17:41:10.421Z",
+      "detail": "attempt 2: 4 gates"
+    },
+    {
+      "phase": "RUNTIME_VERIFY",
+      "state": "STARTED",
+      "at": "2026-09-01T17:41:10.422Z",
+      "detail": "attempt 2"
+    },
+    {
+      "phase": "RUNTIME_VERIFY",
+      "state": "PASSED",
+      "at": "2026-09-01T17:41:17.642Z",
+      "detail": "attempt 2: 0 unnamed / 6 buttons"
+    },
+    {
+      "phase": "JUDGE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:41:17.642Z",
+      "detail": "attempt 2 accepted"
+    },
+    {
+      "phase": "COMPLETE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:41:17.642Z",
+      "detail": "converged in 2 attempt(s)"
+    },
+    {
+      "phase": "CLEANUP",
+      "state": "STARTED",
+      "at": "2026-09-01T17:41:17.642Z"
+    },
+    {
+      "phase": "CLEANUP",
+      "state": "PASSED",
+      "at": "2026-09-01T17:41:17.931Z",
+      "detail": "0 run-owned sandboxes"
+    }
+  ],
+  "status": "PASSED",
+  "sandboxFingerprint": "57bbcaf71863373e",
+  "baseline": {
+    "kind": "button-accessibility",
+    "buttonCount": 6,
+    "unnamedButtonCount": 4,
+    "buttonNames": [
+      "",
+      "",
+      "",
+      "",
+      "Key",
+      "Scale"
+    ],
+    "title": "Buddy Harmony",
+    "screenshotPath": "artifacts-buddy/baseline.png",
+    "screenshotSha256": "33cc87c9c9673735e0ce734e1b0ec0a79f16f264555b9329f885bb23e1adc648"
+  },
+  "final": {
+    "kind": "button-accessibility",
+    "buttonCount": 6,
+    "unnamedButtonCount": 0,
+    "buttonNames": [
+      "Menu",
+      "Settings",
+      "Print scale",
+      "Select language",
+      "Key",
+      "Scale"
+    ],
+    "title": "Buddy Harmony",
+    "screenshotPath": "artifacts-buddy/final.png",
+    "screenshotSha256": "33cc87c9c9673735e0ce734e1b0ec0a79f16f264555b9329f885bb23e1adc648"
+  },
+  "previewUrl": "https://57bbcaf71863373e55ae-4173.preview.getsolari.com/",
+  "accessibilityDelta": [
+    {
+      "index": 0,
+      "before": "",
+      "after": "Menu"
+    },
+    {
+      "index": 1,
+      "before": "",
+      "after": "Settings"
+    },
+    {
+      "index": 2,
+      "before": "",
+      "after": "Print scale"
+    },
+    {
+      "index": 3,
+      "before": "",
+      "after": "Select language"
+    }
+  ],
+  "visualParity": true,
+  "cleanup": {
+    "ownedSandboxesAfterCleanup": 0
+  },
+  "finishedAt": "2026-09-01T17:41:17.931Z"
+}

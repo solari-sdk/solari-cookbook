@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "name": "fixture-ai-text-repair",
+  "source": {
+    "repository": "https://github.com/MisterWanted/solari-cookbook.git",
+    "ref": "2efa5a792ce34e7ee3ec28656b6dff637c923a40"
+  },
+  "bootstrapCommands": [
+    "node --version"
+  ],
+  "agent": {
+    "endpoint": "https://api.z.ai/api/coding/paas/v4/chat/completions",
+    "model": "glm-5.3",
+    "secretEnv": "ZAI_CODING_PLAN_API_KEY",
+    "allowlist": [
+      "use-cases/verified-agent-workspace-ts/fixture-ai/index.html"
+    ],
+    "systemPrompt": "You are a precise coding agent. Respect scope exactly. Output strict JSON only.",
+    "taskPrompt": "Repair the deterministic HTML fixture. Change only the allowlisted index.html so the visible heading says exactly `AI repaired this UI in Solari`. Keep the rest of the document and visual structure minimal and unchanged.",
+    "maxTokens": 2000,
+    "maxAttempts": 2,
+    "reasoningMode": "disabled"
+  },
+  "verificationCommands": [
+    "node use-cases/verified-agent-workspace-ts/fixture-ai/test.mjs"
+  ],
+  "preview": {
+    "port": 4173,
+    "baselineCommand": "PORT=4173 node use-cases/verified-agent-workspace-ts/fixture-ai/server.mjs",
+    "finalCommand": "PORT=4173 node use-cases/verified-agent-workspace-ts/fixture-ai/server.mjs"
+  },
+  "browser": {
+    "kind": "text",
+    "route": "/",
+    "waitForSelector": "main",
+    "baseline": {
+      "mustIncludeText": "Repair this placeholder",
+      "mustExcludeText": "AI repaired this UI in Solari"
+    },
+    "final": {
+      "mustIncludeText": "AI repaired this UI in Solari",
+      "mustExcludeText": "Repair this placeholder"
+    }
+  },
+  "analysis": {
+    "method": "same verified-agent runtime, different verifier kind and repository target",
+    "hypothesis": "A declarative text verifier can drive the same isolated mutate-verify-judge loop without runner changes",
+    "safetyInvariant": "Only fixture-ai/index.html changes; the deterministic test and independent browser must agree on the repaired text"
+  },
+  "artifactsDir": "artifacts-fixture-ai"
+}

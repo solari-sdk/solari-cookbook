@@ -1,0 +1,224 @@
+{
+  "version": 2,
+  "engine": "verified-agent-runtime",
+  "startedAt": "2026-09-01T17:41:57.741Z",
+  "job": "fixture-ai-text-repair",
+  "source": {
+    "repository": "https://github.com/MisterWanted/solari-cookbook.git",
+    "ref": "2efa5a792ce34e7ee3ec28656b6dff637c923a40",
+    "headSha": "2efa5a792ce34e7ee3ec28656b6dff637c923a40"
+  },
+  "methodology": {
+    "method": "same verified-agent runtime, different verifier kind and repository target",
+    "hypothesis": "A declarative text verifier can drive the same isolated mutate-verify-judge loop without runner changes",
+    "safetyInvariant": "Only fixture-ai/index.html changes; the deterministic test and independent browser must agree on the repaired text"
+  },
+  "policy": {
+    "jobSpecSha256": "5e8ea2e68b2e02847dbcf87d552163c38d758a63ae756a5e12636e09f895ff65",
+    "agent": {
+      "model": "glm-5.3",
+      "endpoint": "https://api.z.ai/api/coding/paas/v4/chat/completions",
+      "allowlist": [
+        "use-cases/verified-agent-workspace-ts/fixture-ai/index.html"
+      ],
+      "maxAttempts": 2,
+      "reasoningMode": "disabled"
+    },
+    "verificationCommands": [
+      "node use-cases/verified-agent-workspace-ts/fixture-ai/test.mjs"
+    ],
+    "browserKind": "text"
+  },
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "",
+      "changedFiles": [],
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gates": [],
+      "failures": [
+        "agent execution failed (1): stderr:\nfile:///tmp/bounded-edit-agent.mjs:48\n  if (!policy.allowlist.includes(edit.path) || typeof edit.old !== \"string\" || typeof edit.new !== \"string\" || !edit.old) throw new Error(\"invalid edit\")\n                                                                                                                                ^\n\nError: invalid edit\n    at file:///tmp/bounded-edit-agent.mjs:48:129\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n\nNode.js v18.20.4"
+      ],
+      "accepted": false
+    },
+    {
+      "attempt": 2,
+      "result": "{\"model\":\"glm-5.3\",\"changedFiles\":[\"use-cases/verified-agent-workspace-ts/fixture-ai/index.html\"],\"editCount\":1}",
+      "changedFiles": [
+        "use-cases/verified-agent-workspace-ts/fixture-ai/index.html"
+      ],
+      "diffSha256": "3fa5641f1dd4ab29bc9e10b3cdeafd8de2e9008e869e9cee20d4364e9ff7f112",
+      "gates": [
+        {
+          "command": "node use-cases/verified-agent-workspace-ts/fixture-ai/test.mjs",
+          "exitCode": 0,
+          "stdout": "AI mutation fixture test passed\n",
+          "stderr": ""
+        }
+      ],
+      "failures": [],
+      "accepted": true,
+      "browser": {
+        "kind": "text",
+        "bodyTextSha256": "9712fedd81e6aa7590dba93e7e06b72e14ec129854a2beca3ff632f678c05a01",
+        "checks": [
+          {
+            "type": "include",
+            "text": "AI repaired this UI in Solari",
+            "passed": true
+          },
+          {
+            "type": "exclude",
+            "text": "Repair this placeholder",
+            "passed": true
+          }
+        ],
+        "title": "AI Mutation Fixture",
+        "screenshotPath": "artifacts-fixture-ai/final.png",
+        "screenshotSha256": "a016ab3237b35b9a6e1425fb6a14d74043247cadb0acf650900ba02f676cb006"
+      }
+    }
+  ],
+  "events": [
+    {
+      "phase": "SOURCE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:41:57.742Z",
+      "detail": "https://github.com/MisterWanted/solari-cookbook.git@2efa5a792ce3"
+    },
+    {
+      "phase": "SOURCE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:41:59.903Z",
+      "detail": "2efa5a792ce34e7ee3ec28656b6dff637c923a40"
+    },
+    {
+      "phase": "BASELINE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:41:59.903Z"
+    },
+    {
+      "phase": "BASELINE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:04.499Z",
+      "detail": "2/2 text checks passed"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:42:04.802Z",
+      "detail": "attempt 1"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "FAILED",
+      "at": "2026-09-01T17:42:07.064Z",
+      "detail": "attempt 1: agent transport/protocol failure"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "STARTED",
+      "at": "2026-09-01T17:42:07.064Z",
+      "detail": "attempt 2"
+    },
+    {
+      "phase": "MUTATE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:09.065Z",
+      "detail": "attempt 2: 1 files"
+    },
+    {
+      "phase": "STATIC_VERIFY",
+      "state": "STARTED",
+      "at": "2026-09-01T17:42:09.065Z",
+      "detail": "attempt 2"
+    },
+    {
+      "phase": "STATIC_VERIFY",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:09.593Z",
+      "detail": "attempt 2: 1 gates"
+    },
+    {
+      "phase": "RUNTIME_VERIFY",
+      "state": "STARTED",
+      "at": "2026-09-01T17:42:09.593Z",
+      "detail": "attempt 2"
+    },
+    {
+      "phase": "RUNTIME_VERIFY",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:13.820Z",
+      "detail": "attempt 2: 2/2 text checks passed"
+    },
+    {
+      "phase": "JUDGE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:13.820Z",
+      "detail": "attempt 2 accepted"
+    },
+    {
+      "phase": "COMPLETE",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:13.820Z",
+      "detail": "converged in 2 attempt(s)"
+    },
+    {
+      "phase": "CLEANUP",
+      "state": "STARTED",
+      "at": "2026-09-01T17:42:13.820Z"
+    },
+    {
+      "phase": "CLEANUP",
+      "state": "PASSED",
+      "at": "2026-09-01T17:42:14.117Z",
+      "detail": "0 run-owned sandboxes"
+    }
+  ],
+  "status": "PASSED",
+  "sandboxFingerprint": "2323ba6c33ca3039",
+  "baseline": {
+    "kind": "text",
+    "bodyTextSha256": "ee86e07baa8a0f1f86dd14faa5a198340356ec04d7233c614013c1447b0d4214",
+    "checks": [
+      {
+        "type": "include",
+        "text": "Repair this placeholder",
+        "passed": true
+      },
+      {
+        "type": "exclude",
+        "text": "AI repaired this UI in Solari",
+        "passed": true
+      }
+    ],
+    "title": "AI Mutation Fixture",
+    "screenshotPath": "artifacts-fixture-ai/baseline.png",
+    "screenshotSha256": "6fc630d8fe84db1dc7fa134ffd01539bd22c829078f3f3540bed44b21ba36294"
+  },
+  "final": {
+    "kind": "text",
+    "bodyTextSha256": "9712fedd81e6aa7590dba93e7e06b72e14ec129854a2beca3ff632f678c05a01",
+    "checks": [
+      {
+        "type": "include",
+        "text": "AI repaired this UI in Solari",
+        "passed": true
+      },
+      {
+        "type": "exclude",
+        "text": "Repair this placeholder",
+        "passed": true
+      }
+    ],
+    "title": "AI Mutation Fixture",
+    "screenshotPath": "artifacts-fixture-ai/final.png",
+    "screenshotSha256": "a016ab3237b35b9a6e1425fb6a14d74043247cadb0acf650900ba02f676cb006"
+  },
+  "previewUrl": "https://2323ba6c33ca303928d4-4173.preview.getsolari.com/",
+  "visualParity": false,
+  "cleanup": {
+    "ownedSandboxesAfterCleanup": 0
+  },
+  "finishedAt": "2026-09-01T17:42:14.117Z"
+}

@@ -1,0 +1,16 @@
+{
+  "assignees": [],
+  "author": "Marthijs-Berfelo",
+  "body": "## Lighthouse finding\n\nLighthouse accessibility audit (score: 79/100) reports that 4 buttons have no accessible name. Screen readers announce these as \"button\" with no context, making them unusable.\n\n## Affected elements\n\n- **Settings gear button** — `<IconButton>` in `src/common/toolbar/components/SettingsTools.tsx`, icon only, no `aria-label`\n- **Print button** — `<IconButton>` in `src/common/toolbar/Toolbar.tsx`, icon only, no `aria-label`\n- **Language selector button** — rendered by `react-flags-select` in `src/common/layout/components/LanguageSelector.tsx`\n- **Chord / key selector collapsed buttons** — toolbar selector components\n\n## Suggested fix\n\nAdd `aria-label` to each icon-only `<IconButton>`, sourced from the i18n translation files:\n\n```tsx\n<IconButton color=\"blue\" aria-label={t('settings:gear.label')} className=\"mr-1\">\n  <FontAwesomeIcon icon={faGears} />\n</IconButton>\n```\n\nAdd the corresponding translation keys to `public/locales/en/settings.json` and `public/locales/nl/settings.json`.\n\n## References\n\n- [axe rule: button-name](https://dequeuniversity.com/rules/axe/4.11/button-name)\n- WCAG 2.1 Success Criterion 4.1.2 (Name, Role, Value)",
+  "createdAt": "2026-05-10T13:54:09Z",
+  "labels": [
+    "accessibility",
+    "good first issue"
+  ],
+  "number": 482,
+  "repository": "Marthijs-Berfelo/buddy-harmony",
+  "state": "OPEN",
+  "title": "a11y: icon-only buttons are missing accessible names",
+  "updatedAt": "2026-09-01T06:46:29Z",
+  "url": "https://github.com/Marthijs-Berfelo/buddy-harmony/issues/482"
+}
