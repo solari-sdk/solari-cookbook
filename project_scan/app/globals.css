@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #f5f5f7;
+  --bg-secondary: rgba(255, 255, 255, 0.72);
+  --bg-tertiary: #ffffff;
+  --bg-elevated: #f2f2f7;
+  --bg-input: rgba(255, 255, 255, 0.95);
+  --text-primary: #1d1d1f;
+  --text-secondary: rgba(60, 60, 67, 0.6);
+  --text-tertiary: rgba(60, 60, 67, 0.4);
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-hairline: rgba(0, 0, 0, 0.06);
+  --accent: #007aff;
+  --accent-hover: #0066d6;
+  --shadow-card:
+    0 0 0 0.5px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --success: #34c759;
+  --warning: #ff9f0a;
+  --danger: #ff3b30;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1c1c1e;
+    --bg-secondary: rgba(44, 44, 46, 0.78);
+    --bg-tertiary: #2c2c2e;
+    --bg-elevated: #3a3a3c;
+    --bg-input: rgba(58, 58, 60, 0.95);
+    --text-primary: #f5f5f7;
+    --text-secondary: rgba(235, 235, 245, 0.6);
+    --text-tertiary: rgba(235, 235, 245, 0.35);
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-hairline: rgba(255, 255, 255, 0.06);
+    --accent: #0a84ff;
+    --accent-hover: #409cff;
+    --shadow-card:
+      0 0 0 0.5px rgba(255, 255, 255, 0.06),
+      0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@theme inline {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  --font-mono: "SF Mono", "Menlo", "Monaco", monospace;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.38;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes scan-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.scan-progress-bar {
+  animation: scan-shimmer 1.5s var(--ease-out) infinite;
+}
+
+.mac-card {
+  background: var(--bg-tertiary);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: 8px;
+  box-shadow: var(--shadow-card);
+}
+
+.mac-input {
+  background: var(--bg-input);
+  border: 0.5px solid var(--border-subtle);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.mac-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.mac-input:disabled {
+  opacity: 0.6;
+}
+
+.search-bar .mac-input:focus {
+  transform: translateY(-1px);
+}
+
+.mac-btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.mac-btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.mac-btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.mac-btn-primary:disabled {
+  opacity: 0.4;
+}
+
+.mac-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.mac-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-out) both;
+}
+
+.mac-list-row {
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.mac-list-row:hover {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.scan-step {
+  transition: background-color var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out);
+}
+
+.kbd {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  border: 0.5px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
