@@ -1,0 +1,127 @@
+{
+  "audited_final_positions": 6,
+  "claim_passed": true,
+  "false_acceptances": 0,
+  "protocol_digest": "f77b1b4e101d24c720a26cdc9b9dbce877fb553747967b72c978cf5c7101531e",
+  "results": [
+    {
+      "attempts": [
+        {
+          "artifact": "clean-9a6d1f4d053c-b93037208b73.json",
+          "artifact_sha256": "099666155b973d5c108cb55549d542a1558b4b72e1f679b4b086682b4e8dee87",
+          "attempt": 1,
+          "exit_code": 1,
+          "matches_precommitment": false,
+          "retryable_pre_mutation_failure": true
+        },
+        {
+          "artifact": "clean-9a6d1f4d053c-1f82e9a298c3.json",
+          "artifact_sha256": "17edb2fcdfd9683190b1edc0b43f74859102040f62a382fbe6080e0923355d1b",
+          "attempt": 2,
+          "exit_code": 0,
+          "matches_precommitment": true,
+          "retryable_pre_mutation_failure": false
+        }
+      ],
+      "case_digest": "9a6d1f4d053c3979d09a36fb033539179872251d53cbdb20809b15d871501b00",
+      "completed": true,
+      "expected_acceptance": true,
+      "position": 1,
+      "schedule": "clean"
+    },
+    {
+      "attempts": [
+        {
+          "artifact": "clean-89a0bdd3eb03-f4a164c0d7d4.json",
+          "artifact_sha256": "d121b8f3e7d77f3528ff376a7227ece86aa327f13e792ef6f9f2eff785837233",
+          "attempt": 1,
+          "exit_code": 0,
+          "matches_precommitment": true,
+          "retryable_pre_mutation_failure": false
+        }
+      ],
+      "case_digest": "89a0bdd3eb03d8a5c10f08cfa0641ca27f11fbc67300bd32f8c560af99216664",
+      "completed": true,
+      "expected_acceptance": true,
+      "position": 2,
+      "schedule": "clean"
+    },
+    {
+      "attempts": [
+        {
+          "artifact": "clean-4c3c50606278-de08166f2d3a.json",
+          "artifact_sha256": "f32f8bdfa2291711c5f6bdfd5f97c3b57ebaa83ad0fdcf1762e7e1055e5acdba",
+          "attempt": 1,
+          "exit_code": 0,
+          "matches_precommitment": true,
+          "retryable_pre_mutation_failure": false
+        }
+      ],
+      "case_digest": "4c3c5060627806d40b697367e889b9ff74d296db30d3e0959ca9baded2e63841",
+      "completed": true,
+      "expected_acceptance": true,
+      "position": 3,
+      "schedule": "clean"
+    },
+    {
+      "attempts": [
+        {
+          "artifact": "wrong-unit-price-bad9d5b4230b-15ce80b30eb3.json",
+          "artifact_sha256": "9b48a6dd3234b4a9584db268926e905e99bcb2222c2470e07421421d867e8c52",
+          "attempt": 1,
+          "exit_code": 0,
+          "matches_precommitment": true,
+          "retryable_pre_mutation_failure": false
+        }
+      ],
+      "case_digest": "bad9d5b4230b87313f154b4a944d6b5f5407efb1649dcf327b2261c14260392a",
+      "completed": true,
+      "expected_acceptance": false,
+      "position": 4,
+      "schedule": "wrong-unit-price"
+    },
+    {
+      "attempts": [
+        {
+          "artifact": "kill-after-receipt-0df6f5d4a2a8-c5ef769e8614.json",
+          "artifact_sha256": "3dc272d6ef51d51b7c8ad3bc842d179a0fe086d90a361d5e8e6318954751d87d",
+          "attempt": 1,
+          "exit_code": 1,
+          "matches_precommitment": false,
+          "retryable_pre_mutation_failure": true
+        },
+        {
+          "artifact": "kill-after-receipt-0df6f5d4a2a8-7ae048fb6117.json",
+          "artifact_sha256": "67bb4fdd7159b7f3b6257b4cbd167c2a83d9eb39be28d45d37af5d246f1af7b3",
+          "attempt": 2,
+          "exit_code": 0,
+          "matches_precommitment": true,
+          "retryable_pre_mutation_failure": false
+        }
+      ],
+      "case_digest": "0df6f5d4a2a884ea35bdffcd43565cd3ff34672ddd48689100d5c7f78c81f7bc",
+      "completed": true,
+      "expected_acceptance": false,
+      "position": 5,
+      "schedule": "kill-after-receipt"
+    },
+    {
+      "attempts": [
+        {
+          "artifact": "duplicate-payment-e4c0d77ce48a-88c654623226.json",
+          "artifact_sha256": "7f0a0b9b7a2d1312ce6cb484b6b4a5dcb322bfd96d68d8a67a2985b58a792f4d",
+          "attempt": 1,
+          "exit_code": 0,
+          "matches_precommitment": true,
+          "retryable_pre_mutation_failure": false
+        }
+      ],
+      "case_digest": "e4c0d77ce48a00ef6c6f9c7ebf1b7c6a98575e6150ff027230dd365209774134",
+      "completed": true,
+      "expected_acceptance": true,
+      "position": 6,
+      "schedule": "duplicate-payment"
+    }
+  ],
+  "seed_revealed": true
+}

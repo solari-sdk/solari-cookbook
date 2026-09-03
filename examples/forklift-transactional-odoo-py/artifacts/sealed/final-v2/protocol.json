@@ -1,0 +1,172 @@
+{
+  "canonical": {
+    "database_sha256": "3323327069e1c0a12532701e9a1c3f9636792af9ac35f0ce5e370d1cd193eed5",
+    "runtime_sha256": "f733fab562048e2d49af33c713648ffe73ef69d80d8b10956af659dc9be82902",
+    "snapshot_id": "snap_dl49cktgvkuw",
+    "template_id": "tpl_d40094f51ddd4a24"
+  },
+  "claim": "Across the six frozen final case/schedule positions, zero oracle-invalid candidate snapshots are selected; clean and explicitly idempotent positions meet their precommitted liveness outcomes.",
+  "code_hashes": {
+    "forklift/__init__.py": "a595ff1b57524f16a39e15145415357118715503745a33858b64cfd8fcc16fdc",
+    "forklift/case_generation.py": "5a862b8d96187d25cdda4f4616d0b796091ca1cf74123e688f68fa0d941b0c1e",
+    "forklift/domain.py": "1e88c45623dbdd7e7f4d0ae086d9e81197ac0b80791f403234f9e51f866eee76",
+    "forklift/faults.py": "03f3766e7e1bb569c0d80d3b370fab0589d90778edbf29293450fa9dd2cf8fe2",
+    "forklift/gui_worker.py": "60a3ff794472419d5bbadb8091ffc51390de4c389a6ad7d86174fa53b1cdedfe",
+    "forklift/odoo_sql.py": "0064cc6ad4d6d778e935c41bdc037cb67624037249cca458b2d7dc15a407a1b8",
+    "forklift/oracle.py": "b0fa72b650e8cee7f5beafd659b12521cd966eb9a14ddc072b615d6851184c1e",
+    "forklift/orchestrator.py": "a5ce9a23ffe44f44894b37922c3e5c42f7456d6eb1600b3230be5148a059c73b",
+    "forklift/promotion.py": "fdf94bebaa4edb303365cf5a0cc12e2a4ba06c5f20b13d4019493c6afcbea9e0",
+    "forklift/receipts.py": "90115a7a9dd207707276e10e3e8cf345cdde1577398b4dc0e46d064f540b0d5f",
+    "forklift/remote_oracle.py": "55b0feed2e6dea24d7cd61d3b3051060586793dc5056532eea8ed5c31b74dd5f",
+    "forklift/remote_runner.py": "ded173786314fe1221fe094c84c82857ccf6bd64c492c1b5ff166c139eeabd64",
+    "forklift/solari_adapter.py": "bafa6e39540994e32cc3711a300989734a1dd6b876cb18c2d744c08accd811e2",
+    "requirements.txt": "ff5c3ef55825b6aa2a42d0749b4202de811e9141d36a7a72780bd32638ef10fc",
+    "scripts/bootstrap_solari_canonical.py": "90c88d5175b50ad0264cef3783f19fd2d6ab7303df0d35d3879412a7690fcab2",
+    "scripts/check_solari_auth.py": "db5496813808f3e279b3f686c3c88501874c94a641ebcdceec7da4291c85df02",
+    "scripts/freeze_final_protocol.py": "f77b163a0646ebf1547acdd3156e5e8be9a822b7965f7143f7759551b5066ef0",
+    "scripts/materialize_held_out_cases.py": "4c921a62a5798df2b791c76e332dc26e0faf289939f2d36e8bfd751350b16fc2",
+    "scripts/run_final_campaign.py": "47d8b4b343b7499c564e5f084bdc9c534428dfdbb82ba2620491a4dba4fbbb15",
+    "scripts/run_solari_clean_gui_trial.py": "218ca5741b7f96da57d4cd8fd7a7b5e0f8b4437443bf60b1242aa94a16d498a4"
+  },
+  "evidence_boundary": {
+    "excluded": [
+      "external bank transfers",
+      "email delivery",
+      "third-party SaaS side effects",
+      "facts absent from oracle v1"
+    ],
+    "included": [
+      "Odoo/PostgreSQL root filesystem snapshot",
+      "visible browser worker and milestone log",
+      "case and fault digests",
+      "fresh restored read-only oracle verdict",
+      "snapshot lineage and receipt bindings"
+    ]
+  },
+  "hard_gates": {
+    "all_six_positions_complete": true,
+    "any_missing_oracle_is_failure": true,
+    "false_acceptances": 0,
+    "post_mutation_retry_allowed": false
+  },
+  "manifest_digest": "deb37a6f8fa8f76c0d24bb9a0b939f76e2cbc353321976e2c6f8d235caf0bea7",
+  "manifest_sha256": "44c40b5e8ebc7a3ffecc48b1286e767f224aeac14c28b2f0b322445da535d5a6",
+  "oracle_version": "forklift-oracle-v1",
+  "promotion_closure_sha256": "1ab5549d4e88a95b22e4c1496d12b0194bcdcfb853c4ff0b65b9efdcea0e9100",
+  "protocol_digest": "f77b1b4e101d24c720a26cdc9b9dbce877fb553747967b72c978cf5c7101531e",
+  "protocol_version": "forklift-sealed-final-v2",
+  "resource_cap": {
+    "additional_dollars": 0,
+    "max_attempts_per_position": 3,
+    "max_total_attempts": 18,
+    "no_plan_change_or_top_up": true,
+    "peak_desktops": 1,
+    "peak_sandboxes": 2,
+    "starter_subscription_only": true
+  },
+  "retry_policy": {
+    "fresh_canonical_branch": true,
+    "only_before_business_mutation": true,
+    "retain_every_attempt": true
+  },
+  "runtime": {
+    "distributions": {
+      "anyio": "4.13.0",
+      "certifi": "2025.6.15",
+      "h11": "0.16.0",
+      "httpcore": "1.0.9",
+      "httpx": "0.28.1",
+      "idna": "3.10",
+      "psycopg": "3.3.5",
+      "psycopg-binary": "3.3.5",
+      "sniffio": "1.3.1",
+      "solari-core": "0.2.0",
+      "solari-desktop": "0.2.0",
+      "solari-sandbox": "0.2.0",
+      "typing-extensions": "4.15.0",
+      "tzdata": "2025.2",
+      "websockets": "16.0"
+    },
+    "managed_boundary": "Solari's stock visible-desktop base image and control plane are provider-managed; the exact Chrome version is captured per attempt.",
+    "python_version": "3.11.4",
+    "remote_browser_distributions": {
+      "greenlet": "3.5.5",
+      "playwright": "1.62.0",
+      "pyee": "13.0.1",
+      "typing-extensions": "4.16.0"
+    }
+  },
+  "seed_sha256": "0570277009a174d410255ce7c1f3c02d87773cd5c7940a96c2b51f19734dd0c5",
+  "trials": [
+    {
+      "case_digest": "9a6d1f4d053c3979d09a36fb033539179872251d53cbdb20809b15d871501b00",
+      "case_file": "case-001-9a6d1f4d053c.json",
+      "case_file_sha256": "99e91b7e95327a219dfcee3c13c4908fad1db3da5beb7fc0df58f7dfec3a79f2",
+      "expected_acceptance": true,
+      "fault_schedule_digest": "cc28360cd512d5d66d6041f32935abbad363bfd8a12d0a31451828a1f88c9b9b",
+      "position": 1,
+      "receipt_mode": "zero",
+      "required_failed_codes": [],
+      "schedule": "clean"
+    },
+    {
+      "case_digest": "89a0bdd3eb03d8a5c10f08cfa0641ca27f11fbc67300bd32f8c560af99216664",
+      "case_file": "case-002-89a0bdd3eb03.json",
+      "case_file_sha256": "b92c3b5ac38170b97a663602f244acd885c876315cb6efbadea35ef929d65b45",
+      "expected_acceptance": true,
+      "fault_schedule_digest": "cc28360cd512d5d66d6041f32935abbad363bfd8a12d0a31451828a1f88c9b9b",
+      "position": 2,
+      "receipt_mode": "partial",
+      "required_failed_codes": [],
+      "schedule": "clean"
+    },
+    {
+      "case_digest": "4c3c5060627806d40b697367e889b9ff74d296db30d3e0959ca9baded2e63841",
+      "case_file": "case-003-4c3c50606278.json",
+      "case_file_sha256": "9157013627151a66242a2a34b755437c68f07fe32136d84c8ed655e88db9be5d",
+      "expected_acceptance": true,
+      "fault_schedule_digest": "cc28360cd512d5d66d6041f32935abbad363bfd8a12d0a31451828a1f88c9b9b",
+      "position": 3,
+      "receipt_mode": "full",
+      "required_failed_codes": [],
+      "schedule": "clean"
+    },
+    {
+      "case_digest": "bad9d5b4230b87313f154b4a944d6b5f5407efb1649dcf327b2261c14260392a",
+      "case_file": "case-004-bad9d5b4230b.json",
+      "case_file_sha256": "785f4ad9e7ad69a8287824afabbe97b39ffb57c69e131b4e392d3e03db920848",
+      "expected_acceptance": false,
+      "fault_schedule_digest": "1306a7a15c95e1fe96139d8cdecd30ee9f191ef1100132733e0bd461a4b667bd",
+      "position": 4,
+      "receipt_mode": "zero",
+      "required_failed_codes": [
+        "po-unit_price"
+      ],
+      "schedule": "wrong-unit-price"
+    },
+    {
+      "case_digest": "0df6f5d4a2a884ea35bdffcd43565cd3ff34672ddd48689100d5c7f78c81f7bc",
+      "case_file": "case-005-0df6f5d4a2a8.json",
+      "case_file_sha256": "6a596e0e9664d99eba94cd98639922ee08cf383381214c804006022175048f1f",
+      "expected_acceptance": false,
+      "fault_schedule_digest": "416e8138a88ee745b060c7d3fd62ffef7f90059dc98dde1391fa9ee7b3e5c8eb",
+      "position": 5,
+      "receipt_mode": "partial",
+      "required_failed_codes": [
+        "bill-count"
+      ],
+      "schedule": "kill-after-receipt"
+    },
+    {
+      "case_digest": "e4c0d77ce48a00ef6c6f9c7ebf1b7c6a98575e6150ff027230dd365209774134",
+      "case_file": "case-006-e4c0d77ce48a.json",
+      "case_file_sha256": "9d31f0dd80ab3c8ef3d994911ee07ab07875dc02ce27b09009922da61e5098e5",
+      "expected_acceptance": true,
+      "fault_schedule_digest": "cb44a8f93296a06ecdbf02f9414bbf9b4db53c3347226be50f1430c1ea5ce700",
+      "position": 6,
+      "receipt_mode": "full",
+      "required_failed_codes": [],
+      "schedule": "duplicate-payment"
+    }
+  ]
+}

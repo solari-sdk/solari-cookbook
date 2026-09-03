@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.env
+artifacts/development/
+artifacts/sealed/*
+!artifacts/sealed/final-v2/
+!artifacts/sealed/final-v2/**
+artifacts/sealed/final-v2/.custody/
+scripts/bootstrap_solari_browser_worker.py
+scripts/inspect_*.py
+scripts/measure_*.py
+scripts/probe_*.py

@@ -1,0 +1,25 @@
+{
+  "browser_runtime": {
+    "binary_version": "Google Chrome 150.0.7871.128",
+    "distributions": {
+      "greenlet": "3.5.5",
+      "playwright": "1.62.0",
+      "pyee": "13.0.1",
+      "typing-extensions": "4.16.0"
+    }
+  },
+  "business_mutation_observed": false,
+  "case_digest": "0df6f5d4a2a884ea35bdffcd43565cd3ff34672ddd48689100d5c7f78c81f7bc",
+  "diagnostic_tail": "GUI worker exited 1: FORKLIFT_EVENT={\"milestone\":\"before_login\",\"sequence\":0}\nTraceback (most recent call last):\n  File \"/tmp/forklift-gui-worker.py\", line 304, in <module>\n    raise SystemExit(main())\n  File \"/tmp/forklift-gui-worker.py\", line 299, in main\n    run(config)\n  File \"/tmp/forklift-gui-worker.py\", line 115, in run\n    page.locator(\".o_web_client\").wait_for(state=\"visible\", timeout=60_000)\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/sync_api/_generated.py\", line 20539, in wait_for\n    self._sync(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_locator.py\", line 748, in wait_for\n    await self._frame.wait_for_selector(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TargetClosedError: Locator.wait_for: Page crashed\nCall log:\n  - waiting for locator(\".o_web_client\") to be visible\n\n",
+  "error_code": null,
+  "error_type": "RuntimeError",
+  "fault_triggered": [],
+  "milestones": [
+    "before_login"
+  ],
+  "phase": "run-gui-worker",
+  "schedule": "kill-after-receipt",
+  "status_code": null,
+  "trial": "failed",
+  "trial_id": "c5ef769e8614"
+}

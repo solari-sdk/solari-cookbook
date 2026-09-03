@@ -1,0 +1,25 @@
+{
+  "browser_runtime": {
+    "binary_version": "Google Chrome 150.0.7871.128",
+    "distributions": {
+      "greenlet": "3.5.5",
+      "playwright": "1.62.0",
+      "pyee": "13.0.1",
+      "typing-extensions": "4.16.0"
+    }
+  },
+  "business_mutation_observed": false,
+  "case_digest": "9a6d1f4d053c3979d09a36fb033539179872251d53cbdb20809b15d871501b00",
+  "diagnostic_tail": "GUI worker exited 1: FORKLIFT_EVENT={\"milestone\":\"before_login\",\"sequence\":0}\n/usr/local/lib/python3.10/dist-packages/playwright/driver/package/lib/coreBundle.js:463\n    throw new Error(message || \"Assertion error\");\n          ^\n\nError: No session with given id\n    at assert (/usr/local/lib/python3.10/dist-packages/playwright/driver/package/lib/coreBundle.js:463:11)\n    at _CRSession._onMessage (/usr/local/lib/python3.10/dist-packages/playwright/driver/package/lib/coreBundle.js:34801:11)\n    at CRConnection._onMessage (/usr/local/lib/python3.10/dist-packages/playwright/driver/package/lib/coreBundle.js:34738:20)\n    at Immediate.<anonymous> (/usr/local/lib/python3.10/dist-packages/playwright/driver/package/lib/coreBundle.js:39185:28)\n    at process.processImmediate (node:internal/timers:504:21)\n\nNode.js v24.18.1\nTraceback (most recent call last):\n  File \"/tmp/forklift-gui-worker.py\", line 304, in <module>\n    raise SystemExit(main())\n  File \"/tmp/forklift-gui-worker.py\", line 299, in main\n    run(config)\n  File \"/tmp/forklift-gui-worker.py\", line 117, in run\n    page.goto(_url(str(config[\"preview_url\"]), \"/odoo/purchase\"), wait_until=\"domcontentloaded\", timeout=60_000)\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/sync_api/_generated.py\", line 9875, in goto\n    self._sync(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_page.py\", line 560, in goto\n    return await self._main_frame.goto(**locals_to_params(locals()))\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_frame.py\", line 156, in goto\n    await self._channel.send(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n  File \"/usr/local/lib/python3.10/dist-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.Error: Page.goto: net::ERR_ABORTED; maybe frame was detached?\nCall log:\n  - navigating to \"[REDACTED_URL]\", waiting until \"domcontentloaded\"\n\n",
+  "error_code": null,
+  "error_type": "RuntimeError",
+  "fault_triggered": [],
+  "milestones": [
+    "before_login"
+  ],
+  "phase": "run-gui-worker",
+  "schedule": "clean",
+  "status_code": null,
+  "trial": "failed",
+  "trial_id": "b93037208b73"
+}
