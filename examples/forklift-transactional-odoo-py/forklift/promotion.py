@@ -34,6 +34,9 @@ def select_for_promotion(
     *,
     expected_case_digest: str,
     canonical_snapshot_id: str,
+    expected_check_codes: tuple[str, ...],
+    expected_auditor_bundle_digest: str,
+    expected_auditor_runtime_digest: str,
     expected_oracle_version: str = ORACLE_VERSION,
 ) -> PromotionDecision:
     """Select at most one proven candidate; uncertainty always means no."""
@@ -67,8 +70,20 @@ def select_for_promotion(
             reasons.append("oracle-rejected")
         elif not verdict.checks or any(not check.passed for check in verdict.checks):
             reasons.append("invalid-verdict-proof")
+        elif tuple(check.code for check in verdict.checks) != expected_check_codes:
+            reasons.append("unexpected-check-schema")
         if verdict is not None and verdict.oracle_version != expected_oracle_version:
             reasons.append("unexpected-oracle-version")
+        if (
+            verdict is not None
+            and verdict.auditor_bundle_digest != expected_auditor_bundle_digest
+        ):
+            reasons.append("unexpected-auditor-bundle")
+        if (
+            verdict is not None
+            and verdict.auditor_runtime_digest != expected_auditor_runtime_digest
+        ):
+            reasons.append("unexpected-auditor-runtime")
 
         if receipt is None:
             reasons.append("missing-receipt")
@@ -89,6 +104,18 @@ def select_for_promotion(
                 reasons.append("verdict-binding")
             if verdict is not None and receipt.failed_checks != verdict.failed_codes:
                 reasons.append("failed-checks-binding")
+            if (
+                verdict is not None
+                and receipt.auditor_bundle_digest != verdict.auditor_bundle_digest
+            ):
+                reasons.append("auditor-bundle-binding")
+            if (
+                verdict is not None
+                and receipt.auditor_runtime_digest != verdict.auditor_runtime_digest
+            ):
+                reasons.append("auditor-runtime-binding")
+            if verdict is not None and receipt.verdict_digest != verdict.digest():
+                reasons.append("verdict-digest-binding")
             if receipt.failed_checks:
                 reasons.append("receipt-has-failures")
             if not receipt.accepted:
@@ -97,6 +124,9 @@ def select_for_promotion(
                 ("case-digest-format", receipt.case_digest),
                 ("fault-digest-format", receipt.fault_schedule_digest),
                 ("action-digest-format", receipt.action_log_digest),
+                ("auditor-bundle-digest-format", receipt.auditor_bundle_digest),
+                ("auditor-runtime-digest-format", receipt.auditor_runtime_digest),
+                ("verdict-digest-format", receipt.verdict_digest),
             ):
                 if SHA256_RE.fullmatch(digest) is None:
                     reasons.append(name)

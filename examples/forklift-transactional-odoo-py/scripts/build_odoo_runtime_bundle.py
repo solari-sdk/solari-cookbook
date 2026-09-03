@@ -4,11 +4,15 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 from pathlib import Path
+from urllib.parse import quote
 
 import psycopg
+
+from scripts.check_solari_auth import _load_local_env
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -30,9 +34,17 @@ def _run(args: list[str], *, capture: bool = False) -> subprocess.CompletedProce
 
 
 def _installed_modules() -> list[str]:
-    with psycopg.connect(
-        "postgresql://odoo:odoo@127.0.0.1:5433/forklift_clean"
-    ) as connection:
+    _load_local_env(PROJECT_ROOT / ".env")
+    password = os.environ.get("FORKLIFT_AUDITOR_DB_PASSWORD", "").strip()
+    if len(password) < 20:
+        raise RuntimeError(
+            "FORKLIFT_AUDITOR_DB_PASSWORD must contain at least 20 characters"
+        )
+    dsn = (
+        "postgresql://forklift_auditor:"
+        f"{quote(password, safe='')}@127.0.0.1:5433/forklift_clean"
+    )
+    with psycopg.connect(dsn) as connection:
         return [
             row[0]
             for row in connection.execute(

@@ -12,6 +12,19 @@ def digest(value: str) -> str:
     return hashlib.sha256(value.encode()).hexdigest()
 
 
+BUNDLE_DIGEST = digest("auditor-bundle")
+RUNTIME_DIGEST = digest("auditor-runtime")
+
+
+def valid_verdict() -> OracleVerdict:
+    return OracleVerdict(
+        True,
+        (Check("all", True, "ok"),),
+        auditor_bundle_digest=BUNDLE_DIGEST,
+        auditor_runtime_digest=RUNTIME_DIGEST,
+    )
+
+
 class FakeBranch:
     def __init__(self, branch_id: str, snapshot_id: str = "snap-candidate") -> None:
         self.id = branch_id
@@ -63,7 +76,7 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
         async def oracle(branch: FakeBranch) -> OracleVerdict:
             self.assertIs(branch, backend.auditor)
             self.assertTrue(branch.connected)
-            return OracleVerdict(True, (Check("all", True, "ok"),))
+            return valid_verdict()
 
         result = await audit_sealed_candidate(
             backend=backend,
@@ -104,7 +117,7 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
         backend = FakeBackend()
 
         async def oracle(_branch: FakeBranch) -> OracleVerdict:
-            return OracleVerdict(True, (Check("all", True, "ok"),))
+            return valid_verdict()
 
         candidate = await audit_sealed_candidate(
             backend=backend,
@@ -120,6 +133,9 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
             candidates=(candidate,),
             expected_case_digest=digest("case"),
             canonical_snapshot_id="snap-canonical",
+            expected_check_codes=("all",),
+            expected_auditor_bundle_digest=BUNDLE_DIGEST,
+            expected_auditor_runtime_digest=RUNTIME_DIGEST,
             template_name="forklift-approved",
         )
         self.assertEqual(outcome.template_id, "tpl-approved")
@@ -129,7 +145,7 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
         backend = FakeBackend(parent="snap-somewhere-else")
 
         async def oracle(_branch: FakeBranch) -> OracleVerdict:
-            return OracleVerdict(True, (Check("all", True, "ok"),))
+            return valid_verdict()
 
         candidate = await audit_sealed_candidate(
             backend=backend,
@@ -145,6 +161,9 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
             candidates=(candidate,),
             expected_case_digest=digest("case"),
             canonical_snapshot_id="snap-canonical",
+            expected_check_codes=("all",),
+            expected_auditor_bundle_digest=BUNDLE_DIGEST,
+            expected_auditor_runtime_digest=RUNTIME_DIGEST,
             template_name="forklift-approved",
         )
         self.assertIsNone(outcome.template_id)
@@ -154,7 +173,7 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
         backend = FakeBackend(snapshot_id="snap-other")
 
         async def oracle(_branch: FakeBranch) -> OracleVerdict:
-            return OracleVerdict(True, (Check("all", True, "ok"),))
+            return valid_verdict()
 
         result = await audit_sealed_candidate(
             backend=backend,
@@ -173,7 +192,7 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
         backend = FakeBackend(kind="sandbox")
 
         async def oracle(_branch: FakeBranch) -> OracleVerdict:
-            return OracleVerdict(True, (Check("all", True, "ok"),))
+            return valid_verdict()
 
         result = await audit_sealed_candidate(
             backend=backend,
@@ -192,7 +211,7 @@ class OrchestratorTests(unittest.IsolatedAsyncioTestCase):
         backend = FakeBackend(kind="sandbox")
 
         async def oracle(_branch: FakeBranch) -> OracleVerdict:
-            return OracleVerdict(True, (Check("all", True, "ok"),))
+            return valid_verdict()
 
         result = await audit_sealed_candidate(
             backend=backend,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from decimal import Decimal
 
 from .domain import (
@@ -15,6 +16,23 @@ from .domain import (
 )
 
 
+def _unexpected_census_ids(
+    censuses: dict[str, tuple[int, ...]],
+    loaded: dict[str, tuple[int, ...]],
+) -> tuple[str, ...]:
+    """Report every base object that did not produce exactly one evidence row."""
+
+    unexpected: list[str] = []
+    for kind, census_ids in censuses.items():
+        census = set(census_ids)
+        rows = Counter(loaded.get(kind, ()))
+        for object_id in sorted(census | set(rows)):
+            count = rows[object_id]
+            if object_id not in census or count != 1:
+                unexpected.append(f"{kind}:{object_id}:evidence-rows={count}")
+    return tuple(unexpected)
+
+
 def load_case_evidence(dsn: str, case: PurchaseCase) -> EvidenceBundle:
     """Load only case-scoped facts in a fail-closed read-only transaction."""
 
@@ -25,6 +43,22 @@ def load_case_evidence(dsn: str, case: PurchaseCase) -> EvidenceBundle:
         with psycopg.connect(dsn, row_factory=dict_row) as connection:
             with connection.cursor() as cursor:
                 cursor.execute("SET TRANSACTION READ ONLY")
+
+                cursor.execute("SHOW server_version")
+                server_version = str(cursor.fetchone()["server_version"])
+
+                censuses: dict[str, tuple[int, ...]] = {}
+                for kind, query in (
+                    ("purchase.order", "SELECT id FROM purchase_order ORDER BY id"),
+                    ("stock.picking", "SELECT id FROM stock_picking ORDER BY id"),
+                    (
+                        "account.move:in_invoice",
+                        "SELECT id FROM account_move WHERE move_type = 'in_invoice' ORDER BY id",
+                    ),
+                    ("account.payment", "SELECT id FROM account_payment ORDER BY id"),
+                ):
+                    cursor.execute(query)
+                    censuses[kind] = tuple(int(row["id"]) for row in cursor.fetchall())
 
                 cursor.execute(
                     """
@@ -209,13 +243,28 @@ def load_case_evidence(dsn: str, case: PurchaseCase) -> EvidenceBundle:
                 )
                 journal_entries = tuple(JournalEntryEvidence(**row) for row in cursor.fetchall())
 
+                unexpected_object_ids = _unexpected_census_ids(
+                    censuses,
+                    {
+                        "purchase.order": tuple(row.object_id for row in purchase_orders),
+                        "stock.picking": tuple(row.object_id for row in pickings),
+                        "account.move:in_invoice": tuple(row.object_id for row in bills),
+                        "account.payment": tuple(row.object_id for row in payments),
+                    },
+                )
+
                 return EvidenceBundle(
                     purchase_orders=purchase_orders,
                     pickings=pickings,
                     bills=bills,
                     journal_entries=journal_entries,
                     payments=payments,
-                    metadata={"schema": "odoo-19", "case_id": case.case_id},
+                    unexpected_object_ids=unexpected_object_ids,
+                    metadata={
+                        "schema": "odoo-19",
+                        "case_id": case.case_id,
+                        "postgres_server_version": server_version,
+                    },
                 )
     except Exception as exc:
         return EvidenceBundle(

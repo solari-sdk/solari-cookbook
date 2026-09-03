@@ -34,7 +34,7 @@ Prerequisites:
 From this directory, run:
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install --require-hashes -r requirements.txt
 python -m scripts.setup_local_lab
 ```
 
@@ -43,11 +43,13 @@ take several minutes. A successful run ends with one incomplete database
 rejected, one balanced database accepted, and `RESULT: PASS`.
 
 The setup is fail-closed: it reuses an already-correct lab, but refuses to
-overwrite an ambiguous or non-clean canonical database.
+overwrite an ambiguous or non-clean canonical database. It generates strong
+local Odoo, database-owner, and read-only-auditor passwords in the ignored
+`.env` file when they are absent. Both published container ports bind to
+`127.0.0.1` only.
 
 Open <http://localhost:8069> to inspect the local Odoo instance. The lab login
-is `admin` / `admin`; these synthetic credentials are intentionally non-secret
-and must not be reused outside this contained environment.
+is `admin` with the `FORKLIFT_ADMIN_PASSWORD` value from your local `.env`.
 
 To rerun only the interrupted-versus-valid comparison:
 
@@ -61,6 +63,12 @@ To stop the local services:
 docker compose down
 ```
 
+To remove the retained synthetic databases and generated Odoo data as well:
+
+```bash
+docker compose down -v
+```
+
 ## How acceptance works
 
 ```text
@@ -70,7 +78,7 @@ clean snapshot
 disposable Odoo branch <-- visible GUI worker
       |
       v
-immutable candidate snapshot --> fresh read-only auditor
+immutable candidate snapshot --> separate read-only auditor process
       |
       +-- all invariants + lineage + receipt pass --> durable template
       |
@@ -78,11 +86,23 @@ immutable candidate snapshot --> fresh read-only auditor
 ```
 
 The auditor never inspects the worker's still-changing VM. It starts from the
-candidate snapshot and queries PostgreSQL read-only. The selector requires the
-expected case digest, fault-schedule digest, action-log digest, oracle version,
-canonical lineage, and a receipt bound to the candidate snapshot. This ordering
-prevents a check-then-change race: the snapshot inspected is the snapshot
-eligible for promotion.
+candidate snapshot, receives a host-supplied oracle bundle after sealing, and
+queries PostgreSQL through a SELECT-only role. The selector requires the exact
+check-code schema, the canonical auditor runtime fingerprint, the host bundle
+fingerprint, input and action digests, canonical lineage, and a receipt bound to
+the full verdict and candidate snapshot. This ordering prevents a
+check-then-change race: the snapshot inspected is the snapshot eligible for
+promotion.
+
+> [!CAUTION]
+> A Solari snapshot contains both the database and its execution substrate. A
+> separate process forked from that snapshot therefore inherits its Python,
+> PostgreSQL, libraries, and operating system. The current mechanism protects
+> against fallible GUI behavior that cannot alter that substrate; it is not a
+> proof against a deliberately compromised candidate runtime. That stronger
+> claim requires a pristine auditor image with point-in-time candidate data
+> mounted read-only, or equivalent provider-backed attestation. See
+> [Architecture](docs/architecture.md#hostile-runtime-boundary).
 
 The current oracle requires, as applicable:
 
@@ -95,8 +115,10 @@ The current oracle requires, as applicable:
 6. a complete execution receipt with exact input, fault, lineage, and snapshot
    bindings.
 
-Any missing relation, duplicate object, wrong value, oracle error, or incomplete
-receipt is a rejection.
+The current version also censuses the base purchase-order, picking, vendor-bill,
+and payment tables before joining details, so empty or malformed objects cannot
+disappear through an inner join. Any missing relation, duplicate object, wrong
+value, oracle error, schema mismatch, or incomplete receipt is a rejection.
 
 ## Verify the published evidence
 
@@ -118,8 +140,11 @@ Run the unit test suite with:
 python -m unittest discover -v
 ```
 
-It recomputes the case generation, protocol and report digests, frozen source
-and dependency hashes, attempt hashes, retry rules, and acceptance outcomes.
+It recomputes the case generation, protocol and report digests, archived frozen
+source and dependency hashes, attempt hashes, retry rules, and acceptance
+outcomes. Add `--require-frozen-runtime` to also require the historical package
+environment; the default verifier intentionally permits the current patched
+environment while still hashing the exact source bytes used by the campaign.
 The published result is adversarial verification from the original
 implementation environment, not an independent replication.
 
@@ -133,6 +158,8 @@ The repository includes the orchestration, adapter, remote worker, audit, and
 evidence-generation code used for the live campaign. To run new Solari trials,
 copy `.env.example` to `.env`, supply your own `SOLARI_API_KEY`, and rebuild the
 canonical Odoo runtime and database artifacts with the scripts in `scripts/`.
+Run `python -m scripts.setup_local_lab` first to generate the required local
+credentials.
 
 > [!WARNING]
 > Live campaign scripts create Solari sandboxes, desktops, snapshots, and
@@ -148,6 +175,13 @@ canonical Odoo runtime and database artifacts with the scripts in `scripts/`.
 > live path as a version-pinned reference implementation and review
 > `forklift/solari_adapter.py` when upgrading the SDK. The local lab and offline
 > evidence verifier do not use these private paths.
+
+`requirements.in` records the constrained inputs. `requirements.txt` is a
+universal, hash-locked resolution generated with `uv pip compile`; install it
+with `--require-hashes`. The Compose file pins the PostgreSQL and Odoo manifest
+digests rather than mutable tags. The disposable browser worker likewise
+installs only wheels allowed by `remote-browser-requirements.txt` and verifies
+every package hash.
 
 The committed evidence intentionally excludes temporary signed URLs, local
 credentials, and bulky development artifacts. Raw receipts retain Solari

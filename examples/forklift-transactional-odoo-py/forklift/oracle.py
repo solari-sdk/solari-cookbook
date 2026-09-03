@@ -7,6 +7,8 @@ invariant, but any exception is converted into a rejection rather than an
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
 from decimal import Decimal
 from typing import Callable
@@ -14,7 +16,7 @@ from typing import Callable
 from .domain import EvidenceBundle, PurchaseCase
 
 
-ORACLE_VERSION = "forklift-oracle-v1"
+ORACLE_VERSION = "forklift-oracle-v2"
 
 
 @dataclass(frozen=True)
@@ -29,10 +31,87 @@ class OracleVerdict:
     accepted: bool
     checks: tuple[Check, ...]
     oracle_version: str = ORACLE_VERSION
+    auditor_bundle_digest: str = ""
+    auditor_runtime_digest: str = ""
 
     @property
     def failed_codes(self) -> tuple[str, ...]:
         return tuple(check.code for check in self.checks if not check.passed)
+
+    def digest(self) -> str:
+        payload = {
+            "accepted": self.accepted,
+            "auditor_bundle_digest": self.auditor_bundle_digest,
+            "auditor_runtime_digest": self.auditor_runtime_digest,
+            "checks": [
+                {"code": check.code, "detail": check.detail, "passed": check.passed}
+                for check in self.checks
+            ],
+            "oracle_version": self.oracle_version,
+        }
+        encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
+        return hashlib.sha256(encoded).hexdigest()
+
+
+def expected_check_codes(case: PurchaseCase) -> tuple[str, ...]:
+    codes = [
+        "query-clean",
+        "no-unexpected-objects",
+        "one-purchase-order",
+        "po-case_id",
+        "po-state",
+        "po-supplier_ref",
+        "po-currency",
+        "po-sku",
+        "po-ordered_qty",
+        "po-unit_price",
+        "po-tax_rate",
+        "all-pickings-linked",
+        "pickings-exist",
+        "one-completed-receipt",
+        "received-quantity",
+        "incoming-correct-sku-only",
+        "open-backorders-unmoved",
+        "bill-count",
+    ]
+    if not case.billable:
+        return tuple(codes + ["no-zero-receipt-journal", "no-zero-receipt-payment"])
+    codes.extend(
+        [
+            "bill-purchase_order_id",
+            "bill-state",
+            "bill-supplier_ref",
+            "bill-currency",
+            "bill-reference",
+            "bill-sku",
+            "bill-billed_qty",
+            "bill-untaxed",
+            "bill-tax",
+            "bill-total",
+            "bill-payment_state",
+            "bill-residual",
+            "journal-entry-present",
+            "journal-entries-posted",
+            "journal-entries-balanced",
+            "one-bill-journal-entry",
+            "journal-payable",
+            "journal-tax",
+            "payment-count",
+        ]
+    )
+    if case.payment_expected:
+        codes.extend(
+            [
+                "payment-bill_id",
+                "payment-state",
+                "payment-supplier_ref",
+                "payment-currency",
+                "payment-journal",
+                "payment-amount",
+                "payment-reconciled",
+            ]
+        )
+    return tuple(codes)
 
 
 def evaluate(case: PurchaseCase, evidence: EvidenceBundle) -> OracleVerdict:

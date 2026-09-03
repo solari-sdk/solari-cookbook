@@ -14,7 +14,7 @@ from forklift.domain import (
     PurchaseCase,
     PurchaseOrderEvidence,
 )
-from forklift.oracle import evaluate, safely_evaluate
+from forklift.oracle import evaluate, expected_check_codes, safely_evaluate
 
 
 def D(value: str) -> Decimal:
@@ -114,6 +114,10 @@ class OracleTests(unittest.TestCase):
     def test_accepts_only_complete_valid_state(self) -> None:
         verdict = evaluate(CASE, valid_evidence())
         self.assertTrue(verdict.accepted, verdict.failed_codes)
+        self.assertEqual(
+            tuple(check.code for check in verdict.checks),
+            expected_check_codes(CASE),
+        )
 
     def test_accepts_bill_and_payment_ids_from_independent_colliding_sequences(self) -> None:
         evidence = valid_evidence()
@@ -208,7 +212,12 @@ class OracleTests(unittest.TestCase):
         po = replace(valid_evidence().purchase_orders[0], ordered_qty=zero.ordered_qty)
         waiting = PickingEvidence(201, po.object_id, "assigned", zero.sku, D("0"))
         evidence = EvidenceBundle(purchase_orders=(po,), pickings=(waiting,))
-        self.assertTrue(evaluate(zero, evidence).accepted)
+        accepted = evaluate(zero, evidence)
+        self.assertTrue(accepted.accepted)
+        self.assertEqual(
+            tuple(check.code for check in accepted.checks),
+            expected_check_codes(zero),
+        )
         contaminated = replace(evidence, payments=valid_evidence().payments)
         verdict = evaluate(zero, contaminated)
         self.assertFalse(verdict.accepted)

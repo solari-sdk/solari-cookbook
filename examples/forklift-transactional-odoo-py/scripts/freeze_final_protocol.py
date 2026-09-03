@@ -10,6 +10,7 @@ import sys
 from pathlib import Path
 
 from forklift.faults import DEVELOPMENT_SCHEDULES
+from forklift.oracle import ORACLE_VERSION
 from scripts.materialize_held_out_cases import materialize
 from scripts.run_solari_clean_gui_trial import REMOTE_BROWSER_DISTRIBUTIONS
 
@@ -32,8 +33,13 @@ SCHEDULES = (
 )
 
 FROZEN_CODE_FILES = (
+    "compose.yaml",
+    "remote-browser-requirements.in",
+    "remote-browser-requirements.txt",
+    "requirements.in",
     "requirements.txt",
     "forklift/__init__.py",
+    "forklift/auditor_manifest.py",
     "forklift/case_generation.py",
     "forklift/domain.py",
     "forklift/faults.py",
@@ -141,7 +147,7 @@ def main() -> int:
                 "external bank transfers",
                 "email delivery",
                 "third-party SaaS side effects",
-                "facts absent from oracle v1",
+                "facts absent from the selected oracle version",
             ],
             "included": [
                 "Odoo/PostgreSQL root filesystem snapshot",
@@ -159,7 +165,7 @@ def main() -> int:
         },
         "manifest_digest": manifest["manifest_digest"],
         "manifest_sha256": sha256(CASE_DIR / "manifest.json"),
-        "oracle_version": "forklift-oracle-v1",
+        "oracle_version": ORACLE_VERSION,
         "promotion_closure_sha256": sha256(PROMOTION_CLOSURE),
         "protocol_version": "forklift-sealed-final-v2",
         "resource_cap": {

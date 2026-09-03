@@ -3,23 +3,19 @@
 from __future__ import annotations
 
 import json
+import re
 import uuid
 from pathlib import Path
 from typing import Protocol
 
+from .auditor_manifest import AUDITOR_FILES, auditor_bundle_digest
 from .case_generation import case_digest, case_payload
 from .domain import PurchaseCase
 from .oracle import Check, OracleVerdict
 
 
 VERDICT_PREFIX = "FORKLIFT_VERDICT="
-AUDITOR_FILES = (
-    "__init__.py",
-    "domain.py",
-    "oracle.py",
-    "odoo_sql.py",
-    "remote_runner.py",
-)
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 class RemoteFiles(Protocol):
@@ -65,10 +61,18 @@ def parse_remote_verdict(stdout: str) -> OracleVerdict:
             Check(code=code, passed=item.get("passed") is True, detail=detail)
         )
     checks = tuple(checks_list)
+    bundle_digest = raw.get("auditor_bundle_digest")
+    runtime_digest = raw.get("auditor_runtime_digest")
+    if not isinstance(bundle_digest, str) or SHA256_RE.fullmatch(bundle_digest) is None:
+        raise ValueError("malformed auditor bundle digest")
+    if not isinstance(runtime_digest, str) or SHA256_RE.fullmatch(runtime_digest) is None:
+        raise ValueError("malformed auditor runtime digest")
     return OracleVerdict(
         accepted=raw.get("accepted") is True,
         checks=checks,
         oracle_version=str(raw.get("oracle_version", "")),
+        auditor_bundle_digest=bundle_digest,
+        auditor_runtime_digest=runtime_digest,
     )
 
 
@@ -76,7 +80,7 @@ async def evaluate_in_auditor(
     branch: AuditorBranch,
     case: PurchaseCase,
     *,
-    database_url: str = "postgresql://odoo:odoo@127.0.0.1:5433/forklift_clean",
+    database_url: str,
     timeout_ms: int = 120_000,
 ) -> OracleVerdict:
     """Run host-supplied code after sealing so the worker cannot edit it first."""
@@ -85,6 +89,7 @@ async def evaluate_in_auditor(
     root = f"/tmp/forklift-auditor-{case_digest(case)[:12]}-{token}"
     package_dir = f"{root}/forklift"
     source_dir = Path(__file__).resolve().parent
+    expected_bundle_digest = auditor_bundle_digest(source_dir)
 
     try:
         await branch.files.mkdir(root)
@@ -121,7 +126,10 @@ async def evaluate_in_auditor(
             raise RuntimeError(
                 f"remote oracle exited {result.exitCode}: {result.stderr[-500:]}"
             )
-        return parse_remote_verdict(result.stdout)
+        verdict = parse_remote_verdict(result.stdout)
+        if verdict.auditor_bundle_digest != expected_bundle_digest:
+            raise ValueError("remote auditor bundle digest mismatch")
+        return verdict
     finally:
         try:
             await branch.files.remove(root, recursive=True)

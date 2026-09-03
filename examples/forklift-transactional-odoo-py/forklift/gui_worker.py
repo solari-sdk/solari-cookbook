@@ -24,8 +24,51 @@ COMPLETE_MARKER = "FORKLIFT_WORKER_COMPLETE=1"
 
 def _url(base_url: str, path: str) -> str:
     parts = urlsplit(base_url)
+    if parts.scheme.lower() != "https" or not parts.hostname:
+        raise ValueError("preview URL must use HTTPS and include a host")
+    if parts.username is not None or parts.password is not None:
+        raise ValueError("preview URL must not contain user-info credentials")
     joined = parts.path.rstrip("/") + path
-    return urlunsplit((parts.scheme, parts.netloc, joined, parts.query, parts.fragment))
+    return urlunsplit((parts.scheme, parts.netloc, joined, parts.query, ""))
+
+
+def _origin(url: str) -> str:
+    parts = urlsplit(url)
+    if parts.scheme.lower() != "https" or not parts.hostname:
+        raise ValueError("preview requests must use HTTPS")
+    if parts.username is not None or parts.password is not None:
+        raise ValueError("preview requests must not contain user-info credentials")
+    return f"https://{parts.netloc.lower()}"
+
+
+def _route_preview_only(context, preview_url: str, token: str) -> str:
+    """Attach preview auth only to one TLS-verified origin and block all others."""
+
+    trusted_origin = _origin(preview_url)
+
+    def handle(route) -> None:
+        try:
+            request_origin = _origin(route.request.url)
+        except ValueError:
+            route.abort("blockedbyclient")
+            return
+        if request_origin != trusted_origin:
+            route.abort("blockedbyclient")
+            return
+        headers = dict(route.request.headers)
+        if token:
+            headers["authorization"] = "Bearer " + token
+        route.continue_(headers=headers)
+
+    context.route("**/*", handle)
+    return trusted_origin
+
+
+def _goto_preview(page, url: str, trusted_origin: str, **kwargs):
+    response = page.goto(url, **kwargs)
+    if _origin(page.url) != trusted_origin:
+        raise RuntimeError("preview navigation escaped the trusted origin")
+    return response
 
 
 def _tax_label(rate: str) -> str:
@@ -82,10 +125,12 @@ def run(config: dict[str, object]) -> None:
     field_overrides = config.get("field_overrides") or {}
     duplicate_actions = set(config.get("duplicate_actions") or [])
     assert isinstance(field_overrides, dict)
-    headers: dict[str, str] = {}
-    token = config.get("preview_token")
-    if token:
-        headers["Authorization"] = "Bearer " + str(token)
+    preview_url = str(config["preview_url"])
+    token = str(config.get("preview_token") or "")
+    odoo_login = str(config.get("odoo_login") or "")
+    odoo_password = str(config.get("odoo_password") or "")
+    if not odoo_login or len(odoo_password) < 20:
+        raise ValueError("strong Odoo credentials are required")
 
     sequence = 0
     _emit(sequence, "before_login", gate_prefix)
@@ -103,18 +148,29 @@ def run(config: dict[str, object]) -> None:
         )
         context = browser.new_context(
             viewport={"width": 1280, "height": 800},
-            ignore_https_errors=True,
-            extra_http_headers=headers,
         )
+        trusted_origin = _route_preview_only(context, preview_url, token)
         page = context.new_page()
 
-        page.goto(_url(str(config["preview_url"]), "/web/login"), wait_until="domcontentloaded", timeout=60_000)
-        page.locator('input[name="login"]').fill("admin")
-        page.locator('input[name="password"]').fill("admin")
+        _goto_preview(
+            page,
+            _url(preview_url, "/web/login"),
+            trusted_origin,
+            wait_until="domcontentloaded",
+            timeout=60_000,
+        )
+        page.locator('input[name="login"]').fill(odoo_login)
+        page.locator('input[name="password"]').fill(odoo_password)
         page.locator('button[type="submit"]').click()
         page.locator(".o_web_client").wait_for(state="visible", timeout=60_000)
 
-        page.goto(_url(str(config["preview_url"]), "/odoo/purchase"), wait_until="domcontentloaded", timeout=60_000)
+        _goto_preview(
+            page,
+            _url(preview_url, "/odoo/purchase"),
+            trusted_origin,
+            wait_until="domcontentloaded",
+            timeout=60_000,
+        )
         page.locator(".o_control_panel").wait_for(state="visible", timeout=60_000)
         page.get_by_role("button", name="New", exact=True).click()
         page.locator(".o_form_view").wait_for(state="visible", timeout=60_000)
@@ -295,7 +351,9 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("config")
     args = parser.parse_args()
-    config = json.loads(Path(args.config).read_text(encoding="utf-8"))
+    config_path = Path(args.config)
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config_path.unlink()
     run(config)
     return 0
 

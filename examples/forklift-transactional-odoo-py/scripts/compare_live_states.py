@@ -2,11 +2,22 @@
 
 from __future__ import annotations
 
+import os
 from decimal import Decimal
+from pathlib import Path
+from urllib.parse import quote
 
 from forklift.domain import PurchaseCase
 from forklift.odoo_sql import load_case_evidence
 from forklift.oracle import evaluate
+from scripts.check_solari_auth import _load_local_env
+
+
+ROOT = Path(__file__).resolve().parents[1]
+_load_local_env(ROOT / ".env")
+AUDITOR_PASSWORD = os.environ.get("FORKLIFT_AUDITOR_DB_PASSWORD", "").strip()
+if len(AUDITOR_PASSWORD) < 20:
+    raise RuntimeError("FORKLIFT_AUDITOR_DB_PASSWORD must contain at least 20 characters")
 
 
 interrupted = PurchaseCase(
@@ -38,7 +49,8 @@ valid = PurchaseCase(
 
 
 def verdict(case: PurchaseCase, database: str):
-    dsn = f"postgresql://odoo:odoo@127.0.0.1:5433/{database}"
+    password = quote(AUDITOR_PASSWORD, safe="")
+    dsn = f"postgresql://forklift_auditor:{password}@127.0.0.1:5433/{database}"
     return evaluate(case, load_case_evidence(dsn, case))
 
 

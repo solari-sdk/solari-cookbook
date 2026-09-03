@@ -18,6 +18,9 @@ class ExecutionReceipt:
     fault_schedule_digest: str
     action_log_digest: str
     oracle_version: str
+    auditor_bundle_digest: str
+    auditor_runtime_digest: str
+    verdict_digest: str
     accepted: bool
     failed_checks: tuple[str, ...]
 
@@ -46,6 +49,9 @@ def receipt_from_verdict(
         fault_schedule_digest=fault_schedule_digest,
         action_log_digest=action_log_digest,
         oracle_version=verdict.oracle_version,
+        auditor_bundle_digest=verdict.auditor_bundle_digest,
+        auditor_runtime_digest=verdict.auditor_runtime_digest,
+        verdict_digest=verdict.digest(),
         accepted=verdict.accepted,
         failed_checks=verdict.failed_codes,
     )

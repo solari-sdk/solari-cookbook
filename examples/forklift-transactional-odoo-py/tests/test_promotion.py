@@ -6,7 +6,7 @@ from dataclasses import replace
 
 from forklift.oracle import Check, OracleVerdict
 from forklift.promotion import CandidateResult, select_for_promotion
-from forklift.receipts import ExecutionReceipt
+from forklift.receipts import receipt_from_verdict
 
 
 def digest(value: str) -> str:
@@ -16,20 +16,26 @@ def digest(value: str) -> str:
 CASE_DIGEST = digest("hidden-case")
 SNAPSHOT = "snapshot-canonical-01"
 CHILD_SNAPSHOT = "snapshot-candidate-01"
+CHECK_CODES = ("all",)
+BUNDLE_DIGEST = digest("auditor-bundle")
+RUNTIME_DIGEST = digest("auditor-runtime")
 
 
 def accepted_candidate(candidate_id: str = "candidate-b") -> CandidateResult:
-    verdict = OracleVerdict(accepted=True, checks=(Check("all", True, "ok"),))
-    receipt = ExecutionReceipt(
+    verdict = OracleVerdict(
+        accepted=True,
+        checks=(Check("all", True, "ok"),),
+        auditor_bundle_digest=BUNDLE_DIGEST,
+        auditor_runtime_digest=RUNTIME_DIGEST,
+    )
+    receipt = receipt_from_verdict(
         case_digest=CASE_DIGEST,
         canonical_snapshot_id=SNAPSHOT,
         candidate_snapshot_id=CHILD_SNAPSHOT,
         candidate_id=candidate_id,
         fault_schedule_digest=digest("faults"),
         action_log_digest=digest("actions"),
-        oracle_version=verdict.oracle_version,
-        accepted=True,
-        failed_checks=(),
+        verdict=verdict,
     )
     return CandidateResult(candidate_id, CHILD_SNAPSHOT, SNAPSHOT, verdict, receipt)
 
@@ -40,6 +46,9 @@ class PromotionTests(unittest.TestCase):
             tuple(candidates),
             expected_case_digest=CASE_DIGEST,
             canonical_snapshot_id=SNAPSHOT,
+            expected_check_codes=CHECK_CODES,
+            expected_auditor_bundle_digest=BUNDLE_DIGEST,
+            expected_auditor_runtime_digest=RUNTIME_DIGEST,
         )
 
     def test_promotes_a_fully_bound_valid_candidate(self) -> None:
@@ -62,7 +71,12 @@ class PromotionTests(unittest.TestCase):
 
     def test_never_promotes_oracle_rejection_even_with_accept_receipt(self) -> None:
         candidate = accepted_candidate()
-        rejected = OracleVerdict(False, (Check("payment-count", False, "2"),))
+        rejected = OracleVerdict(
+            False,
+            (Check("payment-count", False, "2"),),
+            auditor_bundle_digest=BUNDLE_DIGEST,
+            auditor_runtime_digest=RUNTIME_DIGEST,
+        )
         decision = self.decide(replace(candidate, verdict=rejected))
         self.assertIsNone(decision.promoted_candidate_id)
         self.assertIn("oracle-rejected", decision.rejection_reasons[candidate.candidate_id])
@@ -144,7 +158,7 @@ class PromotionTests(unittest.TestCase):
 
     def test_empty_accepted_verdict_is_not_proof(self) -> None:
         candidate = accepted_candidate()
-        empty = OracleVerdict(accepted=True, checks=())
+        empty = replace(candidate.verdict, checks=())
         receipt = replace(candidate.receipt, oracle_version=empty.oracle_version)
         decision = self.decide(replace(candidate, verdict=empty, receipt=receipt))
         self.assertIsNone(decision.promoted_candidate_id)
@@ -159,16 +173,42 @@ class PromotionTests(unittest.TestCase):
 
     def test_unexpected_oracle_version_fails_closed(self) -> None:
         candidate = accepted_candidate()
-        future = OracleVerdict(
-            accepted=True,
-            checks=candidate.verdict.checks,
-            oracle_version="unknown-oracle-v99",
-        )
+        future = replace(candidate.verdict, oracle_version="unknown-oracle-v99")
         receipt = replace(candidate.receipt, oracle_version=future.oracle_version)
         decision = self.decide(replace(candidate, verdict=future, receipt=receipt))
         self.assertIsNone(decision.promoted_candidate_id)
         self.assertIn(
             "unexpected-oracle-version",
+            decision.rejection_reasons[candidate.candidate_id],
+        )
+
+    def test_exact_check_schema_is_required(self) -> None:
+        candidate = accepted_candidate()
+        forged = replace(
+            candidate.verdict,
+            checks=(Check("all", True, "ok"), Check("invented", True, "ok")),
+        )
+        receipt = receipt_from_verdict(
+            case_digest=CASE_DIGEST,
+            canonical_snapshot_id=SNAPSHOT,
+            candidate_snapshot_id=CHILD_SNAPSHOT,
+            candidate_id=candidate.candidate_id,
+            fault_schedule_digest=digest("faults"),
+            action_log_digest=digest("actions"),
+            verdict=forged,
+        )
+        decision = self.decide(replace(candidate, verdict=forged, receipt=receipt))
+        self.assertIn(
+            "unexpected-check-schema",
+            decision.rejection_reasons[candidate.candidate_id],
+        )
+
+    def test_auditor_runtime_must_match_canonical_baseline(self) -> None:
+        candidate = accepted_candidate()
+        forged = replace(candidate.verdict, auditor_runtime_digest=digest("other"))
+        decision = self.decide(replace(candidate, verdict=forged))
+        self.assertIn(
+            "unexpected-auditor-runtime",
             decision.rejection_reasons[candidate.candidate_id],
         )
 

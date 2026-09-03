@@ -129,6 +129,9 @@ async def promote_eligible_snapshot(
     candidates: tuple[CandidateResult, ...],
     expected_case_digest: str,
     canonical_snapshot_id: str,
+    expected_check_codes: tuple[str, ...],
+    expected_auditor_bundle_digest: str,
+    expected_auditor_runtime_digest: str,
     template_name: str,
 ) -> DurablePromotion:
     """Make the selected immutable snapshot durable, or report no promotion."""
@@ -137,6 +140,9 @@ async def promote_eligible_snapshot(
         candidates,
         expected_case_digest=expected_case_digest,
         canonical_snapshot_id=canonical_snapshot_id,
+        expected_check_codes=expected_check_codes,
+        expected_auditor_bundle_digest=expected_auditor_bundle_digest,
+        expected_auditor_runtime_digest=expected_auditor_runtime_digest,
     )
     if decision.promoted_snapshot_id is None:
         return DurablePromotion(decision=decision, template_id=None)

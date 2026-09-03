@@ -10,9 +10,11 @@ import re
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
+from urllib.parse import quote
 
 import httpx
 
+from forklift.auditor_manifest import auditor_bundle_digest
 from forklift.domain import PurchaseCase
 from forklift.remote_oracle import evaluate_in_auditor
 from forklift.solari_adapter import SolariSandboxBranches
@@ -142,7 +144,24 @@ def _safe_diagnostic(exc: Exception) -> str:
     detail = str(exc)
     detail = re.sub(r"https?://[^\s'\"]+", "[REDACTED_URL]", detail)
     detail = re.sub(
-        r"(?i)\b(token|api[_-]?key|authorization|secret)\s*[:=]\s*[^\s&'\"]+",
+        r"(?i)\bauthorization\s*:\s*bearer\s+[^\s,'\"]+",
+        "Authorization: Bearer [REDACTED]",
+        detail,
+    )
+    detail = re.sub(
+        r"(?i)\bbearer\s+[^\s,'\"]+",
+        "Bearer [REDACTED]",
+        detail,
+    )
+    detail = re.sub(
+        r"\bslr_(?:live|test)_[A-Za-z0-9_-]+",
+        "slr_[REDACTED]",
+        detail,
+        flags=re.IGNORECASE,
+    )
+    detail = re.sub(
+        r"(?i)\b(token|api[_-]?key|authorization|secret|pass(?:word|wd)?)"
+        r"\s*[:=]\s*[^\s&,'\"]+",
         r"\1=[REDACTED]",
         detail,
     )
@@ -280,8 +299,10 @@ def _load_case(path: Path) -> PurchaseCase:
 async def _bootstrap() -> int:
     _load_local_env(PROJECT_ROOT / ".env")
     api_key = os.environ.get("SOLARI_API_KEY", "").strip()
-    if not api_key:
-        print(json.dumps({"canonical": "not_built", "reason": "missing_key"}))
+    admin_password = os.environ.get("FORKLIFT_ADMIN_PASSWORD", "").strip()
+    auditor_password = os.environ.get("FORKLIFT_AUDITOR_DB_PASSWORD", "").strip()
+    if not api_key or len(admin_password) < 20 or len(auditor_password) < 20:
+        print(json.dumps({"canonical": "not_built", "reason": "missing_secret"}))
         return 2
     required_artifacts = (
         RUNTIME_ARCHIVE,
@@ -294,6 +315,7 @@ async def _bootstrap() -> int:
         return 2
 
     manifest = json.loads(RUNTIME_MANIFEST.read_text(encoding="utf-8"))
+    host_auditor_bundle_digest = auditor_bundle_digest(PROJECT_ROOT / "forklift")
     runtime_digest = _sha256(RUNTIME_ARCHIVE)
     if runtime_digest != manifest.get("sha256"):
         print(json.dumps({"canonical": "not_built", "reason": "runtime_digest_mismatch"}))
@@ -324,6 +346,9 @@ async def _bootstrap() -> int:
                 record.kind == "sandbox"
                 and saved.get("runtime_sha256") == runtime_digest
                 and saved.get("database_sha256") == database_digest
+                and saved.get("smoke_auditor_bundle_digest")
+                == host_auditor_bundle_digest
+                and bool(saved.get("smoke_auditor_runtime_digest"))
             )
             print(
                 json.dumps(
@@ -543,6 +568,54 @@ async def _bootstrap() -> int:
             )
             await _must(builder, "rm", ["-f", "/tmp/forklift_clean.dump"], timeout_ms=60_000)
 
+            phase = "create-read-only-auditor-role"
+            await _must(
+                builder,
+                "runuser",
+                [
+                    "-u",
+                    "postgres",
+                    "--",
+                    "psql",
+                    "-v",
+                    "ON_ERROR_STOP=1",
+                    "-v",
+                    f"auditor_password={auditor_password}",
+                    "-c",
+                    (
+                        "SELECT format(CASE WHEN EXISTS (SELECT 1 FROM pg_roles "
+                        "WHERE rolname='forklift_auditor') THEN 'ALTER ROLE "
+                        "forklift_auditor WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE "
+                        "NOREPLICATION PASSWORD %L' ELSE 'CREATE ROLE forklift_auditor "
+                        "LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD %L' "
+                        "END, :'auditor_password') \\gexec"
+                    ),
+                ],
+                timeout_ms=60_000,
+            )
+            await _must(
+                builder,
+                "runuser",
+                [
+                    "-u",
+                    "postgres",
+                    "--",
+                    "psql",
+                    "-v",
+                    "ON_ERROR_STOP=1",
+                    "-d",
+                    "forklift_clean",
+                    "-c",
+                    (
+                        "ALTER ROLE forklift_auditor SET default_transaction_read_only=on; "
+                        "GRANT CONNECT ON DATABASE forklift_clean TO forklift_auditor; "
+                        "GRANT USAGE ON SCHEMA public TO forklift_auditor; "
+                        "GRANT SELECT ON ALL TABLES IN SCHEMA public TO forklift_auditor;"
+                    ),
+                ],
+                timeout_ms=60_000,
+            )
+
             phase = "start-odoo"
             await _start_and_wait_for_odoo(builder)
 
@@ -612,7 +685,11 @@ async def _bootstrap() -> int:
             verdict = await evaluate_in_auditor(
                 auditor,
                 _load_case(SMOKE_CASE),
-                database_url="postgresql://odoo:odoo@127.0.0.1:5432/forklift_clean",
+                database_url=(
+                    "postgresql://forklift_auditor:"
+                    f"{quote(auditor_password, safe='')}"
+                    "@127.0.0.1:5432/forklift_clean"
+                ),
                 timeout_ms=2 * 60 * 1000,
             )
             failed_codes = [check.code for check in verdict.checks if not check.passed]
@@ -644,6 +721,8 @@ async def _bootstrap() -> int:
                 "kind": "sandbox",
                 "promotion_error_code": promotion_error_code,
                 "runtime_sha256": runtime_digest,
+                "smoke_auditor_bundle_digest": verdict.auditor_bundle_digest,
+                "smoke_auditor_runtime_digest": verdict.auditor_runtime_digest,
                 "smoke_failed_checks": failed_codes,
                 "smoke_oracle_version": verdict.oracle_version,
             }

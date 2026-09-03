@@ -6,6 +6,12 @@ snapshot is frozen.
 """
 
 import json
+import os
+
+
+admin_password = os.environ.get("FORKLIFT_ADMIN_PASSWORD", "")
+if len(admin_password) < 20:
+    raise RuntimeError("FORKLIFT_ADMIN_PASSWORD must contain at least 20 characters")
 
 
 company = env.company
@@ -14,7 +20,9 @@ us = env.ref("base.us")
 company.write({"name": "Forklift Safety Lab", "country_id": us.id, "currency_id": usd.id})
 
 admin = env.ref("base.user_admin")
-admin.write({"login": "admin", "password": "admin", "name": "Forklift Admin"})
+admin.write(
+    {"login": "admin", "password": admin_password, "name": "Forklift Admin"}
+)
 
 Partner = env["res.partner"]
 vendor = Partner.search([("ref", "=", "SUP-ACME-04")], limit=1)

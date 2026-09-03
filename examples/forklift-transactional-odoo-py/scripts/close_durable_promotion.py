@@ -8,8 +8,10 @@ import json
 import os
 from dataclasses import asdict
 from pathlib import Path
+from urllib.parse import quote
 
 from forklift.case_generation import case_digest
+from forklift.auditor_manifest import auditor_bundle_digest
 from forklift.oracle import ORACLE_VERSION
 from forklift.remote_oracle import evaluate_in_auditor
 from forklift.solari_adapter import SolariSandboxBranches
@@ -35,13 +37,17 @@ async def _start_postgres(branch) -> None:
     )
 
 
-async def _audit(branch, case):
+async def _audit(branch, case, auditor_password: str):
     await branch.connect()
     await _start_postgres(branch)
     return await evaluate_in_auditor(
         branch,
         case,
-        database_url="postgresql://odoo:odoo@127.0.0.1:5432/forklift_clean",
+        database_url=(
+            "postgresql://forklift_auditor:"
+            f"{quote(auditor_password, safe='')}"
+            "@127.0.0.1:5432/forklift_clean"
+        ),
         timeout_ms=2 * 60 * 1000,
     )
 
@@ -49,18 +55,24 @@ async def _audit(branch, case):
 async def _run() -> int:
     _load_local_env(PROJECT_ROOT / ".env")
     api_key = os.environ.get("SOLARI_API_KEY", "").strip()
+    auditor_password = os.environ.get("FORKLIFT_AUDITOR_DB_PASSWORD", "").strip()
     trial = json.loads(TRIAL_PATH.read_text(encoding="utf-8"))
     receipt = trial.get("receipt") or {}
     case = _load_case(CASE_PATH)
+    expected_bundle_digest = auditor_bundle_digest(PROJECT_ROOT / "forklift")
     candidate_snapshot_id = trial.get("candidate_snapshot_id")
     canonical_snapshot_id = receipt.get("canonical_snapshot_id")
     if (
         not api_key
+        or len(auditor_password) < 20
         or trial.get("accepted") is not True
         or receipt.get("accepted") is not True
         or receipt.get("oracle_version") != ORACLE_VERSION
         or receipt.get("case_digest") != case_digest(case)
         or receipt.get("candidate_snapshot_id") != candidate_snapshot_id
+        or receipt.get("auditor_bundle_digest") != expected_bundle_digest
+        or len(str(receipt.get("auditor_runtime_digest", ""))) != 64
+        or len(str(receipt.get("verdict_digest", ""))) != 64
         or not candidate_snapshot_id
         or not canonical_snapshot_id
     ):
@@ -91,7 +103,7 @@ async def _run() -> int:
                 snapshot_id=candidate_snapshot_id,
                 metadata={"forklift.role": "promotion-pre-auditor"},
             )
-            before = await _audit(pre_auditor, case)
+            before = await _audit(pre_auditor, case, auditor_password)
             if not before.accepted:
                 raise RuntimeError(f"candidate re-audit rejected: {before.failed_codes!r}")
             await pre_auditor.kill()
@@ -112,7 +124,7 @@ async def _run() -> int:
                 metadata={"forklift.role": "promoted-template-auditor"},
                 timeout_ms=20 * 60 * 1000,
             )
-            after = await _audit(promoted_boot, case)
+            after = await _audit(promoted_boot, case, auditor_password)
             if not after.accepted:
                 raise RuntimeError(f"promoted template audit rejected: {after.failed_codes!r}")
             if before.checks != after.checks:

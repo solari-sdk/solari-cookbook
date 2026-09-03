@@ -11,12 +11,15 @@ import uuid
 from dataclasses import asdict
 from decimal import Decimal
 from pathlib import Path
+from urllib.parse import quote
 
 from solari_desktop import DesktopClient
 
+from forklift.auditor_manifest import auditor_bundle_digest
 from forklift.case_generation import case_digest, case_payload
 from forklift.faults import DEVELOPMENT_SCHEDULES, FaultKind, Milestone
 from forklift.orchestrator import audit_sealed_candidate
+from forklift.oracle import expected_check_codes
 from forklift.promotion import select_for_promotion
 from forklift.remote_oracle import evaluate_in_auditor
 from forklift.solari_adapter import SolariSandboxBranches
@@ -33,10 +36,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 CANONICAL_STATE = PROJECT_ROOT / "artifacts" / "development" / "solari-canonical.json"
 CASE_PATH = PROJECT_ROOT / "lab" / "valid_fixture_case.json"
 WORKER_PATH = PROJECT_ROOT / "forklift" / "gui_worker.py"
+REMOTE_BROWSER_LOCK = PROJECT_ROOT / "remote-browser-requirements.txt"
 RESULT_DIR = PROJECT_ROOT / "artifacts" / "development" / "gui-trials"
 EVENT_PREFIX = "FORKLIFT_EVENT="
 COMPLETE_MARKER = "FORKLIFT_WORKER_COMPLETE=1"
-STEP_GATE_PREFIX = "/tmp/forklift-step"
 REMOTE_BROWSER_DISTRIBUTIONS = {
     "greenlet": "3.5.5",
     "playwright": "1.62.0",
@@ -112,13 +115,29 @@ async def _run(
 ) -> int:
     _load_local_env(PROJECT_ROOT / ".env")
     api_key = os.environ.get("SOLARI_API_KEY", "").strip()
-    if not api_key or not CANONICAL_STATE.exists():
+    odoo_password = os.environ.get("FORKLIFT_ADMIN_PASSWORD", "").strip()
+    auditor_password = os.environ.get("FORKLIFT_AUDITOR_DB_PASSWORD", "").strip()
+    if (
+        not api_key
+        or len(odoo_password) < 20
+        or len(auditor_password) < 20
+        or not CANONICAL_STATE.exists()
+        or not REMOTE_BROWSER_LOCK.is_file()
+    ):
         print(json.dumps({"trial": "not_run", "reason": "missing_prerequisite"}))
         return 2
 
     case = _load_case(case_path)
     canonical = json.loads(CANONICAL_STATE.read_text(encoding="utf-8"))
     canonical_snapshot_id = canonical["canonical_snapshot_id"]
+    expected_bundle_digest = auditor_bundle_digest(PROJECT_ROOT / "forklift")
+    expected_runtime_digest = str(canonical.get("smoke_auditor_runtime_digest", ""))
+    if (
+        canonical.get("smoke_auditor_bundle_digest") != expected_bundle_digest
+        or len(expected_runtime_digest) != 64
+    ):
+        print(json.dumps({"trial": "not_run", "reason": "auditor_baseline_mismatch"}))
+        return 2
     try:
         schedule = next(
             item for item in DEVELOPMENT_SCHEDULES if item.schedule_id == schedule_id
@@ -202,6 +221,13 @@ async def _run(
             health = await browser.health()
             if not health.ready or not health.display:
                 raise RuntimeError("browser desktop display is not ready")
+            remote_nonce = uuid.uuid4().hex
+            remote_lock = f"/tmp/forklift-browser-lock-{remote_nonce}.txt"
+            await browser.files.write(
+                remote_lock,
+                REMOTE_BROWSER_LOCK.read_bytes(),
+                0o400,
+            )
             await _desktop_must(
                 browser,
                 "python3",
@@ -210,10 +236,10 @@ async def _run(
                     "pip",
                     "install",
                     "--no-cache-dir",
-                    *[
-                        f"{name}=={version}"
-                        for name, version in REMOTE_BROWSER_DISTRIBUTIONS.items()
-                    ],
+                    "--only-binary=:all:",
+                    "--require-hashes",
+                    "-r",
+                    remote_lock,
                 ],
                 timeout_ms=5 * 60 * 1000,
             )
@@ -257,8 +283,9 @@ async def _run(
             ).stdout.strip()
 
             phase = "run-gui-worker"
-            remote_worker = "/tmp/forklift-gui-worker.py"
-            remote_config = "/tmp/forklift-gui-config.json"
+            remote_worker = f"/tmp/forklift-gui-worker-{remote_nonce}.py"
+            remote_config = f"/tmp/forklift-gui-config-{remote_nonce}.json"
+            step_gate_prefix = f"/tmp/forklift-step-{remote_nonce}"
             await browser.files.write(remote_worker, WORKER_PATH.read_bytes(), 0o500)
             await browser.files.write(
                 remote_config,
@@ -268,9 +295,11 @@ async def _run(
                         "case": case_payload(case),
                         "duplicate_actions": duplicate_actions,
                         "field_overrides": field_overrides,
+                        "odoo_login": "admin",
+                        "odoo_password": odoo_password,
                         "preview_token": preview.get("token"),
                         "preview_url": preview_url,
-                        "step_gate_prefix": STEP_GATE_PREFIX,
+                        "step_gate_prefix": step_gate_prefix,
                     },
                     sort_keys=True,
                     separators=(",", ":"),
@@ -355,14 +384,14 @@ async def _run(
                             timeout_ms=30_000,
                         )
                         await browser.files.write(
-                            f"{STEP_GATE_PREFIX}-{expected_sequence}", "fault", 0o400
+                            f"{step_gate_prefix}-{expected_sequence}", "fault", 0o400
                         )
                         terminal_fault = True
 
                 if terminal_fault:
                     break
                 await browser.files.write(
-                    f"{STEP_GATE_PREFIX}-{expected_sequence}", "continue", 0o400
+                    f"{step_gate_prefix}-{expected_sequence}", "continue", 0o400
                 )
 
             if terminal_fault:
@@ -433,7 +462,11 @@ async def _run(
                 return await evaluate_in_auditor(
                     auditor,
                     case,
-                    database_url="postgresql://odoo:odoo@127.0.0.1:5432/forklift_clean",
+                    database_url=(
+                        "postgresql://forklift_auditor:"
+                        f"{quote(auditor_password, safe='')}"
+                        "@127.0.0.1:5432/forklift_clean"
+                    ),
                     timeout_ms=2 * 60 * 1000,
                 )
 
@@ -453,6 +486,9 @@ async def _run(
                 (candidate,),
                 expected_case_digest=case_digest(case),
                 canonical_snapshot_id=canonical_snapshot_id,
+                expected_check_codes=expected_check_codes(case),
+                expected_auditor_bundle_digest=expected_bundle_digest,
+                expected_auditor_runtime_digest=expected_runtime_digest,
             )
             accepted = (
                 candidate_snapshot_id is not None

@@ -9,9 +9,9 @@ worker's success message.
 
 The implementation covers one purchase-to-pay workflow inside a snapshotted
 Solari VM. It protects only the state represented by that snapshot and the
-invariants encoded in oracle version 1. External email, banking, and third-party
-API effects are outside the boundary and must remain staged or use a separate
-commit protocol.
+invariants encoded in the selected oracle version. External email, banking,
+and third-party API effects are outside the boundary and must remain staged or
+use a separate commit protocol.
 
 ## Input and output contract
 
@@ -28,7 +28,8 @@ receipt containing:
 - candidate and canonical snapshot identifiers;
 - the snapshot's parent lineage;
 - fault-schedule and worker-action-log digests;
-- the oracle version and complete invariant verdict; and
+- the oracle version, exact check schema, auditor source/runtime fingerprints,
+  and digest of the complete invariant verdict; and
 - an unambiguous `ACCEPT` decision.
 
 A missing or incomplete receipt means `REJECT`.
@@ -40,7 +41,7 @@ canonical sandbox root snapshot
         |
         +--> one candidate state sandbox <--signed preview-- disposable GUI desktop
                          |
-                         +--> immutable snapshot --> fresh auditor sandbox
+                         +--> immutable snapshot --> separate auditor sandbox
                                                         |
                                              read-only business oracle
                                                         |
@@ -58,13 +59,35 @@ visible milestones. It cannot read or modify the oracle or expected case.
 The oracle is read-only and does not trust the worker's screen, narration, or
 exit code. To prevent a check-then-change race, it never queries the live worker
 branch. Forklift first seals that branch into an immutable candidate snapshot,
-forks a fresh auditor from those exact bytes, and queries the auditor's Odoo
-database. The promoter verifies that the candidate snapshot descends from the
-canonical snapshot and that the receipt binds that exact snapshot. Exactly one
-eligible snapshot can be registered as a durable Solari template. If no
-candidate is eligible, the canonical state remains unchanged.
+forks a separate auditor from those exact bytes, uploads the oracle after the
+seal, and connects through a SELECT-only database role. The promoter verifies
+that the candidate snapshot descends from the canonical snapshot and that the
+receipt binds that exact snapshot, the full verdict, the exact expected check
+codes, and source/runtime fingerprints captured from the canonical baseline.
+Exactly one eligible snapshot can be registered as a durable Solari template.
+If no candidate is eligible, the canonical state remains unchanged.
 
-## Oracle invariants (version 1)
+## Hostile-runtime boundary
+
+The current Solari snapshot primitive freezes one complete machine. Forking the
+candidate therefore preserves both the database being judged and the runtime
+that executes the judge. Uploading fresh oracle source prevents an ordinary GUI
+worker from editing that source before sealing, but it cannot make a hostile
+Python interpreter, PostgreSQL server, guest agent, or operating system attest
+honestly about itself. A malicious inherited substrate can emit the same bytes
+as a valid auditor; those cases are observationally indistinguishable to the
+current in-guest protocol.
+
+The implemented upper bound is consequently narrower: for fallible GUI workers
+without substrate access, Forklift uses immutable state, a separately started
+auditor process, SELECT-only database credentials, base-table censuses, an exact
+proof schema, and canonical source/runtime fingerprints. A hostile-runtime
+claim remains conditionally impossible with this architecture. It can be
+reopened by a provider-backed point-in-time data export, a frozen volume mounted
+read-only into a pristine image, or equivalent remote attestation. Live writable
+shared volumes are not a substitute because they reintroduce a race.
+
+## Oracle invariants
 
 For the case ID and vendor reference:
 
@@ -80,15 +103,16 @@ For the case ID and vendor reference:
 5. the expected payment exists exactly once if and only if payment is allowed,
    is posted for the exact amount and currency, and reconciles the intended
    payable—never another vendor or bill;
-6. no extra purchase order, picking, bill, payment, or posted journal entry was
-   created for the case id; and
+6. a base-table census finds no extra, malformed, or unlinked purchase order,
+   picking, vendor bill, or payment anywhere in the clean candidate database;
+   and
 7. an append-only action receipt is complete and binds the input, snapshot,
    candidate, fault schedule, and oracle result.
 
 An exception, missing relation, duplicate, unexpected state, or numeric value
 outside the frozen currency-rounding rule is a rejection, never an unknown pass.
 
-Oracle version 1 also handles a subtle Odoo identity collision: bill IDs and
+The oracle also handles a subtle Odoo identity collision: bill IDs and
 payment IDs come from independent sequences and can have the same numeric
 value. Bill journal evidence is therefore joined through the actual
 `account.move` ID rather than a polymorphic source ID. A regression test covers
