@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>PatchPilot Demo Store</title>
+</head>
+<body>
+  <h1>PatchPilot Demo Store</h1>
+
+  <p>Widget — $10 each</p>
+
+  <label>
+    Quantity:
+    <input id="quantity" type="number" value="1" min="1">
+  </label>
+
+  <button id="calculate">Calculate Total</button>
+
+  <h2 id="result">$10</h2>
+
+  <script>
+    document.getElementById("calculate").addEventListener("click", async () => {
+      const quantity = Number(
+        document.getElementById("quantity").value
+      );
+
+      const response = await fetch(
+        `/api/cart?price=10&quantity=${quantity}`
+      );
+
+      const data = await response.json();
+
+      document.getElementById("result").textContent =
+        `$${data.total}`;
+    });
+  </script>
+</body>
+</html>

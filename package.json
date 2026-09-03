@@ -1,0 +1,23 @@
+{
+  "name": "patchpilot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Autonomous AI software engineer that finds, fixes, tests, and verifies bugs using Solari.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.1.3",
+    "@solarisdk/sandbox": "^0.1.2",
+    "dotenv": "latest",
+    "openai": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "tsx": "latest",
+    "typescript": "latest"
+  }
+}

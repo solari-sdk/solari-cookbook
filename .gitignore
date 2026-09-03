@@ -1,8 +1,10 @@
 node_modules/
-package-lock.json
+dist/
 .env
-__pycache__/
-*.pyc
-.venv/
-venv/
-screenshot.png
+*.log
+
+# Generated JavaScript from Solari cookbook examples
+examples/**/index.js
+
+# Runtime evidence
+artifacts/
