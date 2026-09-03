@@ -1,152 +1,148 @@
 # GoblinQA 👹
 
-> **Ship your app to AI users before shipping it to humans.**
+> Ship your app to AI users before shipping it to humans.
 
-GoblinQA releases autonomous synthetic users into a product and asks them to accomplish a goal in real, isolated cloud browsers. It shows where they succeed, fail, become confused, or discover friction—and ties every meaningful finding to browser evidence.
+GoblinQA is a goal-driven, autonomous QA prototype built with TypeScript, Gemini, and Solari Browser. Give it a website URL and a task: AI personas observe the interface, choose actions, attempt multi-step workflows, and report task completion, failures, navigation friction, and their decisions.
 
-**Project status:** Milestone 0 is complete. The GoblinQA runtime has created one real, recorded Solari browser through the TypeScript SDK, verified a page, retrieved its replay, and completed cleanup. Milestone 1 and the swarm, reporting, and Fix Goblin described below are not yet implemented.
+The implementation supports a catalog of **20 behavioral personas**, selectable in groups of 1–20. Runs are sequential, with a separate recorded browser session for each persona. It is a command-line application—not a dashboard or an autonomous code-repair system.
 
-## The problem
-
-Traditional end-to-end tests are excellent at answering:
-
-> Does the workflow we specified still work?
-
-But developers supply the path: click this selector, fill this field, expect this result. Real users do not receive that script. They misread labels, navigate backward, refresh at awkward moments, retry actions, explore side paths, abandon flows, and use different devices or interaction styles.
-
-GoblinQA asks a different question:
-
-> Can different users figure out and complete the intended goal on their own?
-
-## What GoblinQA does
+## Approach
 
 ```text
 URL + Goal
-    → autonomous Goblins
-    → isolated Solari browser sessions
-    → real interaction
-    → success/failure evidence + session replays
-    → issue clustering
-    → Fix Goblin in a Solari Sandbox
-    → patch + preview
-    → same failing Goblin reruns
-    → before/after verification
+    → select personas
+    → independent Solari sessions, one at a time
+    → Observe → Decide → Validate → Act
+    → per-persona results, screenshots, replay, and video
+    → aggregate QA report and candidate issue clusters
 ```
 
-The full target swarm is **20 autonomous synthetic users**. That number matches the 20 concurrent browser sessions available in the Solari Starter environment, while still being small enough for each run to remain inspectable. During ordinary development, GoblinQA will use far fewer sessions.
+1. **Observe:** collect visible page text and interactive-element references.
+2. **Decide:** Gemini chooses one action using the goal, persona instructions, observation, and prior actions.
+3. **Validate:** reject malformed decisions, with one retry for invalid model output.
+4. **Act:** use the Solari Browser SDK to click, type, scroll, navigate back/forward, refresh, or wait. The agent can finish or report failure.
+5. **Record:** retain observations, redacted typing actions, timestamped screenshots, findings, session IDs, replay artifacts, and video status.
+6. **Aggregate:** compare outcomes and group candidate issues while preserving each occurrence and its evidence.
 
-## Current, next, and vision
+All personas share one runner. The runtime uses `@solarisdk/browser` directly; MCP is development tooling, not a production dependency. Runs default to eight decision steps per persona, configurable up to twenty.
 
-| Horizon | Scope |
+A provider outage is not a product bug. Model, browser, screenshot, replay, video, and cleanup failures are recorded separately from observed product findings. Cleanup attempts browser release and client closure; if a session cannot be confirmed released, further launches stop and remaining result slots explain why they were not launched.
+
+## Personas
+
+| Persona | Behavioral focus |
 | --- | --- |
-| **Current — Milestone 0 complete** | One recorded browser session has run from the GoblinQA runtime using `@solarisdk/browser`, including replay retrieval and complete cleanup. |
-| **Next — not started** | Build one autonomous Goblin, then run three distinct behavioral personas and produce structured evidence. |
-| **Vision** | Run the 20-Goblin swarm, cluster repeated failures, let Fix Goblin patch a reproducible bug in `@solarisdk/sandbox`, and rerun the same Goblin to verify the result. |
+| Normal User | Obvious labels and the ordinary path |
+| Confused User | Unclear terminology and reasonable error recovery |
+| Speedrunner | The shortest reasonable safe path |
+| Back Button Goblin | History navigation and retained progress |
+| Explorer | Relevant navigation choices and dead ends |
+| Refresh Goblin | State and guidance after a safe refresh |
+| Literal User | Whether labels mean what they say |
+| Impatient User | Loading feedback and visible progress |
+| Bad Data Goblin | Harmless formatting mistakes and validation recovery |
+| Abandoner | Leaving and resuming an unfinished form |
+| New User | Onboarding and missing domain explanations |
+| Power User | Visible defaults and efficient controls |
+| Lost Goblin | Wayfinding and recovery from disorientation |
+| Repeat User | Revisiting unfinished work without duplicate submissions |
+| Chaos Goblin | A bounded combination of safe deviations |
+| Help Seeker | In-workflow help and explanations |
+| Careful Reader | Consistency across instructions and labels |
+| Search First User | Relevant workflow-specific search and filters |
+| Form Reviewer | Required fields and pre-submit review |
+| Skeptical User | Explicit confirmation before declaring success |
 
-The previously verified Solari MCP browser session established that the development connection works. Milestone 0 is separate: it proves that GoblinQA's own runtime can use the SDK directly.
+These are behavioral instructions, not scripted journeys or guarantees that every behavior will occur. They use the current action vocabulary; device emulation, keyboard-only operation, and multi-tab control are not implemented.
 
-### Run Milestone 0
+## Setup
 
-With Node.js 22+ and a Solari API key exported in the shell:
+Requirements: Node.js 22+, a Solari API key, a Gemini API key, and permission to test the target website.
 
 ```bash
 npm install
-export SOLARI_API_KEY=slr_live_...
-npm run milestone:0
+cp -n .env.example .env
 ```
 
-The command opens one recorded browser against `example.com`, verifies the page, releases the session, retrieves its replay URL with bounded retry, closes the SDK client, and prints a JSON result.
+Fill in `SOLARI_API_KEY` and `GEMINI_API_KEY` in your local `.env`. Do not commit credentials. The configured model defaults to `gemini-3.7-flash`; set `GEMINI_MODEL` to a model available to your account if necessary.
 
-## Architecture
+For an authorized sandbox, set `GOBLINQA_AUTHORIZED=true`. The SMTR login adapter resolves the allowlisted `SMTR_TEST_PASSWORD` at execution time through a secret reference, rather than sending its value to Gemini.
 
-```text
-                    ┌──────────────────────────────┐
-URL + goal ────────▶│ Goblin runner + LLM decisions│
-                    └──────────────┬───────────────┘
-                                   │
-                         @solarisdk/browser
-                                   │
-                                   ▼
-                    ┌──────────────────────────────┐
-                    │ Isolated recorded browser    │
-                    │ actions, outcome, replay     │
-                    └──────────────┬───────────────┘
-                                   │ reproducible failure
-                                   ▼
-                    ┌──────────────────────────────┐
-                    │ Fix Goblin                   │
-                    │ @solarisdk/sandbox           │
-                    │ inspect → patch → test       │
-                    └──────────────┬───────────────┘
-                                   │ preview URL
-                                   └──────▶ same Goblin reruns
+## How to run and test
+
+Start with one browser for normal debugging:
+
+```bash
+GOBLIN_COUNT=1 npm start -- "https://example.com" \
+  "Confirm the page is titled Example Domain."
 ```
 
-## The 20 Goblins
+Use your authorized target for real workflow testing. The default is five personas; use no more than three for feature tests and five for integration tests:
 
-The names make the report memorable; the behaviors make it useful. Each persona represents a legitimate class of functional failure or product friction.
-
-| Persona | Behavior | Designed to expose |
-| --- | --- | --- |
-| **Normal User** | Follows the most apparent path at a steady pace. | Baseline task success and ordinary workflow defects. |
-| **Speedrunner** | Chooses the fastest apparent route and minimizes reading. | Weak safeguards, ambiguous primary actions, and race-prone flows. |
-| **Confused User** | Makes plausible first-time-user mistakes when labels or navigation are unclear. | Ambiguous copy, misleading hierarchy, and poor error recovery. |
-| **Back Button Goblin** | Uses browser back and forward throughout the task. | Broken history, stale state, redirect loops, and lost progress. |
-| **Double Clicker** | Occasionally activates actionable controls twice. | Missing idempotency, duplicate submissions, and accidental double navigation. |
-| **Explorer** | Investigates nearby features while still pursuing the goal. | Side-path dead ends, inconsistent navigation, and unexpected state coupling. |
-| **Refresh Goblin** | Refreshes during meaningful workflow transitions. | Non-persisted state, fragile sessions, and incomplete recovery. |
-| **Literal User** | Interprets interface copy and instructions exactly as written. | Imprecise wording, contradictory guidance, and hidden assumptions. |
-| **Impatient User** | Retries or changes approach when feedback appears slow. | Missing loading states, latency confusion, and unsafe retries. |
-| **Bad Data Goblin** | Enters safe but malformed, incomplete, or boundary-case values. | Validation gaps, poor error messages, and inconsistent form state. |
-| **Mobile User** | Uses a mobile-sized viewport and touch-oriented navigation. | Responsive layout failures, obscured controls, and mobile-only friction. |
-| **Keyboard User** | Navigates and operates controls primarily with the keyboard. | Broken focus order, inaccessible controls, and keyboard traps. |
-| **Abandoner** | Leaves a flow partway through and later attempts to resume. | Draft loss, unclear resumability, and abandoned-state bugs. |
-| **Multi-tab Goblin** | Opens relevant pages in multiple tabs and switches between them. | Stale data, session conflicts, and cross-tab state synchronization bugs. |
-| **New User** | Approaches the product without assumed domain or product knowledge. | Onboarding gaps, missing explanations, and weak discoverability. |
-| **Power User** | Looks for efficient navigation, shortcuts, and direct manipulation. | Unnecessary friction, inconsistent shortcuts, and inefficient repeated work. |
-| **Accessibility Goblin** | Uses semantic cues and keyboard-accessible paths and notes accessibility barriers. | Missing names, roles, focus visibility, and basic operability issues. |
-| **Lost Goblin** | Recovers from deep links, error pages, or disorientation without a known home path. | Weak wayfinding, missing escape routes, and poor recovery navigation. |
-| **Repeat User** | Repeats a completed or previously attempted workflow. | Residual state, duplication bugs, and non-repeatable flows. |
-| **Chaos Goblin** | Combines a bounded set of safe behaviors such as refresh, back, retry, and exploration. | Interaction effects that isolated behaviors miss, without destructive or abusive testing. |
-
-These personas are behavioral lenses, not replacements for device matrices, accessibility audits, load tests, or deterministic regression suites.
-
-## Why Solari is essential
-
-Each Goblin needs an isolated real browser, independent application state, controlled interaction, concurrency, and a replayable record. Solari Browser supplies that execution and evidence layer.
-
-When a failure is reproducible, Fix Goblin eventually needs an isolated place to clone the repository, inspect files, execute commands, make a small patch, run tests, start the application, and expose a preview. Solari Sandbox supplies that repair environment.
-
-The complete loop is deliberately simple:
-
-```text
-Browser       = observe reality
-Sandbox       = modify software
-Browser again = verify reality
+```bash
+GOBLINQA_AUTHORIZED=true GOBLIN_COUNT=3 npm start -- "https://your-sandbox.example" \
+  "Create one synthetic test request and report anything preventing completion."
 ```
 
-GoblinQA's runtime will use `@solarisdk/browser` directly and, in the later Fix Goblin milestone, `@solarisdk/sandbox`. Solari MCP is useful development and debugging tooling for Codex; it is not a production dependency of GoblinQA.
+For a deliberate, authorized 20-persona demonstration:
 
-## Why not Playwright?
+```bash
+GOBLINQA_AUTHORIZED=true GOBLINQA_LARGE_RUN_AUTHORIZED=true GOBLIN_COUNT=20 \
+  npm start -- "https://your-sandbox.example" "Your authorized test goal"
+```
 
-GoblinQA does not replace Playwright or deterministic E2E testing. The two answer different questions.
+This can create up to twenty separate test records if the goal involves creating a record. It uses twenty sequential sessions, not twenty concurrent sessions. Runs above five require the additional large-run opt-in.
 
-| Deterministic E2E test | GoblinQA |
+| Setting | Purpose |
 | --- | --- |
-| Developer supplies exact steps and assertions. | Developer supplies a URL and user intent. |
-| Verifies a known path repeatedly. | Lets an agent discover a path independently. |
-| Best for regression confidence. | Best for behavioral variation, discoverability, and unexpected friction. |
+| `GOBLIN_COUNT` | 1–20 personas; default 5, selected in catalog order |
+| `GOBLIN_MAX_STEPS` | 1–20 decisions per persona; default 8 |
+| `GEMINI_MODEL` | Gemini model selection |
+| `GOBLINQA_AUTHORIZED` | Explicit permission acknowledgment for non-example targets |
+| `GOBLINQA_LARGE_RUN_AUTHORIZED` | Additional opt-in for more than five personas |
 
-Strong products should use both. Findings from GoblinQA may become deterministic regression tests after they are understood.
+Run local checks:
 
-## Safety boundaries
+```bash
+npm run typecheck
+npm test
+```
 
-GoblinQA is only for products the user owns or has explicit permission to test. It is behavioral product testing—not load flooding, DDoS testing, credential attacks, exploitation, spam, unbounded crawling, or real purchasing.
+The automated tests use simulated runner results to check persona selection, resource guards, sequential orchestration, failure isolation, artifact references, and clustering. They do not prove live Solari/Gemini behavior. For live verification, inspect the generated report and actual screenshots, replay, and video from your authorized run.
 
-Development runs intentionally limit concurrency. The 20-Goblin swarm is reserved for deliberate demonstrations or approved test runs.
+`npm run milestone:6 -- "<URL>" "<GOAL>"` is equivalent to `npm start`. Earlier milestone commands remain available with their original run sizes.
 
-## North star
+## Results and evidence
 
-A founder enters a URL and a goal, watches independent Goblins use the product, and learns about a real failure they did not know existed. Later, Fix Goblin repairs that failure and the same Goblin proves it is gone.
+Runs write to `artifacts/milestone-6/<unique-run-id>/`:
 
-**How many Goblins can your product survive?**
+```text
+<persona-id>.json
+<persona-id>.webm
+<persona-id>.replay.ndjson
+screenshots/<persona-id>/step-01.png
+aggregate-report.json
+```
+
+Each persona result includes the goal, completion status, failure type, observations, decisions, findings, session ID, evidence paths, and cleanup status. Artifact save errors are explicit; an expected path alone does not mean a file was produced.
+
+The aggregate report contains per-persona outcomes, shared and unique findings, runtime failures, and issue clusters. Clustering uses category, observed URL, and conservative title similarity. Severity is provisional; a candidate cluster is not proof of a shared root cause, and an unreported issue does not mean another persona was unaffected.
+
+Recordings, screenshots, replay URLs, and reports can contain application data. Artifacts are ignored by Git. Review and sanitize evidence before publishing it.
+
+## Working on the project
+
+Start with [AGENTS.md](AGENTS.md) for implementation constraints, milestone order, SDK lifecycle requirements, resource limits, and safety rules. Give that file to any coding agent working on GoblinQA. [PROJECT_CONTEXT.md](PROJECT_CONTEXT.md) describes the longer-term product direction; it is not a list of implemented features.
+
+The main code lives in:
+
+- `src/goblin/personas.ts` — persona catalog.
+- `src/goblin/brain.ts` — model instructions and decision validation.
+- `src/goblin/runner.ts` — shared browser loop and evidence capture.
+- `src/goblin/swarm.ts` — selection, orchestration, aggregation, and persistence.
+- `src/goblin/clusters.ts` — candidate issue grouping.
+- `src/milestone-6.ts` — current CLI entry point.
+
+Keep changes focused on the core testing loop. Test only owned or explicitly authorized websites, use synthetic data, and avoid destructive actions, credential attacks, real purchases, spam, and unrelated application areas. For SMTR, stay in the authorized Requestor sandbox workflow.
+
+GoblinQA complements deterministic end-to-end tests: those verify a specified path; GoblinQA explores whether different synthetic users can discover and complete the goal.
