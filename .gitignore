@@ -6,3 +6,7 @@ __pycache__/
 .venv/
 venv/
 screenshot.png
+examples/release-watch-py/out/*.png
+examples/release-watch-py/out/extract.json
+examples/release-watch-py/out/brief.json
+examples/release-watch-py/out/brief.md

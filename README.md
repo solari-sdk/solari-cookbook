@@ -33,6 +33,12 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### Compose all three
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [release-watch-py](examples/release-watch-py) | Python | Launch packet: stealth browser + sandbox kernel + desktop proof |
+
 ## Running an example
 
 Each directory is self-contained.
