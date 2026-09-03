@@ -87,6 +87,18 @@ class SecurityHardeningTests(unittest.TestCase):
         self.assertNotIn("hunter2", diagnostic)
         self.assertIn("[REDACTED]", diagnostic)
 
+    def test_diagnostics_remove_quoted_structured_secrets(self) -> None:
+        for payload in (
+            '{"password": "hunter2"}',
+            "{'password': 'hunter2'}",
+            '{"FORKLIFT_ADMIN_PASSWORD":"hunter2"}',
+            "api_key='hunter2'",
+        ):
+            with self.subTest(payload=payload):
+                diagnostic = _safe_diagnostic(RuntimeError(payload))
+                self.assertNotIn("hunter2", diagnostic)
+                self.assertIn("[REDACTED]", diagnostic)
+
 
 if __name__ == "__main__":
     unittest.main()

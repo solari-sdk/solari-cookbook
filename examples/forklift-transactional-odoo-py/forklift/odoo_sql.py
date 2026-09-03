@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections import Counter
-from decimal import Decimal
 
 from .domain import (
     BillEvidence,

@@ -1,5 +1,10 @@
 # Validation protocol
 
+> [!IMPORTANT]
+> This protocol documents the historical oracle-v1 campaign preserved in
+> `artifacts/sealed/final-v2/`. It does not cover the post-campaign oracle-v2
+> implementation in the working repository.
+
 This document is a readable summary of the validation design. The authoritative
 machine-readable final protocol is
 `artifacts/sealed/final-v2/protocol.json`; its digest and all result identities

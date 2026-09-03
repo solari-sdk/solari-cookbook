@@ -19,6 +19,15 @@ payable balance, and payment as one logical outcome. It intentionally includes
 partial receipts, duplicate actions, wrong values, timeouts, and worker crashes.
 
 > [!IMPORTANT]
+> **Validation status:** the working implementation is a post-campaign,
+> security-hardened oracle-v2 reference candidate. Its unit tests and offline
+> integrity checks pass, but it has not been run through a new sealed Solari
+> campaign. The committed `artifacts/sealed/final-v2/` packet is historical
+> oracle-v1 evidence and validates only the archived source bytes it contains;
+> it does not certify the current oracle-v2 runtime. Run and seal a fresh
+> campaign before making a production assurance claim about the current code.
+
+> [!IMPORTANT]
 > Forklift's rollback boundary is the snapshotted VM. It does not undo effects
 > that have already escaped that boundary, such as bank transfers, emails, or
 > calls to third-party services. Keep those effects staged until after a state
@@ -120,13 +129,14 @@ and payment tables before joining details, so empty or malformed objects cannot
 disappear through an inner join. Any missing relation, duplicate object, wrong
 value, oracle error, schema mismatch, or incomplete receipt is a rejection.
 
-## Verify the published evidence
+## Verify the historical oracle-v1 evidence
 
-The frozen final campaign completed all six held-out positions with **zero
-invalid states accepted**. Four valid states were accepted, two invalid states
-were refused, and all eight attempts were retained. The two extra attempts were
-Chrome failures before login and before any business mutation; no
-post-mutation attempt was retried.
+The archived frozen campaign completed all six held-out positions with **zero
+invalid states accepted** under oracle v1. Four valid states were accepted, two
+invalid states were refused, and all eight attempts were retained. The two
+extra attempts were Chrome failures before login and before any business
+mutation; no post-mutation attempt was retried. This result is evidence for the
+archived source bundle, not the current oracle-v2 implementation.
 
 The evidence verifier works offline and does not require a Solari key:
 
@@ -145,8 +155,10 @@ source and dependency hashes, attempt hashes, retry rules, and acceptance
 outcomes. Add `--require-frozen-runtime` to also require the historical package
 environment; the default verifier intentionally permits the current patched
 environment while still hashing the exact source bytes used by the campaign.
-The published result is adversarial verification from the original
-implementation environment, not an independent replication.
+A successful default verification means the historical packet is internally
+consistent; it does not mean the current runtime matches that packet. The
+archived result is adversarial verification from the original implementation
+environment, not an independent replication.
 
 For the result matrix and a short guided review, see
 [final-results.md](docs/final-results.md) and
@@ -154,12 +166,14 @@ For the result matrix and a short guided review, see
 
 ## Run against Solari
 
-The repository includes the orchestration, adapter, remote worker, audit, and
-evidence-generation code used for the live campaign. To run new Solari trials,
-copy `.env.example` to `.env`, supply your own `SOLARI_API_KEY`, and rebuild the
-canonical Odoo runtime and database artifacts with the scripts in `scripts/`.
-Run `python -m scripts.setup_local_lab` first to generate the required local
-credentials.
+The exact orchestration, adapter, worker, audit, and evidence-generation source
+used for the historical live campaign is preserved inside
+`artifacts/sealed/final-v2/frozen-source.tar.gz`. The working files are the
+post-campaign oracle-v2 candidate and are intentionally different. To run new
+Solari trials, copy `.env.example` to `.env`, supply your own `SOLARI_API_KEY`,
+and rebuild the canonical Odoo runtime and database artifacts with the scripts
+in `scripts/`. Run `python -m scripts.setup_local_lab` first to generate the
+required local credentials.
 
 > [!WARNING]
 > Live campaign scripts create Solari sandboxes, desktops, snapshots, and

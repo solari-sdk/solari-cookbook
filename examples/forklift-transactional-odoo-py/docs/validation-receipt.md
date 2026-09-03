@@ -1,5 +1,10 @@
 # Validation receipt
 
+> [!IMPORTANT]
+> This receipt covers only the historical oracle-v1 source and dependency bytes
+> frozen in `artifacts/sealed/final-v2/`. The current working implementation is
+> a post-campaign oracle-v2 reference candidate and is outside this receipt.
+
 **Claim and frozen artifact digests:** Across six frozen final Odoo
 purchase-to-pay case/fault positions, zero oracle-invalid candidate snapshots
 are selected, while clean and explicitly idempotent positions meet their

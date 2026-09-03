@@ -1,5 +1,12 @@
 # Sealed final result
 
+> [!IMPORTANT]
+> This is a historical oracle-v1 result for the exact source and dependencies
+> archived in `artifacts/sealed/final-v2/`. The working repository now contains
+> post-campaign oracle-v2 security hardening. The archived result does not
+> validate or certify that newer implementation; it requires its own fresh
+> sealed campaign before an equivalent assurance claim.
+
 Forklift passed its frozen final campaign: **6/6 audited positions completed,
 0 invalid states accepted, and all 8 attempts preserved**. Two extra attempts
 were real Chrome crashes before login; both were retained as inconclusive

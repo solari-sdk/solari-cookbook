@@ -160,9 +160,17 @@ def _safe_diagnostic(exc: Exception) -> str:
         flags=re.IGNORECASE,
     )
     detail = re.sub(
-        r"(?i)\b(token|api[_-]?key|authorization|secret|pass(?:word|wd)?)"
-        r"\s*[:=]\s*[^\s&,'\"]+",
-        r"\1=[REDACTED]",
+        r"(?i)(?P<label>[\"']?(?:[a-z0-9_-]*"
+        r"(?:token|api[_-]?key|authorization|secret|pass(?:word|wd)?))"
+        r"[\"']?\s*[:=]\s*)(?P<quote>[\"'])[^\"']*(?P=quote)",
+        r"\g<label>\g<quote>[REDACTED]\g<quote>",
+        detail,
+    )
+    detail = re.sub(
+        r"(?i)(?P<label>[\"']?(?:[a-z0-9_-]*"
+        r"(?:token|api[_-]?key|authorization|secret|pass(?:word|wd)?))"
+        r"[\"']?\s*[:=]\s*)[^\s&,;'\"}\]]+",
+        r"\g<label>[REDACTED]",
         detail,
     )
     return detail[-12000:]
