@@ -1,0 +1,2 @@
+beautifulsoup4>=4.12,<5
+solari-browser>=0.1.2,<0.2
