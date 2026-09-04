@@ -1,8 +1,12 @@
 node_modules/
 package-lock.json
 .env
+.env.local
 __pycache__/
 *.pyc
 .venv/
 venv/
 screenshot.png
+.next/
+dist/
+url-preview-app/data/
