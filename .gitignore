@@ -10,3 +10,4 @@ screenshot.png
 .next/
 dist/
 url-preview-app/data/
+*.tsbuildinfo
