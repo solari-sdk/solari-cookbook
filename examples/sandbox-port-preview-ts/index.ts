@@ -28,6 +28,11 @@ try {
   const { url } = await sandbox.previewUrl(PORT)
   console.log("preview:", url)
 
+  // The URL carries a ?pt_token=… the gateway authenticates with, so reach for a
+  // path with `new URL()` rather than string concatenation:
+  //   const page = new URL(url); page.pathname = "/about"; fetch(page)
+  // `${url}/about` puts "/about" inside the query string and returns 401.
+
   // Prove it's really public: fetch it from *here*, outside the VM.
   for (let i = 0; i < 10; i++) {
     await new Promise((r) => setTimeout(r, 1000))
