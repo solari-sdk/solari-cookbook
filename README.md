@@ -78,6 +78,13 @@ Things that cost you an afternoon if you meet them cold:
   channel; the VM keeps running until its idle timeout.
 - **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
   every use.
+- **The preview URL carries a `?pt_token=`, so build request URLs with `new URL()`.**
+  Appending a path to the string — `` `${url}/health` `` — puts the path inside the
+  *query*, and the gateway answers 401 for a request that looks perfectly correct.
+  Set `pathname` instead. The same token is minted into a cookie on first visit, so
+  a client sending its own `Cookie` header must merge rather than replace it, or it
+  signs itself out of the preview while still holding a valid token. Tokens expire
+  about an hour after minting; call `previewUrl()` again for a fresh one.
 
 ## Links
 
