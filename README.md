@@ -33,6 +33,12 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### End-to-end workflows
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [lifeops-task-agent-ts](examples/lifeops-task-agent-ts) | TypeScript | Browser retrieves billing data, Sandbox audits it, Port Preview exposes the result |
+
 ## Running an example
 
 Each directory is self-contained.
