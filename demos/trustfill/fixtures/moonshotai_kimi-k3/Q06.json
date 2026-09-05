@@ -1,0 +1,61 @@
+{
+  "id": "Q06",
+  "question": "Within what timeframe do you notify customers of a confirmed personal data breach?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Meridian notifies affected customers without undue delay, and in any event within 72 hours of the determination that an incident constitutes a personal data breach affecting customer data.",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "Where an incident is determined to constitute a personal data breach affecting customer data, Meridian notifies affected customers **without undue delay, and in any event within 72 hours** of the determination."
+      }
+    ],
+    "reasoning": "The Security Incident Response Plan (section 5, Notification) explicitly states the notification timeframe for a confirmed personal data breach: without undue delay and in any event within 72 hours of the determination. This directly and unambiguously answers the question."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian notifies affected customers without undue delay of a personal data breach",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian notifies affected customers without undue delay"
+      },
+      {
+        "claim": "Notification occurs in any event within 72 hours of the determination that an incident constitutes a personal data breach affecting customer data",
+        "essential": true,
+        "supported": true,
+        "sourceText": "in any event within 72 hours of the determination that an incident constitutes a personal data breach affecting customer data"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Within what timeframe do you notify customers of a confirmed personal data breach?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "Where an incident is determined to constitute a personal data breach affecting customer data, Meridian notifies affected customers **without undue delay, and in any event within 72 hours** of the determination."
+      }
+    ],
+    "reasoning": "The Security Incident Response Plan (section 5, Notification) explicitly states the notification timeframe for a confirmed personal data breach: without undue delay and in any event within 72 hours of the determination. This directly and unambiguously answers the question.",
+    "abstained": false,
+    "answer": "Meridian notifies affected customers without undue delay, and in any event within 72 hours of the determination that an incident constitutes a personal data breach affecting customer data.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Meridian notifies affected customers without undue delay of a personal data breach",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian notifies affected customers without undue delay"
+      },
+      {
+        "claim": "Notification occurs in any event within 72 hours of the determination that an incident constitutes a personal data breach affecting customer data",
+        "essential": true,
+        "supported": true,
+        "sourceText": "in any event within 72 hours of the determination that an incident constitutes a personal data breach affecting customer data"
+      }
+    ],
+    "removed": []
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "id": "Q02",
+  "question": "Is customer data encrypted in transit, and what minimum TLS version do you accept?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Customer data is encrypted in transit: data between customers and the platform, and between internal services, is protected with TLS, and the public API and web application are served exclusively over HTTPS with HSTS enabled. The minimum TLS version accepted is TLS 1.2 — the load balancer is configured to accept TLS 1.2 and TLS 1.3 only, and connections negotiating anything older are rejected.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Data in transit between customers and the platform, and between internal services, is protected with TLS 1.2 or higher; connections negotiating anything older are rejected at the load balancer."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "All external connections terminate TLS at the load balancer, which is configured to accept TLS 1.2 and TLS 1.3 only. Traffic between internal services within the VPC is likewise encrypted in transit. The public API and the web application are served exclusively over HTTPS with HSTS enabled."
+      }
+    ],
+    "reasoning": "Both the Information Security Policy and the Architecture Overview directly and consistently answer the question: customer data is encrypted in transit, and the minimum TLS version accepted is TLS 1.2, with older versions rejected at the load balancer. The two documents are in agreement, so there is no conflict."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Customer data is encrypted in transit.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Customer data is encrypted in transit"
+      },
+      {
+        "claim": "Data between customers and the platform, and between internal services, is protected with TLS.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "data between customers and the platform, and between internal services, is protected with TLS"
+      },
+      {
+        "claim": "The public API and web application are served exclusively over HTTPS with HSTS enabled.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and the public API and web application are served exclusively over HTTPS with HSTS enabled"
+      },
+      {
+        "claim": "The minimum TLS version accepted is TLS 1.2.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The minimum TLS version accepted is TLS 1.2"
+      },
+      {
+        "claim": "The load balancer is configured to accept TLS 1.2 and TLS 1.3 only.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "the load balancer is configured to accept TLS 1.2 and TLS 1.3 only"
+      },
+      {
+        "claim": "Connections negotiating anything older than TLS 1.2 are rejected.",
+        "essential": true,
+        "supported": true,
+        "sourceText": ", and connections negotiating anything older are rejected."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Is customer data encrypted in transit, and what minimum TLS version do you accept?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Data in transit between customers and the platform, and between internal services, is protected with TLS 1.2 or higher; connections negotiating anything older are rejected at the load balancer."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "All external connections terminate TLS at the load balancer, which is configured to accept TLS 1.2 and TLS 1.3 only. Traffic between internal services within the VPC is likewise encrypted in transit. The public API and the web application are served exclusively over HTTPS with HSTS enabled."
+      }
+    ],
+    "reasoning": "Both the Information Security Policy and the Architecture Overview directly and consistently answer the question: customer data is encrypted in transit, and the minimum TLS version accepted is TLS 1.2, with older versions rejected at the load balancer. The two documents are in agreement, so there is no conflict.",
+    "abstained": false,
+    "answer": "Yes. Customer data is encrypted in transit: data between customers and the platform, and between internal services, is protected with TLS, and the public API and web application are served exclusively over HTTPS with HSTS enabled. The minimum TLS version accepted is TLS 1.2 — the load balancer is configured to accept TLS 1.2 and TLS 1.3 only, and connections negotiating anything older are rejected.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Customer data is encrypted in transit.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Customer data is encrypted in transit"
+      },
+      {
+        "claim": "Data between customers and the platform, and between internal services, is protected with TLS.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "data between customers and the platform, and between internal services, is protected with TLS"
+      },
+      {
+        "claim": "The public API and web application are served exclusively over HTTPS with HSTS enabled.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and the public API and web application are served exclusively over HTTPS with HSTS enabled"
+      },
+      {
+        "claim": "The minimum TLS version accepted is TLS 1.2.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The minimum TLS version accepted is TLS 1.2"
+      },
+      {
+        "claim": "The load balancer is configured to accept TLS 1.2 and TLS 1.3 only.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "the load balancer is configured to accept TLS 1.2 and TLS 1.3 only"
+      },
+      {
+        "claim": "Connections negotiating anything older than TLS 1.2 are rejected.",
+        "essential": true,
+        "supported": true,
+        "sourceText": ", and connections negotiating anything older are rejected."
+      }
+    ],
+    "removed": []
+  }
+}
