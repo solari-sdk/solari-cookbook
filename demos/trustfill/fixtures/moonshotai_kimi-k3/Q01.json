@@ -1,0 +1,93 @@
+{
+  "id": "Q01",
+  "question": "Is customer data encrypted at rest? Specify the algorithm.",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Customer data is encrypted at rest using AES-256. This applies to the primary datastore, search index, object storage, and backups, with keys held in AWS Key Management Service.",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Data at rest — the primary datastore, the search index, object storage, and backups — is encrypted with AES-256 using keys held in AWS Key Management Service."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Customer data stored in our production databases, object storage, and backup media is encrypted using AES-256."
+      }
+    ],
+    "reasoning": "Both the architecture overview and the information security policy directly and consistently state that customer data at rest is encrypted with AES-256, covering databases/datastore, object storage, search index, and backups. The two documents agree, so the question is answered unambiguously."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Customer data is encrypted at rest (yes).",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Customer data is encrypted at rest"
+      },
+      {
+        "claim": "The encryption algorithm used is AES-256.",
+        "essential": true,
+        "supported": true,
+        "sourceText": " using AES-256."
+      },
+      {
+        "claim": "Encryption at rest applies to the primary datastore, search index, object storage, and backups.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " This applies to the primary datastore, search index, object storage, and backups"
+      },
+      {
+        "claim": "Encryption keys are held in AWS Key Management Service.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", with keys held in AWS Key Management Service."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Is customer data encrypted at rest? Specify the algorithm.",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Data at rest — the primary datastore, the search index, object storage, and backups — is encrypted with AES-256 using keys held in AWS Key Management Service."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Customer data stored in our production databases, object storage, and backup media is encrypted using AES-256."
+      }
+    ],
+    "reasoning": "Both the architecture overview and the information security policy directly and consistently state that customer data at rest is encrypted with AES-256, covering databases/datastore, object storage, search index, and backups. The two documents agree, so the question is answered unambiguously.",
+    "abstained": false,
+    "answer": "Yes. Customer data is encrypted at rest using AES-256. This applies to the primary datastore, search index, object storage, and backups, with keys held in AWS Key Management Service.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Customer data is encrypted at rest (yes).",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Customer data is encrypted at rest"
+      },
+      {
+        "claim": "The encryption algorithm used is AES-256.",
+        "essential": true,
+        "supported": true,
+        "sourceText": " using AES-256."
+      },
+      {
+        "claim": "Encryption at rest applies to the primary datastore, search index, object storage, and backups.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " This applies to the primary datastore, search index, object storage, and backups"
+      },
+      {
+        "claim": "Encryption keys are held in AWS Key Management Service.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", with keys held in AWS Key Management Service."
+      }
+    ],
+    "removed": []
+  }
+}

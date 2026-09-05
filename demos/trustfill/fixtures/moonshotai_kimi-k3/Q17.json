@@ -1,0 +1,73 @@
+{
+  "id": "Q17",
+  "question": "How frequently are user access rights reviewed, and by whom?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "User access rights are reviewed quarterly. The review is performed by the system owner in conjunction with the security team, and any access no longer justified by the individual's role is removed as part of the review.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "User access rights are reviewed on a quarterly basis. The review is performed by the system owner in conjunction with the security team, and any access that is no longer justified by the individual's role is removed as part of the review."
+      }
+    ],
+    "reasoning": "The Information Security Policy (section 4, Access control) directly states both the frequency (quarterly) and the reviewers (the system owner in conjunction with the security team). This is consistent with the SOC 2 report summary, which references a quarterly user access review control and notes a single timeliness exception that was remediated — this does not conflict with the stated frequency or ownership."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "User access rights are reviewed quarterly.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "User access rights are reviewed quarterly."
+      },
+      {
+        "claim": "The review is performed by the system owner in conjunction with the security team.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The review is performed by the system owner in conjunction with the security team"
+      },
+      {
+        "claim": "Any access no longer justified by the individual's role is removed as part of the review.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and any access no longer justified by the individual's role is removed as part of the review"
+      }
+    ]
+  },
+  "answer": {
+    "question": "How frequently are user access rights reviewed, and by whom?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "User access rights are reviewed on a quarterly basis. The review is performed by the system owner in conjunction with the security team, and any access that is no longer justified by the individual's role is removed as part of the review."
+      }
+    ],
+    "reasoning": "The Information Security Policy (section 4, Access control) directly states both the frequency (quarterly) and the reviewers (the system owner in conjunction with the security team). This is consistent with the SOC 2 report summary, which references a quarterly user access review control and notes a single timeliness exception that was remediated — this does not conflict with the stated frequency or ownership.",
+    "abstained": false,
+    "answer": "User access rights are reviewed quarterly. The review is performed by the system owner in conjunction with the security team, and any access no longer justified by the individual's role is removed as part of the review.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "User access rights are reviewed quarterly.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "User access rights are reviewed quarterly."
+      },
+      {
+        "claim": "The review is performed by the system owner in conjunction with the security team.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The review is performed by the system owner in conjunction with the security team"
+      },
+      {
+        "claim": "Any access no longer justified by the individual's role is removed as part of the review.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and any access no longer justified by the individual's role is removed as part of the review"
+      }
+    ],
+    "removed": []
+  }
+}
