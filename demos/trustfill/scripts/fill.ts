@@ -19,7 +19,7 @@ import { Solari } from "@solarisdk/browser"
 import { launchBrowser } from "../src/browser.js"
 import { loadCorpus } from "../src/corpus.js"
 import { buildFillPlan } from "../src/fill-plan.js"
-import { ensureSignedIn, fillQuestionnaire, PortalChangedError } from "../src/filler.js"
+import { CREDENTIALS, ensureSignedIn, fillQuestionnaire, PortalChangedError } from "../src/filler.js"
 import { fixtureModel } from "../src/fixtures.js"
 import { liveModel, NVIDIA_URL } from "../src/provider.js"
 import { fetchReplayUrl } from "../src/replay.js"
@@ -33,6 +33,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 loadEnv(join(ROOT, ".env"))
 const FIXTURES = join(ROOT, "fixtures", "moonshotai_kimi-k3")
 const live = process.argv.includes("--live")
+// Keep the sandbox alive so the filled portal can actually be looked at.
+const keep = process.argv.includes("--keep")
 
 const solariKey = process.env.SOLARI_API_KEY
 if (!solariKey) {
@@ -90,7 +92,12 @@ let sessionId: string | null = null
 let portalUrl = ""
 let completed = false
 
-const portal = await startPortal({ apiKey: solariKey, root: ROOT })
+const portal = await startPortal({
+  apiKey: solariKey,
+  root: ROOT,
+  // Rolling idle window. Long enough to read the form and record a video.
+  timeoutMs: keep ? 60 * 60_000 : 15 * 60_000,
+})
 console.log(`\n  portal  ${portal.url.split("?")[0]}`)
 
 // Two browser sessions against ONE portal.
@@ -142,7 +149,7 @@ try {
   throw err
 } finally {
   await browser.stop()
-  await portal.stop()
+  if (!keep) await portal.stop()
 }
 
 // ── audit + review handoff ─────────────────────────────────────────────────
@@ -181,4 +188,33 @@ if (completed) {
   console.log(`  review packet ${packetPath}`)
   console.log(`  session       ${sessionId ?? "n/a"}`)
   console.log(`  replay        ${replayUrl ?? packet.audit.replayNote}\n`)
+}
+
+// ── keep it open ───────────────────────────────────────────────────────────
+if (keep) {
+  console.log("\n  ── open the filled questionnaire ─────────────────────────")
+  console.log("  Use the WHOLE url below. It carries the preview token, and the")
+  console.log("  gateway will not authenticate without it.\n")
+  console.log(`  ${portal.url}\n`)
+  console.log(`  sign in as   ${CREDENTIALS.email}`)
+  console.log(`  password     ${CREDENTIALS.password}`)
+  console.log("  the saved draft is already filled in\n")
+  console.log("  Ctrl-C to destroy the sandbox.\n")
+
+  // A promise awaiting SIGINT is not a handle Node counts, so the event loop
+  // empties and node exits 13 ("unsettled top-level await") the instant this is
+  // reached. An interval is a real handle and holds the process open.
+  await new Promise<void>((resolve) => {
+    const alive = setInterval(() => {}, 60_000)
+    const done = () => {
+      clearInterval(alive)
+      resolve()
+    }
+    process.once("SIGINT", done)
+    process.once("SIGTERM", done)
+  })
+
+  console.log("\n  destroying sandbox…")
+  await portal.stop()
+  console.log("  sandbox killed\n")
 }

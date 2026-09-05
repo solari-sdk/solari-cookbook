@@ -126,14 +126,48 @@ cp .env.example .env
 `SOLARI_API_KEY` is required — it boots the portal and drives the browser. Answers replay from committed fixtures, so no model key is needed.
 
 ```bash
-npm run demo        # replay captured answers (seconds)
-npm run demo:live   # re-run the model (needs NVIDIA_API_KEY; slow)
-npm run portal      # boot the portal alone and check it
+npm run demo        # fill the questionnaire, then tear everything down
+npm run demo:keep   # fill it and leave the portal up so you can look at it
+npm run demo:live   # re-run the model instead of replaying (slow)
+npm run portal      # boot the portal alone, no filling
+npm run cleanup     # kill leftover sandboxes
 npm run check       # typecheck + 62 tests, no network
 npm run capture     # regenerate fixtures after changing a prompt or model
 ```
 
 `.env` is read automatically; nothing needs sourcing first.
+
+### Looking at the filled portal
+
+`npm run demo` destroys the sandbox as soon as it finishes, so there is nothing
+left to open. Use `demo:keep`, which prints a URL and holds the sandbox until you
+press Ctrl-C:
+
+```
+https://<id>-3000.preview.getsolari.com?pt_token=<token>
+
+sign in as   vendor@meridian.example
+password     trustfill-demo
+```
+
+**Open the whole URL including `?pt_token=`.** The preview gateway authenticates
+with that token and returns 401 without it. The path goes *before* the query
+(`https://host/questionnaire?pt_token=…`), and the token expires about an hour
+after it is minted — re-run `demo:keep` for a fresh one.
+
+The blanks are questions 5, 12, 20 and 27.
+
+### One concurrent session
+
+The plan used here allows a single live session, so a leftover sandbox blocks the
+next run with `ConcurrencyLimitExceeded`. That happens whenever a run is
+interrupted hard enough to skip its cleanup — a killed terminal, or Ctrl-C that
+does not reach the handler.
+
+```bash
+npm run cleanup -- --dry   # list what is live
+npm run cleanup            # kill it
+```
 
 ## Everything here is synthetic
 
