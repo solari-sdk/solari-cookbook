@@ -8,9 +8,14 @@
  */
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
+
+import { loadEnv } from "../src/env.js"
 import { startPortal } from "../src/sandbox.js"
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
+
+// Load .env before anything reads process.env.
+loadEnv(join(ROOT, ".env"))
 const apiKey = process.env.SOLARI_API_KEY
 if (!apiKey) {
   console.error("\n  SOLARI_API_KEY is not set.\n")

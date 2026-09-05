@@ -3,6 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "demo": "tsx scripts/fill.ts",
+    "demo:live": "tsx scripts/fill.ts --live",
+    "portal": "tsx scripts/portal-smoke.ts",
+    "capture": "tsx scripts/capture.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",

@@ -13,12 +13,17 @@ import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
+import { loadEnv } from "../src/env.js"
+
 import { loadCorpus } from "../src/corpus.js"
 import { recordingModel } from "../src/fixtures.js"
 import { liveModel, NVIDIA_URL } from "../src/provider.js"
 import { runQuestionnaire } from "../src/run.js"
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
+
+// Load .env before anything reads process.env.
+loadEnv(join(ROOT, ".env"))
 
 const MODEL = process.env.TRUSTFILL_MODEL ?? "moonshotai/kimi-k3"
 const CONCURRENCY = Number(process.env.TRUSTFILL_CONCURRENCY ?? "3")

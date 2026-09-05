@@ -9,7 +9,7 @@ That gap is the product. Nothing in the evidence mentions cyber liability insura
 ```bash
 npm install
 cp .env.example .env          # add SOLARI_API_KEY
-npx tsx scripts/fill.ts
+npm run demo
 ```
 
 ```
@@ -126,18 +126,14 @@ cp .env.example .env
 `SOLARI_API_KEY` is required — it boots the portal and drives the browser. Answers replay from committed fixtures, so no model key is needed.
 
 ```bash
-npx tsx scripts/fill.ts          # replay captured answers (seconds)
-npx tsx scripts/fill.ts --live   # re-run the model (needs NVIDIA_API_KEY; slow)
-npx tsx scripts/portal-smoke.ts  # boot the portal alone and check it
-npm run check                    # typecheck + 55 tests, no network
+npm run demo        # replay captured answers (seconds)
+npm run demo:live   # re-run the model (needs NVIDIA_API_KEY; slow)
+npm run portal      # boot the portal alone and check it
+npm run check       # typecheck + 62 tests, no network
+npm run capture     # regenerate fixtures after changing a prompt or model
 ```
 
-Regenerate fixtures after changing a prompt or model:
-
-```bash
-set -a; . ./.env; set +a
-npx tsx scripts/capture.ts
-```
+`.env` is read automatically; nothing needs sourcing first.
 
 ## Everything here is synthetic
 

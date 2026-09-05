@@ -13,6 +13,8 @@ import { readdir, readFile, mkdir, writeFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
+import { loadEnv } from "../src/env.js"
+
 import { Solari } from "@solarisdk/browser"
 import { launchBrowser } from "../src/browser.js"
 import { loadCorpus } from "../src/corpus.js"
@@ -26,6 +28,9 @@ import { runQuestionnaire, type QuestionResult } from "../src/run.js"
 import { startPortal } from "../src/sandbox.js"
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
+
+// Load .env before anything reads process.env.
+loadEnv(join(ROOT, ".env"))
 const FIXTURES = join(ROOT, "fixtures", "moonshotai_kimi-k3")
 const live = process.argv.includes("--live")
 
