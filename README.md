@@ -18,6 +18,7 @@ past. Copy one into your project and change the parts you care about.
 | [browser-stealth-proxy-ts](examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
 | [browser-profiles-ts](examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
 | [browser-session-recording-py](examples/browser-session-recording-py) | Python | Record a session, download the replay |
+| [browser-workers-cdp-ts](examples/browser-workers-cdp-ts) | TypeScript | Drive a browser from a Cloudflare Worker, over raw CDP |
 
 ### Sandbox
 
@@ -69,6 +70,11 @@ Things that cost you an afternoon if you meet them cold:
   `await solari.close()` or the script printed its output and then hung forever.
   0.1.3 unrefs the listener — `browser.close()` alone now exits. Calling
   `solari.close()` is still fine and releases the client's pool immediately.
+- **The TypeScript SDK cannot run on an edge runtime.** It bundles a
+  Playwright fork that wants Node and raw TCP sockets, so Workers, Deno
+  Deploy and friends are out. Skip it: every session exposes a CDP endpoint,
+  and any runtime that can hold an outbound WebSocket can drive the browser
+  directly. See [browser-workers-cdp-ts](examples/browser-workers-cdp-ts).
 - **Recording is per session, not per account.** Pass `recording: true` when you
   create the session; without it the replay endpoint 404s forever. The upload is
   async after release, so poll for ~30s before giving up.

@@ -1,0 +1,15 @@
+{
+  "name": "solari-browser-workers-cdp-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260903.1",
+    "typescript": "^5.7.2",
+    "wrangler": "^4.20.0"
+  }
+}
