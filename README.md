@@ -33,6 +33,14 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+## Demos
+
+Larger than an example: a complete use case, built from several primitives.
+
+| Demo | Language | What it shows |
+| --- | --- | --- |
+| [trustfill](demos/trustfill) | TypeScript | Answers a customer's security questionnaire from your own documents — and leaves blank what the evidence doesn't support |
+
 ## Running an example
 
 Each directory is self-contained.
