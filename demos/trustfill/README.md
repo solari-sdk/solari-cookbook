@@ -175,6 +175,45 @@ Meridian Systems and Northwind Corp do not exist. The evidence corpus, the quest
 
 ## Where this goes
 
-The engine is form-agnostic — a security questionnaire is one adapter. Vendor onboarding, RFP responses and insurance submissions are the same shape: repeated questions answered from stable internal facts.
+Two of these already run in the code above. The rest is labelled as work.
 
-The durable asset isn't the filler, which is commoditising fast. It's the governed corpus underneath: what your company can truthfully claim about itself, with provenance, staleness and contradiction detection. Form-filling is one way to distribute that.
+### Contradiction audit — working today
+
+T3 isn't really a questionnaire feature. The incident response plan says a 4-hour
+RTO; the architecture overview says 12. The system found the disagreement and
+refused to pick a side.
+
+Take the questionnaire away and the same machinery reads a document set and tells
+you where your own security documentation contradicts itself. Every company with a
+SOC 2 report, an IR plan and an architecture doc has drift between them, written by
+different people at different times, and nobody knows where it is until a customer
+finds it.
+
+### Coverage before the questionnaire arrives — working today
+
+"26 of 30" reads as *how much of this form got filled*. Turned around, it's
+**evidence coverage**: your documentation answers 87% of what enterprise buyers
+ask, and here are the four gaps.
+
+Run it against a blank questionnaire and you learn in week one of a deal that
+cyber insurance is documented nowhere — not in week six, from the customer.
+
+### One adapter away
+
+`filler.ts` is selector-driven and the pipeline knows nothing about security
+questionnaires, so vendor onboarding, RFP responses and insurance submissions are a
+`FormAdapter` rather than a rewrite. Approved answers accumulating into a reusable
+library is the natural next surface; the review packet is already its seed.
+
+### Genuinely new work
+
+Corpus governance — provenance, staleness, an approval workflow — is the durable
+asset here. The filler is commoditising; a governed record of what a company can
+truthfully claim about itself is not.
+
+**And this is where Solari stops being convenient and becomes necessary.** One
+customer portal is a script you could run locally. Forty customers' portals, each
+with its own persistent authenticated session and its own MFA, is an
+infrastructure problem: a profile and a browser per relationship, running
+concurrently. That is the shape the platform is actually built for, and it is the
+first thing here that could not be done with a laptop and Playwright.
