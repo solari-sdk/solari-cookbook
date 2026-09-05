@@ -1,0 +1,51 @@
+{
+  "balances_cents": {
+    "buyer": 700,
+    "solari-browser-seller": 300
+  },
+  "buyer": {
+    "budget_cents": 100,
+    "status": "refunded"
+  },
+  "created_at": "2026-09-02T04:08:43.389357+00:00",
+  "evaluator": {
+    "checks": {
+      "heading": false,
+      "replay_nonempty": true,
+      "screenshot_nonempty": true,
+      "title": false,
+      "url": true
+    },
+    "passed": false
+  },
+  "previous_receipt_sha256": "70fd45f4caa134ee135b0f5c7b38d14f3ffa30999a03ef84d871abce282335db",
+  "receipt_sha256": "23d85f68d87dffa39260df437233fad0d0425ce609133b35d0f7c61687cbe7ca",
+  "reputation": {
+    "agent_id": "solari-browser-seller",
+    "failed_runs": 1,
+    "passed_runs": 3,
+    "score": 0.75
+  },
+  "run_id": "1d317dc5-b963-4715-b33f-f0b9643e8d07",
+  "seller": {
+    "heading": "Example Domain",
+    "provider": "solari-browser",
+    "session_id": "ip-10-0-11-211:900da38f-779a-4430-b0d5-f8d450c03fad:cmtiljj0n01pko101013ajucm:1788322127266.CxXKFqEaDtBQzVEH9CdGlQ",
+    "title": "Example Domain",
+    "url": "https://example.com/pricing"
+  },
+  "task": {
+    "expected_heading": "Pricing",
+    "expected_title": "Pricing",
+    "name": "pricing",
+    "url": "https://example.com/pricing"
+  },
+  "verifier": {
+    "algorithm": "sha256",
+    "evidence": {
+      "replay.ndjson": "e98f28a280466f5a795b745bccc15665a66c0a5a45d3b748764e36227b22823c",
+      "screenshot.png": "e6b1a4a831845ff3637e62640e7ea985bfc8166e2ebded2c0ff07a34dc469f8b"
+    }
+  },
+  "version": 1
+}

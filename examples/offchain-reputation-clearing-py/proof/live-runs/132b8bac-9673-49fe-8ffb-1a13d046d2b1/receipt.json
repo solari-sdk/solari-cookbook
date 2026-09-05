@@ -1,0 +1,49 @@
+{
+  "balances_cents": {
+    "buyer": 800,
+    "solari-browser-seller": 200
+  },
+  "buyer": {
+    "budget_cents": 100,
+    "status": "released"
+  },
+  "created_at": "2026-09-01T12:06:08.172613+00:00",
+  "evaluator": {
+    "checks": {
+      "heading": true,
+      "replay_nonempty": true,
+      "screenshot_nonempty": true,
+      "title": true,
+      "url": true
+    },
+    "passed": true
+  },
+  "previous_receipt_sha256": "df16c08ea1302ac9318d08f3a3f94dfda67a64f88c7977a3141fd57435b91105",
+  "receipt_sha256": "28ecd982231d09a79c003589069dabb4c56667b278bdb5454e1b9099d7eec00d",
+  "reputation": {
+    "agent_id": "solari-browser-seller",
+    "failed_runs": 0,
+    "passed_runs": 2,
+    "score": 1.0
+  },
+  "run_id": "132b8bac-9673-49fe-8ffb-1a13d046d2b1",
+  "seller": {
+    "heading": "Example Domain",
+    "provider": "solari-browser",
+    "session_id": "ip-10-0-11-12:6ab3ea17-4e36-44bb-95ba-6ec15164f784:cmtiljj0n01pko101013ajucm:1788264369225.rqcxRY9WF5Hj8eF2Tmrfaw",
+    "title": "Example Domain",
+    "url": "https://example.com/"
+  },
+  "task": {
+    "expected_heading": "Example Domain",
+    "url": "https://example.com/"
+  },
+  "verifier": {
+    "algorithm": "sha256",
+    "evidence": {
+      "replay.ndjson": "f59455047ab62c0adbf2ca1a1489eee5fcadbdb6a8dba13c52e17288c705077d",
+      "screenshot.png": "e6b1a4a831845ff3637e62640e7ea985bfc8166e2ebded2c0ff07a34dc469f8b"
+    }
+  },
+  "version": 1
+}
