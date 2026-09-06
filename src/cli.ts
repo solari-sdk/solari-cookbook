@@ -48,6 +48,10 @@ function parseArgs(argv: string[]): { command: string; file: string | undefined;
       if (output !== undefined || !argv[i + 1] || argv[i + 1]!.startsWith('-')) die('--output requires one directory');
       output = argv[++i]; continue;
     }
+    if (arg === '--patch' || arg === '--manifest' || arg === '--receipt') {
+      if (file !== undefined || !argv[i + 1] || argv[i + 1]!.startsWith('-')) die(`${arg} requires one file path`);
+      file = argv[++i]; continue;
+    }
     if (!arg || arg.startsWith('-')) die(`Unknown argument: ${arg}`);
     if (file) die(`Unexpected argument: ${arg}`);
     file = arg;

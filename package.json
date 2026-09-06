@@ -14,7 +14,8 @@
     "build": "tsc -p tsconfig.build.json",
     "lint": "tsc --noEmit",
     "demo": "node --experimental-strip-types src/cli.ts simulate fixtures/cache-fix.json",
-    "demo:live": "node --env-file-if-exists=.env --experimental-strip-types src/cli.ts run fixtures/cache-fix.json"
+    "demo:live": "node --env-file-if-exists=.env --experimental-strip-types src/cli.ts run fixtures/cache-fix.json",
+    "cli": "node dist/src/cli.js"
   },
   "dependencies": { "@solarisdk/sandbox": "0.1.3" },
   "devDependencies": { "@types/node": "24.10.1", "typescript": "5.9.3" }

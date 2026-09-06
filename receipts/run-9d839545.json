@@ -1,0 +1,109 @@
+{
+  "schema": 1,
+  "id": "cdc7e4b8-17b3-4568-88a7-4eb4607461cc",
+  "provider": "solari",
+  "manifest": {
+    "version": 1,
+    "name": "cache-invalidation",
+    "source": {
+      "kind": "fixture",
+      "baseline": {
+        "cache.py": "class Cache:\n    def __init__(self):\n        self.store = {}\n        self.cached = {}\n\n    def put(self, key, value):\n        self.store[key] = value\n        self.cached.pop(key, None)\n\n    def get(self, key):\n        if key not in self.cached:\n            self.cached[key] = self.store.get(key)\n        return self.cached[key]\n\n    def delete(self, key):\n        self.store.pop(key, None)\n"
+      },
+      "candidate": {
+        "cache.py": "class Cache:\n    def __init__(self):\n        self.store = {}\n        self.cached = {}\n\n    def put(self, key, value):\n        self.store[key] = value\n        self.cached.pop(key, None)\n\n    def get(self, key):\n        if key not in self.cached:\n            self.cached[key] = self.store.get(key)\n        return self.cached[key]\n\n    def delete(self, key):\n        self.store.pop(key, None)\n        self.cached.pop(key, None)\n"
+      }
+    },
+    "setup": [],
+    "probe": {
+      "argv": [
+        "python3",
+        "probe.py"
+      ],
+      "files": {
+        "probe.py": "from cache import Cache\n\ncache = Cache()\ncache.put('key', 'value')\nassert cache.get('key') == 'value'\ncache.delete('key')\nif cache.get('key') is not None:\n    print('STALE_READ: deleted key remains cached')\n    raise SystemExit(1)\nprint('CACHE_OK: deleted key is absent')\n"
+      },
+      "expectedFailure": {
+        "exitCode": 1,
+        "contains": "STALE_READ"
+      },
+      "expectedSuccess": {
+        "contains": "CACHE_OK"
+      }
+    },
+    "limits": {
+      "sessionSeconds": 120,
+      "commandSeconds": 30
+    }
+  },
+  "manifestSha256": "98030fce4ea17f0088075d44cc7ebe7a42409269a371335dca06379748142b86",
+  "startedAt": "2026-09-06T19:22:25.999Z",
+  "endedAt": "2026-09-06T19:22:29.874Z",
+  "verdict": "verified",
+  "lanes": [
+    {
+      "lane": "baseline",
+      "state": "released",
+      "startedAt": "2026-09-06T19:22:25.999Z",
+      "endedAt": "2026-09-06T19:22:28.879Z",
+      "durationMs": 2880,
+      "computeMs": 1456,
+      "sessionId": "ZGVza3RvcC1wb29sLWktMDY5ZTkyOTYyZjdiOGI1NzU6dm1fMDAyNzkzOmNtdHBpbXhiZDAwMmhueDAxeXA5azFqNzc6MTc4ODcyMjU0NzY2MA.CZQbK--rKQ4RlWuCYGgk9YkRmZCaD-WFmA-FULT_DmU",
+      "result": {
+        "protocol": 1,
+        "revision": null,
+        "probeSha256": "047a8a78e998c59cea744c99809bebe65c324da0e7b6cf28d31ae60d8cbae52f",
+        "runtime": {
+          "python": "3.11.2",
+          "platform": "Linux-6.6.30-x86_64-with-glibc2.36"
+        },
+        "setup": [],
+        "probe": {
+          "exitCode": 1,
+          "stdout": "STALE_READ: deleted key remains cached\n",
+          "stderr": "",
+          "timedOut": false,
+          "truncated": false,
+          "durationMs": 19
+        },
+        "error": null
+      }
+    },
+    {
+      "lane": "candidate",
+      "state": "released",
+      "startedAt": "2026-09-06T19:22:28.881Z",
+      "endedAt": "2026-09-06T19:22:29.873Z",
+      "durationMs": 992,
+      "computeMs": 680,
+      "sessionId": "ZGVza3RvcC1wb29sLWktMDY5ZTkyOTYyZjdiOGI1NzU6dm1fMDAyNzk0OmNtdHBpbXhiZDAwMmhueDAxeXA5azFqNzc6MTc4ODcyMjU0OTQyOA.Eya72fzn0pFNJYJeUOqcTYXNCFq5rtVilJ6MPdas4bY",
+      "result": {
+        "protocol": 1,
+        "revision": null,
+        "probeSha256": "047a8a78e998c59cea744c99809bebe65c324da0e7b6cf28d31ae60d8cbae52f",
+        "runtime": {
+          "python": "3.11.2",
+          "platform": "Linux-6.6.30-x86_64-with-glibc2.36"
+        },
+        "setup": [],
+        "probe": {
+          "exitCode": 0,
+          "stdout": "CACHE_OK: deleted key is absent\n",
+          "stderr": "",
+          "timedOut": false,
+          "truncated": false,
+          "durationMs": 19
+        },
+        "error": null
+      }
+    }
+  ],
+  "cost": {
+    "sessionsCreated": 2,
+    "computeSeconds": 2.136,
+    "estimatedUsd": 0.000050730000000000004,
+    "rateUsdPerHour": 0.0855,
+    "estimateOnly": true
+  },
+  "sha256": "4fb67cac220bd36279b89f99507999dc3e4bd03b18371f888f80693bc85791c5"
+}
