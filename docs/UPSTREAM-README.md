@@ -13,25 +13,25 @@ past. Copy one into your project and change the parts you care about.
 
 | Example | Language | What it shows |
 | --- | --- | --- |
-| [browser-quickstart-ts](examples/browser-quickstart-ts) | TypeScript | Launch a browser, open a page, read it |
-| [browser-quickstart-py](examples/browser-quickstart-py) | Python | Launch a browser, open a page, read it |
-| [browser-stealth-proxy-ts](examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
-| [browser-profiles-ts](examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
-| [browser-session-recording-py](examples/browser-session-recording-py) | Python | Record a session, download the replay |
+| [browser-quickstart-ts](../examples/browser-quickstart-ts) | TypeScript | Launch a browser, open a page, read it |
+| [browser-quickstart-py](../examples/browser-quickstart-py) | Python | Launch a browser, open a page, read it |
+| [browser-stealth-proxy-ts](../examples/browser-stealth-proxy-ts) | TypeScript | Stealth mode + residential proxy egress |
+| [browser-profiles-ts](../examples/browser-profiles-ts) | TypeScript | Log in once, reuse the session forever |
+| [browser-session-recording-py](../examples/browser-session-recording-py) | Python | Record a session, download the replay |
 
 ### Sandbox
 
 | Example | Language | What it shows |
 | --- | --- | --- |
-| [sandbox-quickstart-ts](examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
-| [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
-| [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
+| [sandbox-quickstart-ts](../examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
+| [sandbox-code-interpreter-py](../examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
+| [sandbox-port-preview-ts](../examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
 
 ### Desktop
 
 | Example | Language | What it shows |
 | --- | --- | --- |
-| [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
+| [desktop-computer-use-py](../examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
 ## Running an example
 
@@ -91,39 +91,5 @@ Things that cost you an afternoon if you meet them cold:
 New examples are welcome. Keep them small, make them run end-to-end against the
 real API, and put anything surprising in a comment right where it bites.
 
----
-
-## PatchProof (this branch)
-
-**PatchProof** is a two-sided regression evidence CLI in this branch. It checks
-whether a candidate fix addresses a reproduced bug by running the same
-reviewer-owned probe against two revisions in fresh Solari sandboxes.
-
-```bash
-# Validate a manifest (no credits)
-node dist/src/cli.js plan fixtures/cache-fix.json
-
-# Run offline simulation (no Solari key required)
-npm run demo
-
-# Run with real Solari sandboxes
-export SOLARI_API_KEY=slr_live_...
-node dist/src/cli.js run fixtures/cache-fix.json
-
-# Verify an existing receipt
-node dist/src/cli.js verify runs/<uuid>/receipt.json
-```
-
-**Verdicts**: `VERIFIED` | `NOT_REPRODUCED` | `STILL_FAILING` | `INCONCLUSIVE`
-
-`VERIFIED` requires: baseline failure (expected exit code + witness), candidate
-passing the same probe (exit 0 + success witness), and confirmed cleanup of both
-sessions. Anything uncertain is `INCONCLUSIVE`.
-
-> ⚠ **LOCAL SIMULATION** output is never real Solari evidence. Provider type is
-> stamped in every receipt and prominently labeled in every report.
-
-See [docs/PRODUCT.md](docs/PRODUCT.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md),
-[docs/DEMO.md](docs/DEMO.md), and [SECURITY.md](SECURITY.md).
-
 MIT licensed.
+

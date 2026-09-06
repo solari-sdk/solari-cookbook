@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "name": "cache-invalidation",
+  "source": {
+    "kind": "fixture",
+    "baseline": {
+      "cache.py": "class Cache:\n    def __init__(self):\n        self.store = {}\n        self.cached = {}\n\n    def put(self, key, value):\n        self.store[key] = value\n        self.cached.pop(key, None)\n\n    def get(self, key):\n        if key not in self.cached:\n            self.cached[key] = self.store.get(key)\n        return self.cached[key]\n\n    def delete(self, key):\n        self.store.pop(key, None)\n"
+    },
+    "candidate": {
+      "cache.py": "class Cache:\n    def __init__(self):\n        self.store = {}\n        self.cached = {}\n\n    def put(self, key, value):\n        self.store[key] = value\n        self.cached.pop(key, None)\n\n    def get(self, key):\n        if key not in self.cached:\n            self.cached[key] = self.store.get(key)\n        return self.cached[key]\n\n    def delete(self, key):\n        self.store.pop(key, None)\n"
+    }
+  },
+  "setup": [],
+  "probe": {
+    "argv": [
+      "python3",
+      "probe.py"
+    ],
+    "files": {
+      "probe.py": "from cache import Cache\n\ncache = Cache()\ncache.put('key', 'value')\nassert cache.get('key') == 'value'\ncache.delete('key')\nif cache.get('key') is not None:\n    print('STALE_READ: deleted key remains cached')\n    raise SystemExit(1)\nprint('CACHE_OK: deleted key is absent')\n"
+    },
+    "expectedFailure": {
+      "exitCode": 1,
+      "contains": "STALE_READ"
+    },
+    "expectedSuccess": {
+      "contains": "CACHE_OK"
+    }
+  },
+  "limits": {
+    "sessionSeconds": 120,
+    "commandSeconds": 30
+  }
+}

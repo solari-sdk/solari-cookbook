@@ -1,5 +1,17 @@
 node_modules/
-package-lock.json
+# Preserve the root application lockfile for reproducible installs.
+examples/**/package-lock.json
+.agents/
+.research/
+skills-lock.json
+dist/
+runs/
+test-output-*/
+test-demo-output/
+patchproof-20*/
+coverage/
+.env.*
+!.env.example
 .env
 __pycache__/
 *.pyc
