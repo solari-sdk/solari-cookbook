@@ -65,15 +65,6 @@ python main.py \
 Use `python main.py --help` for run limits, per-test timeouts, and output
 options.
 
-## Local tests
-
-These tests exercise URL validation, classification, result extraction, and
-report generation without using Solari credits:
-
-```bash
-pytest -q
-```
-
 ## Current scope
 
 - Public GitHub repositories using pytest

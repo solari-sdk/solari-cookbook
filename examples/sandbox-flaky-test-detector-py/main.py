@@ -80,10 +80,7 @@ def classify_runs(runs: list[dict[str, Any]]) -> str:
     return "error"
 
 
-def build_remote_program(config: dict[str, Any]) -> str:
-    """Return the program executed by Solari's stateful Python kernel."""
-    encoded_config = json.dumps(config)
-    return f'''import json
+SCAN = r'''import json
 import shlex
 import shutil
 import subprocess
@@ -92,8 +89,8 @@ import time
 import traceback
 from pathlib import Path
 
-CONFIG = json.loads({encoded_config!r})
-MARKER = {RESULT_MARKER!r}
+CONFIG = json.loads(sys.argv[1])
+MARKER = "FLAKEPROOF_RESULT="
 ROOT = Path("/tmp/flakeproof")
 REPO = ROOT / "repo"
 
@@ -107,31 +104,31 @@ def run(command, cwd=REPO, timeout=None):
             capture_output=True,
             text=True,
             timeout=timeout,
-            env={{**dict(__import__("os").environ), "PYTHONUNBUFFERED": "1"}},
+            env={**dict(__import__("os").environ), "PYTHONUNBUFFERED": "1"},
         )
-        return {{
+        return {
             "exit_code": completed.returncode,
             "stdout": completed.stdout,
             "stderr": completed.stderr,
             "duration_seconds": round(time.perf_counter() - started, 3),
-        }}
+        }
     except subprocess.TimeoutExpired as exc:
         stdout = exc.stdout.decode() if isinstance(exc.stdout, bytes) else (exc.stdout or "")
         stderr = exc.stderr.decode() if isinstance(exc.stderr, bytes) else (exc.stderr or "")
-        return {{
+        return {
             "exit_code": 124,
             "stdout": stdout,
             "stderr": stderr,
             "duration_seconds": round(time.perf_counter() - started, 3),
             "timed_out": True,
-        }}
+        }
 
 
 def checked(command, label, cwd=REPO, timeout=180):
     result = run(command, cwd=cwd, timeout=timeout)
     if result["exit_code"] != 0:
-        detail = (result["stdout"] + "\\n" + result["stderr"])[-1200:]
-        raise RuntimeError(f"{{label}} failed (exit {{result['exit_code']}}):\\n{{detail}}")
+        detail = (result["stdout"] + "\n" + result["stderr"])[-1200:]
+        raise RuntimeError(f"{label} failed (exit {result['exit_code']}):\n{detail}")
     return result
 
 
@@ -203,43 +200,37 @@ try:
                 status = "failed"
             else:
                 status = "error"
-            combined = (result["stdout"] + "\\n" + result["stderr"]).strip()
-            attempts.append({{
+            combined = (result["stdout"] + "\n" + result["stderr"]).strip()
+            attempts.append({
                 "attempt": attempt,
                 "status": status,
                 "exit_code": result["exit_code"],
                 "duration_seconds": result["duration_seconds"],
                 "output_tail": combined[-400:],
-            }})
-        tests.append({{"node_id": node_id, "runs": attempts}})
+            })
+        tests.append({"node_id": node_id, "runs": attempts})
 
-    print(MARKER + json.dumps({{
+    print(MARKER + json.dumps({
         "source": source,
         "requested_runs": CONFIG["runs"],
         "max_tests": CONFIG["max_tests"],
         "tests": tests,
-    }}, separators=(",", ":")))
+    }, separators=(",", ":")))
 except Exception as exc:
-    print(MARKER + json.dumps({{
+    print(MARKER + json.dumps({
         "error": str(exc),
         "traceback": traceback.format_exc(limit=5),
-    }}, separators=(",", ":")))
+    }, separators=(",", ":")))
 '''
 
 
-def extract_payload(result: Any) -> dict[str, Any]:
-    """Extract the marker-delimited JSON printed by the remote kernel."""
-    if result.error:
-        raise RuntimeError(f"Solari code execution failed: {result.error}")
-
-    output = "\n".join(
-        str(getattr(item, "text", "") or "") for item in result.results
-    )
-    marker_position = output.rfind(RESULT_MARKER)
+def extract_payload(stdout: str) -> dict[str, Any]:
+    """Extract the marker-delimited JSON printed by the remote scanner."""
+    marker_position = stdout.rfind(RESULT_MARKER)
     if marker_position == -1:
         raise RuntimeError("FlakeProof did not receive a result marker from the sandbox")
 
-    encoded = output[marker_position + len(RESULT_MARKER) :].splitlines()[0]
+    encoded = stdout[marker_position + len(RESULT_MARKER) :].splitlines()[0]
     payload = json.loads(encoded)
     if payload.get("error"):
         raise RuntimeError(
@@ -320,11 +311,17 @@ async def scan_with_solari(args: argparse.Namespace) -> dict[str, Any]:
         print("sandbox:", sandbox.sandboxId)
         try:
             await sandbox.connect()
-            context_id = await sandbox.create_code_context("python")
-            result = await sandbox.run_code(
-                build_remote_program(config), context_id=context_id
+            await sandbox.files.write("/tmp/flakeproof.py", SCAN)
+            result = await sandbox.commands.run(
+                "python3",
+                args=["/tmp/flakeproof.py", json.dumps(config)],
+                timeout_ms=10 * 60_000,
             )
-            return enrich_results(extract_payload(result))
+            if result.exitCode != 0:
+                raise RuntimeError(
+                    f"Solari scanner exited with code {result.exitCode}:\n{result.stderr}"
+                )
+            return enrich_results(extract_payload(result.stdout))
         finally:
             await sandbox.kill()
 
