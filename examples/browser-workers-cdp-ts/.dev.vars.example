@@ -1,0 +1,6 @@
+# Get a key at https://console.getsolari.com
+#
+# Workers read local secrets from .dev.vars, not .env. Copy this file to
+# .dev.vars and `wrangler dev` picks it up; in production the same name is a
+# secret you set with `wrangler secret put SOLARI_API_KEY`.
+SOLARI_API_KEY=slr_live_...

@@ -2,8 +2,9 @@
  * Persistent profiles — log in once, reuse the session forever.
  *
  * A profile stores cookies + localStorage server-side. Attach it with
- * `profileId` and the browser starts already logged in, so you stop paying the
- * login (and the 2FA, and the bot check) on every run.
+ * `profileId` and pass the returned state to your context, and the browser
+ * starts already logged in, so you stop paying the login (and the 2FA, and the
+ * bot check) on every run.
  *
  * Run this file twice: the first run logs in and saves, the second reuses it.
  */
@@ -19,7 +20,27 @@ console.log(existing ? `reusing profile ${profile.id}` : `created profile ${prof
 
 const browser = await solari.launch({ profileId: profile.id })
 try {
-  const page = await browser.newPage()
+  // Attaching a profile hands its state to `session.storageState`. It does not
+  // seed the browser, so the state has to go to the context you create. A page
+  // from `browser.newPage()` starts anonymous and the counter below never
+  // leaves 1, however many times you run this.
+  //
+  // The cast bridges a type gap, not a shape gap: the value is already what
+  // Playwright wants, but the SDK types every StorageState field as optional.
+  // Drop it once @solarisdk/browser tightens that type.
+  const storageState = browser.session.storageState as
+    | NonNullable<Parameters<typeof browser.newContext>[0]>["storageState"]
+    | undefined
+
+  const context = await browser.newContext({
+    storageState,
+    // A context you build yourself does not inherit the pool's timezone pin —
+    // that lives on the context the pool creates when you request a proxy. Pass
+    // it through, or Intl and Date disagree with your egress IP. Undefined when
+    // no proxy was requested, which is what you want.
+    timezoneId: browser.proxy?.timezoneId,
+  })
+  const page = await context.newPage()
 
   // This demo site echoes whatever is in localStorage/cookies back to you, so
   // you can see state survive between runs. Swap it for your real login flow.
@@ -34,11 +55,11 @@ try {
 
   // Persist whatever the browser accumulated. Without this the session's state
   // is discarded on release — attaching a profile does not auto-save it.
-  const state = await page.context().storageState()
+  const state = await context.storageState()
   const { version, sizeBytes } = await solari.profiles.save(profile.id, state)
   console.log(`saved profile v${version} (${sizeBytes} bytes)`)
 } finally {
   await browser.close()
-  // Required, or the process never exits — see browser-quickstart-ts.
+  // Optional as of 0.1.3, and no longer needed to exit — see browser-quickstart-ts.
   await solari.close()
 }

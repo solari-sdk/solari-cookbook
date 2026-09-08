@@ -1,0 +1,344 @@
+{
+  "branches": [
+    {
+      "action_count": 4,
+      "artifact": "explore-global-replace.csv",
+      "artifact_sha256": "d51c81a9fe949ca424cc4510f04b8187db1aa0e8c9c1f1829836dd9802b1dd25",
+      "candidate_id": "global-replace",
+      "checks": [
+        {
+          "actual": "vendor, amount, status, cost_center",
+          "expected": "vendor, amount, status, cost_center",
+          "id": "headers",
+          "label": "Schema preserved",
+          "passed": true,
+          "required": true,
+          "weight": 3
+        },
+        {
+          "actual": "3",
+          "expected": "3",
+          "id": "row-count",
+          "label": "Exactly three expense rows",
+          "passed": true,
+          "required": true,
+          "weight": 3
+        },
+        {
+          "actual": "275",
+          "expected": "275",
+          "id": "target-amount",
+          "label": "Target amount updated",
+          "passed": true,
+          "required": true,
+          "weight": 5
+        },
+        {
+          "actual": "approved",
+          "expected": "approved",
+          "id": "target-status",
+          "label": "Target approved",
+          "passed": true,
+          "required": true,
+          "weight": 5
+        },
+        {
+          "actual": "100 / pending / infra",
+          "expected": "100 / pending / infra",
+          "id": "acme-unchanged",
+          "label": "Acme row unchanged",
+          "passed": true,
+          "required": true,
+          "weight": 4
+        },
+        {
+          "actual": "275 / pending / data",
+          "expected": "250 / pending / data",
+          "id": "northstar-unchanged",
+          "label": "Northstar row unchanged",
+          "passed": false,
+          "required": true,
+          "weight": 4
+        },
+        {
+          "actual": "d51c81a9fe94",
+          "expected": "4ff842448a24",
+          "id": "exact-artifact",
+          "label": "No hidden collateral changes",
+          "passed": false,
+          "required": true,
+          "weight": 6
+        }
+      ],
+      "duration_ms": 102,
+      "error": null,
+      "hypothesis": "Replace every 250, then approve the target row.",
+      "label": "Global replace",
+      "phase": "explore",
+      "score": 0.0,
+      "screenshot": "screens/explore-global-replace.svg",
+      "status": "fail"
+    },
+    {
+      "action_count": 4,
+      "artifact": "explore-collateral-edit.csv",
+      "artifact_sha256": "55f06890d14858fdd46653ea67bc0d982171b4a05e8d59c755978e3992be9e81",
+      "candidate_id": "collateral-edit",
+      "checks": [
+        {
+          "actual": "vendor, amount, status, cost_center",
+          "expected": "vendor, amount, status, cost_center",
+          "id": "headers",
+          "label": "Schema preserved",
+          "passed": true,
+          "required": true,
+          "weight": 3
+        },
+        {
+          "actual": "3",
+          "expected": "3",
+          "id": "row-count",
+          "label": "Exactly three expense rows",
+          "passed": true,
+          "required": true,
+          "weight": 3
+        },
+        {
+          "actual": "275",
+          "expected": "275",
+          "id": "target-amount",
+          "label": "Target amount updated",
+          "passed": true,
+          "required": true,
+          "weight": 5
+        },
+        {
+          "actual": "approved",
+          "expected": "approved",
+          "id": "target-status",
+          "label": "Target approved",
+          "passed": true,
+          "required": true,
+          "weight": 5
+        },
+        {
+          "actual": "100 / pending / infra",
+          "expected": "100 / pending / infra",
+          "id": "acme-unchanged",
+          "label": "Acme row unchanged",
+          "passed": true,
+          "required": true,
+          "weight": 4
+        },
+        {
+          "actual": "250 / pending / ",
+          "expected": "250 / pending / data",
+          "id": "northstar-unchanged",
+          "label": "Northstar row unchanged",
+          "passed": false,
+          "required": true,
+          "weight": 4
+        },
+        {
+          "actual": "55f06890d148",
+          "expected": "4ff842448a24",
+          "id": "exact-artifact",
+          "label": "No hidden collateral changes",
+          "passed": false,
+          "required": true,
+          "weight": 6
+        }
+      ],
+      "duration_ms": 112,
+      "error": null,
+      "hypothesis": "Rewrite the target row manually while preserving the rest by sight.",
+      "label": "Targeted but lossy",
+      "phase": "explore",
+      "score": 0.0,
+      "screenshot": "screens/explore-collateral-edit.svg",
+      "status": "fail"
+    },
+    {
+      "action_count": 5,
+      "artifact": "explore-surgical-update.csv",
+      "artifact_sha256": "4ff842448a24d98fcb1cfdc647b05a717a1c75e80066bc5da3ed7eb1c6d42063",
+      "candidate_id": "surgical-update",
+      "checks": [
+        {
+          "actual": "vendor, amount, status, cost_center",
+          "expected": "vendor, amount, status, cost_center",
+          "id": "headers",
+          "label": "Schema preserved",
+          "passed": true,
+          "required": true,
+          "weight": 3
+        },
+        {
+          "actual": "3",
+          "expected": "3",
+          "id": "row-count",
+          "label": "Exactly three expense rows",
+          "passed": true,
+          "required": true,
+          "weight": 3
+        },
+        {
+          "actual": "275",
+          "expected": "275",
+          "id": "target-amount",
+          "label": "Target amount updated",
+          "passed": true,
+          "required": true,
+          "weight": 5
+        },
+        {
+          "actual": "approved",
+          "expected": "approved",
+          "id": "target-status",
+          "label": "Target approved",
+          "passed": true,
+          "required": true,
+          "weight": 5
+        },
+        {
+          "actual": "100 / pending / infra",
+          "expected": "100 / pending / infra",
+          "id": "acme-unchanged",
+          "label": "Acme row unchanged",
+          "passed": true,
+          "required": true,
+          "weight": 4
+        },
+        {
+          "actual": "250 / pending / data",
+          "expected": "250 / pending / data",
+          "id": "northstar-unchanged",
+          "label": "Northstar row unchanged",
+          "passed": true,
+          "required": true,
+          "weight": 4
+        },
+        {
+          "actual": "4ff842448a24",
+          "expected": "4ff842448a24",
+          "id": "exact-artifact",
+          "label": "No hidden collateral changes",
+          "passed": true,
+          "required": true,
+          "weight": 6
+        }
+      ],
+      "duration_ms": 100,
+      "error": null,
+      "hypothesis": "Change only the target amount and status, preserving all invariants.",
+      "label": "Surgical update",
+      "phase": "explore",
+      "score": 98.15,
+      "screenshot": "screens/explore-surgical-update.svg",
+      "status": "pass"
+    }
+  ],
+  "cleanup": {
+    "attempted": true,
+    "detail": "destroyed base plus 4 snapshot clones; deleted checkpoint",
+    "succeeded": true
+  },
+  "commit": {
+    "action_count": 5,
+    "artifact": "commit-surgical-update.csv",
+    "artifact_sha256": "4ff842448a24d98fcb1cfdc647b05a717a1c75e80066bc5da3ed7eb1c6d42063",
+    "candidate_id": "surgical-update",
+    "checks": [
+      {
+        "actual": "vendor, amount, status, cost_center",
+        "expected": "vendor, amount, status, cost_center",
+        "id": "headers",
+        "label": "Schema preserved",
+        "passed": true,
+        "required": true,
+        "weight": 3
+      },
+      {
+        "actual": "3",
+        "expected": "3",
+        "id": "row-count",
+        "label": "Exactly three expense rows",
+        "passed": true,
+        "required": true,
+        "weight": 3
+      },
+      {
+        "actual": "275",
+        "expected": "275",
+        "id": "target-amount",
+        "label": "Target amount updated",
+        "passed": true,
+        "required": true,
+        "weight": 5
+      },
+      {
+        "actual": "approved",
+        "expected": "approved",
+        "id": "target-status",
+        "label": "Target approved",
+        "passed": true,
+        "required": true,
+        "weight": 5
+      },
+      {
+        "actual": "100 / pending / infra",
+        "expected": "100 / pending / infra",
+        "id": "acme-unchanged",
+        "label": "Acme row unchanged",
+        "passed": true,
+        "required": true,
+        "weight": 4
+      },
+      {
+        "actual": "250 / pending / data",
+        "expected": "250 / pending / data",
+        "id": "northstar-unchanged",
+        "label": "Northstar row unchanged",
+        "passed": true,
+        "required": true,
+        "weight": 4
+      },
+      {
+        "actual": "4ff842448a24",
+        "expected": "4ff842448a24",
+        "id": "exact-artifact",
+        "label": "No hidden collateral changes",
+        "passed": true,
+        "required": true,
+        "weight": 6
+      }
+    ],
+    "duration_ms": 105,
+    "error": null,
+    "hypothesis": "Change only the target amount and status, preserving all invariants.",
+    "label": "Surgical update",
+    "phase": "commit",
+    "score": 98.15,
+    "screenshot": "screens/commit-surgical-update.svg",
+    "status": "pass"
+  },
+  "created_at": "2026-09-01T20:08:50.841992+00:00",
+  "engine_version": "0.1.0",
+  "environment": {
+    "base_sha256": "460f9e0ba42a14ace9ea28db436c0c844acd6a8ebe84c07117af9a719430f77b",
+    "checkpoint_id": "snap_dl492v05eccg",
+    "environment_id": "ZGVza3Rv\u20265flbi4",
+    "mode": "live",
+    "provider": "Solari Sandbox \u00b7 snapshot clones"
+  },
+  "metadata": {
+    "candidate_count": 3,
+    "selection": "required checks gate eligibility; score breaks ties"
+  },
+  "run_id": "wl_25a1856d806c",
+  "schema_version": "1.0",
+  "status": "committed",
+  "task": "Approve the Pinetree Travel expense",
+  "task_detail": "Change Pinetree Travel from 250/pending to 275/approved. Preserve every other row, field, header, and row order.",
+  "winner_id": "surgical-update"
+}
