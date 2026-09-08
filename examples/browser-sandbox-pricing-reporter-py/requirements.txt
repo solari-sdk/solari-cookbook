@@ -1,0 +1,2 @@
+solari-browser>=0.1.2
+solari-sandbox>=0.2.0
