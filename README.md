@@ -29,6 +29,7 @@ past. Copy one into your project and change the parts you care about.
 | Example | Language | What it shows |
 | --- | --- | --- |
 | [sandbox-quickstart-ts](examples/sandbox-quickstart-ts) | TypeScript | Run a command, write and read files |
+| [sandbox-git-clone-ts](examples/sandbox-git-clone-ts) | TypeScript | Clone a public Git repository, inspect its status, and run a command |
 | [sandbox-quickstart-rb](examples/sandbox-quickstart-rb) | Ruby | Same, with no SDK and no gems — stdlib only |
 | [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
 | [sandbox-snapshot-fork-py](examples/sandbox-snapshot-fork-py) | Python | Seed a snapshot, fork clones, and verify each restored the exact file digest |
