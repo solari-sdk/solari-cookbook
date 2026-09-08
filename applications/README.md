@@ -39,4 +39,5 @@ variable it reads and nothing else.
 
 | Application | Language | What it does |
 | --- | --- | --- |
+| [browser-agent-perturbation-suite](browser-agent-perturbation-suite) | TypeScript | Run one browser task across a grid of perturbed environments, judged from server state |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
