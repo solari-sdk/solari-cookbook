@@ -1,0 +1,9 @@
+{"arm": "none", "cost": 0.48191, "error": null, "input_tokens": 67287, "output_tokens": 5819, "rewinds": 0, "seconds": 104.67039260000092, "solved": true, "task": "env-repair", "tool_calls": 17, "turns": 11}
+{"arm": "none", "cost": 0.9379249999999999, "error": null, "input_tokens": 149080, "output_tokens": 7701, "rewinds": 0, "seconds": 149.90525049999997, "solved": true, "task": "env-repair", "tool_calls": 27, "turns": 18}
+{"arm": "none", "cost": 0.39947499999999997, "error": null, "input_tokens": 57065, "output_tokens": 4566, "rewinds": 0, "seconds": 87.38528099999894, "solved": true, "task": "env-repair", "tool_calls": 16, "turns": 11}
+{"arm": "rebuild", "cost": 0.349695, "error": null, "input_tokens": 53184, "output_tokens": 3351, "rewinds": 0, "seconds": 74.87162869999884, "solved": true, "task": "env-repair", "tool_calls": 15, "turns": 11}
+{"arm": "rebuild", "cost": 0.314095, "error": null, "input_tokens": 48594, "output_tokens": 2845, "rewinds": 0, "seconds": 66.28692420000152, "solved": true, "task": "env-repair", "tool_calls": 13, "turns": 10}
+{"arm": "rebuild", "cost": 0.74158, "error": null, "input_tokens": 116666, "output_tokens": 6330, "rewinds": 0, "seconds": 123.07580979999693, "solved": true, "task": "env-repair", "tool_calls": 21, "turns": 15}
+{"arm": "hindsight", "cost": 0.320625, "error": null, "input_tokens": 45425, "output_tokens": 3740, "rewinds": 0, "seconds": 86.21670759999688, "solved": true, "task": "env-repair", "tool_calls": 12, "turns": 9}
+{"arm": "hindsight", "cost": 0.413165, "error": null, "input_tokens": 64218, "output_tokens": 3683, "rewinds": 0, "seconds": 87.05171940000218, "solved": true, "task": "env-repair", "tool_calls": 16, "turns": 11}
+{"arm": "hindsight", "cost": 0.42185, "error": null, "input_tokens": 62380, "output_tokens": 4398, "rewinds": 0, "seconds": 97.61623039999904, "solved": true, "task": "env-repair", "tool_calls": 16, "turns": 11}
