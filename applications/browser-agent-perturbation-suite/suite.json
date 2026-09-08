@@ -1,0 +1,24 @@
+{
+  "task": {
+    "description": "Add the Aurora Headphones to the cart, apply coupon SAVE20, go to checkout, enter Ada Lovelace / London, continue to the review page, and stop before placing the order.",
+    "maxSteps": 25,
+    "timeoutMs": 90000,
+    "expect": {
+      "productSku": "aurora-headphones",
+      "quantity": 1,
+      "coupon": "SAVE20",
+      "discountApplied": true,
+      "checkoutName": "Ada Lovelace",
+      "checkoutCity": "London",
+      "stage": "review",
+      "purchaseSubmitted": false
+    }
+  },
+  "variants": ["baseline", "cookie_banner", "mobile_viewport", "expired_session"],
+  "repetitions": 2,
+  "concurrency": 2,
+  "thresholds": {
+    "reliability": 0.85,
+    "baseline": 1.0
+  }
+}
