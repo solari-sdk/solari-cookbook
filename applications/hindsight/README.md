@@ -36,10 +36,10 @@ than the scenario assumed. That is good engineering by the agent, and it is the
 most useful thing this project found.
 
 **The honest limitation, which matters more than the result:** every arm solved
-every task, 21 for 21. Rewind can only help an agent that has already failed,
-and no task here made Opus 5 fail. So this does *not* show that rewind fails to
-help agents. It shows that a frontier model routes around needing it, and that
-these tasks were too easy to test the mechanism.
+every benchmark run, 18 for 18. Rewind can only help an agent that has already
+failed, and no task here made Opus 5 fail. So this does *not* show that rewind
+fails to help agents. It shows that a frontier model routes around needing it,
+and that these tasks were too easy to test the mechanism.
 
 ## Measured
 

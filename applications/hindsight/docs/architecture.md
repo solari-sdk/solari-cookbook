@@ -145,7 +145,25 @@ revealed:
 Success is checked by us, never by the agent's own report. LLM runs vary, so
 every figure is a median over repeated runs with the spread shown beside it.
 
-### What the first runs taught
+### Result
+
+`env-repair`, n=3 per arm, Claude Opus 5, arm-specific prompts:
+
+| arm | solved | turns | tool calls | median cost | spread | rewinds |
+|---|---|---|---|---|---|---|
+| `none` | 3/3 | 11.0 | 17.0 | $0.482 | 0.399–0.938 | 0 |
+| `rebuild` | 3/3 | 11.0 | 15.0 | $0.350 | 0.314–0.742 | 0 |
+| `hindsight` | 3/3 | 11.0 | 16.0 | $0.413 | 0.321–0.422 | 0 |
+
+Identical median turns; spreads that overlap heavily at n=3. No arm outperformed
+another, and the agent never rewound. Raw data in `proof/env-repair.jsonl`.
+
+The `ledger-migration` sweep was discarded, not published: every arm shared one
+system prompt naming `checkpoint` and `rewind`, so arms without those tools were
+graded on instructions they could not follow. `system_for(arm)` now builds a
+prompt per arm and a test forbids naming an absent tool.
+
+### What the runs taught
 
 A capable agent routes around needing rewind whenever the state is small enough
 to copy and the danger is legible enough to simulate. On `ledger-migration` the

@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [hindsight](hindsight) | Python | Give a coding agent checkpoint/rewind tools, then measure whether it ever uses them |
