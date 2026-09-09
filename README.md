@@ -33,6 +33,13 @@ past. Copy one into your project and change the parts you care about.
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
 
+### Agents built on Solari
+
+| Example | Language | What it shows |
+| --- | --- | --- |
+| [portal-watch-ts](examples/portal-watch-ts) | TypeScript | Tracks scattered job-application portals: log in once, LLM reads the status, reports only what changed |
+| [watchdog-selfheal-ts](examples/watchdog-selfheal-ts) | TypeScript | A QA agent (browser) reports a bug, a fixer agent (sandbox) patches it, closed-loop |
+
 ## Running an example
 
 Each directory is self-contained.
