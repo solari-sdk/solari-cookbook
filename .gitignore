@@ -1,5 +1,13 @@
 node_modules/
-package-lock.json
+examples/**/package-lock.json
+.agents/
+.research/
+skills-lock.json
+dist/
+build/
+runs/
+.env.*
+!.env.example
 .env
 __pycache__/
 *.pyc

@@ -1,5 +1,20 @@
 # Solari Cookbook
 
+## ProcureLens — procurement discrepancies with evidence
+
+This fork adds [ProcureLens](examples/procurelens): compare internal purchasing records with a supplier product page, then inspect price, availability and inventory discrepancies with raw evidence. Solari Browser acquires the page; Solari Sandbox runs fixed deterministic processing. Offline simulation and receipt replay need no API key.
+
+```sh
+npm ci
+npm run demo
+```
+
+Requires Node 24+ and Python 3.10+ (`PROCURELENS_PYTHON` can select its executable). The demo prints the location of its JSON receipt and standalone HTML report. **SIMULATION is synthetic evidence.** Live support is one public Adafruit product page per run, with explicit unknown fields and scope-limited findings.
+
+[Run and compare observations](docs/DEMO.md) · [Product boundaries](docs/PRODUCT.md) · [Security](docs/SECURITY.md)
+
+The original upstream cookbook examples and MIT attribution remain below. This product attempt is maintained on the fork's `feat/procure-lens` branch; it is not an upstream submission.
+
 Short, runnable examples for [Solari](https://getsolari.com) — cloud browsers,
 sandboxes, and desktops behind one API key.
 
