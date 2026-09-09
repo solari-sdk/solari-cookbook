@@ -14,6 +14,11 @@ import os
 from solari_browser import Solari
 from solari_browser.errors import SolariError
 
+# The poll window, in one place: the message printed on timeout is derived from
+# these so it cannot drift from the loop that produced it.
+POLL_ATTEMPTS = 10
+POLL_INTERVAL_S = 3
+
 
 async def main() -> None:
     solari = Solari(api_key=os.environ["SOLARI_API_KEY"])
@@ -32,8 +37,8 @@ async def main() -> None:
     # The upload happens asynchronously AFTER the session is released, so the
     # first poll usually 404s even on a perfectly good recording. Retry before
     # concluding there is no replay.
-    for attempt in range(1, 11):
-        await asyncio.sleep(3)
+    for attempt in range(1, POLL_ATTEMPTS + 1):
+        await asyncio.sleep(POLL_INTERVAL_S)
         try:
             blob = await solari.sessions.download_replay(session_id)
         except SolariError as err:
@@ -49,7 +54,13 @@ async def main() -> None:
         print("first event:", events[0][:90], "...")
         return
 
-    print("no replay after ~30s — was the session created with recording=True?")
+    # Do NOT send the reader to check `recording=True` here: this script sets it
+    # at launch, so it can never be the cause. A 404 at this point means the
+    # upload had not appeared inside the window above, which is a different
+    # problem with a different fix.
+    print(f"no replay after ~{POLL_ATTEMPTS * POLL_INTERVAL_S}s.")
+    print("This script sets recording=True at launch, so the recording is not missing.")
+    print(f"Retry the download later for session {session_id}.")
 
 
 if __name__ == "__main__":

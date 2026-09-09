@@ -1,6 +1,8 @@
 node_modules/
 package-lock.json
 .env
+.dev.vars
+.wrangler/
 __pycache__/
 *.pyc
 .venv/
@@ -8,3 +10,4 @@ venv/
 screenshot.png
 examples/watchdog-selfheal-ts/out/
 examples/portal-watch-ts/out/
+screenshots/

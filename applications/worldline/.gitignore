@@ -1,0 +1,5 @@
+artifacts/
+.pytest_cache/
+.playwright-cli/
+build/
+*.egg-info/

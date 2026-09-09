@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "solari-browser-workers-cdp",
+  "main": "index.ts",
+  "compatibility_date": "2026-09-01",
+  "observability": { "enabled": true }
+}
