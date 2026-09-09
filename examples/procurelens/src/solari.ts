@@ -53,7 +53,7 @@ export function createSolariServices(apiKey: string, boundary: Boundary = {}): S
         const evidence = await bounded(page.evaluate(() => {
           const body = document.body.innerText;
           if (body.length > 150_000) throw new Error('Oversized DOM');
-          const heading = document.querySelector('h1');
+          const heading = Array.from(document.querySelectorAll('h1')).find(node => node instanceof HTMLElement && node.checkVisibility());
           if (!(heading instanceof HTMLElement) || !heading.checkVisibility()) throw new Error('Missing heading');
           const name = heading.innerText.trim();
           const sku = body.match(/Product ID:\s*(\d+)/i)?.[1];

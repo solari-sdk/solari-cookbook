@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createSolariServices } from '../src/solari.ts';
 import { ServiceFailure } from '../src/model.ts';
+import { runInNewContext } from 'node:vm';
+import { extract } from '../src/acquisition.ts';
 
 test('invalid source fails safely before allocation', async () => {
   await assert.rejects(createSolariServices('test').acquire('https://evil.test', new AbortController().signal), (e: unknown) => e instanceof ServiceFailure && e.resource === 'browser' && e.released);
@@ -56,10 +58,10 @@ test('sandbox deadline kills with an independent cleanup signal',async()=>{
 
 import type { Browser } from 'patchright-core';
 import type { Solari } from '@solarisdk/browser';
-function browserIo(options: { connectFails?: boolean; navigateFails?: boolean; closeFails?: boolean; releaseFails?: boolean }={}) {
+function browserIo(options: { connectFails?: boolean; navigateFails?: boolean; closeFails?: boolean; releaseFails?: boolean; headingFixture?: boolean }={}) {
   const calls:string[]=[];
   const client={sessions:{create:async()=>{calls.push('create');return {id:'opaque-private',wsEndpoint:'wss://private.test',cdpEndpoint:'wss://private.test',expiresAt:''};},releaseAndWait:async()=>{calls.push('release');if(options.releaseFails)throw Error('private');}},close:async()=>{calls.push('client-close');}} as unknown as Pick<Solari,'sessions'|'close'>;
-  const page={goto:async()=>{calls.push('navigate');if(options.navigateFails)throw Error('private');return {ok:()=>true,status:()=>200};},url:()=>source,evaluate:async()=>({fragments:['{"@type":"Product"}'],visible:[{sku:'385',name:'Sensor',price:'9.95',availability:'No longer stocked'}]})};
+  const page={goto:async()=>{calls.push('navigate');if(options.navigateFails)throw Error('private');return {ok:()=>true,status:()=>200};},url:()=>source,evaluate:async(fn: () => unknown)=> options.headingFixture ? headingCapture(fn) : ({fragments:['{"@type":"Product"}'],visible:[{sku:'385',name:'Sensor',price:'9.95',availability:'No longer stocked'}]})};
   const browser={newContext:async(options:unknown)=>{assert.deepEqual(options,{serviceWorkers:'block'});return {route:async()=>{},newPage:async()=>page};},close:async()=>{calls.push('browser-close');if(options.closeFails)throw Error('private');}} as unknown as Browser;
   return {calls,browser:()=>client,connect:async()=>{calls.push('connect');if(options.connectFails)throw Error('private');return browser;}};
 }
@@ -67,6 +69,25 @@ test('browser successful capture waits for remote release and local close',async
   const io=browserIo(); const result=await createSolariServices('test',io).acquire(source,new AbortController().signal);
   assert.equal(result.sourceUrl,source); assert.equal(result.adapter,'adafruit-jsonld-v1');
   assert.deepEqual(io.calls,['create','connect','navigate','release','browser-close','client-close']);
+});
+function headingCapture(fn: () => unknown): unknown {
+  class Heading {
+    innerText = 'Synthetic sensor';
+    visible: boolean;
+    constructor(visible: boolean) { this.visible = visible; }
+    checkVisibility() { return this.visible; }
+  }
+  const headings = [new Heading(false), new Heading(true)];
+  const document = {
+    body: { innerText: 'Product ID: 385 $9.95 No longer stocked' },
+    querySelector: () => headings[0],
+    querySelectorAll: (selector: string) => selector === 'h1' ? headings : [{ textContent: JSON.stringify({ '@type': 'Product', sku: 385, name: 'Synthetic sensor', offers: { price: '9.9500', priceCurrency: 'USD', availability: 'http://schema.org/Discontinued' } }) }],
+  };
+  return runInNewContext(`(${fn.toString()})()`, { document, HTMLElement: Heading }) as unknown;
+}
+test('browser extraction uses visible product heading after hidden responsive duplicate', async () => {
+  const capture = await createSolariServices('test', browserIo({ headingFixture: true })).acquire(source, new AbortController().signal);
+  assert.equal(extract(capture, 'SOLARI').rows[0]?.name, 'Synthetic sensor');
 });
 for (const [name,options,released] of [ ['connect failure',{connectFails:true},true],['navigation failure',{navigateFails:true},true],['disconnect failure',{closeFails:true},true],['release failure',{releaseFails:true},false] ] as const) test(`browser ${name} closes every known resource`,async()=>{
   const io=browserIo(options); await assert.rejects(createSolariServices('test',io).acquire(source,new AbortController().signal),failure('browser',released));

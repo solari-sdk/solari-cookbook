@@ -14,4 +14,4 @@ Branch: feat/procure-lens, based on origin/main 46709a1. PatchProof branch must 
 
 Implementation uses the supplied autonomous execution authorization rather than repeated design approvals. Test seams: processor JSON protocol, acquisition conversion, provider lifecycle, run replay, and CLI files. Work in vertical slices: observe a failing regression, implement minimum correction, rerun focused tests. Full offline checks are the gate before the one deliberate live workflow.
 
-Live result: FAILED_ACQUISITION, browser released, sandbox not started. Successful live end-to-end validation remains pending; see VALIDATION.md. No retry permitted by this run's one-attempt limit.
+Initial live result: FAILED_ACQUISITION, browser released, sandbox not started. A separately authorized follow-up fixed a reproduced hidden-heading extraction bug, passed all offline checks, and completed one live workflow with SOLARI REVIEW_REQUIRED and both resources released. See VALIDATION.md for the distinction between historical evidence, local diagnosis and successful live validation. No repeated paid retries were made.
