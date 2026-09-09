@@ -10,7 +10,7 @@ Branch: feat/procure-lens, based on origin/main 46709a1. PatchProof branch must 
 - [x] Workflow/report slice: exclusive outputs, safe failure states, strict receipt replay verification, HTML evidence cards and CLI.
 - [x] Hostile review: correctness/product/security/reliability/hiring; regression tests for findings; remove unjustified complexity.
 - [x] Run npm test, npm run typecheck, npm run build, npm run demo. One real workflow if key available; preserve honest result and sanitize all public evidence.
-- [ ] Update product/demo/cost/security/submission/launch docs to actual behavior. Inspect unstaged/staged diff and secret exclusions; meaningful commits, push origin feat/procure-lens and verify tip.
+- [x] Update product/demo/cost/security/submission/launch docs to actual behavior. Inspect unstaged/staged diff and secret exclusions; meaningful commits, push origin feat/procure-lens and verify tip.
 
 Implementation uses the supplied autonomous execution authorization rather than repeated design approvals. Test seams: processor JSON protocol, acquisition conversion, provider lifecycle, run replay, and CLI files. Work in vertical slices: observe a failing regression, implement minimum correction, rerun focused tests. Full offline checks are the gate before the one deliberate live workflow.
 
