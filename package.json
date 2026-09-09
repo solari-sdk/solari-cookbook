@@ -1,0 +1,11 @@
+{
+  "name": "solari-cookbook-fork", "private": true,
+  "workspaces": ["examples/procurelens"],
+  "scripts": {
+    "test": "npm --workspace procurelens test",
+    "typecheck": "npm --workspace procurelens run typecheck",
+    "build": "npm --workspace procurelens run build",
+    "demo": "npm --workspace procurelens run demo"
+  },
+  "devDependencies": { "typescript": "5.9.3", "@types/node": "24.10.1" }
+}
