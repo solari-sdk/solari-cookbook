@@ -49,6 +49,7 @@ One key spans all three, so an example can use more than one at once.
 | Example | Language | What it shows |
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
+| [desktop-voice-computer-use-py](examples/desktop-voice-computer-use-py) | Python | Voice-directed agent loop dispatching desktop actions |
 
 ## Applications
 

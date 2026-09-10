@@ -1,0 +1,1 @@
+solari-desktop>=0.2.0
