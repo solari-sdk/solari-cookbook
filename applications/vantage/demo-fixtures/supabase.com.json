@@ -1,0 +1,342 @@
+{
+  "url": "https://supabase.com/",
+  "host": "supabase.com",
+  "provider": "gemini",
+  "model": "gemini-2.5-flash",
+  "durationMs": 38518,
+  "events": [
+    {
+      "seq": 0,
+      "ts": 1788272527545,
+      "level": "info",
+      "phase": "boot",
+      "message": "Agent started on https://supabase.com/"
+    },
+    {
+      "seq": 1,
+      "ts": 1788272527546,
+      "level": "info",
+      "phase": "target",
+      "message": "Resolved target → https://supabase.com"
+    },
+    {
+      "seq": 2,
+      "ts": 1788272527546,
+      "level": "info",
+      "phase": "session",
+      "message": "Requesting a Solari browser session…"
+    },
+    {
+      "seq": 3,
+      "ts": 1788272532811,
+      "level": "ok",
+      "phase": "session",
+      "message": "Browser session live (recording on)."
+    },
+    {
+      "seq": 4,
+      "ts": 1788272532811,
+      "level": "info",
+      "phase": "scrape",
+      "message": "Loading homepage https://supabase.com"
+    },
+    {
+      "seq": 5,
+      "ts": 1788272540515,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "Homepage read — \"Supabase | The Postgres Development Platform\""
+    },
+    {
+      "seq": 6,
+      "ts": 1788272540515,
+      "level": "ok",
+      "phase": "identify",
+      "message": "Reading this as: Supabase"
+    },
+    {
+      "seq": 7,
+      "ts": 1788272540515,
+      "level": "ok",
+      "phase": "fingerprint",
+      "message": "1 stack signals: Next.js"
+    },
+    {
+      "seq": 8,
+      "ts": 1788272540515,
+      "level": "info",
+      "phase": "scrape",
+      "message": "Fetching pricing + about pages in parallel"
+    },
+    {
+      "seq": 9,
+      "ts": 1788272545153,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "pricing page captured (2600 chars)"
+    },
+    {
+      "seq": 10,
+      "ts": 1788272545153,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "about page captured (2600 chars)"
+    },
+    {
+      "seq": 11,
+      "ts": 1788272545154,
+      "level": "info",
+      "phase": "search",
+      "message": "Searching the open web: Supabase reviews · Supabase funding · Supabase news"
+    },
+    {
+      "seq": 12,
+      "ts": 1788272547855,
+      "level": "ok",
+      "phase": "search",
+      "message": "\"Supabase reviews\" → 5 results"
+    },
+    {
+      "seq": 13,
+      "ts": 1788272547855,
+      "level": "ok",
+      "phase": "search",
+      "message": "\"Supabase funding\" → 5 results"
+    },
+    {
+      "seq": 14,
+      "ts": 1788272547855,
+      "level": "ok",
+      "phase": "search",
+      "message": "\"Supabase news\" → 5 results"
+    },
+    {
+      "seq": 15,
+      "ts": 1788272547855,
+      "level": "warn",
+      "phase": "producthunt",
+      "message": "No ProductHunt trail found (no ProductHunt pages in the result set)"
+    },
+    {
+      "seq": 16,
+      "ts": 1788272547855,
+      "level": "ok",
+      "phase": "hackernews",
+      "message": "Hacker News → 6 stories, top: \"Supabase (YC S20) – An open source Firebase alternative\""
+    },
+    {
+      "seq": 17,
+      "ts": 1788272547855,
+      "level": "ok",
+      "phase": "github",
+      "message": "GitHub @supabase → 5 active repos, 108679★ top"
+    },
+    {
+      "seq": 18,
+      "ts": 1788272551818,
+      "level": "ok",
+      "phase": "replay",
+      "message": "Session replay captured."
+    },
+    {
+      "seq": 19,
+      "ts": 1788272551820,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "Collection done in 20.3s."
+    },
+    {
+      "seq": 20,
+      "ts": 1788272551821,
+      "level": "info",
+      "phase": "synthesize",
+      "message": "Dossier is ~4,187 tokens — sending to Gemini (gemini-2.5-flash)…"
+    },
+    {
+      "seq": 21,
+      "ts": 1788272566063,
+      "level": "ok",
+      "phase": "synthesize",
+      "message": "Teardown ready — confidence: high, 2 opportunities identified."
+    }
+  ],
+  "report": {
+    "company": "Supabase",
+    "headline": "Supabase is an open-source Postgres development platform providing database, authentication, APIs, edge functions, and storage for web, mobile, and AI applications.",
+    "positioning": {
+      "summary": "Supabase positions itself as a comprehensive Postgres development platform, offering a suite of integrated backend services as an open-source alternative to Firebase. It emphasizes ease of use, scalability, and the power of a full Postgres database.",
+      "targetCustomer": "Product developers building web, mobile, and AI applications, from passion projects to large-scale, internet-scale workloads.",
+      "valueProps": [
+        "Every project is a full Postgres database, known for being trusted, portable, and extensible.",
+        "Offers built-in authentication with Row Level Security.",
+        "Provides instant ready-to-use REST APIs.",
+        "Enables easy custom code execution with Edge Functions without server deployment.",
+        "Allows storage, organization, and serving of large files.",
+        "Facilitates building multiplayer experiences with real-time data synchronization.",
+        "Integrates with ML models for vector embeddings storage, indexing, and search.",
+        "Provides a unified dashboard with Table Editor, SQL Editor, and RLS Policies for managing applications.",
+        "Offers production-ready templates for quick project kickstarts."
+      ],
+      "differentiators": [
+        "100% portable Postgres database.",
+        "Open-source alternative to Firebase.",
+        "Integrated platform with best-of-breed products.",
+        "Large and fast-growing open-source community.",
+        "Strong affinity for open-source maintainers and ex-Founders in the team.",
+        "Supports S3 protocol for storage.",
+        "Offers self-hosted Deno functions with Edge Runtime."
+      ]
+    },
+    "pricing": {
+      "summary": "Supabase offers a tiered pricing model that includes a generous free tier, escalating to Pro and Team plans with increasing features, resources, and support, and an Enterprise plan for large-scale needs.",
+      "model": "Per-project subscription with usage-based billing for additional resources (MAUs, disk size, egress, file storage) beyond included limits.",
+      "freeTier": "Free plan includes unlimited API requests, 50,000 monthly active users, 500 MB database size, shared CPU/500 MB RAM, 5 GB egress/cached egress, 1 GB file storage, and community support. Projects are paused after 1 week of inactivity. Limit of 2 active projects.",
+      "tiers": [
+        {
+          "name": "FREE",
+          "price": "$0 / month",
+          "notes": "Perfect for passion projects & simple websites. Paused after 1 week of inactivity. Limit of 2 active projects."
+        },
+        {
+          "name": "PRO",
+          "price": "From $25 / month",
+          "notes": "Most popular, for production applications. Includes everything in Free, plus higher limits, email support, daily backups (7-day retention). Additional projects from $10/mo."
+        },
+        {
+          "name": "TEAM",
+          "price": "From $599 / month",
+          "notes": "Adds features like SSO, control over backups, SOC2 & ISO 27001 certifications, project-scoped access, HIPAA as add-on, priority email support & SLAs, daily backups (14-day retention), 28-day log retention. Additional projects from $10/mo."
+        },
+        {
+          "name": "ENTERPRISE",
+          "price": "Contact Us",
+          "notes": "For large-scale applications with internet-scale workloads. Includes custom designated support manager, uptime SLAs, AWS PrivateLink support, 24x7x365 premium enterprise support, private Slack channel, custom security questionnaires."
+        }
+      ]
+    },
+    "techStack": {
+      "summary": "Supabase's tech stack suggests a modern, performance-oriented, and open-source-centric development team. The use of TypeScript for core projects like `supabase`, `mcp`, and `cli`, along with Next.js for their frontend, indicates a strong focus on developer experience and efficient web development. The use of Elixir for `realtime` and Rust for `etl` demonstrates a commitment to high performance, concurrency, and reliability in specific critical components, typical of a mature and well-funded engineering organization tackling complex backend challenges.",
+      "signals": [
+        {
+          "name": "Next.js",
+          "category": "framework",
+          "evidence": "matched \"/_next/\" in page assets"
+        },
+        {
+          "name": "TypeScript",
+          "category": "other",
+          "evidence": "Used in supabase/supabase, supabase/mcp, supabase/cli GitHub repositories"
+        },
+        {
+          "name": "Elixir",
+          "category": "framework",
+          "evidence": "Used in supabase/realtime GitHub repository"
+        },
+        {
+          "name": "Rust",
+          "category": "framework",
+          "evidence": "Used in supabase/etl GitHub repository"
+        }
+      ]
+    },
+    "complaints": {
+      "summary": "The main complaint identified is a significant security vulnerability that could lead to database leaks, though it appears to have been publicly disclosed and likely addressed.",
+      "items": [
+        {
+          "complaint": "The Supabase MCP (Postgres metadata proxy) could leak entire SQL databases.",
+          "source": "Supabase MCP can leak your entire SQL database - Hacker News",
+          "severity": "high"
+        }
+      ]
+    },
+    "recentMoves": {
+      "summary": "Supabase has been very active, raising substantial funding rounds, expanding its platform capabilities with S3-compatible storage and enhanced real-time features, and hosting developer events. A significant security vulnerability was also disclosed and likely addressed.",
+      "items": [
+        {
+          "when": "2026-06-04",
+          "move": "Raised $500 million Series F funding round at a $10.5 billion valuation.",
+          "source": "CNBC, TheSaaSNews, Orrick"
+        },
+        {
+          "when": "August 2026",
+          "move": "Released product updates (Release Notes).",
+          "source": "Releasebot"
+        },
+        {
+          "when": "2026-09-01",
+          "move": "Active development on core GitHub repositories (supabase, realtime, mcp, cli, etl).",
+          "source": "GitHub"
+        },
+        {
+          "when": "October 2",
+          "move": "Hosting \"Supabase Select 2026\" event.",
+          "source": "homepage, pricing, about pages"
+        },
+        {
+          "when": "2025-10-03",
+          "move": "Raised $100 million Series E funding at a $5 billion valuation.",
+          "source": "TechCrunch"
+        },
+        {
+          "when": "2025-07-08",
+          "move": "Disclosure of a vulnerability where Supabase MCP could leak entire SQL databases.",
+          "source": "Hacker News"
+        },
+        {
+          "when": "2025-04-22",
+          "move": "Raised $200 million Series D funding at a $2 billion valuation.",
+          "source": "Fortune"
+        },
+        {
+          "when": "2024-04-19",
+          "move": "Supabase Storage now supports the S3 protocol.",
+          "source": "Hacker News"
+        },
+        {
+          "when": "2023-05-19",
+          "move": "There was a public discussion and blog post about migrating from Supabase, indicating some users may find reasons to move away from the platform.",
+          "source": "Hacker News"
+        },
+        {
+          "when": "2023-04-11",
+          "move": "Launched Supabase Edge Runtime for self-hosted Deno functions.",
+          "source": "Hacker News"
+        },
+        {
+          "when": "2022-08-18",
+          "move": "Released \"Supabase \\u2013 Realtime: Multiplayer Edition\" (general availability).",
+          "source": "Hacker News"
+        },
+        {
+          "when": "2020-05-27",
+          "move": "Launched Supabase (YC S20) as an open-source Firebase alternative.",
+          "source": "Hacker News"
+        }
+      ]
+    },
+    "opportunities": {
+      "summary": "Supabase's rapid growth, broad feature set, and high valuation present opportunities for competitors to target specific niches, address documented pain points, or offer differentiated experiences.",
+      "items": [
+        {
+          "gap": "Despite broad offerings, users might find it complex or overwhelming for very specific use cases.",
+          "why": "The platform aims to be a comprehensive \"Postgres development platform,\" which might lead to feature bloat for simple needs.",
+          "howToExploit": "Offer a hyper-focused, single-purpose backend service (e.g., just auth, or just real-time) that is significantly simpler and easier to use for that specific function, potentially at a lower entry cost or with a more generous free tier for that narrow scope."
+        },
+        {
+          "gap": "The 'Free projects are paused after 1 week of inactivity' policy could be a deterrent for hobbyists or long-term personal projects that are not constantly active.",
+          "why": "This policy, while likely designed to manage resource costs, can frustrate users who are not actively developing but want their projects accessible.",
+          "howToExploit": "Provide a truly 'always-free' tier for small, inactive projects, perhaps with very limited resources, but without the pausing mechanism. This could attract hobbyist developers who might eventually scale up and migrate to paid plans."
+        }
+      ]
+    },
+    "confidence": "high",
+    "gaps": [
+      "Detailed usage statistics beyond MAUs and egress are not publicly available.",
+      "Specific customer names are not provided, only \"fast-growing companies worldwide\".",
+      "The exact details of the \"Hacker News\" comments and the nature of all complaints are not fully elaborated without reading each discussion.",
+      "There is no information about current hiring trends or team growth, beyond the general statement that they are fully remote.",
+      "The full context and implications of the 'Migrating from Supabase' Hacker News discussion are not available from the snippet."
+    ]
+  },
+  "capturedAt": 1788272566064
+}

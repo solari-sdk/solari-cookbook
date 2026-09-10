@@ -1,0 +1,308 @@
+{
+  "url": "https://vercel.com/",
+  "host": "vercel.com",
+  "provider": "gemini",
+  "model": "gemini-2.5-flash",
+  "durationMs": 49829,
+  "events": [
+    {
+      "seq": 0,
+      "ts": 1788269033687,
+      "level": "info",
+      "phase": "boot",
+      "message": "Agent started on https://vercel.com/"
+    },
+    {
+      "seq": 1,
+      "ts": 1788269033687,
+      "level": "info",
+      "phase": "target",
+      "message": "Resolved target → https://vercel.com"
+    },
+    {
+      "seq": 2,
+      "ts": 1788269033687,
+      "level": "info",
+      "phase": "session",
+      "message": "Requesting a Solari browser session…"
+    },
+    {
+      "seq": 3,
+      "ts": 1788269040298,
+      "level": "ok",
+      "phase": "session",
+      "message": "Browser session live (recording on)."
+    },
+    {
+      "seq": 4,
+      "ts": 1788269040298,
+      "level": "info",
+      "phase": "scrape",
+      "message": "Loading homepage https://vercel.com"
+    },
+    {
+      "seq": 5,
+      "ts": 1788269050403,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "Homepage read — \"Agentic Infrastructure - Vercel\""
+    },
+    {
+      "seq": 6,
+      "ts": 1788269050404,
+      "level": "ok",
+      "phase": "identify",
+      "message": "Reading this as: Vercel"
+    },
+    {
+      "seq": 7,
+      "ts": 1788269050404,
+      "level": "ok",
+      "phase": "fingerprint",
+      "message": "1 stack signals: Next.js"
+    },
+    {
+      "seq": 8,
+      "ts": 1788269050404,
+      "level": "info",
+      "phase": "scrape",
+      "message": "Fetching pricing + about pages in parallel"
+    },
+    {
+      "seq": 9,
+      "ts": 1788269060374,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "pricing page captured (2600 chars)"
+    },
+    {
+      "seq": 10,
+      "ts": 1788269060375,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "about page captured (1443 chars)"
+    },
+    {
+      "seq": 11,
+      "ts": 1788269060375,
+      "level": "info",
+      "phase": "search",
+      "message": "Searching the open web: Vercel reviews · Vercel funding · Vercel news"
+    },
+    {
+      "seq": 12,
+      "ts": 1788269063115,
+      "level": "ok",
+      "phase": "search",
+      "message": "\"Vercel reviews\" → 5 results"
+    },
+    {
+      "seq": 13,
+      "ts": 1788269063115,
+      "level": "ok",
+      "phase": "search",
+      "message": "\"Vercel funding\" → 5 results"
+    },
+    {
+      "seq": 14,
+      "ts": 1788269063115,
+      "level": "ok",
+      "phase": "search",
+      "message": "\"Vercel news\" → 5 results"
+    },
+    {
+      "seq": 15,
+      "ts": 1788269063115,
+      "level": "warn",
+      "phase": "producthunt",
+      "message": "No ProductHunt trail found (no ProductHunt pages in the result set)"
+    },
+    {
+      "seq": 16,
+      "ts": 1788269063116,
+      "level": "ok",
+      "phase": "hackernews",
+      "message": "Hacker News → 6 stories, top: \"We pwned X, Vercel, Cursor, and Discord through a supply-cha\""
+    },
+    {
+      "seq": 17,
+      "ts": 1788269063116,
+      "level": "ok",
+      "phase": "github",
+      "message": "GitHub @vercel → 5 active repos, 142056★ top"
+    },
+    {
+      "seq": 18,
+      "ts": 1788269068040,
+      "level": "ok",
+      "phase": "replay",
+      "message": "Session replay captured."
+    },
+    {
+      "seq": 19,
+      "ts": 1788269068041,
+      "level": "ok",
+      "phase": "scrape",
+      "message": "Collection done in 29.4s."
+    },
+    {
+      "seq": 20,
+      "ts": 1788269068041,
+      "level": "info",
+      "phase": "synthesize",
+      "message": "Dossier is ~3,256 tokens — sending to Gemini (gemini-2.5-flash)…"
+    },
+    {
+      "seq": 21,
+      "ts": 1788269083516,
+      "level": "ok",
+      "phase": "synthesize",
+      "message": "Teardown ready — confidence: high, 4 opportunities identified."
+    }
+  ],
+  "report": {
+    "company": "Vercel",
+    "headline": "Vercel provides agentic infrastructure for developers and AI agents to build, deploy, and scale web applications and AI-powered agents.",
+    "positioning": {
+      "summary": "Vercel offers a platform for deploying web apps and AI agents, emphasizing a seamless developer experience with automatic CI/CD, global CDN, and fluid compute. Their recent focus is on \"agentic infrastructure\" to facilitate building and shipping AI-powered applications.",
+      "targetCustomer": "Coding agents, developers, and teams building and scaling web applications and AI agents.",
+      "valueProps": [
+        "Automatic CI/CD for quick deployments",
+        "Global, automated CDN for fast delivery",
+        "Fluid compute for efficient resource utilization",
+        "Web Application Firewall and DDoS Mitigation for security",
+        "Advanced spend management and team collaboration features",
+        "Infrastructure that thinks like agents, automating error investigation and fixes"
+      ],
+      "differentiators": [
+        "Specialization in \"Agentic Infrastructure\" for AI-powered applications and agents",
+        "Seamless integration with Next.js (developed by Vercel)",
+        "Sandboxed VMs and durable backends for agent deployment",
+        "AI Model Gateway and Fluid Compute for AI workloads"
+      ]
+    },
+    "pricing": {
+      "summary": "Vercel offers a free Hobby plan, a paid Pro plan at $20/month, and a custom-priced Enterprise plan. Pricing is based on a per-month subscription model, with additional usage-based costs for network traffic and firewall requests.",
+      "model": "per-seat subscription with usage-based addons",
+      "freeTier": "Hobby plan at $0/month, suitable for personal projects, includes basic CI/CD, WAF, CDN, and 1M edge requests/month, 100 GB data transfer.",
+      "tiers": [
+        {
+          "name": "Hobby",
+          "price": "$0 /mo.",
+          "notes": "Perfect starting place for web app or personal project. Includes Automatic CI/CD, WAF, Global CDN, Fluid compute, DDoS Mitigation, 1M Edge Requests / month, 100 GB Data Transfer / month."
+        },
+        {
+          "name": "Pro",
+          "price": "$20 /mo.",
+          "notes": "Everything needed to build and scale. Includes all Hobby features plus $20 usage credit, advanced spend management, team collaboration, faster builds, cold start prevention, 10M Edge Requests / month, 1TB Data Transfer / month. Additional usage starts at $2 per 1M Edge Requests and $0.15 per GB Data Transfer."
+        },
+        {
+          "name": "Enterprise",
+          "price": "Custom",
+          "notes": "Critical security, performance, observability, platform SLAs, and support. Includes all Pro features plus guest & team access controls, SCIM & Directory Sync, Managed WAF Rulesets, Multi-region compute & failover, 99.99% SLA, Advanced Support. Custom pricing for Edge Requests and Data Transfer."
+        }
+      ]
+    },
+    "techStack": {
+      "summary": "Vercel's tech stack is centered around JavaScript/TypeScript and the Next.js framework, which they created and maintain. This indicates a strong focus on modern web development practices, leveraging a popular and actively developed ecosystem. The extensive use of TypeScript suggests a preference for robust and scalable codebases, which aligns with their enterprise offerings.",
+      "signals": [
+        {
+          "name": "Next.js",
+          "category": "framework",
+          "evidence": "matched \"/_next/\" in page assets"
+        },
+        {
+          "name": "next.js",
+          "category": "framework",
+          "evidence": "GitHub repo vercel/next.js"
+        },
+        {
+          "name": "TypeScript",
+          "category": "other",
+          "evidence": "GitHub repos vercel/ai, vercel/vercel, vercel/streamdown, vercel/eve are TypeScript"
+        }
+      ]
+    },
+    "complaints": {
+      "summary": "Vercel has experienced multiple security incidents and supply chain attacks, which are significant concerns for users relying on their platform for production deployments. There are also discussions around their pricing structure, particularly concerning when users transition from the free tier to paid plans and the perceived value.",
+      "items": [
+        {
+          "complaint": "Pwned via supply-chain attack affecting X, Cursor, and Discord.",
+          "source": "We pwned X, Vercel, Cursor, and Discord through a supply-chain attack (Hacker News discussion)",
+          "severity": "high"
+        },
+        {
+          "complaint": "Security incident / breach confirmed, hackers claiming to sell stolen data.",
+          "source": "Vercel April 2026 security incident (Hacker News discussion), Vercel says internal systems hit in breach (Hacker News discussion)",
+          "severity": "high"
+        },
+        {
+          "complaint": "Concerns and discussions around Vercel's pricing structure.",
+          "source": "Do you pay for Vercel? and Why? : r/Frontend - Reddit",
+          "severity": "medium"
+        }
+      ]
+    },
+    "recentMoves": {
+      "summary": "Vercel recently secured a significant Series F funding round, valuing the company at $9.3 billion, with a stated goal to scale their AI Cloud. They have also been actively involved in the AI development space, as evidenced by their new AI-focused open-source libraries and frameworks. However, the company has also faced multiple security breaches in late 2025 and April 2026, which indicate ongoing challenges in platform security.",
+      "items": [
+        {
+          "when": "2026",
+          "move": "Raised $300M Series F funding round, valuing the company at $9.3 billion, to scale AI Cloud and v0.",
+          "source": "Towards the AI Cloud: Our Series F - Vercel, Vercel raises $300M at $9.3B valuation to scale AI Cloud and v0 ..."
+        },
+        {
+          "when": "2026-09-01",
+          "move": "Last push to vercel/ai (The AI Toolkit for TypeScript), vercel/streamdown (A drop-in replacement for react-markdown, designed for AI-powered streaming), and vercel/eve (The Open Framework for Building Agents) GitHub repositories, indicating active development in the AI space.",
+          "source": "GitHub: @vercel"
+        },
+        {
+          "when": "2026-04-19",
+          "move": "Confirmed internal systems hit in a breach, with hackers claiming to sell stolen data.",
+          "source": "Vercel April 2026 security incident (Hacker News), Vercel says internal systems hit in breach (Hacker News)"
+        },
+        {
+          "when": "2025-12-18",
+          "move": "Experienced a supply-chain attack that also affected X, Cursor, and Discord.",
+          "source": "We pwned X, Vercel, Cursor, and Discord through a supply-chain attack (Hacker News)"
+        },
+        {
+          "when": "2021-11-11",
+          "move": "Rich Harris, creator of Svelte, joined Vercel to work on Svelte full time.",
+          "source": "Rich Harris joins Vercel to work on Svelte full time (Hacker News)"
+        }
+      ]
+    },
+    "opportunities": {
+      "summary": "Opportunities exist for competitors to focus on specific niches within the deployment platform market, offer more transparent or predictable pricing, and emphasize security and reliability given Vercel's recent breaches. Addressing the pain points of scaling costs and providing robust open-source alternatives could attract users.",
+      "items": [
+        {
+          "gap": "Security concerns due to multiple breaches.",
+          "why": "Vercel has publicly experienced at least two significant security incidents recently (December 2025, April 2026). This erodes trust, especially for enterprise customers.",
+          "howToExploit": "Market a deployment platform with a verifiable, strong security track record, potentially by highlighting independent security audits, robust incident response plans, and a proactive approach to vulnerability management. Offer more transparent details on security measures and guarantees."
+        },
+        {
+          "gap": "Pricing unpredictability and scaling costs.",
+          "why": "Discussions on Reddit indicate users are concerned about Vercel's pricing model as they scale, moving beyond the free tier. The usage-based components can be difficult to estimate.",
+          "howToExploit": "Offer a deployment platform with simpler, more predictable pricing tiers, perhaps with higher included usage limits before additional charges apply, or fixed pricing per project/team size with clear caps. Provide tools for cost estimation and proactive alerts to help users manage budgets more effectively."
+        },
+        {
+          "gap": "Demand for open-source and self-hostable alternatives.",
+          "why": "Hacker News discussions show significant interest in open-source alternatives like Tau and Coolify, indicating a segment of developers prefers more control or cost-effective self-hosting options.",
+          "howToExploit": "Develop or support an open-source, self-hostable deployment platform that directly competes with Vercel's core features (CI/CD, global deployment). Focus on ease of setup, comprehensive documentation, and a strong community, potentially targeting smaller teams or developers with specific compliance needs."
+        },
+        {
+          "gap": "Niche focus on non-Next.js frameworks.",
+          "why": "While Vercel supports various frameworks, their strong association with and maintenance of Next.js means other frameworks might feel less prioritized or optimized.",
+          "howToExploit": "Build a deployment platform that explicitly optimizes for a specific alternative framework (e.g., Svelte, Remix, SolidStart) with first-class support, dedicated tooling, and performance benefits that might surpass what Vercel offers for that particular ecosystem. This could attract developers committed to those specific frameworks."
+        }
+      ]
+    },
+    "confidence": "high",
+    "gaps": [
+      "Specific customer complaints regarding customer service, ease-of-use, or functionality beyond what was discussed in the Reddit thread about pricing were not detailed in the provided Trustpilot or Software Advice summaries.",
+      "The exact dates of past funding rounds beyond the Series F and the total number of employees were not explicitly stated."
+    ]
+  },
+  "capturedAt": 1788270447078
+}
