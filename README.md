@@ -23,6 +23,7 @@ past. Copy one into your project and change the parts you care about.
 | [browser-workers-cdp-ts](examples/browser-workers-cdp-ts) | TypeScript | Drive a browser from a Cloudflare Worker, over raw CDP |
 | [browser-playwright-runner-ts](examples/browser-playwright-runner-ts) | TypeScript | Run your existing Playwright suite on Solari, no local Chromium |
 | [eu-consent-evidence-ts](examples/eu-consent-evidence-ts) | TypeScript | Pre-consent tracker evidence via raw CDP |
+| [self-healing-e2e-ts](examples/self-healing-e2e-ts) | TypeScript | Repair a browser test when a release moves the DOM |
 
 ### Sandbox
 
