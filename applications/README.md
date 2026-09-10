@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [vantage](vantage) | TypeScript | Browse a competitor's site and the public web, then write a sourced teardown from what was actually observed |

@@ -1,0 +1,1134 @@
+/* ------------------------------------------------------------------ *
+ * Vantage landing — full-viewport cinematic composition.
+ *
+ * Scoped to the landing route. The report and settings surfaces keep the
+ * tokens in globals.css.
+ * ------------------------------------------------------------------ */
+
+/* Drop the variable font files into public/fonts/ to get the real faces.
+   Until then the stack falls through to the system sans. */
+@font-face {
+  font-family: "Reference Sans";
+  src:
+    url("/fonts/ReferenceSans.woff2") format("woff2-variations"),
+    url("/fonts/ReferenceSans.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Reference Display";
+  src:
+    url("/fonts/ReferenceDisplay.woff2") format("woff2-variations"),
+    url("/fonts/ReferenceDisplay.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Applied to <html> while the landing is mounted. */
+.vantage-lock,
+.vantage-lock body {
+  overflow: hidden;
+  background: #000;
+}
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  isolation: isolate;
+  background: #000;
+  font-family: "Reference Sans", Arial, sans-serif;
+}
+
+.screen {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+
+  --gutter-start: clamp(36px, 4.177vw, 96px);
+  --gutter-end: clamp(36px, 4.04vw, 96px);
+  --header-top: clamp(20px, 2.264vh, 30px);
+  --hero-bottom: clamp(34px, 5.19vh, 64px);
+  /* The headline is `white-space: nowrap`, and the current copy is long, so the
+     size is capped by width as well as height — on a narrow-but-tall viewport a
+     purely vh-driven size would run past the gutter and clip. */
+  --display-size: clamp(42px, min(7.64vh, 6.1vw), 88px);
+  --display-leading: clamp(54px, min(9.34vh, 7.4vw), 106px);
+  --copy-size: clamp(14px, 1.7vh, 19px);
+  --copy-leading: clamp(19px, 2.17vh, 24px);
+  --title-copy-gap: clamp(15px, 2.08vh, 24px);
+  --copy-cta-gap: clamp(24px, 3.11vh, 36px);
+  --cta-width: clamp(142px, 15.09vh, 168px);
+  --cta-height: clamp(38px, 3.96vh, 44px);
+  --compact-control-font-size: clamp(17px, 1.75vh, 19px);
+  --action-control-font-size: clamp(17px, 1.78vh, 19.5px);
+  --primary-control-font-size: clamp(17px, 1.77vh, 19.25px);
+  --control-inline-nudge: -1px;
+  --control-baseline-shift: clamp(1px, 0.19vh, 2px);
+  --copy-optical-shift: clamp(0px, 0.1vh, 1px);
+  --watch-baseline-shift: clamp(2px, 0.38vh, 4px);
+  --card-width: clamp(150px, 18.96vh, 215px);
+}
+
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.03),
+      transparent 24%,
+      transparent 82%,
+      rgba(0, 0, 0, 0.05)
+    ),
+    radial-gradient(ellipse at 44% 54%, transparent 30%, rgba(0, 0, 0, 0.055) 100%);
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                              */
+/* ------------------------------------------------------------------ */
+
+.header {
+  position: absolute;
+  inset: var(--header-top) var(--gutter-end) auto var(--gutter-start);
+  height: 48px;
+  display: flex;
+  align-items: flex-start;
+  white-space: nowrap;
+  z-index: 3;
+}
+
+.brand {
+  position: relative;
+  top: 10px;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.header-actions {
+  display: contents;
+}
+
+.nav {
+  position: relative;
+  top: 9px;
+  display: flex;
+  margin-left: clamp(36px, 3.03vw, 48px);
+  gap: clamp(32px, 2.9vw, 43px);
+}
+
+.nav a {
+  position: relative;
+  flex: none;
+  white-space: nowrap;
+  font-size: 16px;
+  font-weight: 430;
+  letter-spacing: -0.36px;
+  color: rgba(229, 229, 230, 0.77);
+  text-decoration: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.nav a:first-child {
+  top: -3px;
+}
+
+.nav a.active {
+  color: #fff;
+}
+
+/* External link sits slightly dimmer with a trailing glyph. The link must
+   never shrink or wrap — a shrunk inline-flex drops the glyph onto its own
+   line, which is what put the arrow under the text. */
+.nav a.nav-external {
+  display: inline-flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  line-height: 1;
+  color: rgba(229, 229, 230, 0.62);
+}
+
+.nav a.nav-external:hover {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.nav a.nav-external svg {
+  display: inline-block;
+  flex: none;
+  opacity: 0.8;
+}
+
+.nav a.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 44px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.time-panel {
+  margin-left: auto;
+  width: 211px;
+  height: 48px;
+  padding-left: 8px;
+  border-left: 2px solid rgba(230, 230, 230, 0.52);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.time-panel .label {
+  font-size: 15px;
+  font-weight: 420;
+  color: rgba(240, 240, 240, 0.77);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
+.time-panel .value {
+  font-size: 15px;
+  font-weight: 440;
+  color: rgba(255, 255, 255, 0.93);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Holds the row height before the client clock resolves. */
+.clock-placeholder {
+  display: inline-block;
+  width: 168px;
+  height: 1em;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  vertical-align: middle;
+}
+
+.sign-up {
+  margin-left: clamp(20px, 1.95vw, 29px);
+  width: 109px;
+  height: 42px;
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  color: #101010;
+  font-family: inherit;
+  font-size: var(--compact-control-font-size);
+  font-weight: 460;
+  letter-spacing: -0.34px;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 1px 5px rgba(0, 0, 0, 0.34);
+}
+
+.menu-toggle {
+  display: none;
+  margin-left: auto;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 11px;
+  background: linear-gradient(145deg, rgba(24, 22, 20, 0.8), rgba(5, 12, 14, 0.86));
+  backdrop-filter: blur(14px) saturate(108%);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ */
+/* Hero                                                                */
+/* ------------------------------------------------------------------ */
+
+.hero-content {
+  position: absolute;
+  left: var(--gutter-start);
+  bottom: var(--hero-bottom);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2;
+}
+
+.hero-title {
+  margin: 0;
+  font-family: "Reference Display", "Reference Sans", Arial, sans-serif;
+  font-weight: 500;
+  font-optical-sizing: auto;
+  font-size: var(--display-size);
+  line-height: var(--display-leading);
+  letter-spacing: -2.1px;
+  -webkit-text-stroke: 0.12px currentColor;
+  white-space: nowrap;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.44);
+}
+
+.line {
+  display: block;
+  transform-origin: left center;
+}
+
+.line-reveal {
+  display: block;
+}
+
+.line-one {
+  color: #fff;
+  transform: scaleX(0.775);
+}
+
+.line-two {
+  color: rgba(255, 255, 255, 0.6);
+  transform: scaleX(0.793);
+}
+
+.hero-copy {
+  position: relative;
+  left: 1px;
+  margin: var(--title-copy-gap) 0 0;
+  width: clamp(390px, 31.67vw, 500px);
+  color: rgba(226, 229, 228, 0.84);
+  font-size: var(--copy-size);
+  line-height: var(--copy-leading);
+  font-weight: 350;
+  letter-spacing: 0.13px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  transform: translateY(var(--copy-optical-shift));
+}
+
+/* Competitor URL field — the one interactive addition to the hero. */
+.hero-target {
+  display: flex;
+  align-items: center;
+  margin-top: var(--copy-cta-gap);
+  width: clamp(390px, 31.67vw, 500px);
+  /* py-4 px-5 */
+  padding: 16px 20px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, rgba(24, 22, 20, 0.72), rgba(5, 12, 14, 0.8));
+  backdrop-filter: blur(14px) saturate(108%);
+  /* ring-1 ring-white/10, brightening to ring-white/30 on focus. */
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.1),
+    0 2px 10px rgba(0, 0, 0, 0.4);
+  transition: box-shadow 140ms ease;
+}
+
+.hero-target:focus-within {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.hero-target input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.1px;
+  outline: none;
+}
+
+.hero-target input::placeholder {
+  color: rgba(226, 229, 228, 0.38);
+}
+
+/* One-click example targets. */
+.hero-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-examples-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(226, 229, 228, 0.45);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.hero-example {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(12, 16, 18, 0.5);
+  backdrop-filter: blur(10px) saturate(106%);
+  color: rgba(238, 240, 240, 0.86);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 420;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.hero-example:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #fff;
+}
+
+.hero-example:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hero-status {
+  margin: 8px 0 0;
+  min-height: 16px;
+  font-size: 12.5px;
+  font-weight: 400;
+  letter-spacing: 0.1px;
+  color: rgba(226, 229, 228, 0.58);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.hero-status a {
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.hero-status.is-error {
+  color: #f59e0b;
+}
+
+.primary-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--copy-cta-gap);
+  width: var(--cta-width);
+  height: var(--cta-height);
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+  color: #111;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.38);
+}
+
+.hero-target + .primary-cta {
+  margin-top: 12px;
+}
+
+.primary-cta:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* The label now carries its own arrow glyph, so it is simply centred — the
+   separate dark arrow box would have been a second arrow. */
+.primary-cta .label {
+  transform: translateY(var(--control-baseline-shift));
+  font-size: var(--primary-control-font-size);
+  font-weight: 450;
+  letter-spacing: -0.3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Demo card                                                           */
+/* ------------------------------------------------------------------ */
+
+.demo-card {
+  position: absolute;
+  right: var(--gutter-end);
+  bottom: var(--hero-bottom);
+  width: var(--card-width);
+  aspect-ratio: 201 / 265;
+  container-type: inline-size;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: clamp(12px, 1.52vh, 18px);
+  background: linear-gradient(145deg, rgba(24, 22, 20, 0.8), rgba(5, 12, 14, 0.86));
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.44),
+    0 0 0 3px rgba(255, 255, 255, 0.035) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(14px) saturate(108%);
+  z-index: 2;
+}
+
+.demo-visual {
+  position: absolute;
+  left: 3.5cqw;
+  top: 4cqw;
+  width: 92.5cqw;
+  height: 92cqw;
+  border-radius: 4cqw;
+  background: #101a1e;
+  overflow: hidden;
+}
+
+.demo-visual img,
+.demo-visual video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.89) saturate(0.93) contrast(1.03);
+}
+
+.demo-visual video {
+  background: #0b1116;
+}
+
+.play {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 29cqw;
+  height: 29cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  background: rgba(3, 5, 7, 0.47);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  cursor: pointer;
+}
+
+.watch-button {
+  position: absolute;
+  left: 3.5cqw;
+  right: 3.5cqw;
+  bottom: 4cqw;
+  height: calc(100% - 4cqw - 92cqw - 4cqw - 4cqw);
+  min-height: 9cqw;
+  border: 1px solid rgba(255, 255, 255, 0.21);
+  border-radius: 3.5cqw;
+  background: linear-gradient(145deg, rgba(26, 34, 36, 0.86), rgba(16, 29, 33, 0.9));
+  backdrop-filter: blur(14px) saturate(110%);
+  color: #fff;
+  font-family: inherit;
+  font-size: var(--action-control-font-size);
+  font-weight: 430;
+  letter-spacing: -0.3px;
+  cursor: pointer;
+  padding-top: var(--watch-baseline-shift);
+}
+
+/* ------------------------------------------------------------------ */
+/* Demo modal                                                          */
+/* ------------------------------------------------------------------ */
+
+.demo-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 4vh, 48px);
+  background: rgba(3, 5, 7, 0.72);
+  backdrop-filter: blur(10px) saturate(105%);
+  animation: modal-in 180ms ease-out both;
+}
+
+.demo-modal-panel {
+  /* Shrink-wraps the video so there is no dead panel area: every pixel
+     outside the frame belongs to the overlay and closes the modal. */
+  position: relative;
+  display: flex;
+  line-height: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.9);
+  animation: modal-panel-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.demo-modal-panel video {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(1180px, 92vw);
+  max-height: 86vh;
+  background: #000;
+  cursor: pointer;
+}
+
+/* Only surfaced while paused — the video itself is the play/pause target. */
+.demo-modal-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  padding-left: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 50%;
+  background: rgba(3, 5, 7, 0.55);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  cursor: pointer;
+  animation: modal-in 140ms ease-out both;
+}
+
+.demo-modal-play:hover {
+  background: rgba(3, 5, 7, 0.72);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+.demo-modal-play svg {
+  width: 22px;
+  height: 25px;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-modal,
+  .demo-modal-panel {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Interaction                                                         */
+/* ------------------------------------------------------------------ */
+
+.viewport button,
+.viewport a {
+  transition:
+    filter 140ms ease,
+    opacity 140ms ease;
+}
+
+.viewport button:hover,
+.viewport a:hover {
+  filter: brightness(1.08);
+}
+
+.viewport :focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Entrance choreography                                               */
+/* ------------------------------------------------------------------ */
+
+@keyframes entrance-brand {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes entrance-nav {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes entrance-action {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes entrance-line {
+  from {
+    transform: translate3d(0, 110%, 0) skewY(2deg);
+  }
+  to {
+    transform: translate3d(0, 0, 0) skewY(0);
+  }
+}
+
+@keyframes entrance-copy {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(var(--copy-optical-shift));
+  }
+}
+
+@keyframes entrance-card {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.968);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.motion-pending .brand,
+.motion-pending .nav a,
+.motion-pending .time-panel,
+.motion-pending .sign-up,
+.motion-pending .menu-toggle,
+.motion-pending .hero-copy,
+.motion-pending .hero-target,
+.motion-pending .primary-cta,
+.motion-pending .hero-examples,
+.motion-pending .hero-status,
+.motion-pending .demo-card {
+  opacity: 0;
+}
+
+.motion-pending .line {
+  overflow: hidden;
+}
+
+.motion-pending .line-reveal {
+  transform: translate3d(0, 110%, 0) skewY(2deg);
+}
+
+.motion-pending .brand {
+  animation: entrance-brand 580ms cubic-bezier(0.16, 1, 0.3, 1) 60ms forwards;
+}
+
+.motion-pending .nav a {
+  animation: entrance-nav 480ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.motion-pending .nav a:nth-child(1) { animation-delay: 130ms; }
+.motion-pending .nav a:nth-child(2) { animation-delay: 175ms; }
+.motion-pending .nav a:nth-child(3) { animation-delay: 220ms; }
+.motion-pending .nav a:nth-child(4) { animation-delay: 265ms; }
+
+.motion-pending .time-panel {
+  animation: entrance-nav 520ms cubic-bezier(0.16, 1, 0.3, 1) 180ms forwards;
+}
+
+.motion-pending .sign-up {
+  animation: entrance-action 520ms cubic-bezier(0.16, 1, 0.3, 1) 220ms forwards;
+}
+
+.motion-pending .menu-toggle {
+  animation: entrance-action 520ms cubic-bezier(0.16, 1, 0.3, 1) 140ms forwards;
+}
+
+.motion-pending .line-one .line-reveal {
+  animation: entrance-line 800ms cubic-bezier(0.22, 1, 0.36, 1) 300ms forwards;
+}
+
+.motion-pending .line-two .line-reveal {
+  animation: entrance-line 850ms cubic-bezier(0.22, 1, 0.36, 1) 440ms forwards;
+}
+
+.motion-pending .hero-copy {
+  animation: entrance-copy 620ms cubic-bezier(0.16, 1, 0.3, 1) 740ms forwards;
+}
+
+.motion-pending .hero-target {
+  animation: entrance-action 560ms cubic-bezier(0.16, 1, 0.3, 1) 880ms forwards;
+}
+
+.motion-pending .primary-cta {
+  animation: entrance-action 560ms cubic-bezier(0.16, 1, 0.3, 1) 960ms forwards;
+}
+
+.motion-pending /* One-click example targets. */
+.hero-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.hero-examples-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(226, 229, 228, 0.45);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.hero-example {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  padding: 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(12, 16, 18, 0.5);
+  backdrop-filter: blur(10px) saturate(106%);
+  color: rgba(238, 240, 240, 0.86);
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 420;
+  letter-spacing: -0.1px;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    color 140ms ease;
+}
+
+.hero-example:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #fff;
+}
+
+.hero-example:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.hero-status {
+  animation: entrance-copy 520ms cubic-bezier(0.16, 1, 0.3, 1) 1000ms forwards;
+}
+
+.motion-pending .demo-card {
+  transform-origin: 82% 50%;
+  animation: entrance-card 920ms cubic-bezier(0.22, 1, 0.36, 1) 1040ms forwards;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tablet                                                              */
+/* ------------------------------------------------------------------ */
+
+@media (min-width: 620px) and (max-width: 790px),
+  (min-width: 620px) and (max-width: 1100px) and (orientation: portrait) {
+  .menu-toggle {
+    display: flex;
+  }
+
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    position: absolute;
+    right: 0;
+    top: 58px;
+    width: min(324px, calc(100vw - var(--gutter-start) - var(--gutter-end)));
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(24, 22, 20, 0.86), rgba(5, 12, 14, 0.9));
+    backdrop-filter: blur(18px) saturate(110%);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.985);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease,
+      visibility 180ms;
+  }
+
+  .header.menu-open .header-actions {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  .nav {
+    top: 0;
+    margin-left: 0;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .nav a:first-child {
+    top: 0;
+  }
+
+  .time-panel {
+    margin-left: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  .sign-up {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .hero-title {
+    white-space: nowrap;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Mobile                                                              */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 619px) {
+  .screen {
+    --mobile-gutter: 20px;
+    --gutter-start: max(var(--mobile-gutter), env(safe-area-inset-left));
+    --gutter-end: max(var(--mobile-gutter), env(safe-area-inset-right));
+    --hero-bottom: max(24px, env(safe-area-inset-bottom));
+    /* Wrapped, not scaled: the nowrap + scaleX treatment only works on one
+       long line, and on a phone the headline has to break. */
+    --display-size: clamp(34px, 9.4vw, 46px);
+    --display-leading: 1.08em;
+    --card-width: 100%;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  .header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    position: absolute;
+    right: 0;
+    top: 58px;
+    width: min(340px, calc(100vw - 2 * var(--mobile-gutter)));
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(24, 22, 20, 0.86), rgba(5, 12, 14, 0.9));
+    backdrop-filter: blur(18px) saturate(110%);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px) scale(0.985);
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease,
+      visibility 180ms;
+    z-index: 4;
+  }
+
+  .header.menu-open .header-actions {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  .nav {
+    top: 0;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .nav a:first-child {
+    top: 0;
+  }
+
+  .time-panel,
+  .sign-up {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* One flow column instead of two absolute corners — the card and the hero
+     text were overlapping when both were pinned. */
+  .hero {
+    position: absolute;
+    inset: calc(var(--header-top) + 62px) 0 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 18px;
+    padding: 0 var(--gutter-end) var(--hero-bottom) var(--gutter-start);
+    overflow-y: auto;
+  }
+
+  .hero-content {
+    position: static;
+    width: 100%;
+  }
+
+  .hero-title {
+    white-space: normal;
+    letter-spacing: -1.2px;
+  }
+
+  .line {
+    display: block;
+  }
+
+  .line-one,
+  .line-two {
+    transform: none;
+  }
+
+  .hero-copy {
+    width: 100%;
+    max-width: 34rem;
+  }
+
+  .hero-copy br {
+    display: none;
+  }
+
+  .hero-target {
+    width: 100%;
+    max-width: 34rem;
+  }
+
+  .primary-cta {
+    width: 100%;
+    max-width: 34rem;
+    height: 48px;
+  }
+
+  /* Card sits above the headline in the column rather than over it. */
+  .demo-card {
+    position: static;
+    order: -1;
+    align-self: stretch;
+    width: 100%;
+    max-width: 34rem;
+    aspect-ratio: 16 / 9;
+    container-type: normal;
+  }
+
+  .demo-visual {
+    left: 8px;
+    top: 8px;
+    width: calc(100% - 16px);
+    height: calc(100% - 58px);
+    border-radius: 10px;
+  }
+
+  .play {
+    width: 54px;
+    height: 54px;
+  }
+
+  .watch-button {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    height: 42px;
+    min-height: 0;
+    border-radius: 10px;
+    font-size: 15px;
+    padding-top: 0;
+  }
+
+  .demo-modal {
+    padding: 12px;
+  }
+
+  .demo-modal-panel video {
+    max-height: calc(100vh - 130px);
+  }
+}
+
+@media (max-height: 560px) and (min-width: 620px) {
+  .demo-card {
+    display: none;
+  }
+}
+
+@media (max-width: 619px) and (orientation: landscape) {
+  .demo-card,
+  .hero-copy {
+    display: none;
+  }
+
+  .hero {
+    inset: calc(var(--header-top) + 54px) 0 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-pending .brand,
+  .motion-pending .nav a,
+  .motion-pending .time-panel,
+  .motion-pending .sign-up,
+  .motion-pending .menu-toggle,
+  .motion-pending .hero-copy,
+  .motion-pending .hero-target,
+  .motion-pending .primary-cta,
+  .motion-pending .hero-examples,
+  .motion-pending .hero-status,
+  .motion-pending .demo-card {
+    opacity: 1;
+    animation: none;
+  }
+
+  .motion-pending .line-reveal {
+    transform: none;
+    animation: none;
+  }
+
+  .viewport button,
+  .viewport a {
+    transition: none;
+  }
+}
