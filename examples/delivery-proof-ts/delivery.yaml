@@ -1,0 +1,43 @@
+# Delivery Proof spec — the contract an adopter commits. Everything the tool
+# knows about your software arrives through this one file: what a sandbox
+# looks like before you touch it, the commands you'd actually type to install
+# your thing, and what should be true afterward.
+#
+# `${env.NAME}` resolves NAME from the local environment at run time — the
+# only way a value may vary between runs. Never put a literal secret in
+# `run`, `path`, or `contains`.
+#
+# This file demos itself against fixtures/installer.sh, a synthetic installer
+# that ships nothing of the tool's own — swap the fixture and this spec for
+# your own installer to verify your own delivery.
+
+environment:
+  template: base
+  notes: >-
+    A Solari sandbox created from the "base" template. python3, node, and curl
+    are preinstalled; nothing else is pre-seeded.
+
+deliver:
+  - id: install
+    run: sh /tmp/delivery-proof-fixture/installer.sh
+  - id: start
+    run: /opt/widgetd/bin/widgetd start
+  - id: license-check
+    run: echo "license=${env.DEMO_TOKEN}"
+
+expect:
+  - id: cli-version
+    kind: command
+    run: /opt/widgetd/bin/widgetd --version
+  - id: config-file
+    kind: file
+    path: /etc/widgetd/widgetd.conf
+    contains: "port="
+  - id: http-port
+    kind: port
+    port: 8080
+  - id: install-tree
+    kind: tree
+    root: /opt/widgetd
+    paths:
+      - bin/widgetd
