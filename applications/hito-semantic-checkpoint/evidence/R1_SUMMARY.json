@@ -1,0 +1,100 @@
+{
+  "kind": "SANITIZED_HISTORICAL_EVIDENCE_SUMMARY",
+  "scope": "Historical private integration experiments; not live validation of this smaller public application.",
+  "rawEvidencePublished": false,
+  "sourceLocationPolicy": "Source identifiers and relative internal paths only; no private absolute paths, sandbox identifiers, raw project payloads or personal data.",
+  "experiment": "R1",
+  "question": "Can bounded HITO continuity survive destruction and reopen in fresh Solari compute?",
+  "boundedResult": {
+    "destroyedOrigin": true,
+    "freshDestination": true,
+    "continuityMode": "CONTINUATION",
+    "reobservedPaths": [
+      "service/index.js",
+      "service/package.json",
+      "worker/package.json",
+      "worker/worker.js"
+    ],
+    "executionAuthority": false,
+    "unknowns": {
+      "declaredIntent": "UNAVAILABLE",
+      "canonicalAuthority": "UNAVAILABLE",
+      "runtimeState": "UNAVAILABLE",
+      "ownership": "UNAVAILABLE",
+      "integration": "UNAVAILABLE",
+      "conflictAssessment": "INDETERMINATE",
+      "comparativeHistory": "NOT_APPLICABLE"
+    }
+  },
+  "evidence": [
+    {
+      "sourceId": "R1_RECEIPT",
+      "sourceSha256": "cc50cf8e50f256fcba1168c42ab1d5c46acc3e601a452a1eb9a1afc66b0714f4",
+      "pointer": "#/machineA/destroyed/technicalState"
+    },
+    {
+      "sourceId": "R1_RECEIPT",
+      "sourceSha256": "cc50cf8e50f256fcba1168c42ab1d5c46acc3e601a452a1eb9a1afc66b0714f4",
+      "pointer": "#/machineB/fresh/technicalState"
+    },
+    {
+      "sourceId": "R1_B",
+      "sourceSha256": "1c7295fb72e86b9577a576723abb02216221ea7494faf6afe02e8c2c6f35808a",
+      "pointer": "#/intake/raw/truth/continuityMode"
+    },
+    {
+      "sourceId": "R1_B",
+      "sourceSha256": "1c7295fb72e86b9577a576723abb02216221ea7494faf6afe02e8c2c6f35808a",
+      "pointer": "#/intake/raw/truth/refresh/observations"
+    },
+    {
+      "sourceId": "R1_B",
+      "sourceSha256": "1c7295fb72e86b9577a576723abb02216221ea7494faf6afe02e8c2c6f35808a",
+      "pointer": "#/intake/raw/truth/unknowns"
+    },
+    {
+      "sourceId": "R1_RECEIPT",
+      "sourceSha256": "cc50cf8e50f256fcba1168c42ab1d5c46acc3e601a452a1eb9a1afc66b0714f4",
+      "pointer": "#/status/executionAllowed/technicalState"
+    },
+    {
+      "sourceId": "R1_TERMINATION",
+      "sourceSha256": "62246d248cd66a80006daca32a80281c450e3efdbda8b16caa6579f32a5443fc",
+      "pointer": "#"
+    }
+  ],
+  "negativeResult": "The tiny fixture HITO path was not faster than Cold.",
+  "negativeEvidence": {
+    "sourceId": "R2_MATRIX",
+    "sourceSha256": "8dced678d2b108f2633af9d3b4e46ea618a52823999079df2bd89491674ee83a",
+    "pointer": "#/performanceBoundary"
+  },
+  "doesNotProve": [
+    "Universal performance improvement",
+    "Complete project understanding",
+    "Runtime behavior or execution permission",
+    "The exact public candidate has run live"
+  ],
+  "sources": [
+    {
+      "id": "R1_RECEIPT",
+      "path": "outputs/_R1_FINAL_REVIEW_PACKAGE/02-b-cold-continuation/SOLARI_R1_TAKEOVER_RECEIPT.json",
+      "sha256": "cc50cf8e50f256fcba1168c42ab1d5c46acc3e601a452a1eb9a1afc66b0714f4"
+    },
+    {
+      "id": "R1_TERMINATION",
+      "path": "outputs/_R1_FINAL_REVIEW_PACKAGE/02-b-cold-continuation/SOLARI_R1_TERMINATION_EVIDENCE.json",
+      "sha256": "62246d248cd66a80006daca32a80281c450e3efdbda8b16caa6579f32a5443fc"
+    },
+    {
+      "id": "R1_B",
+      "path": "outputs/_R1_FINAL_REVIEW_PACKAGE/02-b-cold-continuation/ARM_B.json",
+      "sha256": "1c7295fb72e86b9577a576723abb02216221ea7494faf6afe02e8c2c6f35808a"
+    },
+    {
+      "id": "R2_MATRIX",
+      "path": "outputs/_R2_PLATFORM_FINAL_REVIEW/R2_PLATFORM_MATRIX.json",
+      "sha256": "8dced678d2b108f2633af9d3b4e46ea618a52823999079df2bd89491674ee83a"
+    }
+  ]
+}
