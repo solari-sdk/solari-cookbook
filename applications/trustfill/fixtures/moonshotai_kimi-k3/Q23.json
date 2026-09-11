@@ -1,0 +1,127 @@
+{
+  "id": "Q23",
+  "question": "Are backups encrypted, and is restoration tested? How often, and what is the retention period?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Backups of customer data are taken continuously and encrypted at rest using AES-256 (the same standard applied to primary storage). Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source. Backups are retained for thirty-five days. These commitments appear identically in both the Information Security Policy and the Architecture Overview.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Backups of customer data are taken continuously and encrypted at rest using the same AES-256 standard applied to primary storage. Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source. Backups are retained for thirty-five days."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Customer data stored in our production databases, object storage, and backup media is encrypted using AES-256."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Backups are continuous, encrypted, and retained for thirty-five days, with restoration exercised quarterly into an isolated environment."
+      }
+    ],
+    "reasoning": "The question asks four discrete facts: (1) whether backups are encrypted, (2) whether restoration is tested, (3) how often restoration is tested, and (4) the retention period. All four are explicitly and consistently stated in both the Information Security Policy (section 10, supported by the cryptography statement in section 5) and the Architecture Overview (section 7): backups are encrypted at rest with AES-256, restoration is tested quarterly via a full restore into an isolated environment with integrity validation, and retention is thirty-five days. The two documents agree with no conflict, so the evidence directly and unambiguously answers the question."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Backups are encrypted and restoration is tested (answer: yes).",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Backups of customer data are taken continuously.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Backups of customer data are taken continuously"
+      },
+      {
+        "claim": "Backups are encrypted at rest using AES-256, the same standard applied to primary storage.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "encrypted at rest using AES-256 (the same standard applied to primary storage)"
+      },
+      {
+        "claim": "Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source"
+      },
+      {
+        "claim": "Backups are retained for thirty-five days.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Backups are retained for thirty-five days."
+      },
+      {
+        "claim": "These commitments appear identically in both the Information Security Policy and the Architecture Overview.",
+        "essential": false,
+        "supported": false,
+        "sourceText": " These commitments appear identically in both the Information Security Policy and the Architecture Overview."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Are backups encrypted, and is restoration tested? How often, and what is the retention period?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Backups of customer data are taken continuously and encrypted at rest using the same AES-256 standard applied to primary storage. Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source. Backups are retained for thirty-five days."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Customer data stored in our production databases, object storage, and backup media is encrypted using AES-256."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Backups are continuous, encrypted, and retained for thirty-five days, with restoration exercised quarterly into an isolated environment."
+      }
+    ],
+    "reasoning": "The question asks four discrete facts: (1) whether backups are encrypted, (2) whether restoration is tested, (3) how often restoration is tested, and (4) the retention period. All four are explicitly and consistently stated in both the Information Security Policy (section 10, supported by the cryptography statement in section 5) and the Architecture Overview (section 7): backups are encrypted at rest with AES-256, restoration is tested quarterly via a full restore into an isolated environment with integrity validation, and retention is thirty-five days. The two documents agree with no conflict, so the evidence directly and unambiguously answers the question.",
+    "abstained": false,
+    "answer": "Yes. Backups of customer data are taken continuously and encrypted at rest using AES-256 (the same standard applied to primary storage). Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source. Backups are retained for thirty-five days.",
+    "trustScore": 0.8333333333333334,
+    "claims": [
+      {
+        "claim": "Backups are encrypted and restoration is tested (answer: yes).",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Backups of customer data are taken continuously.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Backups of customer data are taken continuously"
+      },
+      {
+        "claim": "Backups are encrypted at rest using AES-256, the same standard applied to primary storage.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "encrypted at rest using AES-256 (the same standard applied to primary storage)"
+      },
+      {
+        "claim": "Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Restoration is tested quarterly by performing a full restore into an isolated environment and validating data integrity against the source"
+      },
+      {
+        "claim": "Backups are retained for thirty-five days.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Backups are retained for thirty-five days."
+      },
+      {
+        "claim": "These commitments appear identically in both the Information Security Policy and the Architecture Overview.",
+        "essential": false,
+        "supported": false,
+        "sourceText": " These commitments appear identically in both the Information Security Policy and the Architecture Overview."
+      }
+    ],
+    "removed": [
+      "These commitments appear identically in both the Information Security Policy and the Architecture Overview."
+    ]
+  }
+}

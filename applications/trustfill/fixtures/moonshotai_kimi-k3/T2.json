@@ -1,0 +1,41 @@
+{
+  "id": "T2",
+  "question": "How frequently do you commission third-party penetration testing?",
+  "expected": "ABSTAIN",
+  "draft": {
+    "sufficiency": "INSUFFICIENT",
+    "answer": null,
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Independent penetration testing of the platform is commissioned from an external security firm, and the resulting report is made available to customers under NDA on request."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "The platform is subject to penetration testing performed by an independent external security firm. The engagement covers the web application, the public API, and the supporting cloud infrastructure, and is conducted as a grey-box assessment with the tester provisioned as a low-privileged tenant user."
+      }
+    ],
+    "reasoning": "The evidence confirms that third-party penetration testing is commissioned and describes its scope (web application, public API, cloud infrastructure) and methodology (grey-box), but neither document states how frequently it is performed. The annual cycle mentioned in the SOC 2 summary refers to the SOC 2 examination, not to penetration testing, and the reference to 'the most recent report' implies recurrence without specifying an interval. Since the question asks specifically about frequency and no frequency is stated anywhere in the evidence, the question cannot be answered."
+  },
+  "verification": null,
+  "answer": {
+    "question": "How frequently do you commission third-party penetration testing?",
+    "sufficiency": "INSUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Independent penetration testing of the platform is commissioned from an external security firm, and the resulting report is made available to customers under NDA on request."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "The platform is subject to penetration testing performed by an independent external security firm. The engagement covers the web application, the public API, and the supporting cloud infrastructure, and is conducted as a grey-box assessment with the tester provisioned as a low-privileged tenant user."
+      }
+    ],
+    "reasoning": "The evidence confirms that third-party penetration testing is commissioned and describes its scope (web application, public API, cloud infrastructure) and methodology (grey-box), but neither document states how frequently it is performed. The annual cycle mentioned in the SOC 2 summary refers to the SOC 2 examination, not to penetration testing, and the reference to 'the most recent report' implies recurrence without specifying an interval. Since the question asks specifically about frequency and no frequency is stated anywhere in the evidence, the question cannot be answered.",
+    "abstained": true,
+    "answer": null,
+    "trustScore": null,
+    "claims": [],
+    "removed": []
+  }
+}

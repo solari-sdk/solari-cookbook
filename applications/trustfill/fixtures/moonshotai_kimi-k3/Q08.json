@@ -1,0 +1,97 @@
+{
+  "id": "Q08",
+  "question": "Is security awareness training mandatory, and at what interval is it repeated?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Security awareness training is mandatory for every employee. It is completed during onboarding, within the employee's first two weeks, and is repeated at twelve-month intervals for as long as the employee remains with the company. Engineers whose work touches the production environment also complete an additional secure development module on the same annual cycle. Completion is tracked, and managers are notified when a team member's training lapses.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Every employee completes security awareness training during onboarding, within their first two weeks, and again at twelve-month intervals for as long as they remain with the company. Engineers whose work touches the production environment complete an additional secure development module on the same annual cycle. Completion is tracked, and managers are notified when a team member's training lapses."
+      }
+    ],
+    "reasoning": "The Information Security Policy directly and unambiguously answers both parts of the question: security awareness training is required of every employee (mandatory), and it is repeated at twelve-month intervals. The policy also details the additional annual secure development training for engineers and the completion tracking mechanism."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Security awareness training is mandatory for every employee.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Security awareness training is mandatory for every employee."
+      },
+      {
+        "claim": "The training is completed during onboarding, within the employee's first two weeks.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " It is completed during onboarding, within the employee's first two weeks,"
+      },
+      {
+        "claim": "The training is repeated at twelve-month intervals for as long as the employee remains with the company.",
+        "essential": true,
+        "supported": true,
+        "sourceText": " and is repeated at twelve-month intervals for as long as the employee remains with the company."
+      },
+      {
+        "claim": "Engineers whose work touches the production environment complete an additional secure development module on the same annual cycle.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Engineers whose work touches the production environment also complete an additional secure development module on the same annual cycle."
+      },
+      {
+        "claim": "Completion is tracked, and managers are notified when a team member's training lapses.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Completion is tracked, and managers are notified when a team member's training lapses."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Is security awareness training mandatory, and at what interval is it repeated?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Every employee completes security awareness training during onboarding, within their first two weeks, and again at twelve-month intervals for as long as they remain with the company. Engineers whose work touches the production environment complete an additional secure development module on the same annual cycle. Completion is tracked, and managers are notified when a team member's training lapses."
+      }
+    ],
+    "reasoning": "The Information Security Policy directly and unambiguously answers both parts of the question: security awareness training is required of every employee (mandatory), and it is repeated at twelve-month intervals. The policy also details the additional annual secure development training for engineers and the completion tracking mechanism.",
+    "abstained": false,
+    "answer": "Yes. Security awareness training is mandatory for every employee. It is completed during onboarding, within the employee's first two weeks, and is repeated at twelve-month intervals for as long as the employee remains with the company. Engineers whose work touches the production environment also complete an additional secure development module on the same annual cycle. Completion is tracked, and managers are notified when a team member's training lapses.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Security awareness training is mandatory for every employee.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Security awareness training is mandatory for every employee."
+      },
+      {
+        "claim": "The training is completed during onboarding, within the employee's first two weeks.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " It is completed during onboarding, within the employee's first two weeks,"
+      },
+      {
+        "claim": "The training is repeated at twelve-month intervals for as long as the employee remains with the company.",
+        "essential": true,
+        "supported": true,
+        "sourceText": " and is repeated at twelve-month intervals for as long as the employee remains with the company."
+      },
+      {
+        "claim": "Engineers whose work touches the production environment complete an additional secure development module on the same annual cycle.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Engineers whose work touches the production environment also complete an additional secure development module on the same annual cycle."
+      },
+      {
+        "claim": "Completion is tracked, and managers are notified when a team member's training lapses.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Completion is tracked, and managers are notified when a team member's training lapses."
+      }
+    ],
+    "removed": []
+  }
+}

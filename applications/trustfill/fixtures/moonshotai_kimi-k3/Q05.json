@@ -1,0 +1,91 @@
+{
+  "id": "Q05",
+  "question": "Do you maintain a documented security incident response plan, and who owns it?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Meridian maintains a documented Security Incident Response Plan (Version 3.1, last reviewed January 2026), and the document owner is the VP Engineering & Security.",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "# Meridian Systems — Security Incident Response Plan"
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "**Document owner:** VP Engineering & Security"
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "This plan describes how Meridian Systems detects, classifies, contains, and communicates security incidents affecting the Meridian platform or customer data."
+      }
+    ],
+    "reasoning": "The evidence corpus contains a document explicitly titled 'Security Incident Response Plan' whose header identifies the document owner as the VP Engineering & Security, directly answering both parts of the question: the plan exists and is documented, and it is owned by the VP Engineering & Security."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian maintains a documented Security Incident Response Plan",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian maintains a documented Security Incident Response Plan"
+      },
+      {
+        "claim": "The plan is Version 3.1, last reviewed January 2026",
+        "essential": false,
+        "supported": false,
+        "sourceText": " (Version 3.1, last reviewed January 2026)"
+      },
+      {
+        "claim": "The document owner is the VP Engineering & Security",
+        "essential": true,
+        "supported": true,
+        "sourceText": "the document owner is the VP Engineering & Security"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Do you maintain a documented security incident response plan, and who owns it?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "# Meridian Systems — Security Incident Response Plan"
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "**Document owner:** VP Engineering & Security"
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "This plan describes how Meridian Systems detects, classifies, contains, and communicates security incidents affecting the Meridian platform or customer data."
+      }
+    ],
+    "reasoning": "The evidence corpus contains a document explicitly titled 'Security Incident Response Plan' whose header identifies the document owner as the VP Engineering & Security, directly answering both parts of the question: the plan exists and is documented, and it is owned by the VP Engineering & Security.",
+    "abstained": false,
+    "answer": "Yes. Meridian maintains a documented Security Incident Response Plan, and the document owner is the VP Engineering & Security.",
+    "trustScore": 0.6666666666666666,
+    "claims": [
+      {
+        "claim": "Meridian maintains a documented Security Incident Response Plan",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian maintains a documented Security Incident Response Plan"
+      },
+      {
+        "claim": "The plan is Version 3.1, last reviewed January 2026",
+        "essential": false,
+        "supported": false,
+        "sourceText": " (Version 3.1, last reviewed January 2026)"
+      },
+      {
+        "claim": "The document owner is the VP Engineering & Security",
+        "essential": true,
+        "supported": true,
+        "sourceText": "the document owner is the VP Engineering & Security"
+      }
+    ],
+    "removed": [
+      "The plan is Version 3.1, last reviewed January 2026"
+    ]
+  }
+}

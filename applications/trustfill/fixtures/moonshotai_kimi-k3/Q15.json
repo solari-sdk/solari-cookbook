@@ -1,0 +1,121 @@
+{
+  "id": "Q15",
+  "question": "Can customer data be confined to the European Union, and on which plans?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Customers on the Business and Enterprise tiers may elect provisioning into the eu-west-1 (Ireland) region, in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant. Note that Migration of an existing tenant between regions is a manual operation coordinated with support, and limited operational metadata (e.g., stack traces, notification email recipient addresses, support ticket content) flows to subprocessors even though customer telemetry itself does not leave the serving region.",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1, in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "There are two serving regions in production: **us-east-1** (Northern Virginia) and **eu-west-1** (Ireland)."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Migration of an existing tenant between regions is possible but is a manual operation coordinated with support; it is not self-service."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customer telemetry itself does not leave the serving region. Operational metadata does flow to a small number of subprocessors: error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer."
+      }
+    ],
+    "reasoning": "The architecture overview directly answers both parts of the question: EU data confinement is available via election of the eu-west-1 region, and it is explicitly limited to the Business and Enterprise tiers. The quotes are verbatim and unambiguous, so the evidence is sufficient. The subprocessor metadata flow is included as a relevant nuance on the scope of what stays in-region."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Customer data can be confined to the European Union.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Customers on the Business and Enterprise tiers may elect provisioning into the eu-west-1 (Ireland) region.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customers on the Business and Enterprise tiers may elect provisioning into the eu-west-1 (Ireland) region"
+      },
+      {
+        "claim": "For such tenants, all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant.",
+        "essential": true,
+        "supported": true,
+        "sourceText": ", in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant."
+      },
+      {
+        "claim": "Migration of an existing tenant between regions is a manual operation coordinated with support.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Note that Migration of an existing tenant between regions is a manual operation coordinated with support"
+      },
+      {
+        "claim": "Limited operational metadata (stack traces, notification email recipient addresses, support ticket content) flows to subprocessors even though customer telemetry itself does not leave the serving region.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and limited operational metadata (e.g., stack traces, notification email recipient addresses, support ticket content) flows to subprocessors even though customer telemetry itself does not leave the serving region."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Can customer data be confined to the European Union, and on which plans?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1, in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "There are two serving regions in production: **us-east-1** (Northern Virginia) and **eu-west-1** (Ireland)."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Migration of an existing tenant between regions is possible but is a manual operation coordinated with support; it is not self-service."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customer telemetry itself does not leave the serving region. Operational metadata does flow to a small number of subprocessors: error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer."
+      }
+    ],
+    "reasoning": "The architecture overview directly answers both parts of the question: EU data confinement is available via election of the eu-west-1 region, and it is explicitly limited to the Business and Enterprise tiers. The quotes are verbatim and unambiguous, so the evidence is sufficient. The subprocessor metadata flow is included as a relevant nuance on the scope of what stays in-region.",
+    "abstained": false,
+    "answer": "Yes. Customers on the Business and Enterprise tiers may elect provisioning into the eu-west-1 (Ireland) region, in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant. Note that Migration of an existing tenant between regions is a manual operation coordinated with support, and limited operational metadata (e.g., stack traces, notification email recipient addresses, support ticket content) flows to subprocessors even though customer telemetry itself does not leave the serving region.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Customer data can be confined to the European Union.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Customers on the Business and Enterprise tiers may elect provisioning into the eu-west-1 (Ireland) region.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customers on the Business and Enterprise tiers may elect provisioning into the eu-west-1 (Ireland) region"
+      },
+      {
+        "claim": "For such tenants, all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant.",
+        "essential": true,
+        "supported": true,
+        "sourceText": ", in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant."
+      },
+      {
+        "claim": "Migration of an existing tenant between regions is a manual operation coordinated with support.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Note that Migration of an existing tenant between regions is a manual operation coordinated with support"
+      },
+      {
+        "claim": "Limited operational metadata (stack traces, notification email recipient addresses, support ticket content) flows to subprocessors even though customer telemetry itself does not leave the serving region.",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and limited operational metadata (e.g., stack traces, notification email recipient addresses, support ticket content) flows to subprocessors even though customer telemetry itself does not leave the serving region."
+      }
+    ],
+    "removed": []
+  }
+}

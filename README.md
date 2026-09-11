@@ -123,6 +123,12 @@ Things that cost you an afternoon if you meet them cold:
   channel; the VM keeps running until its idle timeout.
 - **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
   every use.
+- **A preview URL mints its token into a cookie, so merge `Cookie` headers rather
+  than replacing them.** `previewUrl(port)` returns a URL carrying `?pt_token=`, and
+  the gateway sets that token as a cookie on first visit. A client that sends its
+  own `Cookie` header and overwrites it signs itself out of the *preview* while
+  still holding a valid token — a 401 on a request that worked moments earlier.
+  Tokens expire about an hour after minting; call `previewUrl()` again for a fresh one.
 
 ## Links
 

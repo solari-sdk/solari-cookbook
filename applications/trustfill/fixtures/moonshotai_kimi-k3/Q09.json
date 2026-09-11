@@ -1,0 +1,73 @@
+{
+  "id": "Q09",
+  "question": "Do you hold a SOC 2 report? State the type and the period covered.",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Meridian holds a SOC 2 Type II report. The most recent examination covered the twelve-month period from 1 October 2024 to 30 September 2025 and was issued in December 2025.",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian Systems holds a **SOC 2 Type II** report. The most recent examination covered the twelve-month period from **1 October 2024 to 30 September 2025** and was issued in **December 2025**."
+      }
+    ],
+    "reasoning": "The SOC 2 report summary explicitly confirms that Meridian holds a SOC 2 Type II report, states the exact coverage period (1 October 2024 to 30 September 2025), and gives the issue date (December 2025). This directly and unambiguously answers all parts of the question."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian holds a SOC 2 Type II report",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian holds a SOC 2 Type II report."
+      },
+      {
+        "claim": "The most recent examination covered the twelve-month period from 1 October 2024 to 30 September 2025",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The most recent examination covered the twelve-month period from 1 October 2024 to 30 September 2025"
+      },
+      {
+        "claim": "The report was issued in December 2025",
+        "essential": false,
+        "supported": true,
+        "sourceText": " and was issued in December 2025"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Do you hold a SOC 2 report? State the type and the period covered.",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian Systems holds a **SOC 2 Type II** report. The most recent examination covered the twelve-month period from **1 October 2024 to 30 September 2025** and was issued in **December 2025**."
+      }
+    ],
+    "reasoning": "The SOC 2 report summary explicitly confirms that Meridian holds a SOC 2 Type II report, states the exact coverage period (1 October 2024 to 30 September 2025), and gives the issue date (December 2025). This directly and unambiguously answers all parts of the question.",
+    "abstained": false,
+    "answer": "Yes. Meridian holds a SOC 2 Type II report. The most recent examination covered the twelve-month period from 1 October 2024 to 30 September 2025 and was issued in December 2025.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Meridian holds a SOC 2 Type II report",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian holds a SOC 2 Type II report."
+      },
+      {
+        "claim": "The most recent examination covered the twelve-month period from 1 October 2024 to 30 September 2025",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The most recent examination covered the twelve-month period from 1 October 2024 to 30 September 2025"
+      },
+      {
+        "claim": "The report was issued in December 2025",
+        "essential": false,
+        "supported": true,
+        "sourceText": " and was issued in December 2025"
+      }
+    ],
+    "removed": []
+  }
+}

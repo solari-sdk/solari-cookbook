@@ -1,0 +1,105 @@
+{
+  "id": "Q26",
+  "question": "Do you offer a single-tenant or customer-dedicated deployment option?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "No. Meridian is a multi-tenant software-as-a-service platform only. All customers are served from shared infrastructure, and Meridian does not operate single-tenant or customer-dedicated deployments (nor any on-premises or private-cloud distribution of the product).",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Meridian is a multi-tenant software-as-a-service platform. All customers are served from shared infrastructure; we do not operate single-tenant or customer-dedicated deployments, and there is no on-premises or private-cloud distribution of the product."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "The platform is delivered exclusively as a multi-tenant cloud service; we do not offer on-premises deployment."
+      }
+    ],
+    "reasoning": "The architecture overview explicitly and unambiguously states that Meridian does not operate single-tenant or customer-dedicated deployments, and the Information Security Policy corroborates that the platform is delivered exclusively as a multi-tenant cloud service. An explicit 'no' in the evidence is a complete answer, so the question is SUFFICIENT with a negative answer."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian does not offer a single-tenant or customer-dedicated deployment option.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "No."
+      },
+      {
+        "claim": "Meridian is a multi-tenant software-as-a-service platform only.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian is a multi-tenant software-as-a-service platform only."
+      },
+      {
+        "claim": "All customers are served from shared infrastructure.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " All customers are served from shared infrastructure,"
+      },
+      {
+        "claim": "Meridian does not operate single-tenant or customer-dedicated deployments.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian does not operate single-tenant or customer-dedicated deployments"
+      },
+      {
+        "claim": "There is no on-premises or private-cloud distribution of the product.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " (nor any on-premises or private-cloud distribution of the product)"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Do you offer a single-tenant or customer-dedicated deployment option?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Meridian is a multi-tenant software-as-a-service platform. All customers are served from shared infrastructure; we do not operate single-tenant or customer-dedicated deployments, and there is no on-premises or private-cloud distribution of the product."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "The platform is delivered exclusively as a multi-tenant cloud service; we do not offer on-premises deployment."
+      }
+    ],
+    "reasoning": "The architecture overview explicitly and unambiguously states that Meridian does not operate single-tenant or customer-dedicated deployments, and the Information Security Policy corroborates that the platform is delivered exclusively as a multi-tenant cloud service. An explicit 'no' in the evidence is a complete answer, so the question is SUFFICIENT with a negative answer.",
+    "abstained": false,
+    "answer": "No. Meridian is a multi-tenant software-as-a-service platform only. All customers are served from shared infrastructure, and Meridian does not operate single-tenant or customer-dedicated deployments (nor any on-premises or private-cloud distribution of the product).",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Meridian does not offer a single-tenant or customer-dedicated deployment option.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "No."
+      },
+      {
+        "claim": "Meridian is a multi-tenant software-as-a-service platform only.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian is a multi-tenant software-as-a-service platform only."
+      },
+      {
+        "claim": "All customers are served from shared infrastructure.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " All customers are served from shared infrastructure,"
+      },
+      {
+        "claim": "Meridian does not operate single-tenant or customer-dedicated deployments.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian does not operate single-tenant or customer-dedicated deployments"
+      },
+      {
+        "claim": "There is no on-premises or private-cloud distribution of the product.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " (nor any on-premises or private-cloud distribution of the product)"
+      }
+    ],
+    "removed": []
+  }
+}

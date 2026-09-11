@@ -1,0 +1,23 @@
+{
+  "id": "T1",
+  "question": "Do you maintain cyber liability insurance? If so, state the coverage limits.",
+  "expected": "ABSTAIN",
+  "draft": {
+    "sufficiency": "INSUFFICIENT",
+    "answer": null,
+    "citations": [],
+    "reasoning": "The question asks whether the company maintains cyber liability insurance and, if so, the coverage limits. None of the four evidence documents — the Architecture Overview, the Security Incident Response Plan, the Information Security Policy, or the SOC 2 Report Summary — mentions insurance of any kind. There is no reference to cyber liability insurance, coverage limits, carriers, or policy terms anywhere in the corpus. The evidence neither confirms nor denies the existence of such insurance, so no answer can be given: a positive or negative statement would both be unsupported by the supplied evidence."
+  },
+  "verification": null,
+  "answer": {
+    "question": "Do you maintain cyber liability insurance? If so, state the coverage limits.",
+    "sufficiency": "INSUFFICIENT",
+    "citations": [],
+    "reasoning": "The question asks whether the company maintains cyber liability insurance and, if so, the coverage limits. None of the four evidence documents — the Architecture Overview, the Security Incident Response Plan, the Information Security Policy, or the SOC 2 Report Summary — mentions insurance of any kind. There is no reference to cyber liability insurance, coverage limits, carriers, or policy terms anywhere in the corpus. The evidence neither confirms nor denies the existence of such insurance, so no answer can be given: a positive or negative statement would both be unsupported by the supplied evidence.",
+    "abstained": true,
+    "answer": null,
+    "trustScore": null,
+    "claims": [],
+    "removed": []
+  }
+}

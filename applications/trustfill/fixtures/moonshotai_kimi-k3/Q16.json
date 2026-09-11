@@ -1,0 +1,49 @@
+{
+  "id": "Q16",
+  "question": "How long are security-relevant audit logs retained?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Security-relevant audit logs are retained for thirteen months.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Administrative and security-relevant events — authentication attempts, privilege changes, configuration changes, and access to customer data by Meridian personnel — are written to a centralized, append-only audit log. Audit logs are retained for thirteen months. Application and infrastructure telemetry not classified as security-relevant is retained for ninety days."
+      }
+    ],
+    "reasoning": "The Information Security Policy explicitly states that security-relevant audit logs are retained for thirteen months, distinguishing them from non-security-relevant telemetry retained for ninety days. This directly and unambiguously answers the question. The incident-response plan's two-year retention applies to incident timelines, logs, and artifacts (incident evidence), not the general security-relevant audit log, so there is no conflict."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Security-relevant audit logs are retained for thirteen months.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Security-relevant audit logs are retained for thirteen months."
+      }
+    ]
+  },
+  "answer": {
+    "question": "How long are security-relevant audit logs retained?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Administrative and security-relevant events — authentication attempts, privilege changes, configuration changes, and access to customer data by Meridian personnel — are written to a centralized, append-only audit log. Audit logs are retained for thirteen months. Application and infrastructure telemetry not classified as security-relevant is retained for ninety days."
+      }
+    ],
+    "reasoning": "The Information Security Policy explicitly states that security-relevant audit logs are retained for thirteen months, distinguishing them from non-security-relevant telemetry retained for ninety days. This directly and unambiguously answers the question. The incident-response plan's two-year retention applies to incident timelines, logs, and artifacts (incident evidence), not the general security-relevant audit log, so there is no conflict.",
+    "abstained": false,
+    "answer": "Security-relevant audit logs are retained for thirteen months.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Security-relevant audit logs are retained for thirteen months.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Security-relevant audit logs are retained for thirteen months."
+      }
+    ],
+    "removed": []
+  }
+}

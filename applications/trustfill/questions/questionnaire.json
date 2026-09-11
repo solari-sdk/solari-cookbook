@@ -1,0 +1,169 @@
+{
+  "name": "Northwind Corp — Vendor Security Review",
+  "vendor": "Meridian Systems, Inc.",
+  "note": "30 questions, with the four traps interleaved rather than grouped. 26 are answerable from the evidence corpus. 4 are traps that must be abstained on, each failing for a different reason. Several answerable questions are NEGATIVES — the corpus explicitly says no — to test that the system distinguishes 'the evidence says no' from 'the evidence is silent'. That distinction is the whole product.",
+  "questions": [
+    {
+      "id": "Q01",
+      "text": "Is customer data encrypted at rest? Specify the algorithm.",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q02",
+      "text": "Is customer data encrypted in transit, and what minimum TLS version do you accept?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q03",
+      "text": "Is multi-factor authentication required for employee access to production systems?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q04",
+      "text": "How is encryption key material generated, stored, and rotated?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "T1",
+      "text": "Do you maintain cyber liability insurance? If so, state the coverage limits.",
+      "expected": "ABSTAIN",
+      "trap": "ABSENT",
+      "why": "Insurance is not mentioned anywhere in the corpus. The easiest trap — any system that abstains at all should catch this one. Included as the control."
+    },
+    {
+      "id": "Q05",
+      "text": "Do you maintain a documented security incident response plan, and who owns it?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q06",
+      "text": "Within what timeframe do you notify customers of a confirmed personal data breach?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q07",
+      "text": "Are background checks performed on employees prior to hire?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q08",
+      "text": "Is security awareness training mandatory, and at what interval is it repeated?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q09",
+      "text": "Do you hold a SOC 2 report? State the type and the period covered.",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q10",
+      "text": "Which Trust Services Criteria were included in the scope of your most recent SOC 2 examination?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "T2",
+      "text": "How frequently do you commission third-party penetration testing?",
+      "expected": "ABSTAIN",
+      "trap": "ADJACENT_BUT_UNANSWERED",
+      "why": "TWO documents discuss penetration testing at length — scope, methodology, reporting, remediation timelines — but neither states a cadence. A naive system pattern-matches the surrounding detail, assumes the industry default, and answers 'annually'. Nothing in the corpus supports that. This is the trap that separates retrieval from reasoning."
+    },
+    {
+      "id": "Q11",
+      "text": "Were any exceptions reported in your most recent SOC 2 examination? Describe them and their remediation.",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q12",
+      "text": "Do you use subprocessors with access to customer data, and how are they assessed before engagement?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q13",
+      "text": "Is customer data separated logically or physically between tenants?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q14",
+      "text": "In which geographic regions is customer data stored?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q15",
+      "text": "Can customer data be confined to the European Union, and on which plans?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q16",
+      "text": "How long are security-relevant audit logs retained?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q17",
+      "text": "How frequently are user access rights reviewed, and by whom?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "T3",
+      "text": "What is your recovery time objective (RTO) for the loss of an entire serving region?",
+      "expected": "ABSTAIN",
+      "trap": "CONTRADICTORY_SOURCES",
+      "why": "The Incident Response Plan (Jan 2026) states 4 hours. The Architecture Overview (Aug 2025) states 12 hours. Both are about the same scenario. A naive system retrieves one passage and answers confidently. Correct behavior is to surface the conflict — and note the architecture doc is older and self-declares lower precedence, which is a resolution a human should make, not the agent."
+    },
+    {
+      "id": "Q18",
+      "text": "Describe your process for revoking system access when an employee leaves.",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q20",
+      "text": "What is your remediation SLA for vulnerabilities rated critical?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q22",
+      "text": "Describe your change management process for production deployments.",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q23",
+      "text": "Are backups encrypted, and is restoration tested? How often, and what is the retention period?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q24",
+      "text": "Do you support SAML 2.0 single sign-on and SCIM provisioning?",
+      "expected": "ANSWER"
+    },
+    {
+      "id": "Q25",
+      "text": "What is your recovery point objective (RPO) for regional failover?",
+      "expected": "ANSWER",
+      "note": "Deliberately adjacent to trap T3. RPO is stated once and unambiguously (15 minutes); RTO is stated twice in conflict. A system that answers this confidently AND abstains on T3 is discriminating correctly — that contrast is worth showing in the demo."
+    },
+    {
+      "id": "T4",
+      "text": "Do you agree to notify affected customers of a confirmed breach within 24 hours?",
+      "expected": "ABSTAIN",
+      "trap": "COMMITMENT_NOT_FACT",
+      "why": "This asks the vendor to ACCEPT AN OBLIGATION, not to state a fact. The corpus supports a related fact — the standard is 72 hours (Q06) — and explicitly notes that differing contractual commitments require Security Lead and Legal approval. Answering 'yes' commits the company to something nobody authorized; answering '72 hours' silently declines the actual question. Correct behavior is to abstain, surface the 72-hour standard as context, and route to a human."
+    },
+    {
+      "id": "Q26",
+      "text": "Do you offer a single-tenant or customer-dedicated deployment option?",
+      "expected": "ANSWER",
+      "note": "NEGATIVE — corpus explicitly says no. Tests 'evidence says no' vs 'evidence is silent'."
+    },
+    {
+      "id": "Q27",
+      "text": "Is Meridian certified to ISO/IEC 27001?",
+      "expected": "ANSWER",
+      "note": "NEGATIVE — explicitly not certified, with no committed timeline."
+    },
+    {
+      "id": "Q28",
+      "text": "Can the platform be used to process protected health information under HIPAA?",
+      "expected": "ANSWER",
+      "note": "NEGATIVE — explicitly excluded in acceptable use terms."
+    }
+  ]
+}

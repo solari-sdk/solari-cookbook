@@ -1,0 +1,93 @@
+{
+  "id": "Q03",
+  "question": "Is multi-factor authentication required for employee access to production systems?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception. Authentication is federated through the company's identity provider, which enforces MFA at sign-in, and there is no path to production that bypasses it. Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception. Authentication to internal systems is federated through our identity provider, which enforces MFA at the point of sign-in; there is no path to production that bypasses it."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication, and that issues short-lived credentials scoped to the engineer's role."
+      }
+    ],
+    "reasoning": "Two independent documents directly and consistently answer the question in the affirmative. The Information Security Policy states MFA is required for all employee access to production infrastructure 'without exception', and the Architecture Overview confirms the technical enforcement path via the bastion service and identity provider. There is no conflicting evidence."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Yes, multi-factor authentication is required for employee access to production systems.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception."
+      },
+      {
+        "claim": "Authentication is federated through the company's identity provider, which enforces MFA at sign-in, and there is no path to production that bypasses it.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Authentication is federated through the company's identity provider, which enforces MFA at sign-in, and there is no path to production that bypasses it."
+      },
+      {
+        "claim": "Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Is multi-factor authentication required for employee access to production systems?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception. Authentication to internal systems is federated through our identity provider, which enforces MFA at the point of sign-in; there is no path to production that bypasses it."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication, and that issues short-lived credentials scoped to the engineer's role."
+      }
+    ],
+    "reasoning": "Two independent documents directly and consistently answer the question in the affirmative. The Information Security Policy states MFA is required for all employee access to production infrastructure 'without exception', and the Architecture Overview confirms the technical enforcement path via the bastion service and identity provider. There is no conflicting evidence.",
+    "abstained": false,
+    "answer": "Yes. Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception. Authentication is federated through the company's identity provider, which enforces MFA at sign-in, and there is no path to production that bypasses it. Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Yes, multi-factor authentication is required for employee access to production systems.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Multi-factor authentication is required for all employee access to production infrastructure and to the internal administrative console, without exception."
+      },
+      {
+        "claim": "Authentication is federated through the company's identity provider, which enforces MFA at sign-in, and there is no path to production that bypasses it.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Authentication is federated through the company's identity provider, which enforces MFA at sign-in, and there is no path to production that bypasses it."
+      },
+      {
+        "claim": "Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Engineers reach production through a bastion service that requires authentication against the corporate identity provider with multi-factor authentication."
+      }
+    ],
+    "removed": []
+  }
+}
