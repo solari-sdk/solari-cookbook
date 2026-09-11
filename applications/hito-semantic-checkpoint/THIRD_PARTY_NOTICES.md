@@ -6,6 +6,8 @@ The following dependencies are fetched from the npm registry and are **not vendo
 
 | Package | Version | License | Use |
 |---|---|---|---|
+| @solarisdk/browser | 0.1.4 | Apache-2.0 | official Browser sessions and page transport |
+| patchright-core | 1.62.2 | Apache-2.0 | exact transitive Browser transport dependency |
 | @solarisdk/core | 0.1.3 | Apache-2.0 | runtime |
 | @solarisdk/sandbox | 0.1.3 | Apache-2.0 | runtime |
 | @types/node | 22.20.2 | MIT | development |

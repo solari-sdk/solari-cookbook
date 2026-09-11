@@ -9,7 +9,7 @@ export interface Sandbox {
   connect(): Promise<void>;
   close(): void;
   kill(): Promise<void>;
-  files: { write(path: string, data: string | Uint8Array): Promise<void> };
+  files: { write(path: string, data: string | Uint8Array): Promise<void>; read?(path:string):Promise<Uint8Array> };
   commands: {
     run(
       command: string,

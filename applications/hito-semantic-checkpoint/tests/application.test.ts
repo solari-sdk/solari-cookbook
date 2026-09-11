@@ -476,7 +476,7 @@ test("registry-only dependency set excludes model SDKs and private paths", () =>
   const pkg = JSON.parse(
     readFileSync(new URL("../package.json", import.meta.url), "utf8"),
   );
-  assert.deepEqual(Object.keys(pkg.dependencies), ["@solarisdk/sandbox"]);
+  assert.deepEqual(Object.keys(pkg.dependencies).sort(), ["@solarisdk/browser", "@solarisdk/sandbox"]);
   assert(
     Object.values({ ...pkg.dependencies, ...pkg.devDependencies }).every((v) =>
       /^\d+\.\d+\.\d+$/.test(String(v)),

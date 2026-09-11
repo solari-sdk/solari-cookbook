@@ -1,0 +1,97 @@
+{
+  "identity": "CONTINUITY_NATIVE_LIVE_ATTEMPT_2",
+  "verdict": "PARTIAL",
+  "predecessorAttempt1Sha256": "B4636AE20DC0D39CD41FCF1A1494072A0D6F83EABB3F70DBAAACD60617D92354",
+  "attempt1Preserved": true,
+  "capabilities": {
+    "SEMANTIC_CHECKPOINT": "PROVEN_LIVE",
+    "CONTINUITY_AWARE_SANDBOX": "PROVEN_LIVE",
+    "SAFE_RESUME_HANDOFF": "PROVEN_LIVE",
+    "MULTI_WORKER_HANDOFF": "PROVEN_LIVE",
+    "SEMANTIC_FORK": "PROVEN_LIVE",
+    "EVIDENCE_RECONCILIATION": "PROVEN_LIVE",
+    "CONTEXTUAL_SANDBOX_API": "PROVEN_LIVE",
+    "SEMANTIC_SCHEDULER": "PARTIAL",
+    "CROSS_PRIMITIVE_EVIDENCE": "PARTIAL",
+    "DESKTOP_EVIDENCE": "FAIL",
+    "BROWSER_EVIDENCE": "FAIL",
+    "PERSISTENT_EVIDENCE_CACHE": "BLOCKED_PLATFORM_RUNTIME"
+  },
+  "semanticLease": "KILLED",
+  "sourceUnchangedThroughRun": true,
+  "resourceCounts": {
+    "sandbox": 3,
+    "desktop": 1,
+    "browser": 0,
+    "volume": 0,
+    "snapshot": 0
+  },
+  "browserLaunchAttempts": 1,
+  "browserOriginalLedger": "UNKNOWN",
+  "browserAdjudication": "NO_HTTP_DISPATCH: operator observer empty-body parse failure reproduced offline",
+  "allSandboxesTerminal": true,
+  "desktopTerminal": true,
+  "browserClosed": "NOT_APPLICABLE_NO_SESSION_CREATED",
+  "checkpointId": "b74c69cc54143add6aab5502f25ac6365363fd2003553ecc820ba68207227457",
+  "identities": {
+    "origin": "c2FuZGJveC1wb29sLXNvbGFyaS1wcm9kLW1ldGFsLXNhbmRib3gtOTh4bTp2bV8wMDA4ODM6Y210djF5dmN6MDEwc213MDExNTdra2tzZjoxNzg5MTA1MDkxNjE4.UdMKfFweW7NHjJjcQKJdN1dc5mdX0OHBUP6cALxdOI4",
+    "workerB": "c2FuZGJveC1wb29sLXNvbGFyaS1wcm9kLW1ldGFsLXNhbmRib3gtOTh4bTp2bV8wMDA4ODQ6Y210djF5dmN6MDEwc213MDExNTdra2tzZjoxNzg5MTA1MDkzMjM5.dLG5X8Xd4Q6G3OCOBakPePdCIeeRfRS4dwKoNbCUpoU",
+    "workerC": "c2FuZGJveC1wb29sLXNvbGFyaS1wcm9kLW1ldGFsLXNhbmRib3gtOTh4bTp2bV8wMDA4ODU6Y210djF5dmN6MDEwc213MDExNTdra2tzZjoxNzg5MTA1MDk1MTcz.s-iQ3tV7faYe2NkUVq4QxWoP_Juu85RmYSgUwRAOr6w"
+  },
+  "sameParentCheckpoint": true,
+  "distinctResourceIdentities": true,
+  "distinctWorkerIdentities": true,
+  "independentCurrentness": true,
+  "staleSupportRejected": true,
+  "reconciliation": {
+    "status": "CONFLICT_REQUIRES_REOBSERVATION",
+    "evidence": [],
+    "authority": {
+      "canonicalAuthority": false,
+      "executionAuthority": false
+    }
+  },
+  "desktopScreenshot": {
+    "status": "NOT_PRODUCED",
+    "sha256": null,
+    "reason": "Desktop operation failed; harness discarded error detail, so exact failing health/display/screenshot stage is unknown."
+  },
+  "browserDom": "NOT_PRODUCED",
+  "routing": [
+    {
+      "requirement": "SOURCE_OR_COMMAND_EXECUTION",
+      "primitive": "SANDBOX",
+      "execution": "OBSERVED_NOT_REQUIREMENT_PROVEN"
+    },
+    {
+      "requirement": "GUI_DESKTOP_OBSERVATION",
+      "primitive": "DESKTOP",
+      "execution": "NOT_EXECUTED"
+    },
+    {
+      "requirement": "WEB_INTERACTION_OR_DOM",
+      "primitive": "BROWSER",
+      "execution": "NOT_EXECUTED"
+    },
+    {
+      "requirement": "PERSISTENT_ARTIFACT_RETRIEVAL",
+      "primitive": "VOLUME",
+      "execution": "DISABLED_NO_DISPATCH"
+    },
+    {
+      "requirement": "NO_ROUTE",
+      "primitive": "UNSUPPORTED",
+      "execution": "UNSUPPORTED"
+    }
+  ],
+  "autoCanonicalWinner": false,
+  "falseConsensusCreated": false,
+  "evidenceSemanticsEqualized": false,
+  "canonicalAuthority": false,
+  "executionAuthority": false,
+  "reportSha256": "7a7801f37e5bf06f2733de2e05582e8a10b54ede253e292965eabcbe840aa0ad",
+  "httpLedgerSha256": "92c2a154c9cc2ea6ca9c3618743ed84b33310b17874bbcc4565affbc4ba7d63b",
+  "sourceManifestSha256": "40bbcd31019edde0d92982decc592a6e594b8147f92bb70d5415405836b34c4d",
+  "noExternalModelProvider": true,
+  "onlySolariApiKey": true
+}
