@@ -23,7 +23,7 @@ past. Copy one into your project and change the parts you care about.
 | [browser-workers-cdp-ts](examples/browser-workers-cdp-ts) | TypeScript | Drive a browser from a Cloudflare Worker, over raw CDP |
 | [browser-playwright-runner-ts](examples/browser-playwright-runner-ts) | TypeScript | Run your existing Playwright suite on Solari, no local Chromium |
 | [eu-consent-evidence-ts](examples/eu-consent-evidence-ts) | TypeScript | Pre-consent tracker evidence via raw CDP |
-| [self-healing-e2e-ts](examples/self-healing-e2e-ts) | TypeScript | Repair a browser test when a release moves the DOM |
+| [self-healing-e2e-ts](examples/self-healing-e2e-ts) | TypeScript | Replay a recorded test against a release that moved the DOM, and catch the drift |
 
 ### Sandbox
 
@@ -124,6 +124,16 @@ Things that cost you an afternoon if you meet them cold:
   channel; the VM keeps running until its idle timeout.
 - **`timeoutMs` is a rolling idle window**, not a hard deadline — it resets on
   every use.
+- **Two `setContent()` calls on one page share one JS realm.** A top-level
+  `const` in the inline script throws "already declared" the second time, the
+  handlers never install, and every later step fails for a reason unrelated to
+  the thing under test. Start each attempt on a fresh page. See
+  [self-healing-e2e-ts](examples/self-healing-e2e-ts).
+- **`innerText()` on a hidden element returns its `textContent`.** That is the
+  HTML spec, not a bug: an element that is not being rendered has no rendered
+  text, so the fallback kicks in and an assertion on it goes green against a
+  section nobody can see. Wait for `visible` before reading. See
+  [self-healing-e2e-ts](examples/self-healing-e2e-ts).
 
 ## Links
 

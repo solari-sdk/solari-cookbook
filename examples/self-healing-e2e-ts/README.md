@@ -1,9 +1,9 @@
-# Self-healing E2E (TypeScript)
+# Self-healing E2E, part one: catch the drift (TypeScript)
 
-Run a browser test on a recorded Solari session, then run the same steps against a build where a
-release renamed the button the test clicks. The click fails, a model is asked for the selector that
-now serves that step, the whole spec is re-run to prove the repair holds, and the result lands in a
-static evidence page linking each session's replay.
+Replay a recorded browser test on a Solari session against the build it was recorded on, then
+against a release that renamed the button the test clicks. The click times out, and the run prints
+the failing step with the DOM it failed against — the thing any repair, human or model, has to
+reason from.
 
 The app under test is two inline HTML strings served with `page.setContent()` — no server, no build
 step, nothing past the SDK to install. Swap them for your own URLs.
@@ -12,18 +12,31 @@ step, nothing past the SDK to install. Swap them for your own URLs.
 
 ```bash
 cd examples/self-healing-e2e-ts
-cp .env.example .env      # SOLARI_API_KEY, and a healer if you want one
 npm install
+export SOLARI_API_KEY=slr_live_...   # https://console.getsolari.com
 npm start
 ```
 
-The healer is optional: without it the run stops at the drift and exits 1, still the interesting
-half. `HEALER=openai` calls any OpenAI-compatible `/chat/completions`; `HEALER=claude` shells out to
-the Claude Code CLI and needs no key. Replays upload asynchronously after release, so the evidence
-page polls ~60s and otherwise prints the session id and how to fetch it later.
+```
+run 1 — the build the test was recorded against
+  pristine 1/7 fill #email — ok
+  ...
+  pristine 7/7 expect #confirmation — ok
 
-The full engine behind this idea — spec files, real apps, repair PRs — is
-[e2e-doctor](https://github.com/hive-controls/e2e-doctor), optionally configured by
-[`@hive-controls/formic`](https://www.npmjs.com/package/@hive-controls/formic).
+run 2 — after the release
+  drifted  1/7 fill #email — ok
+  ...
+  drifted  6/7 click #approve — FAILED: locator.click: Timeout 3000ms exceeded.
+
+drift: step 6 #approve — locator.click: Timeout 3000ms exceeded.
+DOM at failure: <!DOCTYPE html><html><head>...<button id="confirm-order" class="btn-primary">Approve order</button>...
+```
+
+Finding the drift is the point, so that run exits 0. It exits 1 only if the pristine build fails
+or the drifted one passes (a stale fixture).
+
+Repairing the step — asking a healer for the selector that now serves it, re-running the whole spec
+to prove the repair holds, and keeping the evidence — is what
+[e2e-doctor](https://github.com/hive-controls/e2e-doctor) does.
 
 Source: [`index.ts`](index.ts)
