@@ -42,6 +42,7 @@ imported for type-checking / registration without ``solari-sandbox`` installed.
 from __future__ import annotations
 
 import asyncio
+import base64
 import io
 import math
 import os
@@ -132,12 +133,11 @@ class SolariSandboxClientOptions(BaseModel):
     pause_on_exit: bool = False
     base_url: str | None = None
     timeouts: SolariTimeouts = Field(default_factory=SolariTimeouts)
-    # PTY (interactive terminal) support. The adapter implements the full PTY
-    # contract, but it is OFF by default: on the currently deployed guest golden,
-    # `pty.create` cannot exec binaries in the guest rootfs (even an absolute path
-    # that `commands.run` resolves ENOENTs — a guest-agent defect, tracked
-    # separately). Flip this to True on a golden where the guest PTY exec is fixed.
-    enable_pty: bool = False
+    # PTY (interactive terminal) support, on by default. Runs `sh -lc <cmd>` in a
+    # guest pseudo-terminal via pty.create (cmd + argv over the control channel).
+    # Set False to disable. (Minor guest env notes, non-blocking: HOME/USER/SHELL
+    # are unset in the guest, so a login shell in a PTY starts with a bare env.)
+    enable_pty: bool = True
 
 
 class SolariSandboxSessionState(SandboxSessionState):
@@ -153,13 +153,44 @@ class SolariSandboxSessionState(SandboxSessionState):
     base_env_vars: dict[str, str] = Field(default_factory=dict)
     metadata: dict[str, str] = Field(default_factory=dict)
     pause_on_exit: bool = False
-    enable_pty: bool = False
+    enable_pty: bool = True
     timeouts: SolariTimeouts = Field(default_factory=SolariTimeouts)
 
 
 # ---------------------------------------------------------------------------
 # Session
 # ---------------------------------------------------------------------------
+
+
+class _SolariPtyChannelHandle:
+    """A PTY opened over Solari's control channel.
+
+    solari-sandbox's ``pty.create`` helper doesn't expose the guest's ``args``
+    field, so we call the channel directly (``pty.create`` / ``pty.input`` /
+    ``pty.kill``) to run ``sh -lc <cmd>`` with real argv. ``on_data`` registers a
+    synchronous frame handler; output arrives as base64 ``pty.data`` frames.
+    """
+
+    def __init__(self, channel: Any, pty_id: str) -> None:
+        self._channel = channel
+        self.pty_id = pty_id
+
+    def on_data(self, cb: Any) -> None:
+        def _handler(frame: dict, _cb: Any = cb) -> None:
+            b64 = frame.get("base64")
+            _cb(base64.b64decode(b64) if b64 else b"")
+
+        self._channel.on_frame("pty.data", self.pty_id, _handler)
+
+    async def write(self, data: str | bytes) -> None:
+        raw = data.encode("utf-8") if isinstance(data, str) else data
+        await self._channel.call(
+            "pty.input", {"ptyId": self.pty_id, "base64": base64.b64encode(raw).decode("ascii")}
+        )
+
+    async def kill(self) -> None:
+        self._channel.off_frame("pty.data", self.pty_id)
+        await self._channel.call("pty.kill", {"ptyId": self.pty_id})
 
 
 @dataclass
@@ -213,9 +244,6 @@ class SolariSandboxSession(BaseSandboxSession):
         return cls(state=state, sandbox=sandbox, solari_client=solari_client)
 
     def supports_pty(self) -> bool:
-        # Gated: the plumbing below is complete, but the deployed guest golden's
-        # pty.create exec is broken (see enable_pty on the options). Off unless the
-        # session was created with enable_pty=True on a fixed golden.
         return bool(self.state.enable_pty)
 
     # -- PTY (interactive sessions over Solari's pty.* control RPCs) ----------
@@ -248,7 +276,10 @@ class SolariSandboxSession(BaseSandboxSession):
         max_output_tokens: int | None = None,
     ) -> PtyExecUpdate:
         sanitized = self._prepare_exec_command(*command, shell=shell, user=user)
-        cmd_str = shlex.join(str(part) for part in sanitized)
+        # Solari's guest pty.create takes cmd + argv separately (exec.Command),
+        # so pass the program and its args split — NOT one shell-joined string.
+        prog, args = sanitized[0], [str(a) for a in sanitized[1:]]
+        # cwd must exist in the guest; start() has already mkdir'd the manifest root.
         cwd = sandbox_path_str(self.state.manifest.root)
         envs = {**self.state.base_env_vars}
 
@@ -262,9 +293,11 @@ class SolariSandboxSession(BaseSandboxSession):
             await self._terminate_pty_entry(pruned)
 
         try:
-            handle = await self._sandbox.pty.create(
-                cols=80, rows=24, cmd=cmd_str, cwd=cwd, env=envs or None
+            result = await self._sandbox._channel.call(
+                "pty.create",
+                {"cols": 80, "rows": 24, "cmd": prog, "args": args, "cwd": cwd, "env": envs},
             )
+            handle = _SolariPtyChannelHandle(self._sandbox._channel, result["ptyId"])
         except Exception:
             async with self._pty_lock:
                 self._reserved_pty_process_ids.discard(process_id)

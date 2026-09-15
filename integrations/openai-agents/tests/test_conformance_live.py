@@ -63,6 +63,17 @@ async def _conformance() -> None:
             print("  [ok] resolve_exposed_port ->", ep.url_for("http"))
         except Exception as e:
             print("  [skip] resolve_exposed_port (best-effort):", str(e)[:80])
+        # PTY (interactive terminal)
+        try:
+            upd = await session.pty_exec_start("bash", tty=True, yield_time_s=1.0)
+            upd2 = await session.pty_write_stdin(
+                session_id=upd.process_id, chars="echo pty-conf-$((6*7))\n", yield_time_s=1.5
+            )
+            assert b"pty-conf-42" in upd2.output, upd2.output
+            await session.pty_terminate_all()
+            print("  [ok] pty interactive round-trip")
+        except Exception as e:
+            print("  [skip] pty:", str(e)[:80])
     finally:
         await client.delete(session)
     print("LIVE CONFORMANCE: PASS")

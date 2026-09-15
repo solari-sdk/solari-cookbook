@@ -71,12 +71,11 @@ subject to a compatibility check against the host's base image and boot topology
 same-host warm-park, which the Agents SDK does not expose.)
 
 ### PTY
-The full PTY contract is implemented, but `SolariSandboxClientOptions.enable_pty`
-defaults to **False**: on the currently deployed guest golden, `pty.create` cannot exec
-binaries in the guest rootfs (an absolute path that `commands.run` resolves still
-ENOENTs) — a guest-agent defect tracked separately. The Shell capability (which the
-SandboxAgent uses by default) runs over `exec`, not PTY, so this does not affect normal
-coding-agent use. Set `enable_pty=True` on a golden where the guest PTY exec is fixed.
+Interactive PTY is supported and **on by default** (`enable_pty=True`). It runs
+`sh -lc <cmd>` in a guest pseudo-terminal via `pty.create` (passing `cmd` + argv over the
+control channel, since the SDK helper omits the argv field). Set `enable_pty=False` to
+disable. (Minor, non-blocking: `HOME`/`USER`/`SHELL` are unset in the guest env, so a login
+shell in a PTY starts bare.)
 
 ## Status (validated)
 - ✅ Implements every abstract method of `BaseSandboxClient` / `BaseSandboxSession`
@@ -90,7 +89,7 @@ coding-agent use. Set `enable_pty=True` on a golden where the guest PTY exec is 
   pause→serialize→resume round-trip that preserved workspace state. Also verified
   end-to-end: a `SandboxAgent` (`gpt-5.6-sol`) wrote and ran a program on a live Solari
   microVM.
-- ⏳ PTY runtime-enabled once the guest-agent pty exec is fixed (plumbing done, gated).
+- ✅ **Live PTY**: interactive `bash` in a guest pseudo-terminal (write stdin, read output) verified against a real Solari microVM.
 
 ## Path to becoming an officially integrated provider
 OpenAI's April 2026 Agents SDK ships hosted providers as optional extras under
@@ -100,7 +99,7 @@ Solari official (the 8th provider):
 1. Land this client in `agents/extensions/sandbox/solari/` upstream (PR to
    `openai/openai-agents-python`), matching the Blaxel/E2B module shape.
 2. Add the `solari` optional-dependency extra + docs provider-list entry.
-3. Enable PTY once the guest fix lands; keep the conformance test in the SDK suite.
+3. Keep the conformance test (incl. PTY) in the SDK suite.
 4. Engage OpenAI's partnerships for listing + the vetting applied to the existing seven.
 
 This repo is the working, live-tested reference for steps 1–3. See [`PR_DRAFT.md`](PR_DRAFT.md).

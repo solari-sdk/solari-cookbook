@@ -80,47 +80,43 @@ if __name__ == "__main__":
 # --- PTY plumbing (mock; proves pty_exec_start/pty_write_stdin wiring without a
 #     live guest, since the deployed golden's pty.create exec is broken) --------
 
-class _FakePty:
-    """Fake Solari pty handle: replays scripted output to the on_data callback."""
+import base64 as _b64mod
+
+
+class _FakeChannel:
+    """Minimal control-channel fake: pty.create -> ptyId; pty.input echoes the
+    written data back as a pty.data frame to the registered handler."""
 
     def __init__(self):
-        self._cb = None
-        self.written = []
+        self._handlers = {}
         self.killed = False
 
-    def on_data(self, cb):
-        self._cb = cb
+    async def call(self, method, params=None):
+        params = params or {}
+        if method == "pty.create":
+            return {"ptyId": "pty1"}
+        if method == "pty.input":
+            h = self._handlers.get(("pty.data", params["ptyId"]))
+            if h:
+                raw = _b64mod.b64decode(params["base64"])
+                h({"base64": _b64mod.b64encode(b"out:" + raw).decode()})
+            return {}
+        if method == "pty.kill":
+            self.killed = True
+            return {}
+        return {}
 
-    async def write(self, data):
-        self.written.append(data)
-        # echo the written command back like a real terminal would
-        if self._cb:
-            self._cb(("out:" + data).encode())
+    def on_frame(self, type_, id_, handler):
+        self._handlers[(type_, id_)] = handler
 
-    async def resize(self, cols, rows):
-        pass
-
-    async def kill(self):
-        self.killed = True
-
-
-class _FakePtyFactory:
-    def __init__(self):
-        self.last = None
-
-    async def create(self, *, cols, rows, cmd=None, cwd=None, env=None):
-        self.last = _FakePty()
-        # emit a startup banner
-        if self.last._cb is None:
-            # on_data registered after create in the adapter; banner comes on first drain
-            pass
-        return self.last
+    def off_frame(self, type_, id_):
+        self._handlers.pop((type_, id_), None)
 
 
 class _FakeSandboxWithPty(_FakeSandbox):
     def __init__(self):
         super().__init__()
-        self.pty = _FakePtyFactory()
+        self._channel = _FakeChannel()
 
 
 def _pty_session():
@@ -136,10 +132,18 @@ def _pty_session():
 
 
 def test_supports_pty_gated_by_option():
-    # default off
-    assert _session().supports_pty() is False
-    # on when enabled
+    # on by default
     assert _pty_session().supports_pty() is True
+    # explicitly disablable
+    sid = uuid.uuid4()
+    off = SolariSandboxSession(
+        state=SolariSandboxSessionState(
+            session_id=sid, manifest=Manifest(root="/workspace"),
+            snapshot=resolve_snapshot(None, str(sid)), sandbox_id="x", enable_pty=False,
+        ),
+        sandbox=_FakeSandboxWithPty(), solari_client=None,
+    )
+    assert off.supports_pty() is False
 
 
 def test_pty_exec_start_and_write_roundtrip():

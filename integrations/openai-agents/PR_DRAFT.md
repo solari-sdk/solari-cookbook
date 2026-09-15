@@ -61,7 +61,7 @@ the `resume()` contract (below).
 | **`resume(state)`** | **`connect(id)` + `resume()`** — full guest memory + device-state snapshot |
 | `serialize/deserialize_session_state` | JSON of `{sandbox_id, base_url, template, cpu, mem_mb, …}` |
 | `delete` | `pause()` (snapshot) when `pause_on_exit`, else `kill()` |
-| PTY | `pty.create` / `pty.input` / `pty.kill` — implemented, opt-in (see below) |
+| PTY | `pty.create` / `pty.input` / `pty.kill` — interactive terminal, on by default |
 
 **Resumable state (the differentiator):** Solari snapshots the microVM's full guest memory
 and device state, so `resume()` reattaches to the same backend microVM with its exact
@@ -84,12 +84,13 @@ subject to a compatibility check against the host's base image and boot topology
 - [x] `BaseSandboxClient` / `BaseSandboxSession` fully implemented
 - [x] `solari` extra added
 - [x] Unit/mock tests + gated live conformance test
-- [x] PTY implemented (opt-in via `enable_pty`; runtime-gated on a guest-agent fix — see note)
+- [x] PTY implemented + live-verified (interactive bash; `enable_pty` defaults True)
 - [ ] Port module into `agents/extensions/sandbox/solari/` (currently in the cookbook)
 - [ ] Docs page reviewed
 - [ ] Solari maintainer listed as CODEOWNER for `extensions/sandbox/solari/`
 
-> **PTY note:** the PTY contract is implemented and unit-tested, but `enable_pty` defaults
-> False — on the current Solari guest golden `pty.create` cannot exec guest-rootfs binaries
-> (a guest-agent defect, tracked internally). The default Shell capability runs over `exec`,
-> not PTY, so coding-agent use is unaffected. Enabled once the guest fix ships.
+> **PTY note:** interactive PTY is implemented, on by default, and live-verified (start
+> `bash`, write stdin, read output). It passes `cmd` + argv to the guest `pty.create` over
+> the control channel. Two minor, non-blocking guest-env notes: `HOME`/`USER`/`SHELL` are
+> unset in the guest, and a bad cwd surfaces as a misleading exec error — both tracked in
+> the Solari guest agent, neither affects this provider.
