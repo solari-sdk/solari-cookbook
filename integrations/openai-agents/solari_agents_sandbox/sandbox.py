@@ -25,9 +25,13 @@ Design notes
 ------------
 * ``create`` provisions a warm Solari microVM (~0.8s restore) and opens its
   control channel. ``delete`` pauses (when ``pause_on_exit``) or kills it.
-* ``resume`` reattaches to the *same* backend microVM by id — Solari keeps it
-  paused-warm with cross-host S3 recovery, which is exactly the "reattach, or
-  hydrate a replacement from ``state.snapshot``" contract the SDK asks for.
+* ``resume`` reattaches to the *same* backend microVM by id. Solari snapshots the
+  microVM's full guest memory and device state, so the resumed VM has its exact
+  machine state (not a reconstructed workspace tar). The snapshot is stored
+  durably, so a session can be recovered onto a different host when its original
+  host is gone — subject to a compatibility check against the host's base image
+  and boot topology. This maps onto the SDK's "reattach, or hydrate a replacement
+  from ``state.snapshot``" contract.
 * Workspace persistence uses the SDK's tar convention (``persist_workspace`` /
   ``hydrate_workspace``) over Solari's ``exec`` + ``files`` RPCs.
 
@@ -37,11 +41,15 @@ imported for type-checking / registration without ``solari-sandbox`` installed.
 
 from __future__ import annotations
 
+import asyncio
 import io
 import math
 import os
 import shlex
+import time
 import uuid
+from collections import deque
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 from urllib.parse import urlsplit
@@ -66,6 +74,14 @@ from agents.sandbox.snapshot import SnapshotBase, SnapshotSpec, resolve_snapshot
 from agents.sandbox.types import ExecResult, ExposedPortEndpoint, User
 from agents.sandbox.util.tar_utils import UnsafeTarMemberError, validate_tar_bytes
 from agents.sandbox.workspace_paths import coerce_posix_path, posix_path_as_path, sandbox_path_str
+from agents.sandbox.session.pty_output import collect_pty_output
+from agents.sandbox.session.pty_types import (
+    PTY_PROCESSES_MAX,
+    PtyExecUpdate,
+    allocate_pty_process_id,
+    process_id_to_prune_from_meta,
+    resolve_pty_write_yield_time_ms,
+)
 
 DEFAULT_SOLARI_BASE_URL = "https://api.getsolari.com"
 DEFAULT_SOLARI_WORKSPACE_ROOT = "/workspace"
@@ -108,11 +124,20 @@ class SolariSandboxClientOptions(BaseModel):
     disk_gb: int | None = None
     env_vars: dict[str, str] = Field(default_factory=dict)
     metadata: dict[str, str] = Field(default_factory=dict)
-    # When true, `delete()` pauses the microVM (kept warm for a later `resume`)
-    # instead of killing it, and Solari's idle policy auto-resumes on reconnect.
+    # When true, `delete()` snapshots + pauses the microVM (guest memory + device
+    # state persisted for a later `resume`) instead of killing it, and Solari's
+    # idle lifecycle auto-resumes it on reconnect. (This is the snapshot/hibernate
+    # path — durable and cross-host-recoverable — not the same-host warm-park
+    # path, which the SDK does not expose.)
     pause_on_exit: bool = False
     base_url: str | None = None
     timeouts: SolariTimeouts = Field(default_factory=SolariTimeouts)
+    # PTY (interactive terminal) support. The adapter implements the full PTY
+    # contract, but it is OFF by default: on the currently deployed guest golden,
+    # `pty.create` cannot exec binaries in the guest rootfs (even an absolute path
+    # that `commands.run` resolves ENOENTs — a guest-agent defect, tracked
+    # separately). Flip this to True on a golden where the guest PTY exec is fixed.
+    enable_pty: bool = False
 
 
 class SolariSandboxSessionState(SandboxSessionState):
@@ -128,12 +153,27 @@ class SolariSandboxSessionState(SandboxSessionState):
     base_env_vars: dict[str, str] = Field(default_factory=dict)
     metadata: dict[str, str] = Field(default_factory=dict)
     pause_on_exit: bool = False
+    enable_pty: bool = False
     timeouts: SolariTimeouts = Field(default_factory=SolariTimeouts)
 
 
 # ---------------------------------------------------------------------------
 # Session
 # ---------------------------------------------------------------------------
+
+
+@dataclass
+class _SolariPtyEntry:
+    """A live PTY session: the Solari pty handle plus an output buffer that its
+    on_data callback fills and ``collect_pty_output`` drains on yield-time."""
+
+    pty_handle: Any
+    output_chunks: "deque[bytes]" = field(default_factory=deque)
+    output_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    output_notify: asyncio.Event = field(default_factory=asyncio.Event)
+    done: bool = False
+    exit_code: int | None = None
+    last_used: float = field(default_factory=time.monotonic)
 
 
 class SolariSandboxSession(BaseSandboxSession):
@@ -143,6 +183,9 @@ class SolariSandboxSession(BaseSandboxSession):
     _sandbox: Any  # solari_sandbox Sandbox handle
     _solari_client: Any  # solari_sandbox.SandboxClient (for reconnect/kill)
     _skip_start: bool
+    _pty_lock: asyncio.Lock
+    _pty_sessions: dict[int, _SolariPtyEntry]
+    _reserved_pty_process_ids: set[int]
 
     def __init__(
         self,
@@ -155,6 +198,9 @@ class SolariSandboxSession(BaseSandboxSession):
         self._sandbox = sandbox
         self._solari_client = solari_client
         self._skip_start = False
+        self._pty_lock = asyncio.Lock()
+        self._pty_sessions = {}
+        self._reserved_pty_process_ids = set()
 
     @classmethod
     def from_state(
@@ -167,7 +213,183 @@ class SolariSandboxSession(BaseSandboxSession):
         return cls(state=state, sandbox=sandbox, solari_client=solari_client)
 
     def supports_pty(self) -> bool:
-        return False
+        # Gated: the plumbing below is complete, but the deployed guest golden's
+        # pty.create exec is broken (see enable_pty on the options). Off unless the
+        # session was created with enable_pty=True on a fixed golden.
+        return bool(self.state.enable_pty)
+
+    # -- PTY (interactive sessions over Solari's pty.* control RPCs) ----------
+    #
+    # Solari PTYs stream output as `pty.data` frames and have no exit frame — an
+    # interactive shell stays open until killed. So `output_closed` is always
+    # False here (unlike a command-style backend): the process stays live across
+    # writes and is torn down explicitly by pty_terminate_all(). Output buffering
+    # / yield-time semantics reuse the SDK's own collect_pty_output helper.
+
+    def _prune_pty_sessions_if_needed(self) -> _SolariPtyEntry | None:
+        if len(self._pty_sessions) < PTY_PROCESSES_MAX:
+            return None
+        meta = [
+            (pid, e.last_used, e.done) for pid, e in self._pty_sessions.items()
+        ]
+        victim = process_id_to_prune_from_meta(meta)
+        if victim is None:
+            return None
+        return self._pty_sessions.pop(victim, None)
+
+    async def pty_exec_start(
+        self,
+        *command: str | Path,
+        timeout: float | None = None,
+        shell: bool | list[str] = True,
+        user: str | User | None = None,
+        tty: bool = False,
+        yield_time_s: float | None = None,
+        max_output_tokens: int | None = None,
+    ) -> PtyExecUpdate:
+        sanitized = self._prepare_exec_command(*command, shell=shell, user=user)
+        cmd_str = shlex.join(str(part) for part in sanitized)
+        cwd = sandbox_path_str(self.state.manifest.root)
+        envs = {**self.state.base_env_vars}
+
+        async with self._pty_lock:
+            process_id = allocate_pty_process_id(
+                self._reserved_pty_process_ids | set(self._pty_sessions)
+            )
+            self._reserved_pty_process_ids.add(process_id)
+            pruned = self._prune_pty_sessions_if_needed()
+        if pruned is not None:
+            await self._terminate_pty_entry(pruned)
+
+        try:
+            handle = await self._sandbox.pty.create(
+                cols=80, rows=24, cmd=cmd_str, cwd=cwd, env=envs or None
+            )
+        except Exception:
+            async with self._pty_lock:
+                self._reserved_pty_process_ids.discard(process_id)
+            raise
+
+        entry = _SolariPtyEntry(pty_handle=handle)
+
+        # Solari's on_data callback is synchronous and runs inside the event
+        # loop between awaits, so appending without the async lock is safe; the
+        # notify wakes collect_pty_output.
+        def _on_data(raw: bytes, _entry: _SolariPtyEntry = entry) -> None:
+            _entry.output_chunks.append(raw)
+            _entry.output_notify.set()
+
+        handle.on_data(_on_data)
+
+        async with self._pty_lock:
+            self._pty_sessions[process_id] = entry
+
+        yield_time_ms = 250 if yield_time_s is None else int(yield_time_s * 1000)
+        output, original_token_count, output_closed = await self._collect_pty_output(
+            entry=entry,
+            yield_time_ms=resolve_pty_write_yield_time_ms(
+                yield_time_ms=yield_time_ms, input_empty=False
+            ),
+            max_output_tokens=max_output_tokens,
+        )
+        entry.last_used = time.monotonic()
+        return await self._finalize_pty_update(
+            process_id=process_id,
+            entry=entry,
+            output=output,
+            original_token_count=original_token_count,
+            output_closed=output_closed,
+        )
+
+    async def pty_write_stdin(
+        self,
+        *,
+        session_id: int,
+        chars: str,
+        yield_time_s: float | None = None,
+        max_output_tokens: int | None = None,
+    ) -> PtyExecUpdate:
+        async with self._pty_lock:
+            entry = self._resolve_pty_session_entry(
+                pty_processes=self._pty_sessions, session_id=session_id
+            )
+        if chars:
+            await entry.pty_handle.write(chars)
+            await asyncio.sleep(0.05)
+
+        yield_time_ms = 250 if yield_time_s is None else int(yield_time_s * 1000)
+        output, original_token_count, output_closed = await self._collect_pty_output(
+            entry=entry,
+            yield_time_ms=resolve_pty_write_yield_time_ms(
+                yield_time_ms=yield_time_ms, input_empty=chars == ""
+            ),
+            max_output_tokens=max_output_tokens,
+        )
+        entry.last_used = time.monotonic()
+        return await self._finalize_pty_update(
+            process_id=session_id,
+            entry=entry,
+            output=output,
+            original_token_count=original_token_count,
+            output_closed=output_closed,
+        )
+
+    async def pty_terminate_all(self) -> None:
+        async with self._pty_lock:
+            entries = list(self._pty_sessions.values())
+            self._pty_sessions.clear()
+            self._reserved_pty_process_ids.clear()
+        for entry in entries:
+            await self._terminate_pty_entry(entry)
+
+    async def _collect_pty_output(
+        self,
+        *,
+        entry: _SolariPtyEntry,
+        yield_time_ms: int,
+        max_output_tokens: int | None,
+    ) -> tuple[bytes, int | None, bool]:
+        return await collect_pty_output(
+            output_chunks=entry.output_chunks,
+            output_lock=entry.output_lock,
+            output_notify=entry.output_notify,
+            is_done=lambda: entry.done,
+            yield_time_ms=yield_time_ms,
+            max_output_tokens=max_output_tokens,
+        )
+
+    async def _finalize_pty_update(
+        self,
+        *,
+        process_id: int,
+        entry: _SolariPtyEntry,
+        output: bytes,
+        original_token_count: int | None,
+        output_closed: bool,
+    ) -> PtyExecUpdate:
+        # Solari PTYs have no exit signal, so output_closed is False in practice
+        # and the process stays live; kept symmetric with the base contract.
+        exit_code = entry.exit_code if output_closed else None
+        live_process_id: int | None = process_id
+        if output_closed:
+            async with self._pty_lock:
+                removed = self._pty_sessions.pop(process_id, None)
+                self._reserved_pty_process_ids.discard(process_id)
+            if removed is not None:
+                await self._terminate_pty_entry(removed)
+            live_process_id = None
+        return PtyExecUpdate(
+            process_id=live_process_id,
+            output=output,
+            exit_code=exit_code,
+            original_token_count=original_token_count,
+        )
+
+    async def _terminate_pty_entry(self, entry: _SolariPtyEntry) -> None:
+        try:
+            await entry.pty_handle.kill()
+        except Exception:
+            pass
 
     # -- lifecycle -----------------------------------------------------------
 
@@ -191,6 +413,7 @@ class SolariSandboxSession(BaseSandboxSession):
 
     async def shutdown(self) -> None:
         # Control-channel teardown; the client decides pause-vs-kill in delete().
+        await self.pty_terminate_all()
         try:
             await self._sandbox.close()
         except Exception:
@@ -464,6 +687,7 @@ class SolariSandboxClient(BaseSandboxClient["SolariSandboxClientOptions"]):
             base_env_vars=dict(options.env_vars),
             metadata=dict(options.metadata),
             pause_on_exit=options.pause_on_exit,
+            enable_pty=options.enable_pty,
             timeouts=options.timeouts,
         )
         inner = SolariSandboxSession.from_state(
@@ -496,9 +720,12 @@ class SolariSandboxClient(BaseSandboxClient["SolariSandboxClientOptions"]):
         solari_client = self._new_solari_client(state.base_url)
         sandbox = None
         reconnected = False
-        # Reattach to the same paused-warm microVM (Solari keeps it recoverable
-        # cross-host via S3). If it's gone, fall through to a fresh VM hydrated
-        # from state.snapshot during start().
+        # Reattach to the same backend microVM by id. If pause_on_exit snapshotted
+        # it (full guest memory + device state, stored durably), resume() restores
+        # that exact state -- on the originating host by default, or a different
+        # host if the original is gone and the snapshot is compat-valid. If the VM
+        # is unrecoverable, fall through to a fresh VM hydrated from state.snapshot
+        # during start().
         try:
             sandbox = await solari_client.connect(state.sandbox_id)
             if state.pause_on_exit:

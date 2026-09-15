@@ -75,3 +75,82 @@ if __name__ == "__main__":
     test_running_health_check()
     test_resolve_exposed_port_parses_preview()
     print("ok")
+
+
+# --- PTY plumbing (mock; proves pty_exec_start/pty_write_stdin wiring without a
+#     live guest, since the deployed golden's pty.create exec is broken) --------
+
+class _FakePty:
+    """Fake Solari pty handle: replays scripted output to the on_data callback."""
+
+    def __init__(self):
+        self._cb = None
+        self.written = []
+        self.killed = False
+
+    def on_data(self, cb):
+        self._cb = cb
+
+    async def write(self, data):
+        self.written.append(data)
+        # echo the written command back like a real terminal would
+        if self._cb:
+            self._cb(("out:" + data).encode())
+
+    async def resize(self, cols, rows):
+        pass
+
+    async def kill(self):
+        self.killed = True
+
+
+class _FakePtyFactory:
+    def __init__(self):
+        self.last = None
+
+    async def create(self, *, cols, rows, cmd=None, cwd=None, env=None):
+        self.last = _FakePty()
+        # emit a startup banner
+        if self.last._cb is None:
+            # on_data registered after create in the adapter; banner comes on first drain
+            pass
+        return self.last
+
+
+class _FakeSandboxWithPty(_FakeSandbox):
+    def __init__(self):
+        super().__init__()
+        self.pty = _FakePtyFactory()
+
+
+def _pty_session():
+    sid = uuid.uuid4()
+    state = SolariSandboxSessionState(
+        session_id=sid,
+        manifest=Manifest(root="/workspace"),
+        snapshot=resolve_snapshot(None, str(sid)),
+        sandbox_id="sbx_fake",
+        enable_pty=True,
+    )
+    return SolariSandboxSession(state=state, sandbox=_FakeSandboxWithPty(), solari_client=None)
+
+
+def test_supports_pty_gated_by_option():
+    # default off
+    assert _session().supports_pty() is False
+    # on when enabled
+    assert _pty_session().supports_pty() is True
+
+
+def test_pty_exec_start_and_write_roundtrip():
+    # one event loop for the whole session (Events/Locks are loop-bound)
+    async def run():
+        sess = _pty_session()
+        upd = await sess.pty_exec_start("bash", tty=True, yield_time_s=0.25)
+        assert upd.process_id is not None
+        upd2 = await sess.pty_write_stdin(
+            session_id=upd.process_id, chars="echo hi\n", yield_time_s=0.25
+        )
+        assert b"out:echo hi\n" in upd2.output
+        await sess.pty_terminate_all()
+    asyncio.run(run())
