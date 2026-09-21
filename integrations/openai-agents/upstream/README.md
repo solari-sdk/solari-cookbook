@@ -2,8 +2,17 @@
 
 `0001-add-solari-sandbox-provider.patch` adds Solari as a hosted sandbox provider
 to the Agents SDK, in the repo's own layout (the cookbook module is the dev source;
-this is the port ready to submit upstream). It applied cleanly onto
-`openai/openai-agents-python@main` at port time.
+this is the port ready to submit upstream).
+
+> **Base + staleness:** created **2026-09-15**, applied cleanly (`git apply --check`)
+> onto **`openai/openai-agents-python@main` = commit `fbf59a4`**. Their `main` moves;
+> the further it has advanced past `fbf59a4`, the more likely `git am` needs a rebase.
+> Re-check with `git apply --check` against a fresh clone before relying on it.
+>
+> **Status (2026-09-21): DEFERRED, not declined.** James has deprioritized the OpenAI
+> Agents SDK work; no fork exists and no upstream PR should be opened yet. The
+> integration is proven end-to-end against real prod Solari sandboxes (the hard part) —
+> resume here when priorities allow.
 
 ## What it changes
 - `src/agents/extensions/sandbox/solari/{__init__,sandbox}.py` — the provider
