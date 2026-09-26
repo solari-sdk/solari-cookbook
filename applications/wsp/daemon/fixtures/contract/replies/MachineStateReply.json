@@ -1,0 +1,14 @@
+[
+  {
+    "state": "starting"
+  },
+  {
+    "state": "running"
+  },
+  {
+    "state": "paused"
+  },
+  {
+    "state": "gone"
+  }
+]

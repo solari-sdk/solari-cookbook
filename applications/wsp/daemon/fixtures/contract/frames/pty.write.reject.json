@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "op": "pty.write",
+    "ptyId": "pty_1"
+  },
+  {
+    "id": 1,
+    "op": "pty.write",
+    "data": "ls\n"
+  },
+  {
+    "id": 1,
+    "op": "pty.write",
+    "ptyId": "pty_1",
+    "data": "x",
+    "machineId": 1
+  }
+]

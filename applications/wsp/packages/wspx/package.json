@@ -1,0 +1,44 @@
+{
+  "name": "@zingzy/wsp",
+  "version": "0.2.0",
+  "description": "Your setup, on cloud machines, for coding agents. Installs the wsp command.",
+  "type": "module",
+  "bin": {
+    "wsp": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "wsp",
+    "coding-agents",
+    "claude-code",
+    "cloud-development-environment",
+    "mcp"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zingzy/wsp.git",
+    "directory": "packages/wspx"
+  },
+  "homepage": "https://github.com/Zingzy/wsp#readme",
+  "bugs": {
+    "url": "https://github.com/Zingzy/wsp/issues"
+  },
+  "scripts": {
+    "build:deps": "pnpm --filter \"@zingzy/wsp^...\" build",
+    "build": "tsup && node scripts/stage.mjs",
+    "release": "node scripts/release.mjs",
+    "smoke": "cd ../.. && WSP_PACK_SMOKE=1 vitest run --project node packages/wspx/test/smoke.pack.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@wsp/host": "workspace:*",
+    "@wsp/web": "workspace:*"
+  },
+  "license": "AGPL-3.0-only"
+}

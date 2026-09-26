@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "op": "fs.list",
+    "path": "."
+  },
+  {
+    "id": 1,
+    "op": "fs.list",
+    "path": "/root/app",
+    "gitignore": true
+  },
+  {
+    "id": 1,
+    "op": "fs.list",
+    "path": "/root/repo",
+    "machineId": "wsp-a"
+  }
+]

@@ -1,0 +1,40 @@
+/* Linen: unbleached light, warm greys and an ink-black key. */
+[data-theme="linen"] {
+  color-scheme: light;
+  --background: #f7f3ec;
+  --foreground: #2b2622;
+  --card: #fffdf9;
+  --muted: #f1ece3;
+  --muted-foreground: #6f645a;
+  --accent: #ebe5d9;
+  --accent-foreground: #1f1b18;
+  --primary: #2b2622;
+  --primary-foreground: #f7f3ec;
+  --border: #dfd7ca;
+  --input: #cdc3b3;
+  --success: var(--color-emerald-600);
+  --warning: var(--color-amber-600);
+  --error-foreground: #b3261e;
+  --warning-foreground: #96580f;
+  --success-foreground: #3d7a3a;
+  --info-foreground: #2f5fb3;
+  --update-foreground: #2f5fb3;
+  --sidebar: #f1ece3;
+  --sidebar-foreground: #2b2622;
+  --sidebar-muted-foreground: #655a50;
+  --sidebar-whisper: #473e36;
+  --sidebar-control-surface: #ebe5d9;
+  --sidebar-row-hover: #f7f3ec;
+  --sidebar-row-active: #fffdf9;
+  --sidebar-row-selected: #ebe5d9;
+  --sidebar-row-edge: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --sidebar-rail: rgb(43 38 34 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #f7f3ec;
+  --sidebar-card: #fffdf9;
+  --sidebar-fill: #f1ece3;
+  --sidebar-hover: #ebe5d9;
+  --sidebar-hover-ink: #1f1b18;
+  --sidebar-quiet: #6f645a;
+  --sidebar-input: #cdc3b3;
+}

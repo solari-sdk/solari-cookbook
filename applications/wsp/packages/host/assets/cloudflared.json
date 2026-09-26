@@ -1,0 +1,27 @@
+{
+  "version": "2026.9.0",
+  "assets": {
+    "darwin-arm64": {
+      "url": "https://github.com/cloudflare/cloudflared/releases/download/2026.9.0/cloudflared-darwin-arm64.tgz",
+      "sha256": "c0eccb3758420d1f4e46cbf2b8ecde01d9802a154232a817f25133340009fcc7",
+      "archive": "tgz"
+    },
+    "darwin-x64": {
+      "url": "https://github.com/cloudflare/cloudflared/releases/download/2026.9.0/cloudflared-darwin-amd64.tgz",
+      "sha256": "8f2ecf41776d942bcc8070a56e7bafa4c5de70a1d1781110e2eb3774cca512a8",
+      "archive": "tgz"
+    },
+    "linux-x64": {
+      "url": "https://github.com/cloudflare/cloudflared/releases/download/2026.9.0/cloudflared-linux-amd64",
+      "sha256": "53b7a7a5420d188758d24341294acb0d1bca54296548ac05e38811a694ac6134"
+    },
+    "linux-arm64": {
+      "url": "https://github.com/cloudflare/cloudflared/releases/download/2026.9.0/cloudflared-linux-arm64",
+      "sha256": "98aca3173f73248fad6180fc75dade2d186a6e54fa807e088108cb4345de8efe"
+    },
+    "linux-arm": {
+      "url": "https://github.com/cloudflare/cloudflared/releases/download/2026.9.0/cloudflared-linux-arm",
+      "sha256": "0077f9b0ce9d9bd95e67c22aff33d132c83513c0e80b0bc686f00fe418bb336b"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 7,
+    "op": "guest.close"
+  },
+  {
+    "id": 7,
+    "op": "guest.close",
+    "session": "g1",
+    "error": 5
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "type": "localhost.url"
+  },
+  {
+    "type": "localhost.url",
+    "port": 0
+  },
+  {
+    "type": "localhost.url",
+    "port": "8123"
+  }
+]

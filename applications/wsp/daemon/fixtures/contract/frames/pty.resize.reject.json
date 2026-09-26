@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "op": "pty.resize",
+    "ptyId": "pty_1",
+    "cols": 120
+  },
+  {
+    "id": 1,
+    "op": "pty.resize",
+    "ptyId": "pty_1",
+    "cols": "120",
+    "rows": 40
+  },
+  {
+    "id": 1,
+    "op": "pty.resize",
+    "ptyId": "pty_1",
+    "cols": 80,
+    "rows": 24,
+    "machineId": 1
+  }
+]

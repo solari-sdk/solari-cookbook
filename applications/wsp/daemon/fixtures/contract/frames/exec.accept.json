@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "op": "exec",
+    "cmd": "echo hello"
+  },
+  {
+    "id": 1,
+    "op": "exec",
+    "cmd": "cat > /root/x",
+    "timeoutMs": 5000,
+    "stdin": "Ynl0ZXM="
+  }
+]

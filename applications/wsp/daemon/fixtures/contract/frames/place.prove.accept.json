@@ -1,0 +1,113 @@
+[
+  {
+    "id": 2,
+    "op": "place.prove",
+    "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "report": {
+      "name": "old-macbook",
+      "platform": "linux",
+      "arch": "x64",
+      "os": "Linux 6.8.0",
+      "shape": {
+        "cpu": 4,
+        "memMb": 4096
+      },
+      "diskFreeBytes": 1024,
+      "login": {
+        "HOME": "/home/maya",
+        "USER": "maya",
+        "PATH": "/usr/bin"
+      },
+      "runsWorkspaces": true,
+      "engine": "docker",
+      "daemonVersion": 17,
+      "daemonPort": 41234,
+      "wsp": [
+        "/usr/bin/wsp"
+      ],
+      "dialed": "http://192.168.1.20:4400",
+      "agents": [
+        "a1",
+        "b2"
+      ],
+      "copies": "reflink",
+      "agentVersions": {
+        "a1": "2.1.270 (Claude Code)",
+        "b2": "codex-cli 0.153.0"
+      },
+      "logins": [
+        "codex/auth.json"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "op": "place.prove",
+    "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "report": {
+      "name": "box",
+      "platform": "darwin",
+      "arch": "arm64",
+      "os": "Darwin 25.4.0",
+      "shape": {
+        "cpu": 8,
+        "memMb": 16384
+      },
+      "login": {},
+      "runsWorkspaces": false,
+      "workspacesBlocked": "this computer's kernel has no overlay filesystem, which wsp stacks a workspace's layers on",
+      "engine": "none",
+      "daemonVersion": 0,
+      "wsp": [
+        "wsp"
+      ],
+      "dialed": "https://relay.example.com",
+      "agents": []
+    }
+  },
+  {
+    "id": 2,
+    "op": "place.prove",
+    "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "report": {
+      "name": "old-macbook",
+      "platform": "linux",
+      "arch": "x64",
+      "os": "Linux 6.8.0",
+      "shape": {
+        "cpu": 4,
+        "memMb": 4096
+      },
+      "diskFreeBytes": 1024,
+      "login": {
+        "HOME": "/home/maya",
+        "USER": "maya",
+        "PATH": "/usr/bin"
+      },
+      "runsWorkspaces": true,
+      "engine": "docker",
+      "daemonVersion": 17,
+      "daemonPort": 41234,
+      "wsp": [
+        "/usr/bin/wsp"
+      ],
+      "dialed": "http://192.168.1.20:4400",
+      "agents": [
+        "a1",
+        "b2"
+      ],
+      "copies": "reflink",
+      "agentVersions": {
+        "a1": "2.1.270 (Claude Code)",
+        "b2": "codex-cli 0.153.0"
+      },
+      "logins": [
+        "codex/auth.json"
+      ]
+    },
+    "code": "ABCD-EFGH",
+    "client": {
+      "name": "maya's laptop"
+    }
+  }
+]

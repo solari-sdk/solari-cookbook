@@ -1,0 +1,26 @@
+[
+  {
+    "type": "sys.sample",
+    "cpu": 25,
+    "load1": 1.25,
+    "mem": {
+      "used": 2000,
+      "total": 8000
+    },
+    "at": 1757000000000
+  },
+  {
+    "type": "sys.sample",
+    "cpu": "25",
+    "load1": 1.25,
+    "mem": {
+      "used": 2000,
+      "total": 8000
+    },
+    "disk": {
+      "used": 30000,
+      "total": 100000
+    },
+    "at": 1
+  }
+]

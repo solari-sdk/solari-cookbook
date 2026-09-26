@@ -1,0 +1,21 @@
+[
+  {
+    "branch": "pricing-page",
+    "base": "main",
+    "remote": "origin",
+    "ahead": 2,
+    "uncommitted": 1,
+    "stat": [
+      " src/page.tsx | 14 ++++++++++----",
+      " 1 file changed, 10 insertions(+), 4 deletions(-)"
+    ]
+  },
+  {
+    "branch": "work",
+    "base": "main",
+    "remote": "origin",
+    "ahead": 1,
+    "uncommitted": 0,
+    "stat": []
+  }
+]

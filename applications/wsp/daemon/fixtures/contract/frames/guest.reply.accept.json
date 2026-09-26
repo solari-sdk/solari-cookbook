@@ -1,0 +1,19 @@
+[
+  {
+    "id": 5,
+    "op": "guest.reply",
+    "session": "g1",
+    "message": {
+      "stream": "out",
+      "text": "rows\n"
+    }
+  },
+  {
+    "id": 6,
+    "op": "guest.reply",
+    "session": "g1",
+    "message": {
+      "exit": 0
+    }
+  }
+]

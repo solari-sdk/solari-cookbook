@@ -1,0 +1,16 @@
+{
+  "name": "@wsp/adapter-codex",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run packages/adapter-codex"
+  },
+  "dependencies": {
+    "@wsp/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  },
+  "license": "AGPL-3.0-only"
+}

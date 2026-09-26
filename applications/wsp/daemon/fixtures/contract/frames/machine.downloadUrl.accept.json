@@ -1,0 +1,8 @@
+[
+  {
+    "id": 1,
+    "op": "machine.downloadUrl",
+    "machineId": "m1",
+    "path": "/root/out.tgz"
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "op": "pty.detach",
+    "ptyId": "pty_1"
+  },
+  {
+    "id": "x",
+    "op": "pty.detach",
+    "ptyId": "pty_2",
+    "machineId": "wsp-a"
+  }
+]

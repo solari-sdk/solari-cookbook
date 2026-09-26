@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "op": "pty.list"
+  },
+  {
+    "id": "x",
+    "op": "pty.list"
+  },
+  {
+    "id": 2,
+    "op": "pty.list",
+    "machineId": "wsp-a"
+  }
+]

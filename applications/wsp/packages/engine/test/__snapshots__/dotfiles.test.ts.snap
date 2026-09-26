@@ -1,0 +1,122 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`generated scripts > chezmoi apply script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export GIT_TERMINAL_PROMPT=0
+curl() { command curl --connect-timeout 15 --speed-limit 1 --speed-time 60 --retry 1 --fail --silent --show-error --location "$@"; }
+if ! command -v chezmoi >/dev/null 2>&1; then
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64) pkg=chezmoi_2.72.1_linux_amd64.tar.gz sha=9f97d32caca166e5c92160ec3a9325519809c38963121cef38173142065c981f ;;
+    aarch64) pkg=chezmoi_2.72.1_linux_arm64.tar.gz sha=75508ef41216b6d64f3145986b751729d7f92d09c6bad77d51cf2895ab35a508 ;;
+    *) echo "unsupported arch: $arch" >&2; exit 1 ;;
+  esac
+  curl -o "/tmp/$pkg" "https://github.com/twpayne/chezmoi/releases/download/v2.72.1/$pkg"
+  echo "$sha  /tmp/$pkg" | sha256sum -c -
+  tar -xzf "/tmp/$pkg" -C /tmp chezmoi
+  install -m 0755 /tmp/chezmoi /usr/local/bin/chezmoi
+  rm -f "/tmp/$pkg" /tmp/chezmoi
+fi
+chezmoi init --apply 'https://github.com/someone/dotfiles'
+"
+`;
+
+exports[`generated scripts > clone script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export GIT_TERMINAL_PROMPT=0 DEBIAN_FRONTEND=noninteractive
+command -v git >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq git; }
+rm -rf "$HOME/.dotfiles"
+git clone --depth 1 'https://github.com/someone/dotfiles' "$HOME/.dotfiles"
+"
+`;
+
+exports[`generated scripts > list script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+cd "$HOME/.dotfiles"
+find . -mindepth 1 -maxdepth 2 -name .git -prune -o -type d -printf 'd %P\\n' -o -printf 'f %P\\n'
+"
+`;
+
+exports[`generated scripts > plain apply script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+cd "$HOME/.dotfiles"
+for f in install.sh setup.sh bootstrap.sh; do
+  if [ -f "$f" ]; then bash "$f"; exit 0; fi
+done
+backup="$HOME/.dotfiles-backup/$(date +%Y%m%d%H%M%S)"
+for f in .*; do
+  case "$f" in .|..|.git|.github|.gitignore|.gitattributes|.gitmodules) continue ;; esac
+  if [ -e "$HOME/$f" ] || [ -L "$HOME/$f" ]; then
+    mkdir -p "$backup"
+    mv "$HOME/$f" "$backup/$f"
+  fi
+  ln -s "$HOME/.dotfiles/$f" "$HOME/$f"
+done
+"
+`;
+
+exports[`generated scripts > stow apply script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export DEBIAN_FRONTEND=noninteractive
+command -v stow >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq stow; }
+cd "$HOME/.dotfiles"
+stow --verbose --target "$HOME" 'zsh' 'tmux'
+"
+`;
+
+exports[`generated scripts > yadm apply script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export GIT_TERMINAL_PROMPT=0 DEBIAN_FRONTEND=noninteractive
+command -v yadm >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq yadm; }
+yadm clone --no-bootstrap 'https://github.com/someone/dotfiles'
+if [ -x "$HOME/.config/yadm/bootstrap" ]; then yadm bootstrap
+elif [ -x "$HOME/bootstrap" ]; then "$HOME/bootstrap"
+fi
+"
+`;
+
+exports[`presets > neovim preset script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export DEBIAN_FRONTEND=noninteractive
+command -v nvim >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq neovim; }
+"
+`;
+
+exports[`presets > tmux preset script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export DEBIAN_FRONTEND=noninteractive
+command -v tmux >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq tmux; }
+"
+`;
+
+exports[`presets > zsh preset script snapshot 1`] = `
+"set -euo pipefail
+export HOME="\${HOME:-$(getent passwd "$(id -u)" | cut -d: -f6)}"
+export DEBIAN_FRONTEND=noninteractive
+command -v zsh >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq zsh; }
+curl() { command curl --connect-timeout 15 --speed-limit 1 --speed-time 60 --retry 1 --fail --silent --show-error --location "$@"; }
+if ! command -v starship >/dev/null 2>&1; then
+  arch="$(uname -m)"
+  case "$arch" in
+    x86_64) pkg=starship-x86_64-unknown-linux-musl.tar.gz sha=b7c232b0e8249d8e55a40beb79c5c43a7d370f3f9408bd215deb0170daeaadf3 ;;
+    aarch64) pkg=starship-aarch64-unknown-linux-musl.tar.gz sha=dc30189378d2f2e287384e8a692d3f95ad1df64cf0e8c36aa9201516028aed6b ;;
+    *) echo "unsupported arch: $arch" >&2; exit 1 ;;
+  esac
+  curl -o "/tmp/$pkg" "https://github.com/starship/starship/releases/download/v1.26.0/$pkg"
+  echo "$sha  /tmp/$pkg" | sha256sum -c -
+  tar -xzf "/tmp/$pkg" -C /tmp starship
+  install -m 0755 /tmp/starship /usr/local/bin/starship
+  rm -f "/tmp/$pkg" /tmp/starship
+fi
+grep -qs 'starship init zsh' "$HOME/.zshrc" || printf '\\neval "$(starship init zsh)"\\n' >> "$HOME/.zshrc"
+if command -v chsh >/dev/null 2>&1; then chsh -s "$(command -v zsh)" "$(id -un)" || true; fi
+"
+`;

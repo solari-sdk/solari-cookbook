@@ -1,0 +1,262 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+// The hooks under .githooks, driven through real commits in a throwaway repository: what they refuse, the
+// sentence each refusal says, and the shapes that look like a refusal and are not. The text read here is this
+// branch's, which is what testing a hook change needs; where git reads the text it runs from is hooks-path.test.ts.
+import { execFileSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, rmSync, statSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { afterEach, describe, expect, it } from "vitest";
+
+const ROOT = fileURLToPath(new URL("../../../", import.meta.url));
+const HOOKS = join(ROOT, ".githooks");
+const EM_DASH = String.fromCodePoint(0x2014);
+const ROBOT = String.fromCodePoint(0x1f916);
+// Built rather than written: a guard on this computer blocks a command that carries the trailer whole.
+const COAUTHOR = ["Co", "Authored", "By"].join("-");
+
+// stderr is captured rather than inherited, so what a merge says about itself stays out of the run's log;
+// a failure still reads it back, since node puts a piped stderr in the error's message.
+const git = (dir: string, ...args: string[]): string =>
+  execFileSync("git", ["-C", dir, ...args], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+
+let dirs: string[] = [];
+afterEach(() => {
+  for (const dir of dirs) rmSync(dir, { recursive: true, force: true });
+  dirs = [];
+});
+
+/** A repository of its own, reading the hooks this branch carries and nothing of the developer's own config. */
+function repo(): string {
+  const dir = mkdtempSync(join(tmpdir(), "wsp-githooks-"));
+  dirs.push(dir);
+  git(dir, "init", "-q", "-b", "main");
+  git(dir, "config", "user.email", "hooks@example.invalid");
+  git(dir, "config", "user.name", "hooks");
+  git(dir, "config", "commit.gpgsign", "false");
+  git(dir, "config", "core.hooksPath", HOOKS);
+  return dir;
+}
+
+function stage(dir: string, rel: string, text: string): void {
+  const path = join(dir, rel);
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, text);
+  git(dir, "add", "--", rel);
+}
+
+/** What a commit did: the sentence a hook said, or nothing when it was taken. */
+function commit(dir: string, message: string): string {
+  try {
+    execFileSync("git", ["-C", dir, "commit", "-m", message], { encoding: "utf8", stdio: "pipe" });
+    return "";
+  } catch (e) {
+    return String((e as { stderr?: Buffer | string }).stderr ?? "").trim();
+  }
+}
+
+/** A repository with one file staged, which is what every message case needs and nothing more. */
+function withOneFileStaged(): string {
+  const dir = repo();
+  stage(dir, "src/a.ts", "export const a = 1;\n");
+  return dir;
+}
+
+describe("the hooks are what git can run", () => {
+  it("carries each of the four as an executable file", () => {
+    for (const hook of ["commit-msg", "pre-commit", "pre-merge-commit", "pre-push"]) {
+      expect(statSync(join(HOOKS, hook)).mode & 0o111, hook).not.toBe(0);
+    }
+  });
+});
+
+describe("what the commit-msg hook refuses", () => {
+  it("takes a message that says what changed", () => {
+    const dir = withOneFileStaged();
+    expect(commit(dir, "host: the deploy writes the token it is given\n\nSo a run of the daemon names the session.")).toBe("");
+    expect(git(dir, "log", "--oneline").trim()).toContain("the deploy writes the token it is given");
+  });
+
+  it("refuses an em dash and names the line", () => {
+    const dir = withOneFileStaged();
+    expect(commit(dir, `host: the token ${EM_DASH} the one the deploy writes`)).toBe(
+      "refused: line 1 of the commit message has an em dash or an en dash; write it with a comma, a colon or two sentences",
+    );
+  });
+
+  it("refuses a co-author trailer", () => {
+    const dir = withOneFileStaged();
+    expect(commit(dir, `host: the deploy writes the token\n\n${COAUTHOR}: Someone <someone@example.invalid>`)).toBe(
+      "refused: the commit message carries a Co-Authored-By trailer; delete that line",
+    );
+  });
+
+  it("refuses a ticket number, and reads a colour as a colour", () => {
+    const dir = withOneFileStaged();
+    expect(commit(dir, "host: the deploy writes the token\n\nCloses #909.")).toBe(
+      "refused: line 3 of the commit message names a ticket number; say what the commit does and leave the number on the tracker",
+    );
+    // A hex colour whose digits are not all digits is not a number, so it reads as what it is.
+    expect(commit(dir, "web: the hairline is #1a2b3c in the dark theme")).toBe("");
+  });
+
+  it("refuses a line that credits a tool for the work, and names the line", () => {
+    const said = "refused: line 1 of the commit message credits a tool for the work; say what changed and leave authorship out";
+    for (const message of [
+      "host: written by Claude",
+      "host: Generated with Claude Code",
+      "host: generated by Codex",
+      "host: co-authored with an agent",
+      "host: with help from GPT",
+      "host: written by an AI",
+      "host: generated by OpenAI",
+    ]) {
+      expect(commit(withOneFileStaged(), message), message).toBe(said);
+    }
+  });
+
+  it("refuses the robot of a generated footer", () => {
+    const dir = withOneFileStaged();
+    expect(commit(dir, `host: the deploy writes the token\n\n${ROBOT} Generated with a tool`)).toBe(
+      "refused: line 3 of the commit message carries the robot of a generated footer; delete that line",
+    );
+  });
+
+  it("refuses the standalone word AI, and takes a hyphenated one, since a hyphen binds a word as a letter does", () => {
+    expect(commit(withOneFileStaged(), "host: an AI wrote it")).toBe(
+      "refused: line 1 of the commit message says AI; name the thing that changed instead",
+    );
+    // The slug of a branch in a merge message, which is what the landing script writes, and a field name.
+    expect(commit(withOneFileStaged(), "merge origin/main into ticket/910-ai-summary before the gate")).toBe("");
+    expect(commit(withOneFileStaged(), "web: the ai_summary field is read once per row")).toBe("");
+  });
+
+  it("takes the bare name of a tool, since this product registers one and its commits name it", () => {
+    // The body of a commit on main today, which a rule on the bare names refused.
+    const landed = [
+      "init: a sign-in never sits in an image",
+      "",
+      "Forks of one image carried the Mac's Claude credential file, whose",
+      "refresh token is single use, so the first fork to refresh logged the",
+      "Mac and every other fork out. Sign-ins now stay off every image: Claude",
+      "runs on a long-lived token or an API key kept in the wsp home's .env and",
+      "set in each turn's environment, the pack copies no credential, and the",
+      "seal refuses a builder that holds one.",
+    ].join("\n");
+    expect(commit(withOneFileStaged(), landed)).toBe("");
+    expect(commit(withOneFileStaged(), "catalog: the Claude adapter sets the token from the environment")).toBe("");
+    // The phrase alone is not the rule either: a lock is generated by a tool that is not an author.
+    expect(commit(withOneFileStaged(), "repo: the lock is generated by pnpm and never written by hand")).toBe("");
+  });
+});
+
+describe("what the pre-commit hook refuses", () => {
+  it("refuses a staged .base-sha and names it", () => {
+    const dir = repo();
+    stage(dir, ".base-sha", "79c0320c5\n");
+    expect(commit(dir, "host: the deploy writes the token")).toBe(
+      "refused: .base-sha is a working file of the landing gate and never lands; run git rm --cached .base-sha",
+    );
+  });
+
+  it("refuses an em dash in a staged source or doc file and names the file", () => {
+    for (const file of ["src/a.ts", "docs/a.mdx", "docs/a.html", "notes/a.txt"]) {
+      const dir = repo();
+      stage(dir, file, `a line with the token ${EM_DASH} the one the deploy writes\n`);
+      expect(commit(dir, "host: the deploy writes the token"), file).toBe(
+        `refused: a line staged in ${file} has an em dash; write it with a comma, a colon or two sentences`,
+      );
+    }
+  });
+
+  it("reads an added line that begins with two plus signs of its own, which a diff's file header does not", () => {
+    const dir = repo();
+    stage(dir, "src/a.ts", `let i = 0;\n++i; // the token ${EM_DASH} the one written\n`);
+    expect(commit(dir, "host: the deploy writes the token")).toBe(
+      "refused: a line staged in src/a.ts has an em dash; write it with a comma, a colon or two sentences",
+    );
+  });
+
+  it("leaves a fixture alone, since a fixture says what it says", () => {
+    const dir = repo();
+    stage(dir, "daemon/fixtures/contract/words.json", `{ "line": "the token ${EM_DASH} the one written" }\n`);
+    stage(dir, "packages/host/test/fixtures/a.json", `{ "line": "${EM_DASH}" }\n`);
+    expect(commit(dir, "host: the deploy writes the token")).toBe("");
+  });
+
+  it("refuses a ticket label in a staged source file and names the file", () => {
+    const said = (file: string): string => `refused: a line staged in ${file} carries a ticket label; name what the code does and leave the number on the tracker`;
+    // The labels are built rather than written out: this file is a staged .ts as well, and the hook under test
+    // reads its own source and refuses it.
+    const n = "904";
+    for (const [file, text] of [
+      ["src/a.ts", `export const tree = "wsp-${n}";\n`],
+      ["src/a.tsx", `export const tree = "live-${n}-hierarchy";\n`],
+      ["src/a.rs", `pub const TREE: &str = "wsp-${n}";\n`],
+    ] as const) {
+      const dir = repo();
+      stage(dir, file, text);
+      expect(commit(dir, "host: the deploy writes the token"), file).toBe(said(file));
+    }
+  });
+
+  it("takes a merge that brings an em dash from the other side, and still refuses a .base-sha staged in one", () => {
+    const dir = repo();
+    stage(dir, "src/a.ts", "export const a = 1;\n");
+    git(dir, "commit", "-q", "--no-verify", "-m", "host: the deploy writes the token");
+    git(dir, "checkout", "-q", "-b", "other");
+    stage(dir, "docs/a.md", `a line with the token ${EM_DASH} the one written\n`);
+    git(dir, "commit", "-q", "--no-verify", "-m", "docs: the token the deploy writes");
+    git(dir, "checkout", "-q", "main");
+    stage(dir, "src/b.ts", "export const b = 2;\n");
+    git(dir, "commit", "-q", "-m", "host: a second file");
+    git(dir, "merge", "--no-commit", "--no-ff", "-q", "other");
+    // The .base-sha rule is not exempt from a merge, since a merge is how that file reaches a branch.
+    stage(dir, ".base-sha", "79c0320c5\n");
+    expect(commit(dir, "merge other into main before the gate")).toBe(
+      "refused: .base-sha is a working file of the landing gate and never lands; run git rm --cached .base-sha",
+    );
+    git(dir, "rm", "-q", "--cached", ".base-sha");
+    expect(commit(dir, "merge other into main before the gate")).toBe("");
+    expect(git(dir, "log", "--oneline", "-1")).toContain("merge other into main before the gate");
+  });
+
+  it("reads a staged path that carries a space", () => {
+    const n = "904";
+    const em = repo();
+    stage(em, "docs/a b.md", `a line with the token ${EM_DASH} the one written\n`);
+    expect(commit(em, "host: the deploy writes the token")).toBe(
+      "refused: a line staged in docs/a b.md has an em dash; write it with a comma, a colon or two sentences",
+    );
+    const labelled = repo();
+    stage(labelled, "src/a b.ts", `export const tree = "wsp-${n}";\n`);
+    expect(commit(labelled, "host: the deploy writes the token")).toBe(
+      "refused: a line staged in src/a b.ts carries a ticket label; name what the code does and leave the number on the tracker",
+    );
+  });
+
+  it("reads a fake key, a number word, a version and a hex sha as what they are, not as a label", () => {
+    const dir = repo();
+    stage(
+      dir,
+      "src/a.ts",
+      [
+        // The fake key shape the security law prescribes, which carries a longer number than a ticket has.
+        'export const key = "sk-live-000fake";',
+        "/** a 256-colour grey, and a 120-character line */",
+        'export const pinned = "2.5.5";',
+        'export const release = "0.12.100-alpha.1";',
+        'export const runner = "ubuntu-24.04-arm";',
+        'export const head = "79c0320c5";',
+        'export const digest = "sha-256-gcm";',
+        'export const target = "x86_64-unknown-linux-musl";',
+        "export const left = 100 - 5;",
+        'export const day = "2026-09-17";',
+        'export const wide = "wsp-1234";',
+        "",
+      ].join("\n"),
+    );
+    expect(commit(dir, "host: the deploy writes the token")).toBe("");
+  });
+});

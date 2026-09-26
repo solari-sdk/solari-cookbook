@@ -1,0 +1,26 @@
+[
+  {
+    "cores": 4,
+    "memMb": 7751,
+    "memRoomMb": 2851,
+    "machineMemMb": 3875,
+    "cpuTaken": 1,
+    "memTakenMb": 1024,
+    "diskFreeBytes": 47400000000,
+    "images": [
+      {
+        "id": "sha256:a61567bd31828687156d735ea8eb01ba4e37636e225dd6a48ba94136a70d9d61",
+        "name": "ubuntu:24.04",
+        "sizeBytes": 29763253
+      },
+      {
+        "id": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "sizeBytes": 0
+      }
+    ],
+    "machines": {
+      "running": 1,
+      "paused": 1
+    }
+  }
+]

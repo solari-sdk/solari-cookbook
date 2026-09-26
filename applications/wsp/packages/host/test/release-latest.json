@@ -1,0 +1,107 @@
+{
+  "url": "https://api.github.com/repos/Zingzy/wsp/releases/386430748",
+  "assets_url": "https://api.github.com/repos/Zingzy/wsp/releases/386430748/assets",
+  "upload_url": "https://uploads.github.com/repos/Zingzy/wsp/releases/386430748/assets{?name,label}",
+  "html_url": "https://github.com/Zingzy/wsp/releases/tag/v0.2.0",
+  "id": 386430748,
+  "author": {
+    "login": "github-actions[bot]",
+    "id": 41898282,
+    "type": "Bot"
+  },
+  "node_id": "RE_kwDOULIAx84XCHcc",
+  "tag_name": "v0.2.0",
+  "target_commitish": "main",
+  "name": "wsp 0.2.0",
+  "draft": false,
+  "immutable": false,
+  "prerelease": false,
+  "created_at": "2026-09-10T16:01:32Z",
+  "updated_at": "2026-09-10T16:06:44Z",
+  "published_at": "2026-09-10T16:06:44Z",
+  "assets": [
+    {
+      "url": "https://api.github.com/repos/Zingzy/wsp/releases/assets/555339894",
+      "id": 555339894,
+      "node_id": "RA_kwDOULIAx84hGdB2",
+      "name": "wsp-0.2.0-mac.dmg",
+      "label": "",
+      "uploader": {
+        "login": "github-actions[bot]",
+        "id": 41898282,
+        "type": "Bot"
+      },
+      "content_type": "application/x-apple-diskimage",
+      "state": "uploaded",
+      "size": 227484743,
+      "digest": "sha256:4ce8f097a68a349d70bd5f946efaa11f560c470966c082fd854136ae570682db",
+      "download_count": 1,
+      "created_at": "2026-09-10T16:06:02Z",
+      "updated_at": "2026-09-10T16:06:17Z",
+      "browser_download_url": "https://github.com/Zingzy/wsp/releases/download/v0.2.0/wsp-0.2.0-mac.dmg"
+    },
+    {
+      "url": "https://api.github.com/repos/Zingzy/wsp/releases/assets/555336689",
+      "id": 555336689,
+      "node_id": "RA_kwDOULIAx84hGcPx",
+      "name": "wsp-0.2.0.AppImage",
+      "label": "",
+      "uploader": {
+        "login": "github-actions[bot]",
+        "id": 41898282,
+        "type": "Bot"
+      },
+      "content_type": "application/vnd.appimage",
+      "state": "uploaded",
+      "size": 133965167,
+      "digest": "sha256:599af398e2ef811ba8f574de23b9c4d24be633a95b3ecf6a3aae30a22576d94d",
+      "download_count": 0,
+      "created_at": "2026-09-10T16:03:57Z",
+      "updated_at": "2026-09-10T16:04:01Z",
+      "browser_download_url": "https://github.com/Zingzy/wsp/releases/download/v0.2.0/wsp-0.2.0.AppImage"
+    },
+    {
+      "url": "https://api.github.com/repos/Zingzy/wsp/releases/assets/555336690",
+      "id": 555336690,
+      "node_id": "RA_kwDOULIAx84hGcPy",
+      "name": "wsp-linux.AppImage",
+      "label": "",
+      "uploader": {
+        "login": "github-actions[bot]",
+        "id": 41898282,
+        "type": "Bot"
+      },
+      "content_type": "application/vnd.appimage",
+      "state": "uploaded",
+      "size": 133965167,
+      "digest": "sha256:599af398e2ef811ba8f574de23b9c4d24be633a95b3ecf6a3aae30a22576d94d",
+      "download_count": 1,
+      "created_at": "2026-09-10T16:03:57Z",
+      "updated_at": "2026-09-10T16:04:01Z",
+      "browser_download_url": "https://github.com/Zingzy/wsp/releases/download/v0.2.0/wsp-linux.AppImage"
+    },
+    {
+      "url": "https://api.github.com/repos/Zingzy/wsp/releases/assets/555339892",
+      "id": 555339892,
+      "node_id": "RA_kwDOULIAx84hGdB0",
+      "name": "wsp-mac.dmg",
+      "label": "",
+      "uploader": {
+        "login": "github-actions[bot]",
+        "id": 41898282,
+        "type": "Bot"
+      },
+      "content_type": "application/x-apple-diskimage",
+      "state": "uploaded",
+      "size": 227484743,
+      "digest": "sha256:4ce8f097a68a349d70bd5f946efaa11f560c470966c082fd854136ae570682db",
+      "download_count": 3,
+      "created_at": "2026-09-10T16:06:02Z",
+      "updated_at": "2026-09-10T16:06:16Z",
+      "browser_download_url": "https://github.com/Zingzy/wsp/releases/download/v0.2.0/wsp-mac.dmg"
+    }
+  ],
+  "tarball_url": "https://api.github.com/repos/Zingzy/wsp/tarball/v0.2.0",
+  "zipball_url": "https://api.github.com/repos/Zingzy/wsp/zipball/v0.2.0",
+  "body": "## What changed since v0.1.4\n"
+}

@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+[package]
+name = "wsp-guest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "The wsp a process runs: inside a machine one session on its own daemon carried to the host, and on the host's own computer one on the host itself"
+
+[dependencies]
+wsp-frames = { path = "../wsp-frames" }
+serde_json = { workspace = true, features = ["raw_value"] }
+tokio = { workspace = true, features = ["io-std", "process"] }
+tokio-tungstenite.workspace = true
+futures-util.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+wsp-daemon = { path = "../wsp-daemon" }

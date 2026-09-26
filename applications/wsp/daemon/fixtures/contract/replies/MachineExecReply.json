@@ -1,0 +1,16 @@
+[
+  {
+    "result": {
+      "exitCode": 7,
+      "stdout": "out\n",
+      "stderr": "err\n"
+    }
+  },
+  {
+    "result": {
+      "exitCode": 124,
+      "stdout": "",
+      "stderr": ""
+    }
+  }
+]

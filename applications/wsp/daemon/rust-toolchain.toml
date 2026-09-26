@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+[toolchain]
+channel = "1.97.1"
+components = ["clippy", "rustfmt"]
+targets = ["x86_64-unknown-linux-musl"]

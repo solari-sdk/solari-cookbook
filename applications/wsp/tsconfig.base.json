@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "strict": true, "noUncheckedIndexedAccess": true, "skipLibCheck": true,
+    "declaration": true, "outDir": "dist",
+    "paths": {
+      "@wsp/engine": ["./packages/engine/src/index.ts"],
+      "@wsp/adapter-claude": ["./packages/adapter-claude/src/index.ts"],
+      "@wsp/adapter-codex": ["./packages/adapter-codex/src/index.ts"],
+      "@wsp/keys": ["./packages/keys/src/index.ts"],
+      "@wsp/own-file": ["./packages/own-file/src/index.ts"],
+      "@wsp/protocol": ["./packages/protocol/src/index.ts"],
+      "@wsp/runtime": ["./packages/runtime/src/index.ts"],
+      "@wsp/host": ["./packages/host/src/index.ts"],
+      "@wsp/collect": ["./packages/collect/src/index.ts"],
+      "@wsp/catalog": ["./packages/catalog/src/index.ts"]
+    }
+  }
+}
