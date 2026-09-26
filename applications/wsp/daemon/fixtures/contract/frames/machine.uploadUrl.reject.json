@@ -1,0 +1,7 @@
+[
+  {
+    "id": 1,
+    "op": "machine.uploadUrl",
+    "machineId": "m1"
+  }
+]

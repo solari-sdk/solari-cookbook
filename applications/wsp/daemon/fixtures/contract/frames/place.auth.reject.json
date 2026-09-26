@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1,
+    "op": "place.auth",
+    "placeId": "p_ab12cd34"
+  },
+  {
+    "id": 1,
+    "op": "place.auth",
+    "placeId": "p_ab12cd34",
+    "nonce": "short",
+    "ephemeral": "Ft0kgo4kHE9z+JBQqeUOChXNkdeJ3oVdsYsiuB2PPU0="
+  },
+  {
+    "id": 1,
+    "op": "place.auth",
+    "placeId": "ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp",
+    "nonce": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "ephemeral": "Ft0kgo4kHE9z+JBQqeUOChXNkdeJ3oVdsYsiuB2PPU0="
+  },
+  {
+    "id": 1,
+    "op": "place.auth",
+    "placeId": "p_ab12cd34",
+    "nonce": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+    "ephemeral": "AAAAAAAAAAAAAAAAAAAAAA=="
+  }
+]

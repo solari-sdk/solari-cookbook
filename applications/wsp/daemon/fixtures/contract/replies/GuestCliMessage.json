@@ -1,0 +1,13 @@
+[
+  {
+    "stream": "out",
+    "text": "rows\n"
+  },
+  {
+    "stream": "err",
+    "text": "one line\n"
+  },
+  {
+    "exit": 3
+  }
+]

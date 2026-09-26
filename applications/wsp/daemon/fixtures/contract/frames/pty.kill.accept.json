@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "op": "pty.kill",
+    "ptyId": "pty_1"
+  },
+  {
+    "id": 2,
+    "op": "pty.kill",
+    "ptyId": "pty_1",
+    "machineId": "wsp-a"
+  }
+]

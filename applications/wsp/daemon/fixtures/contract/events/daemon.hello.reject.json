@@ -1,0 +1,10 @@
+[
+  {
+    "type": "daemon.hello"
+  },
+  {
+    "type": "daemon.hello",
+    "root": "/root",
+    "version": 1.5
+  }
+]

@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "op": "proc.kill",
+    "pid": 50
+  },
+  {
+    "id": 1,
+    "op": "proc.kill",
+    "pid": 50,
+    "signal": "HUP"
+  },
+  {
+    "id": 1,
+    "op": "proc.kill",
+    "pid": -1,
+    "signal": "TERM"
+  }
+]

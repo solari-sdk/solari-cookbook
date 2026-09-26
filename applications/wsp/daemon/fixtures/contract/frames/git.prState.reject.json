@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "op": "git.prState"
+  },
+  {
+    "id": 1,
+    "op": "git.prState",
+    "cwd": null
+  },
+  {
+    "id": 1,
+    "op": "git.prState",
+    "cwd": "/root/repo",
+    "machineId": 1
+  }
+]

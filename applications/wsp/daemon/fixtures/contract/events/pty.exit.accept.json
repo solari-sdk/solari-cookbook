@@ -1,0 +1,13 @@
+[
+  {
+    "type": "pty.exit",
+    "ptyId": "pty_1",
+    "exitCode": 0
+  },
+  {
+    "type": "pty.exit",
+    "ptyId": "pty_1",
+    "exitCode": 130,
+    "signal": 2
+  }
+]

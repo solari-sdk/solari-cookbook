@@ -1,0 +1,55 @@
+appId: wsp.desktop
+productName: wsp
+electronVersion: 43.5.1
+directories:
+  app: build/app
+  output: dist
+asar: false
+npmRebuild: false
+files:
+  - main/**
+  - assets/**
+  - package.json
+afterPack: scripts/after-pack.mjs
+# The app is written in en-US alone, and Chromium falls back to it; the other 219 locale folders were 47 MB unpacked.
+electronLanguages: [en-US]
+mac:
+  # One bundle for both chips: reading the chip from a browser is unreliable, and a wrong pick is a dead first run.
+  target:
+    - target: dmg
+      arch: [universal]
+    - target: dir
+      arch: [universal]
+  # The daemon binaries are staged into both arch trees, one thin file per target, byte for byte the same on both
+  # sides; the merge refuses an identical Mach-O it was not told to take once.
+  x64ArchFiles: "**/assets/daemon/**"
+  # No identity is named: a Developer ID Application certificate in the keychain (CSC_LINK imports one) signs, and
+  # without one electron-builder skips signing and scripts/after-pack.mjs signs ad hoc.
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+  # Runs only after an identity signed, and only with APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD and APPLE_TEAM_ID set.
+  notarize: true
+  category: public.app-category.developer-tools
+  icon: build/icon.icns
+dmg:
+  # The drag window: the app on the left, the Applications folder on the right, one image behind them. dmg-builder
+  # reads the window's size off that image, so the two coordinates below are in its pixels.
+  background: dmg-background.png
+  # Named without the arch suffix electron-builder adds by default: the window says wsp 1.2.3, not the build's shape.
+  title: wsp ${version}
+  iconSize: 128
+  contents:
+    - x: 172
+      y: 186
+      type: file
+    - x: 488
+      y: 186
+      type: link
+      path: /Applications
+win:
+  icon: build/icon.ico
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]

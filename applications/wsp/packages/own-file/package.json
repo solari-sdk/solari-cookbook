@@ -1,0 +1,12 @@
+{
+  "name": "@wsp/own-file",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  },
+  "license": "AGPL-3.0-only"
+}

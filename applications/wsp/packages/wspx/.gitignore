@@ -1,0 +1,4 @@
+# Staged by scripts/stage.mjs at build time; the repo's own copies are one level up.
+assets/
+LICENSE
+README.md

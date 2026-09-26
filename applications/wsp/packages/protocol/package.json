@@ -1,0 +1,13 @@
+{
+  "name": "@wsp/protocol",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run packages/protocol"
+  },
+  "dependencies": {
+    "zod": "^3.25.76"
+  },
+  "license": "AGPL-3.0-only"
+}

@@ -1,0 +1,140 @@
+codex-cli 0.153.0
+__WSP_CATALOG_SEP__
+Codex CLI
+
+If no subcommand is specified, options will be forwarded to the interactive CLI.
+
+Usage: codex [OPTIONS] [PROMPT]
+       codex [OPTIONS] <COMMAND> [ARGS]
+
+Commands:
+  agents            Browse all agent sessions on the shared local app-server daemon
+  exec              Run Codex non-interactively [aliases: e]
+  review            Run a code review non-interactively
+  login             Manage login
+  logout            Remove stored authentication credentials
+  mcp               Manage external MCP servers for Codex
+  plugin            Manage Codex plugins
+  mcp-server        Start Codex as an MCP server (stdio)
+  app-server        [experimental] Run the app server or related tooling
+  remote-control    [experimental] Manage the app-server daemon with remote control enabled
+  completion        Generate shell completion scripts
+  update            Update Codex to the latest version
+  doctor            Diagnose local Codex installation, config, auth, and runtime health
+  sandbox           Run commands within a Codex-provided sandbox
+  debug             Debugging tools
+  apply             Apply the latest diff produced by Codex agent as a `git apply` to your local
+                    working tree [aliases: a]
+  resume            Resume a previous interactive session (picker by default; use --last to continue
+                    the most recent)
+  queue             Queue a message for an existing session
+  archive           Archive a saved session by id or session name
+  delete            Permanently delete a saved session by id or session name
+  migrate-rollouts  Inspect or migrate legacy local sessions to paginated thread history
+  unarchive         Unarchive a saved session by id or session name
+  fork              Fork a previous interactive session (picker by default; use --last to fork the
+                    most recent)
+  cloud             [EXPERIMENTAL] Browse tasks from Codex Cloud and apply changes locally
+  exec-server       [EXPERIMENTAL] Run the standalone exec-server service
+  features          Inspect feature flags
+  help              Print this message or the help of the given subcommand(s)
+
+Arguments:
+  [PROMPT]
+          Optional user prompt to start the session
+
+Options:
+  -c, --config <key=value>
+          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.
+          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed
+          as TOML. If it fails to parse as TOML, the raw string is used as a literal.
+          
+          Examples: - `-c model="o3"` - `-c 'sandbox_permissions=["disk-full-read-access"]'` - `-c
+          shell_environment_policy.inherit=all`
+
+      --enable <FEATURE>
+          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`
+
+      --disable <FEATURE>
+          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`
+
+      --remote <ADDR>
+          Connect the TUI to a remote app server endpoint.
+          
+          Accepted forms: `ws://host:port`, `wss://host:port`, `unix://`, or `unix://PATH`.
+
+      --remote-auth-token-env <ENV_VAR>
+          Name of the environment variable containing the bearer token to send to a remote app
+          server websocket
+
+      --strict-config
+          Error out when config.toml contains fields that are not recognized by this version of
+          Codex
+
+  -i, --image <FILE>...
+          Optional image(s) to attach to the initial prompt
+
+  -m, --model <MODEL>
+          Model the agent should use
+
+      --oss
+          Use open-source provider
+
+      --local-provider <OSS_PROVIDER>
+          Specify which local provider to use (lmstudio or ollama). If not specified with --oss,
+          will use config default or show selection
+
+  -p, --profile <CONFIG_PROFILE_V2>
+          Layer $CODEX_HOME/<name>.config.toml on top of the base user config
+
+  -s, --sandbox <SANDBOX_MODE>
+          Select the sandbox policy to use when executing model-generated shell commands
+          
+          [possible values: read-only, workspace-write, danger-full-access]
+
+      --approve-for-me
+          Route approval requests through automatic review using the workspace-write sandbox
+
+      --dangerously-bypass-approvals-and-sandbox
+          Skip all confirmation prompts and execute commands without sandboxing. EXTREMELY
+          DANGEROUS. Intended solely for running in environments that are externally sandboxed
+
+      --dangerously-bypass-hook-trust
+          Run enabled hooks without requiring persisted hook trust for this invocation. DANGEROUS.
+          Intended only for automation that already vets hook sources
+
+  -C, --cd <DIR>
+          Tell the agent to use the specified directory as its working root
+
+      --add-dir <DIR>
+          Additional directories that should be writable alongside the primary workspace
+
+  -a, --ask-for-approval <APPROVAL_POLICY>
+          Configure when the model requires human approval before executing a command
+
+          Possible values:
+          - on-request: The model decides when to ask the user for approval
+          - never:      Never ask for user approval Execution failures are immediately returned to
+            the model
+
+      --search
+          Enable live web search. When enabled, the native Responses `web_search` tool is available
+          to the model (no per‑call approval)
+
+      --no-alt-screen
+          Disable alternate screen mode
+          
+          Runs the TUI in inline mode, preserving terminal scrollback history.
+
+  -h, --help
+          Print help (see a summary with '-h')
+
+  -V, --version
+          Print version
+__WSP_CATALOG_SEP__
+{"id":1,"result":{"userAgent":"wsp/0.153.0 (Debian 12.0.0; x86_64) unknown (wsp; 0)","codexHome":"/root/codex-fixture-home","platformFamily":"unix","platformOs":"linux"}}
+{"method":"configWarning","params":{"summary":"Codex could not find bubblewrap on PATH. Install bubblewrap with your OS package manager. See the sandbox prerequisites: https://developers.openai.com/codex/concepts/sandboxing#prerequisites. Codex will use the bundled bubblewrap in the meantime.","details":null},"emittedAtMs":1788800513473}
+{"method":"remoteControl/status/changed","params":{"status":"disabled","serverName":"b1","installationId":"01cade2b-3da6-453d-bf6b-22f2a5df1db2","environmentId":null},"emittedAtMs":1788800513473}
+{"id":2,"result":{"data":[{"id":"gpt-5.6-sol","model":"gpt-5.6-sol","upgrade":null,"upgradeInfo":null,"availabilityNux":null,"displayName":"GPT-5.6-Sol","description":"Latest frontier agentic coding model.","modelSpecialty":null,"hidden":false,"supportedReasoningEfforts":[{"reasoningEffort":"low","description":"Fast responses with lighter reasoning"},{"reasoningEffort":"medium","description":"Balances speed and reasoning depth for everyday tasks"},{"reasoningEffort":"high","description":"Greater reasoning depth for complex problems"},{"reasoningEffort":"xhigh","description":"Extra high reasoning depth for complex problems"},{"reasoningEffort":"max","description":"Maximum reasoning depth for the hardest problems"},{"reasoningEffort":"ultra","description":"Maximum reasoning with automatic task delegation"}],"defaultReasoningEffort":"low","inputModalities":["text","image"],"supportsPersonality":false,"multiAgentVersion":"v2","additionalSpeedTiers":["fast"],"serviceTiers":[{"id":"priority","name":"Fast","description":"1.5x speed, increased usage"},{"id":"ultrafast","name":"Ultrafast","description":"The fastest available responses for latency-sensitive work."}],"defaultServiceTier":null,"isDefault":true},{"id":"gpt-5.6-terra","model":"gpt-5.6-terra","upgrade":null,"upgradeInfo":null,"availabilityNux":null,"displayName":"GPT-5.6-Terra","description":"Balanced agentic coding model for everyday work.","modelSpecialty":null,"hidden":false,"supportedReasoningEfforts":[{"reasoningEffort":"low","description":"Fast responses with lighter reasoning"},{"reasoningEffort":"medium","description":"Balances speed and reasoning depth for everyday tasks"},{"reasoningEffort":"high","description":"Greater reasoning depth for complex problems"},{"reasoningEffort":"xhigh","description":"Extra high reasoning depth for complex problems"},{"reasoningEffort":"max","description":"Maximum reasoning depth for the hardest problems"},{"reasoningEffort":"ultra","description":"Maximum reasoning with automatic task delegation"}],"defaultReasoningEffort":"medium","inputModalities":["text","image"],"supportsPersonality":false,"multiAgentVersion":"v2","additionalSpeedTiers":["fast"],"serviceTiers":[{"id":"priority","name":"Fast","description":"1.5x speed, increased usage"}],"defaultServiceTier":null,"isDefault":false},{"id":"gpt-5.6-luna","model":"gpt-5.6-luna","upgrade":null,"upgradeInfo":null,"availabilityNux":null,"displayName":"GPT-5.6-Luna","description":"Fast and affordable agentic coding model.","modelSpecialty":null,"hidden":false,"supportedReasoningEfforts":[{"reasoningEffort":"low","description":"Fast responses with lighter reasoning"},{"reasoningEffort":"medium","description":"Balances speed and reasoning depth for everyday tasks"},{"reasoningEffort":"high","description":"Greater reasoning depth for complex problems"},{"reasoningEffort":"xhigh","description":"Extra high reasoning depth for complex problems"},{"reasoningEffort":"max","description":"Maximum reasoning depth for the hardest problems"}],"defaultReasoningEffort":"medium","inputModalities":["text","image"],"supportsPersonality":false,"multiAgentVersion":"v1","additionalSpeedTiers":["fast"],"serviceTiers":[{"id":"priority","name":"Fast","description":"1.5x speed, increased usage"}],"defaultServiceTier":null,"isDefault":false},{"id":"gpt-5.5","model":"gpt-5.5","upgrade":null,"upgradeInfo":null,"availabilityNux":null,"displayName":"GPT-5.5","description":"Frontier model for complex coding, research, and real-world work.","modelSpecialty":null,"hidden":false,"supportedReasoningEfforts":[{"reasoningEffort":"low","description":"Fast responses with lighter reasoning"},{"reasoningEffort":"medium","description":"Balances speed and reasoning depth for everyday tasks"},{"reasoningEffort":"high","description":"Greater reasoning depth for complex problems"},{"reasoningEffort":"xhigh","description":"Extra high reasoning depth for complex problems"}],"defaultReasoningEffort":"medium","inputModalities":["text","image"],"supportsPersonality":true,"multiAgentVersion":null,"additionalSpeedTiers":["fast"],"serviceTiers":[{"id":"priority","name":"Fast","description":"1.5x speed, increased usage"}],"defaultServiceTier":null,"isDefault":false},{"id":"gpt-5.2","model":"gpt-5.2","upgrade":null,"upgradeInfo":null,"availabilityNux":null,"displayName":"GPT-5.2","description":"Optimized for professional work and long-running agents.","modelSpecialty":null,"hidden":false,"supportedReasoningEfforts":[{"reasoningEffort":"low","description":"Balances speed with some reasoning; useful for straightforward queries and short explanations"},{"reasoningEffort":"medium","description":"Provides a solid balance of reasoning depth and latency for general-purpose tasks"},{"reasoningEffort":"high","description":"Maximizes reasoning depth for complex or ambiguous problems"},{"reasoningEffort":"xhigh","description":"Extra high reasoning for complex problems"}],"defaultReasoningEffort":"medium","inputModalities":["text","image"],"supportsPersonality":false,"multiAgentVersion":null,"additionalSpeedTiers":[],"serviceTiers":[],"defaultServiceTier":null,"isDefault":false}],"nextCursor":null}}
+{"id":4,"result":{"account":null,"requiresOpenaiAuth":true}}
+{"id":3,"result":{"config":{"model":null,"review_model":null,"model_context_window":null,"model_auto_compact_token_limit":null,"model_auto_compact_token_limit_scope":null,"model_provider":null,"approval_policy":null,"approvals_reviewer":null,"sandbox_mode":null,"sandbox_workspace_write":null,"forced_chatgpt_workspace_id":null,"forced_login_method":null,"web_search":null,"tools":null,"instructions":null,"developer_instructions":null,"compact_prompt":null,"model_reasoning_effort":null,"model_reasoning_summary":null,"model_verbosity":null,"service_tier":null,"analytics":null,"apps":null,"browser_use":null,"computer_use":null,"desktop":null,"mcp_oauth_callback_url":null,"project_root_markers":[".git"],"file_opener":"vscode","include_apps_instructions":true,"tool_output_token_limit":null,"experimental_realtime_start_instructions":null,"js_repl_node_module_dirs":null,"hooks":null,"memories":null,"include_permissions_instructions":true,"skills":null,"plugins":{},"oss_provider":null,"experimental_realtime_ws_backend_prompt":null,"apps_mcp_product_sku":null,"shell_environment_policy":{"inherit":null,"ignore_default_excludes":null,"exclude":null,"set":null,"include_only":null,"filters":null,"experimental_use_profile":null},"feedback":null,"audio":null,"experimental_use_unified_exec_tool":null,"permissions":null,"experimental_thread_store_endpoint":null,"allow_login_shell":true,"experimental_realtime_ws_model":null,"notify":null,"cli_auth_credentials_store":"file","tui":null,"responses_api_metadata":null,"include_collaboration_mode_instructions":true,"mcp_oauth_credentials_store":"auto","ghost_snapshot":null,"sqlite_home":null,"mcp_servers":{},"log_dir":null,"notice":null,"features":{"auth_elicitation":true,"background_paginated_rollout_migration":false,"mcp_2026_07_28":false,"memories":false,"mentions_v2":true,"remote_control":false,"remote_plugin":true,"tool_suggest":true},"realtime":null,"auto_review":null,"projects":null,"hide_agent_reasoning":false,"experimental_compact_prompt_file":null,"tool_suggest":null,"orchestrator":null,"personality":null,"chatgpt_base_url":"https://chatgpt.com/backend-api/","project_doc_fallback_filenames":[],"show_raw_agent_reasoning":null,"experimental_realtime_ws_startup_context":null,"goals":null,"profiles":{},"suppress_unstable_features_warning":null,"check_for_update_on_startup":null,"otel":null,"project_doc_max_bytes":32768,"include_environment_context":true,"mcp_oauth_callback_port":null,"history":{"persistence":"save-all","max_bytes":null},"plan_mode_reasoning_effort":null,"experimental_realtime_ws_base_url":null,"model_providers":{},"marketplaces":{},"disable_paste_burst":null,"windows":null,"background_terminal_max_timeout":300000,"experimental_realtime_webrtc_call_base_url":null,"js_repl_node_path":null,"model_catalog_json":null,"agents":null,"openai_base_url":null,"default_permissions":null,"experimental_thread_store":null,"model_instructions_file":null,"profile":null,"mcp_optional_startup_grace_ms":null},"origins":{}}}

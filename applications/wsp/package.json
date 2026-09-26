@@ -1,0 +1,24 @@
+{
+  "name": "wsp",
+  "private": true,
+  "packageManager": "pnpm@11.9.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "node scripts/hooks-path.mjs",
+    "test": "vitest run",
+    "build": "pnpm -r build",
+    "wsp": "node packages/host/dist/bin.js",
+    "release": "pnpm --filter @zingzy/wsp release",
+    "canary": "WSP_LIVE=1 vitest run packages/engine/test/create-canary.live.test.ts packages/runtime/test/create-canary.live.test.ts packages/engine/test/solari-quirks.live.test.ts packages/engine/test/createdat-drift.live.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "license": "AGPL-3.0-only"
+}

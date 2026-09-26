@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "op": "fs.folders",
+    "dir": 7
+  },
+  {
+    "id": 1,
+    "op": "fs.folders",
+    "hidden": "yes"
+  },
+  {
+    "id": 1,
+    "op": "fs.folders",
+    "projects": "/wsp/projects/p_1/checkout"
+  }
+]

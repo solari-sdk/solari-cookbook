@@ -1,0 +1,19 @@
+[
+  {
+    "id": 7,
+    "ok": false,
+    "error": "no such workspace: wsp-x",
+    "kind": "missing",
+    "status": 404
+  },
+  {
+    "id": "a",
+    "ok": false,
+    "error": "this computer's backend has no facts"
+  },
+  {
+    "id": null,
+    "ok": false,
+    "error": "invalid json"
+  }
+]

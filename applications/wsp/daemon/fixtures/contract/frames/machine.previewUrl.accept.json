@@ -1,0 +1,8 @@
+[
+  {
+    "id": 1,
+    "op": "machine.previewUrl",
+    "machineId": "m1",
+    "port": 7070
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "note": "a throwaway X25519 test pair; node agreed the secret, derived both keys and sealed the frame, and the Rust side must produce the same bytes from the secret on",
+  "placeId": "p_ab12cd34",
+  "challengerPrivate": {
+    "crv": "X25519",
+    "d": "eFILPWZUyd96Ut8UKHEskDtlruSz3owIvlzklrQ5RHw",
+    "x": "Ft0kgo4kHE9z-JBQqeUOChXNkdeJ3oVdsYsiuB2PPU0",
+    "kty": "OKP"
+  },
+  "answererPrivate": {
+    "crv": "X25519",
+    "d": "eIdJoAJcA9InYUu65UyKUU8DYpwgtDkE3iOQERovels",
+    "x": "N8m0GCE1c9Z4TnTuxboB1eeGjNp6Qx5_5Iij-JJz8SQ",
+    "kty": "OKP"
+  },
+  "challengerPublic": "Ft0kgo4kHE9z+JBQqeUOChXNkdeJ3oVdsYsiuB2PPU0=",
+  "answererPublic": "N8m0GCE1c9Z4TnTuxboB1eeGjNp6Qx5/5Iij+JJz8SQ=",
+  "secret": "OEUIyKrqMuxQSPmR5l0HjJfEZG4nfb9VYB9VBTjaAVE=",
+  "hostToPlaceKey": "MCKarfPDmdYaU8+LMv2zJer7uL+6DDoXry58YX/l7f8=",
+  "placeToHostKey": "Xo30uYlOZ5sxTriX0cDxpcAZFgGD4pehKgRVpmusTxU=",
+  "frame": "{\"id\":2,\"ok\":true}",
+  "hostToPlaceSealed": "P1D97QzHWn6hfjKKYJLrWM0mnHZ2ay+HLUl4r7AIOlhpZg==",
+  "placeToHostSealed": "IsOnIWuSfgnZbvWTvFMFKeqoNC+IVVRh8+z+XwhPSAxmiw=="
+}

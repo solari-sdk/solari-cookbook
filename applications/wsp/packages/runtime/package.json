@@ -1,0 +1,24 @@
+{
+  "name": "@wsp/runtime",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run packages/runtime"
+  },
+  "dependencies": {
+    "@wsp/adapter-claude": "workspace:*",
+    "@wsp/adapter-codex": "workspace:*",
+    "@wsp/catalog": "workspace:*",
+    "@wsp/engine": "workspace:*",
+    "@wsp/keys": "workspace:*",
+    "@wsp/own-file": "workspace:*",
+    "@wsp/protocol": "workspace:*",
+    "ws": "^8.21.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@types/ws": "^8.18.1"
+  },
+  "license": "AGPL-3.0-only"
+}

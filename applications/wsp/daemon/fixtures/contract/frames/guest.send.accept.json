@@ -1,0 +1,16 @@
+[
+  {
+    "id": 2,
+    "op": "guest.send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "tools/list"
+    }
+  },
+  {
+    "id": 3,
+    "op": "guest.send",
+    "message": null
+  }
+]

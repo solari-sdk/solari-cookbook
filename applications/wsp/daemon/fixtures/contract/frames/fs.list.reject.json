@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "op": "fs.list"
+  },
+  {
+    "id": 1,
+    "op": "fs.list",
+    "path": ".",
+    "gitignore": "yes"
+  },
+  {
+    "id": 1,
+    "op": "fs.list",
+    "path": "/root/repo",
+    "machineId": 1
+  }
+]

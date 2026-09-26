@@ -1,0 +1,33 @@
+{
+  "name": "@wsp/host",
+  "version": "0.2.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "wsp": "./dist/bin.js"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts src/bin.ts --format esm --dts --loader .md=text",
+    "test": "vitest run packages/host"
+  },
+  "dependencies": {
+    "@clack/core": "1.4.3",
+    "@clack/prompts": "1.7.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@wsp/catalog": "workspace:*",
+    "@wsp/collect": "workspace:*",
+    "@wsp/engine": "workspace:*",
+    "@wsp/keys": "workspace:*",
+    "@wsp/own-file": "workspace:*",
+    "@wsp/protocol": "workspace:*",
+    "@wsp/runtime": "workspace:*",
+    "@wsp/web": "workspace:*",
+    "ws": "^8.21.3",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "@types/ws": "^8.18.1"
+  },
+  "license": "AGPL-3.0-only"
+}

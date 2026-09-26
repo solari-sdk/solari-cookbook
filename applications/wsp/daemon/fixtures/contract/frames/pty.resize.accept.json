@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "op": "pty.resize",
+    "ptyId": "pty_1",
+    "cols": 120,
+    "rows": 40
+  },
+  {
+    "id": 2,
+    "op": "pty.resize",
+    "ptyId": "pty_1",
+    "cols": 100,
+    "rows": 40,
+    "machineId": "wsp-a"
+  }
+]

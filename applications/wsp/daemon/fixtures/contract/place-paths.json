@@ -1,0 +1,18 @@
+[
+  "/h/.wsp/place.json",
+  "/h/.wsp/place-key.pem",
+  "/h/.wsp/place.log",
+  "/h/.wsp/daemon",
+  "/h/.wsp/provision",
+  "/h/.wsp/daemon.tgz",
+  "/h/.wsp/inbox",
+  "/h/.wsp/daemon-token",
+  "/h/.wsp/roots",
+  "/h/.wsp/profile.sh",
+  "/h/.wsp/open.sock",
+  "/h/.wsp/run",
+  "/h/.wsp/daemon.port",
+  "/h/.local/bin/wsp-open",
+  "/h/.local/bin/xdg-open",
+  "/h/.wsp"
+]

@@ -1,0 +1,44 @@
+/* Moss: forest grey with sage ink. */
+[data-theme="moss"] {
+  color-scheme: dark;
+  --background: #171b19;
+  --foreground: #d8dcd3;
+  --card: #1d221f;
+  --muted: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --muted-foreground: #929b92;
+  --accent: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --accent-foreground: var(--foreground);
+  --primary: #d8dcd3;
+  --primary-foreground: #141816;
+  --border: #2c332e;
+  --input: #3a423b;
+  --success: var(--color-emerald-500);
+  --warning: var(--color-amber-500);
+  --error-foreground: #e07a72;
+  --warning-foreground: #dba35a;
+  --success-foreground: #8fbf87;
+  --info-foreground: #96bbe3;
+  --update-foreground: #96bbe3;
+  --sidebar: #131715;
+  --sidebar-foreground: #e6eae1;
+  --sidebar-muted-foreground: #9ca59c;
+  --sidebar-whisper: var(--sidebar-muted-foreground);
+  --sidebar-control-surface: #171b19;
+  --sidebar-row-hover: color-mix(in srgb, var(--sidebar-foreground) 4%, transparent);
+  --sidebar-row-active: color-mix(in srgb, var(--sidebar-foreground) 11%, transparent);
+  --sidebar-row-selected: color-mix(in srgb, var(--sidebar-foreground) 7%, transparent);
+  --sidebar-row-edge: transparent;
+  --sidebar-rail: rgb(255 255 255 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #131715;
+  --sidebar-card: #131715;
+  --sidebar-fill: #171b19;
+  --sidebar-hover: #293029;
+  --sidebar-hover-ink: var(--sidebar-foreground);
+  --sidebar-quiet: var(--sidebar-muted-foreground);
+  --sidebar-input: rgb(255 255 255 / 18%);
+  --glass-ink: #d6dbd5;
+  --material-ground: #121614;
+  --material-raised: #242a26;
+  --material-edge: #29302b;
+}

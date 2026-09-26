@@ -1,0 +1,11 @@
+[
+  {
+    "type": "browser.open",
+    "url": "https://github.com/login/device"
+  },
+  {
+    "type": "browser.open",
+    "url": "https://dash.cloudflare.com/oauth2/auth?redirect_uri=http%3A%2F%2Flocalhost%3A8976%2Foauth%2Fcallback",
+    "port": 8976
+  }
+]

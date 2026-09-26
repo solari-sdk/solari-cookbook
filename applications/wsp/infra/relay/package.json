@@ -1,0 +1,16 @@
+{
+  "name": "@wsp/relay",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "test": "vitest run infra/relay"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20260908.1",
+    "miniflare": "5.20260908.0-alpha",
+    "wrangler": "4.130.0"
+  },
+  "license": "AGPL-3.0-only"
+}
