@@ -1,0 +1,17 @@
+{
+  "identity": "CONTINUITY_NATIVE_LIVE_ATTEMPT_1",
+  "verdict": "FAIL",
+  "interpretation": "Platform/apparatus boundary; core continuity NOT_EXECUTED",
+  "volumeHttpStatus": 501,
+  "persistentEvidenceCache": "BLOCKED_PLATFORM_RUNTIME",
+  "scope": "Observed qualification environment only",
+  "volumeOutcome": "UNKNOWN; no returned ID, no confirmed deletion or absence",
+  "resourceCreateDispatches": {
+    "volume": 1,
+    "sandbox": 0,
+    "desktop": 0,
+    "browser": 0,
+    "snapshot": 0
+  },
+  "reviewZipSha256": "B4636AE20DC0D39CD41FCF1A1494072A0D6F83EABB3F70DBAAACD60617D92354"
+}

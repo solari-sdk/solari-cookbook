@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [hito-semantic-checkpoint](hito-semantic-checkpoint) | TypeScript | Preserve verified project continuity across destroyed and fresh Solari sandboxes while re-observing current state |

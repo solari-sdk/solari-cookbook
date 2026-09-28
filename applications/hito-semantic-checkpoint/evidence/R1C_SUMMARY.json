@@ -1,0 +1,54 @@
+{
+  "kind": "SANITIZED_HISTORICAL_EVIDENCE_SUMMARY",
+  "scope": "Historical private integration experiments; not live validation of this smaller public application.",
+  "rawEvidencePublished": false,
+  "sourceLocationPolicy": "Source identifiers and relative internal paths only; no private absolute paths, sandbox identifiers, raw project payloads or personal data.",
+  "experiment": "R1C",
+  "question": "Does reobservation reject stale currentness after external source reality changes?",
+  "boundedResult": {
+    "verdict": "PASS",
+    "changedPath": "service/package.json",
+    "priorContentSha256": "c4ace5d1f7f44dbb67ae8299ddc764702d853a688cf46c3801c9b5d20c5ff218",
+    "currentContentSha256": "0c161cb8e76e9121c696f6732d0b0d75cb4bf67bf2baf120279b6c631cff5668",
+    "oldHashStillClaimedCurrent": false,
+    "unknownsPreserved": true,
+    "executionAuthority": false,
+    "canonicalAuthority": false
+  },
+  "evidence": [
+    {
+      "sourceId": "R1C_CHANGE_PROOF",
+      "sourceSha256": "6c37feb53e1edc9b624ab4f420c42895dc66d63a54d7ccc03d81a5ee51b7374b",
+      "pointer": "#/verdict"
+    },
+    {
+      "sourceId": "R1C_CHANGE_PROOF",
+      "sourceSha256": "6c37feb53e1edc9b624ab4f420c42895dc66d63a54d7ccc03d81a5ee51b7374b",
+      "pointer": "#/hitoEvidence"
+    },
+    {
+      "sourceId": "R1C_CHANGE_PROOF",
+      "sourceSha256": "6c37feb53e1edc9b624ab4f420c42895dc66d63a54d7ccc03d81a5ee51b7374b",
+      "pointer": "#/unknownStates"
+    },
+    {
+      "sourceId": "R1C_CHANGE_PROOF",
+      "sourceSha256": "6c37feb53e1edc9b624ab4f420c42895dc66d63a54d7ccc03d81a5ee51b7374b",
+      "pointer": "#/gates"
+    }
+  ],
+  "negativeResult": "A fixture upload delta alone is not semantic change detection; version labels were controller facts, not HITO interpretation.",
+  "doesNotProve": [
+    "Whole-repository change detection",
+    "Canonical mutation authority",
+    "Runtime correctness",
+    "Arbitrary project support"
+  ],
+  "sources": [
+    {
+      "id": "R1C_CHANGE_PROOF",
+      "path": "outputs/_R1C_CHANGE_REVIEW_PACKAGE/SOLARI_R1C_CHANGE_PROOF.json",
+      "sha256": "6c37feb53e1edc9b624ab4f420c42895dc66d63a54d7ccc03d81a5ee51b7374b"
+    }
+  ]
+}

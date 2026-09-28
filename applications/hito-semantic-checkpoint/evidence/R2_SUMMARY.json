@@ -1,0 +1,65 @@
+{
+  "kind": "SANITIZED_HISTORICAL_EVIDENCE_SUMMARY",
+  "scope": "Historical private integration experiments; not live validation of this smaller public application.",
+  "rawEvidencePublished": false,
+  "sourceLocationPolicy": "Source identifiers and relative internal paths only; no private absolute paths, sandbox identifiers, raw project payloads or personal data.",
+  "experiment": "R2",
+  "question": "How do native Solari Snapshot and HITO Semantic Checkpoint differ?",
+  "boundedResult": {
+    "snapshotMachineStateFidelity": "PASS",
+    "hitoSemanticContinuity": "PASS",
+    "staleCurrentnessRejection": "PASS",
+    "primitivesComplementary": "SUPPORTED"
+  },
+  "evidence": [
+    {
+      "sourceId": "R2_RESULT",
+      "sourceSha256": "b1c8b73e8370c65fcaddfbe94be5b72f61cba54af62b7aa299b2f67031207b6c",
+      "pointer": "#/SNAPSHOT_MACHINE_STATE_FIDELITY"
+    },
+    {
+      "sourceId": "R2_RESULT",
+      "sourceSha256": "b1c8b73e8370c65fcaddfbe94be5b72f61cba54af62b7aa299b2f67031207b6c",
+      "pointer": "#/HITO_SEMANTIC_CONTINUITY"
+    },
+    {
+      "sourceId": "R2_RESULT",
+      "sourceSha256": "b1c8b73e8370c65fcaddfbe94be5b72f61cba54af62b7aa299b2f67031207b6c",
+      "pointer": "#/HITO_STALE_CURRENTNESS_REJECTION"
+    },
+    {
+      "sourceId": "R2_RESULT",
+      "sourceSha256": "b1c8b73e8370c65fcaddfbe94be5b72f61cba54af62b7aa299b2f67031207b6c",
+      "pointer": "#/PRIMITIVES_COMPLEMENTARY"
+    },
+    {
+      "sourceId": "R2_MATRIX",
+      "sourceSha256": "8dced678d2b108f2633af9d3b4e46ea618a52823999079df2bd89491674ee83a",
+      "pointer": "#/scope"
+    },
+    {
+      "sourceId": "R2_MATRIX",
+      "sourceSha256": "8dced678d2b108f2633af9d3b4e46ea618a52823999079df2bd89491674ee83a",
+      "pointer": "#/performanceBoundary"
+    }
+  ],
+  "negativeResult": "Snapshot size and semantic checkpoint size are not apples-to-apples. No compression, token, economic or universal speed advantage is claimed.",
+  "doesNotProve": [
+    "HITO replaces snapshots",
+    "Arbitrary RAM or whole-disk fidelity",
+    "Snapshot compression superiority",
+    "Desktop or Browser semantic integration"
+  ],
+  "sources": [
+    {
+      "id": "R2_RESULT",
+      "path": "outputs/_R2_PLATFORM_FINAL_REVIEW/R2_RESULT.json",
+      "sha256": "b1c8b73e8370c65fcaddfbe94be5b72f61cba54af62b7aa299b2f67031207b6c"
+    },
+    {
+      "id": "R2_MATRIX",
+      "path": "outputs/_R2_PLATFORM_FINAL_REVIEW/R2_PLATFORM_MATRIX.json",
+      "sha256": "8dced678d2b108f2633af9d3b4e46ea618a52823999079df2bd89491674ee83a"
+    }
+  ]
+}
