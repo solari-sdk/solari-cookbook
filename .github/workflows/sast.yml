@@ -43,5 +43,32 @@ jobs:
       - name: Report (all severities, advisory)
         run: semgrep scan --config p/default --config p/secrets
 
+      # EXCLUSIONS APPLY TO THE GATE ONLY, NOT THE REPORT ABOVE.
+      # pinetree-desktop excludes these from both; keeping the report unfiltered
+      # is deliberate here -- the findings stay visible to anyone reading the log,
+      # and only the BLOCKING decision is narrowed. Hiding them from both would
+      # make the report agree with the gate by construction, which is the
+      # vacuous-pass shape.
+      #
+      # detect-insecure-websocket: both hits in this repo are inside PROSE
+      #   COMMENTS explaining that `fetch` will not accept a ws:// URL and the
+      #   scheme must be swapped. The rule is matching documentation about the
+      #   hazard, not a websocket. Verified by reading the flagged lines
+      #   (examples/*, lines 138 and 46), not inferred from the rule name.
+      # python37-compatibility-importlib2: `from importlib.resources import
+      #   files` -- a COMPATIBILITY warning about Python 3.7, not a security
+      #   finding. This is a security gate; a back-compat note does not belong
+      #   in it, and these examples target modern Python.
+      #
+      # If either genuinely fires on new code, the right move is to fix it or
+      # suppress it inline with a reason a reviewer sees in the diff -- not to
+      # widen this list.
       - name: Gate (ERROR severity blocks)
-        run: semgrep scan --config p/default --config p/secrets --severity ERROR --error
+        run: >
+          semgrep scan
+          --config p/default
+          --config p/secrets
+          --severity ERROR
+          --error
+          --exclude-rule javascript.lang.security.detect-insecure-websocket.detect-insecure-websocket
+          --exclude-rule python.lang.compatibility.python37.python37-compatibility-importlib2
