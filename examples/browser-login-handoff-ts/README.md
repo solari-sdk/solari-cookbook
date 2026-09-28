@@ -40,4 +40,9 @@ Saving through `save-profile` rather than `profiles.save()` matters here: the
 gateway reads the state out of the live session, so it captures whatever the
 human did, including anything set after the handoff began.
 
+When the human only needs to say yes or no, taking a screenshot and asking is
+cheaper than handing over the wheel: see
+[browser-approval-handoff-ts](../browser-approval-handoff-ts), which falls back
+to this handoff on a no. Look first, take the wheel only if needed.
+
 Source: [`index.ts`](index.ts)
