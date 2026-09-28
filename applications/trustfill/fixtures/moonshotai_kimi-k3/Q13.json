@@ -1,0 +1,89 @@
+{
+  "id": "Q13",
+  "question": "Is customer data separated logically or physically between tenants?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Customer data is separated logically, not physically. Tenant separation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries must pass, and per-tenant scoping of object storage prefixes and search indices. No customer receives dedicated compute or dedicated storage hardware.",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Tenant separation is **logical rather than physical**. Customer records carry a tenant identifier, and isolation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries are required to pass, and per-tenant scoping of object storage prefixes and search indices."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "No customer receives dedicated compute or dedicated storage hardware."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Cross-tenant access by application code is prevented by the data access layer, which refuses any query lacking a tenant scope."
+      }
+    ],
+    "reasoning": "The architecture document explicitly states that tenant separation is 'logical rather than physical' and describes the three-layer logical isolation mechanism (row-level security, tenancy-scoped data access layer, per-tenant storage/index scoping). It further confirms the absence of physical separation by stating no customer receives dedicated compute or storage hardware. This directly and unambiguously answers the question."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Customer data is separated logically, not physically.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customer data is separated logically, not physically."
+      },
+      {
+        "claim": "Tenant separation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries must pass, and per-tenant scoping of object storage prefixes and search indices.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Tenant separation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries must pass, and per-tenant scoping of object storage prefixes and search indices."
+      },
+      {
+        "claim": "No customer receives dedicated compute or dedicated storage hardware.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "No customer receives dedicated compute or dedicated storage hardware."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Is customer data separated logically or physically between tenants?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Tenant separation is **logical rather than physical**. Customer records carry a tenant identifier, and isolation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries are required to pass, and per-tenant scoping of object storage prefixes and search indices."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "No customer receives dedicated compute or dedicated storage hardware."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Cross-tenant access by application code is prevented by the data access layer, which refuses any query lacking a tenant scope."
+      }
+    ],
+    "reasoning": "The architecture document explicitly states that tenant separation is 'logical rather than physical' and describes the three-layer logical isolation mechanism (row-level security, tenancy-scoped data access layer, per-tenant storage/index scoping). It further confirms the absence of physical separation by stating no customer receives dedicated compute or storage hardware. This directly and unambiguously answers the question.",
+    "abstained": false,
+    "answer": "Customer data is separated logically, not physically. Tenant separation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries must pass, and per-tenant scoping of object storage prefixes and search indices. No customer receives dedicated compute or dedicated storage hardware.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Customer data is separated logically, not physically.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customer data is separated logically, not physically."
+      },
+      {
+        "claim": "Tenant separation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries must pass, and per-tenant scoping of object storage prefixes and search indices.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Tenant separation is enforced at three layers: row-level security in the primary datastore, a tenancy-scoped data access layer through which all application queries must pass, and per-tenant scoping of object storage prefixes and search indices."
+      },
+      {
+        "claim": "No customer receives dedicated compute or dedicated storage hardware.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "No customer receives dedicated compute or dedicated storage hardware."
+      }
+    ],
+    "removed": []
+  }
+}

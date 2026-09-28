@@ -1,0 +1,172 @@
+{
+  "id": "Q11",
+  "question": "Were any exceptions reported in your most recent SOC 2 examination? Describe them and their remediation.",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. The most recent SOC 2 Type II examination (covering 1 October 2024 to 30 September 2025, issued December 2025) reported one exception. The quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control. The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance. In response, Meridian committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun; that remediation was implemented in November 2025 and has operated without further exception since. No exceptions were reported in the prior-year examination.",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "The most recent examination reported **one exception**."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "During the period, the quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control. The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Management's response committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun. That remediation was implemented in November 2025 and has operated without further exception since."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "No exceptions were reported in the prior-year examination."
+      }
+    ],
+    "reasoning": "Section 5 of the SOC 2 report summary directly answers the question: it states that the most recent examination reported one exception, describes the exception (a quarterly user access review completed eleven days late, assessed by the auditor as a timeliness deviation only, with the review performed in full and no inappropriate access found), and describes the remediation (automated calendar-driven initiation with escalation, implemented November 2025, no further exceptions since). No contradictory information appears elsewhere in the evidence."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Yes, an exception was reported in the most recent SOC 2 examination.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "The most recent SOC 2 examination reported one exception.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "reported one exception"
+      },
+      {
+        "claim": "The examination was a Type II examination.",
+        "essential": false,
+        "supported": false,
+        "sourceText": " Type II"
+      },
+      {
+        "claim": "The examination covered 1 October 2024 to 30 September 2025 and was issued December 2025.",
+        "essential": false,
+        "supported": false,
+        "sourceText": " (covering 1 October 2024 to 30 September 2025, issued December 2025)"
+      },
+      {
+        "claim": "The quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control."
+      },
+      {
+        "claim": "The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance."
+      },
+      {
+        "claim": "The remediation committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "In response, Meridian committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun"
+      },
+      {
+        "claim": "The remediation was implemented in November 2025 and has operated without further exception since.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "that remediation was implemented in November 2025 and has operated without further exception since"
+      },
+      {
+        "claim": "No exceptions were reported in the prior-year examination.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " No exceptions were reported in the prior-year examination."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Were any exceptions reported in your most recent SOC 2 examination? Describe them and their remediation.",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "The most recent examination reported **one exception**."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "During the period, the quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control. The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Management's response committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun. That remediation was implemented in November 2025 and has operated without further exception since."
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "No exceptions were reported in the prior-year examination."
+      }
+    ],
+    "reasoning": "Section 5 of the SOC 2 report summary directly answers the question: it states that the most recent examination reported one exception, describes the exception (a quarterly user access review completed eleven days late, assessed by the auditor as a timeliness deviation only, with the review performed in full and no inappropriate access found), and describes the remediation (automated calendar-driven initiation with escalation, implemented November 2025, no further exceptions since). No contradictory information appears elsewhere in the evidence.",
+    "abstained": false,
+    "answer": "Yes. The most recent SOC 2 examination reported one exception. The quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control. The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance. In response, Meridian committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun; that remediation was implemented in November 2025 and has operated without further exception since. No exceptions were reported in the prior-year examination.",
+    "trustScore": 0.7777777777777778,
+    "claims": [
+      {
+        "claim": "Yes, an exception was reported in the most recent SOC 2 examination.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "The most recent SOC 2 examination reported one exception.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "reported one exception"
+      },
+      {
+        "claim": "The examination was a Type II examination.",
+        "essential": false,
+        "supported": false,
+        "sourceText": " Type II"
+      },
+      {
+        "claim": "The examination covered 1 October 2024 to 30 September 2025 and was issued December 2025.",
+        "essential": false,
+        "supported": false,
+        "sourceText": " (covering 1 October 2024 to 30 September 2025, issued December 2025)"
+      },
+      {
+        "claim": "The quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The quarterly user access review for one quarter was completed eleven days after the end of the quarter, outside the window specified by the control."
+      },
+      {
+        "claim": "The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The auditor determined that the review itself was performed in full, that no inappropriate access was identified during it, and that the deviation was one of timeliness rather than of substance."
+      },
+      {
+        "claim": "The remediation committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "In response, Meridian committed to automated calendar-driven initiation of the review with escalation to the VP of Engineering & Security at day five of any overrun"
+      },
+      {
+        "claim": "The remediation was implemented in November 2025 and has operated without further exception since.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "that remediation was implemented in November 2025 and has operated without further exception since"
+      },
+      {
+        "claim": "No exceptions were reported in the prior-year examination.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " No exceptions were reported in the prior-year examination."
+      }
+    ],
+    "removed": [
+      "The examination was a Type II examination.",
+      "The examination covered 1 October 2024 to 30 September 2025 and was issued December 2025."
+    ]
+  }
+}

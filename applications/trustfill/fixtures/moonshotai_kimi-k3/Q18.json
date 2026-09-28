@@ -1,0 +1,109 @@
+{
+  "id": "Q18",
+  "question": "Describe your process for revoking system access when an employee leaves.",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Access is revoked as part of the offboarding workflow. People Operations initiates the workflow on the employee's last working day; identity provider access is disabled immediately, which cascades to all federated applications, and hardware is collected and wiped. The workflow requires confirmation from both the employee's manager and the security team before it is marked complete.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Upon termination, access is revoked as part of the offboarding workflow. People Operations initiates the workflow on the employee's last working day; identity provider access is disabled immediately, which cascades to all federated applications, and hardware is collected and wiped. The workflow requires confirmation from both the employee's manager and the security team before it is marked complete."
+      }
+    ],
+    "reasoning": "Section 3 (Personnel security) of the Information Security Policy directly and fully describes the termination access-revocation process: who initiates it (People Operations), when (the employee's last working day), the technical mechanism (immediate identity provider disablement cascading to all federated applications), hardware handling (collected and wiped), and completion controls (dual confirmation by the manager and the security team). This unambiguously answers the question."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Access is revoked as part of the offboarding workflow.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Access is revoked as part of the offboarding workflow."
+      },
+      {
+        "claim": "People Operations initiates the workflow on the employee's last working day.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "People Operations initiates the workflow on the employee's last working day"
+      },
+      {
+        "claim": "Identity provider access is disabled immediately.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "identity provider access is disabled immediately"
+      },
+      {
+        "claim": "Disabling identity provider access cascades to all federated applications.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "which cascades to all federated applications"
+      },
+      {
+        "claim": "Hardware is collected and wiped.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "hardware is collected and wiped"
+      },
+      {
+        "claim": "The workflow requires confirmation from both the employee's manager and the security team before it is marked complete.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The workflow requires confirmation from both the employee's manager and the security team before it is marked complete."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Describe your process for revoking system access when an employee leaves.",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Upon termination, access is revoked as part of the offboarding workflow. People Operations initiates the workflow on the employee's last working day; identity provider access is disabled immediately, which cascades to all federated applications, and hardware is collected and wiped. The workflow requires confirmation from both the employee's manager and the security team before it is marked complete."
+      }
+    ],
+    "reasoning": "Section 3 (Personnel security) of the Information Security Policy directly and fully describes the termination access-revocation process: who initiates it (People Operations), when (the employee's last working day), the technical mechanism (immediate identity provider disablement cascading to all federated applications), hardware handling (collected and wiped), and completion controls (dual confirmation by the manager and the security team). This unambiguously answers the question.",
+    "abstained": false,
+    "answer": "Access is revoked as part of the offboarding workflow. People Operations initiates the workflow on the employee's last working day; identity provider access is disabled immediately, which cascades to all federated applications, and hardware is collected and wiped. The workflow requires confirmation from both the employee's manager and the security team before it is marked complete.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Access is revoked as part of the offboarding workflow.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Access is revoked as part of the offboarding workflow."
+      },
+      {
+        "claim": "People Operations initiates the workflow on the employee's last working day.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "People Operations initiates the workflow on the employee's last working day"
+      },
+      {
+        "claim": "Identity provider access is disabled immediately.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "identity provider access is disabled immediately"
+      },
+      {
+        "claim": "Disabling identity provider access cascades to all federated applications.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "which cascades to all federated applications"
+      },
+      {
+        "claim": "Hardware is collected and wiped.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "hardware is collected and wiped"
+      },
+      {
+        "claim": "The workflow requires confirmation from both the employee's manager and the security team before it is marked complete.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The workflow requires confirmation from both the employee's manager and the security team before it is marked complete."
+      }
+    ],
+    "removed": []
+  }
+}

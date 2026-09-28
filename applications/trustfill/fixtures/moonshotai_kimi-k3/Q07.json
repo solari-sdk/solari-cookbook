@@ -1,0 +1,85 @@
+{
+  "id": "Q07",
+  "question": "Are background checks performed on employees prior to hire?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date. The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction. Contractors with access to production systems are screened on equivalent terms.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date. The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction. Contractors with access to production systems are screened on equivalent terms."
+      }
+    ],
+    "reasoning": "The Information Security Policy's personnel security section directly and unambiguously states that all candidates who receive an offer of employment undergo a third-party background screening prior to their start date, covering criminal history and prior employment/education verification. This directly answers the question affirmatively."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Background checks are performed on employees prior to hire.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date."
+      },
+      {
+        "claim": "The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction."
+      },
+      {
+        "claim": "Contractors with access to production systems are screened on equivalent terms.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Contractors with access to production systems are screened on equivalent terms."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Are background checks performed on employees prior to hire?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date. The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction. Contractors with access to production systems are screened on equivalent terms."
+      }
+    ],
+    "reasoning": "The Information Security Policy's personnel security section directly and unambiguously states that all candidates who receive an offer of employment undergo a third-party background screening prior to their start date, covering criminal history and prior employment/education verification. This directly answers the question affirmatively.",
+    "abstained": false,
+    "answer": "Yes. All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date. The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction. Contractors with access to production systems are screened on equivalent terms.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Background checks are performed on employees prior to hire.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "All candidates who receive an offer of employment are subject to a background screening conducted by a third-party provider prior to their start date."
+      },
+      {
+        "claim": "The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "The screening covers criminal history and verification of prior employment and education, and is performed to the extent permitted by applicable law in the candidate's jurisdiction."
+      },
+      {
+        "claim": "Contractors with access to production systems are screened on equivalent terms.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Contractors with access to production systems are screened on equivalent terms."
+      }
+    ],
+    "removed": []
+  }
+}

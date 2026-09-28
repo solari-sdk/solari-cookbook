@@ -1,0 +1,141 @@
+{
+  "id": "Q10",
+  "question": "Which Trust Services Criteria were included in the scope of your most recent SOC 2 examination?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "The most recent SOC 2 Type II examination (covering 1 October 2024 to 30 September 2025) included three Trust Services Criteria in scope: Security (the common criteria), Availability, and Confidentiality. Processing Integrity and Privacy were not in scope.",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "The examination covered the following Trust Services Criteria:\n\n- **Security** (the common criteria) — in scope\n- **Availability** — in scope\n- **Confidentiality** — in scope\n- **Processing Integrity** — *not* in scope\n- **Privacy** — *not* in scope"
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian Systems holds a **SOC 2 Type II** report. The most recent examination covered the twelve-month period from **1 October 2024 to 30 September 2025** and was issued in **December 2025**."
+      }
+    ],
+    "reasoning": "The SOC 2 report summary explicitly lists which Trust Services Criteria were in scope for the most recent examination (Security, Availability, Confidentiality) and which were not (Processing Integrity, Privacy), along with the examination period. This directly and unambiguously answers the question."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "The examination was a SOC 2 Type II examination.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "SOC 2 Type II"
+      },
+      {
+        "claim": "The examination covered the period 1 October 2024 to 30 September 2025.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " (covering 1 October 2024 to 30 September 2025)"
+      },
+      {
+        "claim": "Three Trust Services Criteria were included in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "included three Trust Services Criteria in scope"
+      },
+      {
+        "claim": "Security (the common criteria) was in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Security (the common criteria)"
+      },
+      {
+        "claim": "Availability was in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Availability"
+      },
+      {
+        "claim": "Confidentiality was in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Confidentiality"
+      },
+      {
+        "claim": "Processing Integrity was not in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Processing Integrity"
+      },
+      {
+        "claim": "Privacy was not in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Privacy"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Which Trust Services Criteria were included in the scope of your most recent SOC 2 examination?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "The examination covered the following Trust Services Criteria:\n\n- **Security** (the common criteria) — in scope\n- **Availability** — in scope\n- **Confidentiality** — in scope\n- **Processing Integrity** — *not* in scope\n- **Privacy** — *not* in scope"
+      },
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian Systems holds a **SOC 2 Type II** report. The most recent examination covered the twelve-month period from **1 October 2024 to 30 September 2025** and was issued in **December 2025**."
+      }
+    ],
+    "reasoning": "The SOC 2 report summary explicitly lists which Trust Services Criteria were in scope for the most recent examination (Security, Availability, Confidentiality) and which were not (Processing Integrity, Privacy), along with the examination period. This directly and unambiguously answers the question.",
+    "abstained": false,
+    "answer": "The most recent SOC 2 Type II examination (covering 1 October 2024 to 30 September 2025) included three Trust Services Criteria in scope: Security (the common criteria), Availability, and Confidentiality. Processing Integrity and Privacy were not in scope.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "The examination was a SOC 2 Type II examination.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "SOC 2 Type II"
+      },
+      {
+        "claim": "The examination covered the period 1 October 2024 to 30 September 2025.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " (covering 1 October 2024 to 30 September 2025)"
+      },
+      {
+        "claim": "Three Trust Services Criteria were included in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "included three Trust Services Criteria in scope"
+      },
+      {
+        "claim": "Security (the common criteria) was in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Security (the common criteria)"
+      },
+      {
+        "claim": "Availability was in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Availability"
+      },
+      {
+        "claim": "Confidentiality was in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Confidentiality"
+      },
+      {
+        "claim": "Processing Integrity was not in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Processing Integrity"
+      },
+      {
+        "claim": "Privacy was not in scope.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Privacy"
+      }
+    ],
+    "removed": []
+  }
+}

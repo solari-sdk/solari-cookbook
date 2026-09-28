@@ -1,0 +1,121 @@
+{
+  "id": "Q22",
+  "question": "Describe your change management process for production deployments.",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Changes to production follow a documented workflow. All changes are made through version-controlled infrastructure-as-code or application code, require review and approval by at least one engineer other than the author, and must pass the automated test and security-scanning suite before merge. Deployments are automated; direct modification of production infrastructure outside this pipeline is prohibited and is alerted on. Emergency changes may be applied ahead of review but require retrospective approval within one business day.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Changes to production follow a documented workflow. All changes are made through version-controlled infrastructure-as-code or application code, require review and approval by at least one engineer other than the author, and must pass the automated test and security-scanning suite before merge. Deployments are automated; direct modification of production infrastructure outside this pipeline is prohibited and is alerted on. Emergency changes may be applied ahead of review but require retrospective approval within one business day."
+      }
+    ],
+    "reasoning": "Section 8 of the Information Security Policy directly and completely describes the change management process for production deployments, covering version control requirements, peer review and approval, automated testing and security scanning, automated deployment, prohibition of out-of-band changes, and the emergency change procedure. No other document contradicts this description."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Changes to production follow a documented workflow.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Changes to production follow a documented workflow."
+      },
+      {
+        "claim": "All changes are made through version-controlled infrastructure-as-code or application code.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "All changes are made through version-controlled infrastructure-as-code or application code"
+      },
+      {
+        "claim": "Changes require review and approval by at least one engineer other than the author.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "require review and approval by at least one engineer other than the author"
+      },
+      {
+        "claim": "Changes must pass the automated test and security-scanning suite before merge.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "must pass the automated test and security-scanning suite before merge"
+      },
+      {
+        "claim": "Deployments are automated.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Deployments are automated"
+      },
+      {
+        "claim": "Direct modification of production infrastructure outside the pipeline is prohibited and is alerted on.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "direct modification of production infrastructure outside this pipeline is prohibited and is alerted on"
+      },
+      {
+        "claim": "Emergency changes may be applied ahead of review but require retrospective approval within one business day.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Emergency changes may be applied ahead of review but require retrospective approval within one business day."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Describe your change management process for production deployments.",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Changes to production follow a documented workflow. All changes are made through version-controlled infrastructure-as-code or application code, require review and approval by at least one engineer other than the author, and must pass the automated test and security-scanning suite before merge. Deployments are automated; direct modification of production infrastructure outside this pipeline is prohibited and is alerted on. Emergency changes may be applied ahead of review but require retrospective approval within one business day."
+      }
+    ],
+    "reasoning": "Section 8 of the Information Security Policy directly and completely describes the change management process for production deployments, covering version control requirements, peer review and approval, automated testing and security scanning, automated deployment, prohibition of out-of-band changes, and the emergency change procedure. No other document contradicts this description.",
+    "abstained": false,
+    "answer": "Changes to production follow a documented workflow. All changes are made through version-controlled infrastructure-as-code or application code, require review and approval by at least one engineer other than the author, and must pass the automated test and security-scanning suite before merge. Deployments are automated; direct modification of production infrastructure outside this pipeline is prohibited and is alerted on. Emergency changes may be applied ahead of review but require retrospective approval within one business day.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Changes to production follow a documented workflow.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Changes to production follow a documented workflow."
+      },
+      {
+        "claim": "All changes are made through version-controlled infrastructure-as-code or application code.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "All changes are made through version-controlled infrastructure-as-code or application code"
+      },
+      {
+        "claim": "Changes require review and approval by at least one engineer other than the author.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "require review and approval by at least one engineer other than the author"
+      },
+      {
+        "claim": "Changes must pass the automated test and security-scanning suite before merge.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "must pass the automated test and security-scanning suite before merge"
+      },
+      {
+        "claim": "Deployments are automated.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Deployments are automated"
+      },
+      {
+        "claim": "Direct modification of production infrastructure outside the pipeline is prohibited and is alerted on.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "direct modification of production infrastructure outside this pipeline is prohibited and is alerted on"
+      },
+      {
+        "claim": "Emergency changes may be applied ahead of review but require retrospective approval within one business day.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Emergency changes may be applied ahead of review but require retrospective approval within one business day."
+      }
+    ],
+    "removed": []
+  }
+}

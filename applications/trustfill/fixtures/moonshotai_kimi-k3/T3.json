@@ -1,0 +1,41 @@
+{
+  "id": "T3",
+  "question": "What is your recovery time objective (RTO) for the loss of an entire serving region?",
+  "expected": "ABSTAIN",
+  "draft": {
+    "sufficiency": "CONFLICTING",
+    "answer": null,
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Because promotion of the cross-region replica, DNS propagation, and index rebuilding are involved, **a full region loss carries a recovery time objective of 12 hours**. Customers should plan on that basis."
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "**The regional failover procedure targets a recovery time objective of 4 hours** and a recovery point objective of 15 minutes."
+      }
+    ],
+    "reasoning": "The evidence gives two materially different RTO values for the loss of an entire serving region: the architecture overview states 12 hours, while the incident response plan states 4 hours. Although the architecture overview notes that the Incident Response Plan takes precedence where the two disagree, the evidence still presents two conflicting answers to this specific question, so it cannot be answered unambiguously from the evidence alone and should be resolved by a human."
+  },
+  "verification": null,
+  "answer": {
+    "question": "What is your recovery time objective (RTO) for the loss of an entire serving region?",
+    "sufficiency": "CONFLICTING",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Because promotion of the cross-region replica, DNS propagation, and index rebuilding are involved, **a full region loss carries a recovery time objective of 12 hours**. Customers should plan on that basis."
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "**The regional failover procedure targets a recovery time objective of 4 hours** and a recovery point objective of 15 minutes."
+      }
+    ],
+    "reasoning": "The evidence gives two materially different RTO values for the loss of an entire serving region: the architecture overview states 12 hours, while the incident response plan states 4 hours. Although the architecture overview notes that the Incident Response Plan takes precedence where the two disagree, the evidence still presents two conflicting answers to this specific question, so it cannot be answered unambiguously from the evidence alone and should be resolved by a human.",
+    "abstained": true,
+    "answer": null,
+    "trustScore": null,
+    "claims": [],
+    "removed": []
+  }
+}

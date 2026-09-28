@@ -1,0 +1,161 @@
+{
+  "id": "Q12",
+  "question": "Do you use subprocessors with access to customer data, and how are they assessed before engagement?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Meridian engages a limited number of subprocessors, principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling; a current list is maintained on the public trust page, where customers may subscribe to notifications of changes. Before engagement, every subprocessor with access to customer data is assessed by the security team. The assessment reviews the vendor's own third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments. Vendors handling customer data are reassessed annually thereafter, and all such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism. Regarding what data reaches subprocessors: customer telemetry itself does not leave the serving region; operational metadata flows to subprocessors — error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Meridian engages a limited number of subprocessors, principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling. A current list is maintained on our public trust page and customers may subscribe to notifications of changes."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Before engagement, every subprocessor with access to customer data is assessed by the security team. The assessment reviews the vendor's own third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments. Vendors handling customer data are reassessed annually thereafter, and all such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customer telemetry itself does not leave the serving region. Operational metadata does flow to a small number of subprocessors: error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer. Each of these flows is documented on the public trust page."
+      }
+    ],
+    "reasoning": "The Information Security Policy directly answers both parts of the question: it confirms that Meridian uses subprocessors (for cloud infrastructure, transactional email, error aggregation, and customer support tooling) and describes the pre-engagement assessment performed by the security team, including annual reassessment and data processing agreement requirements. The Architecture Overview corroborates this by describing the specific operational metadata flows to subprocessors. The evidence is consistent across both documents."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian uses subprocessors (answering yes to whether subprocessors are used)",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Meridian engages a limited number of subprocessors"
+      },
+      {
+        "claim": "The subprocessors are principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling"
+      },
+      {
+        "claim": "A current list of subprocessors is maintained on the public trust page, where customers may subscribe to notifications of changes",
+        "essential": false,
+        "supported": true,
+        "sourceText": "; a current list is maintained on the public trust page, where customers may subscribe to notifications of changes"
+      },
+      {
+        "claim": "Before engagement, every subprocessor with access to customer data is assessed by the security team",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Before engagement, every subprocessor with access to customer data is assessed by the security team."
+      },
+      {
+        "claim": "The assessment reviews the vendor's third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The assessment reviews the vendor's own third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments."
+      },
+      {
+        "claim": "Vendors handling customer data are reassessed annually thereafter",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Vendors handling customer data are reassessed annually thereafter"
+      },
+      {
+        "claim": "All such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism",
+        "essential": false,
+        "supported": true,
+        "sourceText": "and all such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism"
+      },
+      {
+        "claim": "Customer telemetry itself does not leave the serving region",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Regarding what data reaches subprocessors: customer telemetry itself does not leave the serving region"
+      },
+      {
+        "claim": "Operational metadata flows to subprocessors: error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer",
+        "essential": false,
+        "supported": true,
+        "sourceText": "operational metadata flows to subprocessors — error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Do you use subprocessors with access to customer data, and how are they assessed before engagement?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Meridian engages a limited number of subprocessors, principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling. A current list is maintained on our public trust page and customers may subscribe to notifications of changes."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Before engagement, every subprocessor with access to customer data is assessed by the security team. The assessment reviews the vendor's own third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments. Vendors handling customer data are reassessed annually thereafter, and all such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customer telemetry itself does not leave the serving region. Operational metadata does flow to a small number of subprocessors: error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer. Each of these flows is documented on the public trust page."
+      }
+    ],
+    "reasoning": "The Information Security Policy directly answers both parts of the question: it confirms that Meridian uses subprocessors (for cloud infrastructure, transactional email, error aggregation, and customer support tooling) and describes the pre-engagement assessment performed by the security team, including annual reassessment and data processing agreement requirements. The Architecture Overview corroborates this by describing the specific operational metadata flows to subprocessors. The evidence is consistent across both documents.",
+    "abstained": false,
+    "answer": "Yes. Meridian engages a limited number of subprocessors, principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling; a current list is maintained on the public trust page, where customers may subscribe to notifications of changes. Before engagement, every subprocessor with access to customer data is assessed by the security team. The assessment reviews the vendor's own third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments. Vendors handling customer data are reassessed annually thereafter, and all such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism. Regarding what data reaches subprocessors: customer telemetry itself does not leave the serving region; operational metadata flows to subprocessors — error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Meridian uses subprocessors (answering yes to whether subprocessors are used)",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes. Meridian engages a limited number of subprocessors"
+      },
+      {
+        "claim": "The subprocessors are principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", principally for cloud infrastructure, transactional email, error aggregation, and customer support tooling"
+      },
+      {
+        "claim": "A current list of subprocessors is maintained on the public trust page, where customers may subscribe to notifications of changes",
+        "essential": false,
+        "supported": true,
+        "sourceText": "; a current list is maintained on the public trust page, where customers may subscribe to notifications of changes"
+      },
+      {
+        "claim": "Before engagement, every subprocessor with access to customer data is assessed by the security team",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Before engagement, every subprocessor with access to customer data is assessed by the security team."
+      },
+      {
+        "claim": "The assessment reviews the vendor's third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments",
+        "essential": true,
+        "supported": true,
+        "sourceText": "The assessment reviews the vendor's own third-party audit reports where available, its security documentation, its data handling and sub-processing arrangements, and its contractual commitments."
+      },
+      {
+        "claim": "Vendors handling customer data are reassessed annually thereafter",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Vendors handling customer data are reassessed annually thereafter"
+      },
+      {
+        "claim": "All such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism",
+        "essential": false,
+        "supported": true,
+        "sourceText": "and all such vendors are bound by a data processing agreement incorporating the appropriate transfer mechanism"
+      },
+      {
+        "claim": "Customer telemetry itself does not leave the serving region",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Regarding what data reaches subprocessors: customer telemetry itself does not leave the serving region"
+      },
+      {
+        "claim": "Operational metadata flows to subprocessors: error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer",
+        "essential": false,
+        "supported": true,
+        "sourceText": "operational metadata flows to subprocessors — error aggregation receives stack traces and request identifiers, transactional email receives recipient addresses for platform notifications, and the customer support system receives ticket content submitted by the customer"
+      }
+    ],
+    "removed": []
+  }
+}

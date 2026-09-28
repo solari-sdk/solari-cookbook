@@ -1,0 +1,81 @@
+{
+  "id": "Q20",
+  "question": "What is your remediation SLA for vulnerabilities rated critical?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Vulnerabilities rated critical are remediated within seven calendar days of triage. If a critical finding cannot be remediated within that window, an exception must be approved by the VP of Engineering & Security and recorded with a compensating control and a target date.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Vulnerabilities rated critical are remediated within seven calendar days of triage."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Where a critical finding cannot be remediated inside the window, an exception must be approved by the VP of Engineering & Security and recorded with a compensating control and a target date."
+      }
+    ],
+    "reasoning": "The Information Security Policy (section 6, Vulnerability and patch management) directly and unambiguously states the remediation SLA for critical-rated vulnerabilities: seven calendar days from triage, with a documented exception process. No other document contradicts this; the SOC 2 summary references these same severity-based timelines without altering them."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Vulnerabilities rated critical are remediated within seven calendar days of triage.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Vulnerabilities rated critical are remediated within seven calendar days of triage."
+      },
+      {
+        "claim": "If a critical finding cannot be remediated within that window, an exception must be approved by the VP of Engineering & Security.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "If a critical finding cannot be remediated within that window, an exception must be approved by the VP of Engineering & Security"
+      },
+      {
+        "claim": "The exception must be recorded with a compensating control and a target date.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " and recorded with a compensating control and a target date."
+      }
+    ]
+  },
+  "answer": {
+    "question": "What is your remediation SLA for vulnerabilities rated critical?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Vulnerabilities rated critical are remediated within seven calendar days of triage."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Where a critical finding cannot be remediated inside the window, an exception must be approved by the VP of Engineering & Security and recorded with a compensating control and a target date."
+      }
+    ],
+    "reasoning": "The Information Security Policy (section 6, Vulnerability and patch management) directly and unambiguously states the remediation SLA for critical-rated vulnerabilities: seven calendar days from triage, with a documented exception process. No other document contradicts this; the SOC 2 summary references these same severity-based timelines without altering them.",
+    "abstained": false,
+    "answer": "Vulnerabilities rated critical are remediated within seven calendar days of triage. If a critical finding cannot be remediated within that window, an exception must be approved by the VP of Engineering & Security and recorded with a compensating control and a target date.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Vulnerabilities rated critical are remediated within seven calendar days of triage.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Vulnerabilities rated critical are remediated within seven calendar days of triage."
+      },
+      {
+        "claim": "If a critical finding cannot be remediated within that window, an exception must be approved by the VP of Engineering & Security.",
+        "essential": false,
+        "supported": true,
+        "sourceText": "If a critical finding cannot be remediated within that window, an exception must be approved by the VP of Engineering & Security"
+      },
+      {
+        "claim": "The exception must be recorded with a compensating control and a target date.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " and recorded with a compensating control and a target date."
+      }
+    ],
+    "removed": []
+  }
+}

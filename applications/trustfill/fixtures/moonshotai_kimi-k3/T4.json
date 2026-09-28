@@ -1,0 +1,41 @@
+{
+  "id": "T4",
+  "question": "Do you agree to notify affected customers of a confirmed breach within 24 hours?",
+  "expected": "ABSTAIN",
+  "draft": {
+    "sufficiency": "OUT_OF_SCOPE",
+    "answer": null,
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "Where an incident is determined to constitute a personal data breach affecting customer data, Meridian notifies affected customers **without undue delay, and in any event within 72 hours** of the determination."
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "Contractual notification commitments negotiated with individual customers may differ from the standard set out above. Any such commitment must be reviewed and approved by the Security Lead and by Legal before it is agreed, and once agreed is recorded in the customer's contract record so that the response process can honor it."
+      }
+    ],
+    "reasoning": "The question asks the company to agree to a contractual obligation — a 24-hour breach notification commitment — rather than to state an existing fact. Accepting an obligation or making a forward commitment is outside the scope of what can be answered from evidence documents. The evidence states the existing standard commitment (notification within 72 hours of determination) and explicitly states that any differing contractual notification commitment must be reviewed and approved by the Security Lead and by Legal before it is agreed, which confirms that only an authorized human can accept this obligation."
+  },
+  "verification": null,
+  "answer": {
+    "question": "Do you agree to notify affected customers of a confirmed breach within 24 hours?",
+    "sufficiency": "OUT_OF_SCOPE",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "Where an incident is determined to constitute a personal data breach affecting customer data, Meridian notifies affected customers **without undue delay, and in any event within 72 hours** of the determination."
+      },
+      {
+        "document": "incident-response-plan.md",
+        "quote": "Contractual notification commitments negotiated with individual customers may differ from the standard set out above. Any such commitment must be reviewed and approved by the Security Lead and by Legal before it is agreed, and once agreed is recorded in the customer's contract record so that the response process can honor it."
+      }
+    ],
+    "reasoning": "The question asks the company to agree to a contractual obligation — a 24-hour breach notification commitment — rather than to state an existing fact. Accepting an obligation or making a forward commitment is outside the scope of what can be answered from evidence documents. The evidence states the existing standard commitment (notification within 72 hours of determination) and explicitly states that any differing contractual notification commitment must be reviewed and approved by the Security Lead and by Legal before it is agreed, which confirms that only an authorized human can accept this obligation.",
+    "abstained": true,
+    "answer": null,
+    "trustScore": null,
+    "claims": [],
+    "removed": []
+  }
+}

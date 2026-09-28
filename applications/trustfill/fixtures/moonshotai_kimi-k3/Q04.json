@@ -1,0 +1,105 @@
+{
+  "id": "Q04",
+  "question": "How is encryption key material generated, stored, and rotated?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Encryption keys are managed through AWS Key Management Service (KMS). Key material is generated and stored within KMS and is not exportable. Customer-data encryption keys are rotated annually under an automatic rotation schedule, and key usage is logged to the audit trail. Keys in KMS protect AES-256 encryption of data at rest across the primary datastore, search index, object storage, and backups.",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Encryption keys are managed through AWS Key Management Service. Key material is generated and stored within KMS and is not exportable. Customer-data encryption keys are rotated annually under an automatic rotation schedule, and key usage is logged to the audit trail described in section 7."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Data at rest — the primary datastore, the search index, object storage, and backups — is encrypted with AES-256 using keys held in AWS Key Management Service."
+      }
+    ],
+    "reasoning": "The Information Security Policy (section 5) explicitly and directly answers all three parts of the question: key material is generated within AWS KMS, stored within KMS and not exportable, and customer-data encryption keys are rotated annually on an automatic schedule. The Architecture Overview corroborates that data-at-rest encryption keys are held in AWS KMS. The two documents are consistent with no conflict, so the evidence is sufficient."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Encryption keys are managed through AWS Key Management Service (KMS)",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Encryption keys are managed through AWS Key Management Service (KMS)."
+      },
+      {
+        "claim": "Key material is generated and stored within KMS and is not exportable",
+        "essential": true,
+        "supported": true,
+        "sourceText": " Key material is generated and stored within KMS and is not exportable."
+      },
+      {
+        "claim": "Customer-data encryption keys are rotated annually under an automatic rotation schedule",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customer-data encryption keys are rotated annually under an automatic rotation schedule"
+      },
+      {
+        "claim": "Key usage is logged to the audit trail",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and key usage is logged to the audit trail"
+      },
+      {
+        "claim": "Keys in KMS protect AES-256 encryption of data at rest across the primary datastore, search index, object storage, and backups",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Keys in KMS protect AES-256 encryption of data at rest across the primary datastore, search index, object storage, and backups."
+      }
+    ]
+  },
+  "answer": {
+    "question": "How is encryption key material generated, stored, and rotated?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "information-security-policy.md",
+        "quote": "Encryption keys are managed through AWS Key Management Service. Key material is generated and stored within KMS and is not exportable. Customer-data encryption keys are rotated annually under an automatic rotation schedule, and key usage is logged to the audit trail described in section 7."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Data at rest — the primary datastore, the search index, object storage, and backups — is encrypted with AES-256 using keys held in AWS Key Management Service."
+      }
+    ],
+    "reasoning": "The Information Security Policy (section 5) explicitly and directly answers all three parts of the question: key material is generated within AWS KMS, stored within KMS and not exportable, and customer-data encryption keys are rotated annually on an automatic schedule. The Architecture Overview corroborates that data-at-rest encryption keys are held in AWS KMS. The two documents are consistent with no conflict, so the evidence is sufficient.",
+    "abstained": false,
+    "answer": "Encryption keys are managed through AWS Key Management Service (KMS). Key material is generated and stored within KMS and is not exportable. Customer-data encryption keys are rotated annually under an automatic rotation schedule, and key usage is logged to the audit trail. Keys in KMS protect AES-256 encryption of data at rest across the primary datastore, search index, object storage, and backups.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Encryption keys are managed through AWS Key Management Service (KMS)",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Encryption keys are managed through AWS Key Management Service (KMS)."
+      },
+      {
+        "claim": "Key material is generated and stored within KMS and is not exportable",
+        "essential": true,
+        "supported": true,
+        "sourceText": " Key material is generated and stored within KMS and is not exportable."
+      },
+      {
+        "claim": "Customer-data encryption keys are rotated annually under an automatic rotation schedule",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customer-data encryption keys are rotated annually under an automatic rotation schedule"
+      },
+      {
+        "claim": "Key usage is logged to the audit trail",
+        "essential": false,
+        "supported": true,
+        "sourceText": ", and key usage is logged to the audit trail"
+      },
+      {
+        "claim": "Keys in KMS protect AES-256 encryption of data at rest across the primary datastore, search index, object storage, and backups",
+        "essential": false,
+        "supported": true,
+        "sourceText": " Keys in KMS protect AES-256 encryption of data at rest across the primary datastore, search index, object storage, and backups."
+      }
+    ],
+    "removed": []
+  }
+}

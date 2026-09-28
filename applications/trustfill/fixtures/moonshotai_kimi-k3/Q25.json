@@ -1,0 +1,49 @@
+{
+  "id": "Q25",
+  "question": "What is your recovery point objective (RPO) for regional failover?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Meridian's recovery point objective (RPO) for regional failover is 15 minutes.",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "The regional failover procedure targets a recovery time objective of 4 hours** and a recovery point objective of 15 minutes."
+      }
+    ],
+    "reasoning": "The Incident Response Plan (Section 6, Regional failover and recovery objectives) explicitly states a recovery point objective of 15 minutes for regional failover. No other document in the corpus states a different RPO. The architecture overview's mention of a 12-hour recovery time objective concerns RTO, not RPO, so there is no conflict on the RPO value; additionally, the architecture document itself defers to the Incident Response Plan where the two disagree."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian's recovery point objective (RPO) for regional failover is 15 minutes.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian's recovery point objective (RPO) for regional failover is 15 minutes."
+      }
+    ]
+  },
+  "answer": {
+    "question": "What is your recovery point objective (RPO) for regional failover?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "incident-response-plan.md",
+        "quote": "The regional failover procedure targets a recovery time objective of 4 hours** and a recovery point objective of 15 minutes."
+      }
+    ],
+    "reasoning": "The Incident Response Plan (Section 6, Regional failover and recovery objectives) explicitly states a recovery point objective of 15 minutes for regional failover. No other document in the corpus states a different RPO. The architecture overview's mention of a 12-hour recovery time objective concerns RTO, not RPO, so there is no conflict on the RPO value; additionally, the architecture document itself defers to the Incident Response Plan where the two disagree.",
+    "abstained": false,
+    "answer": "Meridian's recovery point objective (RPO) for regional failover is 15 minutes.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Meridian's recovery point objective (RPO) for regional failover is 15 minutes.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian's recovery point objective (RPO) for regional failover is 15 minutes."
+      }
+    ],
+    "removed": []
+  }
+}

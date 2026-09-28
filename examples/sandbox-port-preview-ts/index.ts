@@ -28,6 +28,10 @@ try {
   const { url } = await sandbox.previewUrl(PORT)
   console.log("preview:", url)
 
+  // The gateway mints this URL's ?pt_token=… into a cookie on first visit, so a
+  // client that sends its own Cookie header has to merge rather than replace it —
+  // overwriting signs you out of the preview while still holding a valid token.
+
   // Prove it's really public: fetch it from *here*, outside the VM.
   for (let i = 0; i < 10; i++) {
     await new Promise((r) => setTimeout(r, 1000))

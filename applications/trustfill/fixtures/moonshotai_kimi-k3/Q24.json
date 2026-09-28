@@ -1,0 +1,81 @@
+{
+  "id": "Q24",
+  "question": "Do you support SAML 2.0 single sign-on and SCIM provisioning?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Yes. Customers may enforce SAML 2.0 single sign-on against their own identity provider. SCIM-based user provisioning is additionally supported for enterprise-tier/enterprise customers.",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customers may enforce SAML 2.0 single sign-on against their own identity provider; enterprise customers may additionally provision users through SCIM."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Customers administering their own Meridian tenant may enforce SAML 2.0 single sign-on against their own identity provider, and enterprise-tier customers may additionally require SCIM-based provisioning."
+      }
+    ],
+    "reasoning": "Two independent evidence documents directly and consistently answer both parts of the question: SAML 2.0 SSO against the customer's own identity provider is supported for customers generally, and SCIM provisioning is supported with a restriction to enterprise-tier customers. The two statements are consistent, so there is no conflict."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "The overall answer is yes: both SAML 2.0 SSO and SCIM provisioning are supported (with SCIM limited to enterprise-tier customers).",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Customers may enforce SAML 2.0 single sign-on against their own identity provider.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customers may enforce SAML 2.0 single sign-on against their own identity provider."
+      },
+      {
+        "claim": "SCIM-based user provisioning is additionally supported for enterprise-tier/enterprise customers.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "SCIM-based user provisioning is additionally supported for enterprise-tier/enterprise customers."
+      }
+    ]
+  },
+  "answer": {
+    "question": "Do you support SAML 2.0 single sign-on and SCIM provisioning?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "Customers may enforce SAML 2.0 single sign-on against their own identity provider; enterprise customers may additionally provision users through SCIM."
+      },
+      {
+        "document": "information-security-policy.md",
+        "quote": "Customers administering their own Meridian tenant may enforce SAML 2.0 single sign-on against their own identity provider, and enterprise-tier customers may additionally require SCIM-based provisioning."
+      }
+    ],
+    "reasoning": "Two independent evidence documents directly and consistently answer both parts of the question: SAML 2.0 SSO against the customer's own identity provider is supported for customers generally, and SCIM provisioning is supported with a restriction to enterprise-tier customers. The two statements are consistent, so there is no conflict.",
+    "abstained": false,
+    "answer": "Yes. Customers may enforce SAML 2.0 single sign-on against their own identity provider. SCIM-based user provisioning is additionally supported for enterprise-tier/enterprise customers.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "The overall answer is yes: both SAML 2.0 SSO and SCIM provisioning are supported (with SCIM limited to enterprise-tier customers).",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Yes."
+      },
+      {
+        "claim": "Customers may enforce SAML 2.0 single sign-on against their own identity provider.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customers may enforce SAML 2.0 single sign-on against their own identity provider."
+      },
+      {
+        "claim": "SCIM-based user provisioning is additionally supported for enterprise-tier/enterprise customers.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "SCIM-based user provisioning is additionally supported for enterprise-tier/enterprise customers."
+      }
+    ],
+    "removed": []
+  }
+}

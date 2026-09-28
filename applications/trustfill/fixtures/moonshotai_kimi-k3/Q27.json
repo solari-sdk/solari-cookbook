@@ -1,0 +1,73 @@
+{
+  "id": "Q27",
+  "question": "Is Meridian certified to ISO/IEC 27001?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "No. Meridian does not currently hold ISO/IEC 27001 certification and has no committed timeline for pursuing it.",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian does not currently hold ISO/IEC 27001 certification, nor a HITRUST certification, nor a FedRAMP authorization, and has no committed timeline for pursuing any of them."
+      }
+    ],
+    "reasoning": "The SOC 2 report summary explicitly and unambiguously states that Meridian does not hold ISO/IEC 27001 certification. An explicit negative statement in the evidence constitutes a complete answer. No other document contradicts this."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Meridian is not certified to ISO/IEC 27001.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "No."
+      },
+      {
+        "claim": "Meridian does not currently hold ISO/IEC 27001 certification.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian does not currently hold ISO/IEC 27001 certification"
+      },
+      {
+        "claim": "Meridian has no committed timeline for pursuing ISO/IEC 27001 certification.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " and has no committed timeline for pursuing it"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Is Meridian certified to ISO/IEC 27001?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian does not currently hold ISO/IEC 27001 certification, nor a HITRUST certification, nor a FedRAMP authorization, and has no committed timeline for pursuing any of them."
+      }
+    ],
+    "reasoning": "The SOC 2 report summary explicitly and unambiguously states that Meridian does not hold ISO/IEC 27001 certification. An explicit negative statement in the evidence constitutes a complete answer. No other document contradicts this.",
+    "abstained": false,
+    "answer": "No. Meridian does not currently hold ISO/IEC 27001 certification and has no committed timeline for pursuing it.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Meridian is not certified to ISO/IEC 27001.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "No."
+      },
+      {
+        "claim": "Meridian does not currently hold ISO/IEC 27001 certification.",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian does not currently hold ISO/IEC 27001 certification"
+      },
+      {
+        "claim": "Meridian has no committed timeline for pursuing ISO/IEC 27001 certification.",
+        "essential": false,
+        "supported": true,
+        "sourceText": " and has no committed timeline for pursuing it"
+      }
+    ],
+    "removed": []
+  }
+}

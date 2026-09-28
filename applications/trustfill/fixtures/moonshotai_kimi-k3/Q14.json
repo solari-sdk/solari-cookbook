@@ -1,0 +1,117 @@
+{
+  "id": "Q14",
+  "question": "In which geographic regions is customer data stored?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "Customer data is stored on Amazon Web Services in exactly two production regions: us-east-1 (Northern Virginia) and eu-west-1 (Ireland). Each customer tenant is provisioned into exactly one of these regions at account creation, and no other regions are used. Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1, in which case all customer data (primary storage, search indices, backups, and derived aggregates) remains within the European Union for the life of the tenant.",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "The platform runs entirely on Amazon Web Services. There are two serving regions in production: **us-east-1** (Northern Virginia) and **eu-west-1** (Ireland). We do not operate in any other region, and customer data does not transit outside the region in which the tenant is provisioned except as described in section 6."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Each customer tenant is provisioned into exactly one region at the time of account creation. Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1, in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant."
+      }
+    ],
+    "reasoning": "The architecture overview directly states the two AWS regions where customer data is stored (us-east-1 and eu-west-1), confirms no other regions are used, and explains per-tenant provisioning and the EU data residency option. This is corroborated by the SOC 2 summary, which describes the platform 'as delivered from the us-east-1 and eu-west-1 regions', so there is no conflict. The question is answered by an existing fact in the evidence, not a forward commitment."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "Customer data is stored on Amazon Web Services",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customer data is stored on Amazon Web Services"
+      },
+      {
+        "claim": "Customer data is stored in exactly two production regions: us-east-1 (Northern Virginia) and eu-west-1 (Ireland)",
+        "essential": true,
+        "supported": true,
+        "sourceText": "in exactly two production regions: us-east-1 (Northern Virginia) and eu-west-1 (Ireland)"
+      },
+      {
+        "claim": "Each customer tenant is provisioned into exactly one of these regions at account creation",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Each customer tenant is provisioned into exactly one of these regions at account creation"
+      },
+      {
+        "claim": "No other regions are used",
+        "essential": true,
+        "supported": true,
+        "sourceText": "and no other regions are used"
+      },
+      {
+        "claim": "Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1"
+      },
+      {
+        "claim": "When provisioned into eu-west-1, all customer data (primary storage, search indices, backups, and derived aggregates) remains within the European Union for the life of the tenant",
+        "essential": false,
+        "supported": true,
+        "sourceText": "in which case all customer data (primary storage, search indices, backups, and derived aggregates) remains within the European Union for the life of the tenant"
+      }
+    ]
+  },
+  "answer": {
+    "question": "In which geographic regions is customer data stored?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "architecture-overview.md",
+        "quote": "The platform runs entirely on Amazon Web Services. There are two serving regions in production: **us-east-1** (Northern Virginia) and **eu-west-1** (Ireland). We do not operate in any other region, and customer data does not transit outside the region in which the tenant is provisioned except as described in section 6."
+      },
+      {
+        "document": "architecture-overview.md",
+        "quote": "Each customer tenant is provisioned into exactly one region at the time of account creation. Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1, in which case all customer data — primary storage, search indices, backups, and derived aggregates — remains within the European Union for the life of the tenant."
+      }
+    ],
+    "reasoning": "The architecture overview directly states the two AWS regions where customer data is stored (us-east-1 and eu-west-1), confirms no other regions are used, and explains per-tenant provisioning and the EU data residency option. This is corroborated by the SOC 2 summary, which describes the platform 'as delivered from the us-east-1 and eu-west-1 regions', so there is no conflict. The question is answered by an existing fact in the evidence, not a forward commitment.",
+    "abstained": false,
+    "answer": "Customer data is stored on Amazon Web Services in exactly two production regions: us-east-1 (Northern Virginia) and eu-west-1 (Ireland). Each customer tenant is provisioned into exactly one of these regions at account creation, and no other regions are used. Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1, in which case all customer data (primary storage, search indices, backups, and derived aggregates) remains within the European Union for the life of the tenant.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "Customer data is stored on Amazon Web Services",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Customer data is stored on Amazon Web Services"
+      },
+      {
+        "claim": "Customer data is stored in exactly two production regions: us-east-1 (Northern Virginia) and eu-west-1 (Ireland)",
+        "essential": true,
+        "supported": true,
+        "sourceText": "in exactly two production regions: us-east-1 (Northern Virginia) and eu-west-1 (Ireland)"
+      },
+      {
+        "claim": "Each customer tenant is provisioned into exactly one of these regions at account creation",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Each customer tenant is provisioned into exactly one of these regions at account creation"
+      },
+      {
+        "claim": "No other regions are used",
+        "essential": true,
+        "supported": true,
+        "sourceText": "and no other regions are used"
+      },
+      {
+        "claim": "Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1",
+        "essential": false,
+        "supported": true,
+        "sourceText": "Customers on the Business and Enterprise tiers may elect provisioning into eu-west-1"
+      },
+      {
+        "claim": "When provisioned into eu-west-1, all customer data (primary storage, search indices, backups, and derived aggregates) remains within the European Union for the life of the tenant",
+        "essential": false,
+        "supported": true,
+        "sourceText": "in which case all customer data (primary storage, search indices, backups, and derived aggregates) remains within the European Union for the life of the tenant"
+      }
+    ],
+    "removed": []
+  }
+}

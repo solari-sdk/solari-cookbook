@@ -1,0 +1,73 @@
+{
+  "id": "Q28",
+  "question": "Can the platform be used to process protected health information under HIPAA?",
+  "expected": "ANSWER",
+  "draft": {
+    "sufficiency": "SUFFICIENT",
+    "answer": "No. Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform; this restriction is stated in the acceptable use terms.",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform. This restriction is stated in the acceptable use terms."
+      }
+    ],
+    "reasoning": "The evidence directly and unambiguously answers the question in the negative: Meridian is not a HIPAA covered entity or business associate and prohibits protected health information on the platform. No other evidence contradicts this, so the answer is a complete negative."
+  },
+  "verification": {
+    "claims": [
+      {
+        "claim": "The platform cannot be used to process protected health information under HIPAA",
+        "essential": true,
+        "supported": true,
+        "sourceText": "No."
+      },
+      {
+        "claim": "Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform"
+      },
+      {
+        "claim": "This restriction is stated in the acceptable use terms",
+        "essential": false,
+        "supported": true,
+        "sourceText": "; this restriction is stated in the acceptable use terms"
+      }
+    ]
+  },
+  "answer": {
+    "question": "Can the platform be used to process protected health information under HIPAA?",
+    "sufficiency": "SUFFICIENT",
+    "citations": [
+      {
+        "document": "soc2-scope-summary.md",
+        "quote": "Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform. This restriction is stated in the acceptable use terms."
+      }
+    ],
+    "reasoning": "The evidence directly and unambiguously answers the question in the negative: Meridian is not a HIPAA covered entity or business associate and prohibits protected health information on the platform. No other evidence contradicts this, so the answer is a complete negative.",
+    "abstained": false,
+    "answer": "No. Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform; this restriction is stated in the acceptable use terms.",
+    "trustScore": 1,
+    "claims": [
+      {
+        "claim": "The platform cannot be used to process protected health information under HIPAA",
+        "essential": true,
+        "supported": true,
+        "sourceText": "No."
+      },
+      {
+        "claim": "Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform",
+        "essential": true,
+        "supported": true,
+        "sourceText": "Meridian is not a HIPAA covered entity or business associate and does not accept protected health information onto the platform"
+      },
+      {
+        "claim": "This restriction is stated in the acceptable use terms",
+        "essential": false,
+        "supported": true,
+        "sourceText": "; this restriction is stated in the acceptable use terms"
+      }
+    ],
+    "removed": []
+  }
+}
