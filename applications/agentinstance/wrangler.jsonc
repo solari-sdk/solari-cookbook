@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "solari-agentinstance",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-01",
+  // The SDK's Node fallback imports `ws`; nodejs_compat lets that bundle. On
+  // Workers the SDK uses the runtime's own WebSocket and never loads it.
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": {
+    "bindings": [{ "name": "AGENT", "class_name": "Agent" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Agent"] }],
+  "observability": { "enabled": true }
+}

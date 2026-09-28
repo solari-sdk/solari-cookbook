@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [agentinstance](agentinstance) | TypeScript | A coding agent per Durable Object: file a task, close the laptop, get a PR — work runs in a Solari sandbox |

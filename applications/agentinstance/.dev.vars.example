@@ -1,0 +1,10 @@
+# Solari — https://console.getsolari.com
+SOLARI_API_KEY=slr_live_...
+# A GitHub token that can push branches and open pull requests on the repos
+# you'll give the agent (a fine-grained token with Contents + Pull requests: write).
+GITHUB_TOKEN=github_pat_...
+# How Claude Code authenticates inside the sandbox. One of:
+CLAUDE_CODE_OAUTH_TOKEN=     # `claude setup-token` — bills your Claude subscription
+ANTHROPIC_API_KEY=           # or an API key — bills API credit
+# Bearer token callers must send. Anyone who has this can spend all of the above.
+AGENT_TOKEN=pick-a-long-random-string

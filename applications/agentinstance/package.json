@@ -1,0 +1,22 @@
+{
+  "name": "solari-agentinstance",
+  "private": true,
+  "type": "module",
+  "description": "A coding agent per Durable Object: file a task, close the laptop, get a pull request. Work runs in a Solari sandbox.",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solarisdk/sdk": "^0.1.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260903.1",
+    "@types/node": "^22.20.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "wrangler": "^4.20.0"
+  }
+}
