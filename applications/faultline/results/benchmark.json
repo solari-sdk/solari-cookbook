@@ -1,0 +1,80 @@
+{
+  "experiment_id": "exp-bench-1790630463",
+  "seed": 42,
+  "scenarios": [
+    "wrong-owner"
+  ],
+  "metrics_by_strategy": {
+    "Linear": {
+      "probes_count": 18.0,
+      "localization_time_ms": 21.37,
+      "forks_count": 0.0,
+      "snapshots_count": 25.0,
+      "verification_time_ms": 21.29,
+      "runs_evaluated": 1
+    },
+    "Binary": {
+      "probes_count": 6.0,
+      "localization_time_ms": 1.15,
+      "forks_count": 0.0,
+      "snapshots_count": 25.0,
+      "verification_time_ms": 1.14,
+      "runs_evaluated": 1
+    },
+    "Parallel": {
+      "probes_count": 11.0,
+      "localization_time_ms": 3.16,
+      "forks_count": 5.0,
+      "snapshots_count": 25.0,
+      "verification_time_ms": 0.76,
+      "runs_evaluated": 1
+    },
+    "Adaptive": {
+      "probes_count": 4.0,
+      "localization_time_ms": 0.67,
+      "forks_count": 0.0,
+      "snapshots_count": 25.0,
+      "verification_time_ms": 0.66,
+      "runs_evaluated": 1
+    }
+  },
+  "cost_by_strategy": {
+    "Linear": {
+      "original_execution_cost": 0.0012,
+      "failure_diagnosis_cost": 0.0034,
+      "counterfactual_replay_cost": 0.0004,
+      "verification_cost": 0.00036,
+      "total_recovery_cost": 0.00536,
+      "recovery_overhead_pct": 346.67,
+      "cost_status": "ESTIMATED"
+    },
+    "Binary": {
+      "original_execution_cost": 0.0012,
+      "failure_diagnosis_cost": 0.0028,
+      "counterfactual_replay_cost": 0.0004,
+      "verification_cost": 0.00012,
+      "total_recovery_cost": 0.00452,
+      "recovery_overhead_pct": 276.67,
+      "cost_status": "ESTIMATED"
+    },
+    "Parallel": {
+      "original_execution_cost": 0.0012,
+      "failure_diagnosis_cost": 0.00305,
+      "counterfactual_replay_cost": 0.0014,
+      "verification_cost": 0.00022,
+      "total_recovery_cost": 0.00587,
+      "recovery_overhead_pct": 389.17,
+      "cost_status": "ESTIMATED"
+    },
+    "Adaptive": {
+      "original_execution_cost": 0.0012,
+      "failure_diagnosis_cost": 0.0027,
+      "counterfactual_replay_cost": 0.0004,
+      "verification_cost": 8e-05,
+      "total_recovery_cost": 0.00438,
+      "recovery_overhead_pct": 265.0,
+      "cost_status": "ESTIMATED"
+    }
+  },
+  "timestamp": 1790630463.8657649
+}

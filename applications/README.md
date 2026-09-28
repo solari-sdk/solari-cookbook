@@ -39,4 +39,5 @@ variable it reads and nothing else.
 
 | Application | Language | What it does |
 | --- | --- | --- |
+| [faultline](faultline) | Python | Time-travel debugger and cost-aware evaluation system for long-running AI agents |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |

@@ -1,0 +1,583 @@
+[
+  {
+    "case_id": "case-fl-cli-001-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-CLI-001",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-CLI-001-step-16",
+    "first_bad_checkpoint_id": "chk-FL-CLI-001-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-CLI-001-step-16",
+      "to_checkpoint_id": "chk-FL-CLI-001-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-CLI-001-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790612413.14995
+  },
+  {
+    "case_id": "case-fl-014-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-014",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-014-step-16",
+    "first_bad_checkpoint_id": "chk-FL-014-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-014-step-16",
+      "to_checkpoint_id": "chk-FL-014-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-014-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary (invariant: lead_1_owner_matches_expected)"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790624584.7882442
+  },
+  {
+    "case_id": "case-fl-001-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-001",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-001-step-16",
+    "first_bad_checkpoint_id": "chk-FL-001-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-001-step-16",
+      "to_checkpoint_id": "chk-FL-001-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-001-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary (invariant: lead_1_owner_matches_expected)"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790626321.7901056
+  },
+  {
+    "case_id": "case-fl-004-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-004",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-004-step-16",
+    "first_bad_checkpoint_id": "chk-FL-004-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-004-step-16",
+      "to_checkpoint_id": "chk-FL-004-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-004-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary (invariant: lead_1_owner_matches_expected)"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790627124.2868886
+  },
+  {
+    "case_id": "case-fl-005-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-005",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-005-step-16",
+    "first_bad_checkpoint_id": "chk-FL-005-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-005-step-16",
+      "to_checkpoint_id": "chk-FL-005-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-005-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary (invariant: lead_1_owner_matches_expected)"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790628261.8653853
+  },
+  {
+    "case_id": "case-fl-006-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-006",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-006-step-16",
+    "first_bad_checkpoint_id": "chk-FL-006-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-006-step-16",
+      "to_checkpoint_id": "chk-FL-006-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-006-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary (invariant: lead_1_owner_matches_expected)"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790628777.1720138
+  },
+  {
+    "case_id": "case-fl-002-wrong-owner",
+    "scenario": "wrong-owner",
+    "original_run_id": "FL-002",
+    "fault_boundary_step": 17,
+    "last_good_checkpoint_id": "chk-FL-002-step-16",
+    "first_bad_checkpoint_id": "chk-FL-002-step-17",
+    "failed_invariants": [
+      "lead_1_owner_matches_expected"
+    ],
+    "state_diff": {
+      "from_checkpoint_id": "chk-FL-002-step-16",
+      "to_checkpoint_id": "chk-FL-002-step-17",
+      "created_records": [],
+      "deleted_records": [],
+      "changed_records": [
+        {
+          "record_type": "Lead",
+          "record_id": 1,
+          "change_type": "changed",
+          "field_changes": [
+            {
+              "field_name": "owner",
+              "old_value": "Alice",
+              "new_value": "Bob"
+            }
+          ]
+        }
+      ]
+    },
+    "repair_action": {
+      "target_checkpoint_id": "chk-FL-002-step-16",
+      "target_step_number": 17,
+      "fix_type": "assign_owner",
+      "parameters": {
+        "lead_id": 1,
+        "owner": "Alice"
+      },
+      "description": "Assign owner to Alice at step boundary (invariant: lead_1_owner_matches_expected)"
+    },
+    "repaired_result": {
+      "passed": true,
+      "failed_invariants": [],
+      "all_invariants": [
+        {
+          "name": "lead_1_owner_matches_expected",
+          "passed": true,
+          "expected": "Alice",
+          "actual": "Alice",
+          "message": "Qualified lead 1 owner must be Alice"
+        },
+        {
+          "name": "lead_1_status_is_qualified",
+          "passed": true,
+          "expected": "qualified",
+          "actual": "qualified",
+          "message": "Lead 1 status must not be degraded to contacted"
+        },
+        {
+          "name": "lead_1_company_normalized",
+          "passed": true,
+          "expected": "Acme Corp",
+          "actual": "Acme Corp",
+          "message": "Qualified lead 1 company must be normalized Acme Corp"
+        },
+        {
+          "name": "single_outbound_message_per_lead",
+          "passed": true,
+          "expected": "0 duplicates",
+          "actual": "0 duplicates (leads: [])",
+          "message": "Each lead must have at most 1 outbound message"
+        },
+        {
+          "name": "message_recipient_matches_lead_email",
+          "passed": true,
+          "expected": "0 mismatches",
+          "actual": "0 mismatches",
+          "message": "Outbound message recipient must match lead email"
+        }
+      ]
+    },
+    "timestamp": 1790630464.043594
+  }
+]

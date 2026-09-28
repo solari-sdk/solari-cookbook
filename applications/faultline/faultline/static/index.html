@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fault Line — Time-Travel Debugger & Evaluation Substrate</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo-icon">⚡</div>
+        <div class="brand-title">
+          <h2>Fault Line</h2>
+          <span class="subtext">Solari Time-Travel Debugger</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <span class="nav-num">01</span> Overview
+        </button>
+        <button class="nav-item" data-tab="run-detail">
+          <span class="nav-num">02</span> Lineage
+        </button>
+        <button class="nav-item" data-tab="fault-view">
+          <span class="nav-num">03</span> Localization
+        </button>
+        <button class="nav-item" data-tab="diff-view">
+          <span class="nav-num">04</span> State Diff
+        </button>
+        <button class="nav-item" data-tab="repair-view">
+          <span class="nav-num">05</span> Repair
+        </button>
+        <button class="nav-item" data-tab="benchmarks">
+          <span class="nav-num">06</span> Benchmarks
+        </button>
+        <button class="nav-item" data-tab="regression">
+          <span class="nav-num">07</span> Cases
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="solari-badge">
+          <span class="dot live"></span> Solari Substrate Connected
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-title">
+          <h1 id="page-title">Dashboard Overview</h1>
+          <p id="page-subtitle">Real-time status of agent runs, fault localization, and counterfactual repairs.</p>
+        </div>
+        <div class="header-actions">
+          <select id="scenario-selector" class="select-input">
+            <option value="wrong-owner">Fault: Wrong Owner (Alice → Bob)</option>
+            <option value="wrong-status">Fault: Wrong Status (Qualified → Contacted)</option>
+            <option value="duplicate-retry">Fault: Duplicate Retry (Double Send)</option>
+            <option value="partial-update">Fault: Partial Update (Company Wiped)</option>
+            <option value="stale-state">Fault: Stale State Overwrite</option>
+          </select>
+          <button id="btn-run-agent" class="btn btn-primary">
+            🚀 Run Agent Workload
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD OVERVIEW -->
+      <section id="tab-dashboard" class="tab-content active">
+        <!-- Compact Hero Section -->
+        <div class="hero-banner">
+          <div class="hero-header">
+            <div>
+              <span class="hero-label">SOLARI TIME-TRAVEL SUBSTRATE</span>
+              <h1 class="hero-headline">FIND WHERE YOUR AGENT <span class="text-accent">WENT WRONG.</span></h1>
+              <p class="hero-subtext">Time-travel debugging and cost-aware evaluation substrate for long-running AI agents.</p>
+            </div>
+            <div class="scroll-cue">
+              <span>INVESTIGATION WORKSPACE ↓</span>
+            </div>
+          </div>
+
+          <div class="hero-run-card" id="hero-run-card">
+            <div class="run-card-header">
+              <div>
+                <span class="mono-run-id" id="hero-run-id">ACTIVE RUN: EXECUTION #FL-001</span>
+              </div>
+              <div class="status-pills">
+                <span class="pill danger" id="hero-verifier-status">VERIFIER FAIL ✕</span>
+              </div>
+            </div>
+            <div class="run-card-metrics">
+              <div class="hero-metric">
+                <span class="val">24</span>
+                <span class="lbl">Total Steps</span>
+              </div>
+              <div class="hero-metric">
+                <span class="val" style="color: var(--color-fail)" id="hero-fault-step">Step 17</span>
+                <span class="lbl">First Invalid State</span>
+              </div>
+              <div class="hero-metric">
+                <span class="val" id="hero-scenario-name">wrong-owner</span>
+                <span class="lbl">Fault Scenario</span>
+              </div>
+              <div class="hero-metric">
+                <span class="val" id="hero-backend-name">Solari / Offline</span>
+                <span class="lbl">Substrate</span>
+              </div>
+            </div>
+
+            <!-- Flow Diagram in Hero -->
+            <div class="execution-flow-diagram">
+              <div class="flow-title">Execution Lineage & Divergence Preview</div>
+              <div class="flow-track-wrapper">
+                <div class="flow-track">
+                  <div class="flow-node pass">
+                    <span class="node-num">S01</span>
+                    <div class="node-dot"></div>
+                  </div>
+                  <div class="flow-line pass"></div>
+                  <div class="flow-node pass">
+                    <span class="node-num">S05</span>
+                    <div class="node-dot"></div>
+                  </div>
+                  <div class="flow-line pass"></div>
+                  <div class="flow-node pass">
+                    <span class="node-num">S10</span>
+                    <div class="node-dot"></div>
+                  </div>
+                  <div class="flow-line pass"></div>
+                  <div class="flow-node pass">
+                    <span class="node-num">S16</span>
+                    <div class="node-dot"></div>
+                    <span class="node-tag success">GOOD</span>
+                  </div>
+                  <div class="flow-line fail"></div>
+                  <div class="flow-node divergence">
+                    <span class="node-num">S17</span>
+                    <div class="node-dot"></div>
+                    <span class="node-tag danger">FIRST INVALID STATE</span>
+                  </div>
+                  <div class="flow-line fail"></div>
+                  <div class="flow-node">
+                    <span class="node-num">S24</span>
+                    <div class="node-dot"></div>
+                    <span class="node-tag danger">FAIL ✕</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="card-icon">⚡</div>
+            <div class="card-data">
+              <span class="metric-value" id="stat-total-runs">0</span>
+              <span class="metric-label">Total Agent Runs</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="card-icon" style="color: var(--color-fail)">❌</div>
+            <div class="card-data">
+              <span class="metric-value" id="stat-failed-runs" style="color: var(--color-fail)">0</span>
+              <span class="metric-label">Failed Verifications</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="card-icon" style="color: var(--color-warn)">📍</div>
+            <div class="card-data">
+              <span class="metric-value" id="stat-localized" style="color: var(--color-warn)">0</span>
+              <span class="metric-label">Localized Faults</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="card-icon" style="color: var(--color-pass)">✓</div>
+            <div class="card-data">
+              <span class="metric-value" id="stat-repaired" style="color: var(--color-pass)">0</span>
+              <span class="metric-label">Verified Repairs</span>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="card-icon" style="color: var(--color-info)">⏱️</div>
+            <div class="card-data">
+              <span class="metric-value" id="stat-avg-time">N/A</span>
+              <span class="metric-label">Avg Search Time</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Recent Agent Workload Runs</h3>
+            <span class="tag info">Interactive Evaluation</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Run ID</th>
+                  <th>Scenario</th>
+                  <th>Agent Status</th>
+                  <th>Verifier Status</th>
+                  <th>Steps</th>
+                  <th>First Invalid State</th>
+                  <th>Duration</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="runs-table-body">
+                <tr>
+                  <td colspan="8" class="text-muted">No runs recorded yet. Click "Run Agent Workload" to execute a workload.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: RUN DETAIL / TIMELINE -->
+      <section id="tab-run-detail" class="tab-content">
+        <div class="hero-run-card" id="run-meta-banner">
+          <div class="run-card-header">
+            <div>
+              <h2 id="current-run-id" class="mono-run-id">RUN #FL-001</h2>
+              <span id="current-run-scenario" class="tag warning">Scenario: Wrong Owner</span>
+            </div>
+            <div class="status-pills">
+              <span id="current-backend-tag" class="pill info">Backend: Offline Simulator</span>
+              <span id="current-agent-status" class="pill success">Agent: DONE</span>
+              <span id="current-verifier-status" class="pill danger">Verifier: FAILED</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Execution Lineage Timeline</h3>
+            <p class="panel-desc">Click any checkpoint step to inspect canonical state digests and action details.</p>
+          </div>
+          <div class="timeline-visual" id="timeline-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div id="checkpoint-drawer" class="panel drawer hidden">
+          <div class="panel-header">
+            <h3 id="chk-drawer-title">Checkpoint Details</h3>
+            <button id="btn-close-drawer" class="btn btn-sm btn-secondary">✕ Close</button>
+          </div>
+          <div class="drawer-content" id="chk-drawer-content">
+            <!-- JSON details rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: FAULT LOCALIZATION VIEW -->
+      <section id="tab-fault-view" class="tab-content">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Fault Boundary Localization</h3>
+              <p class="panel-desc">Pinpoint the exact execution step where state invariants first failed.</p>
+            </div>
+            <div class="header-actions">
+              <label style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-secondary)">Strategy:</label>
+              <select id="localization-strategy-select" class="select-input sm">
+                <option value="Binary">Binary Search (O(log N))</option>
+                <option value="Linear">Linear Search (O(N))</option>
+                <option value="Parallel">Parallel Search (Concurrent Bounded)</option>
+                <option value="Adaptive">Adaptive Search (Entropy-guided)</option>
+              </select>
+              <button id="btn-trigger-diagnose" class="btn btn-secondary">
+                🔍 Run Fault Localization
+              </button>
+            </div>
+          </div>
+
+          <!-- PRIMARY RESULT SUMMARY (Surfaced immediately below header) -->
+          <div class="panel-section" id="strategy-result-details">
+            <!-- Strategy metrics rendered dynamically by JS -->
+          </div>
+
+          <div class="fault-boundary-container" id="fault-boundary-visual">
+            <div class="boundary-box good">
+              <div class="box-label">LAST KNOWN GOOD STATE</div>
+              <div class="box-step" id="lkg-step-number" style="color: var(--color-pass)">Step 16</div>
+              <div class="box-digest" id="lkg-digest">digest: 8f92a11b...</div>
+              <div class="pill success">Verifier PASS ✓</div>
+            </div>
+            <div class="boundary-divider">
+              <div class="divider-badge">FAULT BOUNDARY</div>
+            </div>
+            <div class="boundary-box bad">
+              <div class="box-label">FIRST OBSERVED INVALID STATE</div>
+              <div class="box-step" id="foi-step-number" style="color: var(--color-fail)">Step 17</div>
+              <div class="box-digest" id="foi-digest">digest: 3c72df91...</div>
+              <div class="pill danger">Verifier FAIL ✕</div>
+            </div>
+          </div>
+
+          <!-- Visual Search Process Container -->
+          <div class="search-narrowing-visual">
+            <div class="flow-title">Search Space Narrowing Visualization</div>
+            <div class="narrowing-step">
+              <span style="color: var(--text-secondary)">Probe 1 (Step 24):</span> <span style="color: var(--color-fail)">Verifier FAIL ✕</span> — Fault exists in range [Step 01 - Step 24]
+            </div>
+            <div class="narrowing-step">
+              <span style="color: var(--text-secondary)">Probe 2 (Step 12):</span> <span style="color: var(--color-pass)">Verifier PASS ✓</span> — Narrowed range to [Step 13 - Step 24]
+            </div>
+            <div class="narrowing-step">
+              <span style="color: var(--text-secondary)">Probe 3 (Step 18):</span> <span style="color: var(--color-fail)">Verifier FAIL ✕</span> — Narrowed range to [Step 13 - Step 18]
+            </div>
+            <div class="narrowing-step" style="border-left: 3px solid var(--accent-orange); padding-left: 0.5rem">
+              <span style="color: var(--accent-orange-bright); font-weight:700">FOUND BOUNDARY (Step 17):</span> First Observed Invalid State localized in 3 probes.
+            </div>
+          </div>
+
+          <div class="causality-callout">
+            <div style="font-size: 1.3rem; color: var(--accent-orange)">💡</div>
+            <div>
+              <strong style="color: var(--text-primary)">Causality Distinction:</strong> Step 17 is currently identified as the <em>First Observed Invalid State</em>. It will only be marked as a <em>Validated Causal Candidate</em> after counterfactual repair and replay confirm that correcting this exact boundary resolves the failure.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: STATE DIFF VIEW -->
+      <section id="tab-diff-view" class="tab-content">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>State Difference Engine</h3>
+            <button id="btn-fetch-diff" class="btn btn-secondary">
+              🔄 Compare Step Boundary States
+            </button>
+          </div>
+          <div class="diff-view-grid" id="diff-container">
+            <div class="diff-column">
+              <h4 id="diff-before-title">BEFORE (Step 16 — Last Known Good)</h4>
+              <div class="diff-card" id="diff-before-card">
+                <!-- JS populated -->
+              </div>
+            </div>
+            <div class="diff-column">
+              <h4 id="diff-after-title">AFTER (Step 17 — First Observed Invalid)</h4>
+              <div class="diff-card" id="diff-after-card">
+                <!-- JS populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: COUNTERFACTUAL REPAIR VIEW -->
+      <section id="tab-repair-view" class="tab-content">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Counterfactual Repair & Replay</h3>
+            <button id="btn-execute-repair" class="btn btn-primary">
+              🔧 Fork & Apply Repair
+            </button>
+          </div>
+
+          <!-- Counterfactual Fork Centerpiece Diagram -->
+          <div class="repair-branch-visual">
+            <div class="branch-col original">
+              <div class="branch-header danger">Original Failing Execution</div>
+              <div class="branch-node">Step 16 (Known Good)</div>
+              <div class="branch-arrow">↓</div>
+              <div class="branch-node" style="color: var(--color-fail); border-color: var(--color-fail)">Step 17 (Fault Injected)</div>
+              <div class="branch-arrow">↓</div>
+              <div class="branch-node" style="color: var(--color-fail)">Step 24 (Verifier FAIL ✕)</div>
+            </div>
+            <div class="branch-split">
+              <span>Fork Solari Snapshot</span>
+              <div class="fork-curve">➔</div>
+            </div>
+            <div class="branch-col repaired">
+              <div class="branch-header success">Counterfactual Repair Branch</div>
+              <div class="branch-node">Step 16 (Fork Snapshot)</div>
+              <div class="branch-arrow">↓</div>
+              <div class="branch-node action" id="repair-action-label">Apply Fix: Assign Owner = Alice</div>
+              <div class="branch-arrow">↓</div>
+              <div class="branch-node" style="color: var(--color-pass); border-color: var(--color-pass)" id="repair-replay-status">Replay Forward -> Final Verification PASS ✓</div>
+            </div>
+          </div>
+
+          <div class="repair-results-box" id="repair-results-panel">
+            <p class="text-muted">Click "Fork & Apply Repair" to execute counterfactual repair replay.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: BENCHMARKS & COST DASHBOARD -->
+      <section id="tab-benchmarks" class="tab-content">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Debugging Strategy Benchmarks</h3>
+            <button id="btn-run-benchmark" class="btn btn-primary">
+              📊 Run Full Benchmark Suite
+            </button>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-card">
+              <h4>Localization Probes by Strategy</h4>
+              <div class="chart-wrapper">
+                <canvas id="chart-probes"></canvas>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h4>Localization Latency (ms)</h4>
+              <div class="chart-wrapper">
+                <canvas id="chart-latency"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h4 style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 1rem">Strategy Comparison Matrix</h4>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Strategy</th>
+                    <th>Avg Probes</th>
+                    <th>Localization Latency</th>
+                    <th>Solari Forks</th>
+                    <th>Solari Snapshots</th>
+                    <th>Total Cost ($)</th>
+                    <th>Recovery Overhead</th>
+                  </tr>
+                </thead>
+                <tbody id="benchmark-matrix-body">
+                  <tr>
+                    <td colspan="7" class="text-muted">Click "Run Full Benchmark Suite" to compute performance metrics.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: REGRESSION CASES UI -->
+      <section id="tab-regression" class="tab-content">
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Saved Regression Test Cases</h3>
+            <button id="btn-refresh-cases" class="btn btn-secondary">
+              🔄 Refresh List
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Case ID</th>
+                  <th>Scenario</th>
+                  <th>Original Run ID</th>
+                  <th>Fault Boundary</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="cases-table-body">
+                <tr>
+                  <td colspan="6" class="text-muted">No saved regression cases yet. Repairs automatically generate regression test cases.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
