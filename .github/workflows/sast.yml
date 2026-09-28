@@ -1,0 +1,47 @@
+name: SAST
+
+# Modelled on pinetree-desktop's sast.yml, which passes Secureframe's
+# "Code static application security testing" check. Deliberately the same
+# shape rather than a clean-room workflow: the compliance scanner is matching
+# on something we cannot query per-repo, so a known-passing shape is the
+# likelier fit.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # Weekly re-scan of the default branch. Compliance wants RECURRING evidence
+    # even in a quiet week, not only push-triggered runs.
+    - cron: "37 9 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sast-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Two steps, one real gate: "Report" is advisory and never blocks, so a reader
+# sees untriaged WARNING/INFO findings too; "Gate" fails on ERROR only.
+# This repo is example/tutorial code -- if the gate goes red on a registry
+# update, triage it (fix, or suppress inline with a reason a reviewer sees in
+# the diff) rather than loosening the gate.
+jobs:
+  semgrep:
+    name: Semgrep (static analysis)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install semgrep
+        run: python -m pip install --quiet semgrep==1.172.0
+
+      - name: Report (all severities, advisory)
+        run: semgrep scan --config p/default --config p/secrets
+
+      - name: Gate (ERROR severity blocks)
+        run: semgrep scan --config p/default --config p/secrets --severity ERROR --error

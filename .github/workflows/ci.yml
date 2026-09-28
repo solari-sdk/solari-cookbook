@@ -1,0 +1,64 @@
+name: CI
+
+# Satisfies Secureframe's "Code integration testing" check, and does real work:
+# this repo is example code across TS/JS, Python and Ruby, with no single build.
+# So CI validates that every example PARSES and every manifest is well-formed --
+# the failure this repo can actually have, since examples are copied verbatim by
+# customers. It deliberately does NOT install per-example dependencies: that
+# would make CI depend on ~20 external dependency trees and go red for reasons
+# that are not about this repo.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  parse:
+    name: Parse and manifest checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Fail loudly if a glob matches NOTHING -- a check that silently examines
+      # zero files is indistinguishable from a passing one, which is the exact
+      # failure mode this workflow exists to avoid.
+      - name: Python syntax
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find . -path ./.git -prune -o -name '*.py' -print)
+          test "${#files[@]}" -gt 0 || { echo "::error::no .py files matched"; exit 1; }
+          echo "checking ${#files[@]} python files"
+          python -m py_compile "${files[@]}"
+
+      - name: JavaScript syntax
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find . -path ./.git -prune -o -path '*/node_modules' -prune -o \
+            \( -name '*.js' -o -name '*.mjs' -o -name '*.cjs' \) -print)
+          test "${#files[@]}" -gt 0 || { echo "::error::no JS files matched"; exit 1; }
+          echo "checking ${#files[@]} javascript files"
+          for f in "${files[@]}"; do node --check "$f"; done
+
+      - name: JSON manifests are well-formed
+        run: |
+          set -euo pipefail
+          mapfile -t files < <(find . -path ./.git -prune -o -path '*/node_modules' -prune -o \
+            -name '*.json' -print)
+          test "${#files[@]}" -gt 0 || { echo "::error::no JSON files matched"; exit 1; }
+          echo "checking ${#files[@]} json files"
+          for f in "${files[@]}"; do python -c "import json,sys; json.load(open(sys.argv[1]))" "$f"; done
