@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [wsp](wsp) | TypeScript | Seal your own computer into an image on Solari, fork a workspace from it in seconds, run coding agents inside as threads |

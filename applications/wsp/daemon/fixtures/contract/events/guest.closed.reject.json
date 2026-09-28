@@ -1,0 +1,15 @@
+[
+  {
+    "type": "guest.closed"
+  },
+  {
+    "type": "guest.closed",
+    "session": "g1",
+    "error": 5
+  },
+  {
+    "type": "guest.closed",
+    "session": "g1",
+    "machineId": 1
+  }
+]

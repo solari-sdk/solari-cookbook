@@ -1,0 +1,48 @@
+/* Graphite: neutral black with a black sidebar. A page with no theme mark draws it on the dark side. */
+[data-theme="graphite"],
+:root.dark:not([data-theme]) {
+  color-scheme: dark;
+  --background: oklch(14.5% 0 none);
+  --foreground: oklch(97% 0 none);
+  --card: color-mix(in srgb, var(--background) 97%, #fff);
+  --muted: color-mix(in oklab, #fff 3%, transparent);
+  --muted-foreground: color-mix(in srgb, oklch(55.6% 0 none) 90%, #fff);
+  --accent: color-mix(in oklab, #fff 4%, transparent);
+  --accent-foreground: var(--foreground);
+  --primary: oklch(0.571 0.21 264);
+  --primary-foreground: #fff;
+  /* Mixed into the ground rather than laid over it, so an edge over the window's material reads as a line. */
+  --border: color-mix(in srgb, #fff 10%, var(--background));
+  --input: color-mix(in oklab, #fff 8%, transparent);
+  --success: var(--color-emerald-500);
+  --warning: var(--color-amber-500);
+  --error-foreground: oklch(70.4% 0.191 22.216);
+  --warning-foreground: oklch(75% 0.183 55.934);
+  --success-foreground: oklch(76.5% 0.177 163.223);
+  --info-foreground: oklch(70.7% 0.165 254.624);
+  --update-foreground: oklch(70.7% 0.165 254.624);
+  --sidebar: #000;
+  --sidebar-foreground: #f1f3f7;
+  --sidebar-muted-foreground: #a3a3a3;
+  --sidebar-whisper: var(--sidebar-muted-foreground);
+  --sidebar-control-surface: #0a0a0a;
+  /* Hover sits under the selected row's 7 percent, so the one lifted row stays the lifted one under the pointer. */
+  --sidebar-row-hover: color-mix(in srgb, var(--sidebar-foreground) 4%, transparent);
+  --sidebar-row-active: color-mix(in srgb, var(--sidebar-foreground) 11%, transparent);
+  --sidebar-row-selected: color-mix(in srgb, var(--sidebar-foreground) 7%, transparent);
+  --sidebar-row-edge: transparent;
+  --sidebar-rail: rgb(255 255 255 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #000;
+  --sidebar-card: #000;
+  --sidebar-fill: #0a0a0a;
+  --sidebar-hover: #191a1d;
+  --sidebar-hover-ink: #f7f9ff;
+  --sidebar-quiet: var(--sidebar-muted-foreground);
+  --sidebar-input: rgb(255 255 255 / 18%);
+  /* Over the Mac's glass quiet text has no solid card behind it; this step keeps it AA over a white desktop. */
+  --glass-ink: oklch(87% 0 none);
+  --material-ground: #060606;
+  --material-raised: #18181a;
+  --material-edge: #1f1f21;
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "op": "machine.daemonAnswers"
+  },
+  {
+    "id": 1,
+    "op": "machine.daemonAnswers",
+    "machineId": "m1",
+    "timeoutMs": -1
+  }
+]

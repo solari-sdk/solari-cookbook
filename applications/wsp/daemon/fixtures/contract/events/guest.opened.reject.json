@@ -1,0 +1,43 @@
+[
+  {
+    "type": "guest.opened",
+    "session": "g1",
+    "life": "3f2a9c1b7e40d581",
+    "kind": "mcp",
+    "token": "t",
+    "argv": [
+      "mcp"
+    ]
+  },
+  {
+    "type": "guest.opened",
+    "session": "g1",
+    "life": "3f2a9c1b7e40d581",
+    "kind": "shell",
+    "token": "t",
+    "argv": [],
+    "cwd": "/root"
+  },
+  {
+    "type": "guest.opened",
+    "session": "g1",
+    "kind": "mcp",
+    "token": "t",
+    "argv": [
+      "mcp"
+    ],
+    "cwd": "/root"
+  },
+  {
+    "type": "guest.opened",
+    "session": "g1",
+    "life": "3f2a9c1b7e40d581",
+    "kind": "mcp",
+    "token": "t",
+    "argv": [
+      "mcp"
+    ],
+    "cwd": "/root",
+    "machineId": 1
+  }
+]

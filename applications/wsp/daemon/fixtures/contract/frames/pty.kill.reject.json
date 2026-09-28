@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "op": "pty.kill"
+  },
+  {
+    "id": 1,
+    "op": "pty.kill",
+    "ptyId": "pty_1",
+    "machineId": 1
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "type": "proc.snapshot",
+    "at": 1757000000000,
+    "daemon": 42,
+    "total": 3,
+    "procs": []
+  },
+  {
+    "type": "proc.snapshot",
+    "at": 1757000000000,
+    "daemon": 42,
+    "total": 3,
+    "procs": [
+      {
+        "pid": 50,
+        "ppid": 1,
+        "user": "root",
+        "state": "S",
+        "comm": "node",
+        "cmdline": "node server.js",
+        "cpu": 0.5,
+        "rss": 40960,
+        "startedAt": 1757000001000,
+        "pty": "pty_1"
+      }
+    ]
+  }
+]

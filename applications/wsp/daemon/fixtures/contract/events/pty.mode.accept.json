@@ -1,0 +1,16 @@
+[
+  {
+    "type": "pty.mode",
+    "ptyId": "pty_1",
+    "mode": "line",
+    "echo": true,
+    "foreground": "bash"
+  },
+  {
+    "type": "pty.mode",
+    "ptyId": "pty_1",
+    "mode": "raw",
+    "echo": false,
+    "foreground": ""
+  }
+]

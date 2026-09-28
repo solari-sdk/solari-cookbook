@@ -1,0 +1,90 @@
+[
+  {
+    "offer": "runtime",
+    "capabilities": {
+      "liveCloneForks": false,
+      "pauseMode": "disk",
+      "replacesMachine": true,
+      "previewUrls": false,
+      "signedUrls": false,
+      "callbackRelay": true,
+      "diskSnapshots": true,
+      "images": true,
+      "snapshotsAnyLife": false,
+      "snapshotListing": true,
+      "templates": true,
+      "sizes": [
+        {
+          "cpu": 2,
+          "memMb": 4096,
+          "rateUsdPerHour": 0
+        },
+        {
+          "cpu": 4,
+          "memMb": 8192,
+          "rateUsdPerHour": 0
+        }
+      ],
+      "kept": false,
+      "copies": true,
+      "ownNetwork": true
+    },
+    "pricing": {
+      "defaultSize": {
+        "cpu": 2,
+        "memMb": 4096
+      },
+      "snapshotStorage": {
+        "freeGb": 0,
+        "usdPerGbMonth": 0,
+        "billedFrom": ""
+      },
+      "builderDiskGb": 40
+    },
+    "lifecycle": {
+      "budgets": {
+        "wakeAttempts": 1,
+        "daemonAnswersMs": 30000,
+        "resumeAsks": {
+          "everyMs": 5000,
+          "forMs": 60000
+        }
+      }
+    },
+    "baseTemplates": {
+      "sandbox": "ubuntu:24.04",
+      "desktop": "ubuntu:24.04"
+    },
+    "logins": "/var/lib/wsp/logins"
+  },
+  {
+    "offer": "runtime",
+    "capabilities": {
+      "liveCloneForks": false,
+      "replacesMachine": true,
+      "previewUrls": false,
+      "signedUrls": false,
+      "callbackRelay": false,
+      "diskSnapshots": false,
+      "images": false,
+      "snapshotsAnyLife": false,
+      "snapshotListing": false,
+      "templates": false,
+      "sizes": [],
+      "kept": false,
+      "copies": true,
+      "ownNetwork": true
+    },
+    "pricing": {
+      "defaultSize": {
+        "cpu": 2,
+        "memMb": 4096
+      },
+      "snapshotStorage": {
+        "freeGb": 0,
+        "usdPerGbMonth": 0,
+        "billedFrom": ""
+      }
+    }
+  }
+]

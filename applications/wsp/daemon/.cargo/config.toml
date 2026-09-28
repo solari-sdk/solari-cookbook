@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+# libseccomp is the one C library the daemon links: static, so the binary runs on a rootfs that lacks it and the
+# musl build stays one file. scripts/libseccomp-archive.sh puts the archive at this path first.
+[env]
+LIBSECCOMP_LINK_TYPE = "static"
+LIBSECCOMP_LIB_PATH = { value = "target/libseccomp", relative = true }
+# Where wsp-frames writes the TypeScript the protocol package re-exports. JSON carries every integer as a number,
+# and the package resolves imports as NodeNext does, which wants the extension.
+TS_RS_EXPORT_DIR = { value = "../packages/protocol/src/generated", relative = true }
+TS_RS_LARGE_INT = "number"
+TS_RS_IMPORT_EXTENSION = "js"

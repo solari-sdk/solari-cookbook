@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.env
+servers.env
+.dev.vars
+.wrangler/
+docs/plans/
+artifacts/
+.wsp/
+packages/wspx/daemon/
+# ts-rs writes here when cargo runs from outside daemon/, where .cargo/config.toml points it at the protocol package.
+daemon/crates/wsp-frames/bindings/
+
+.claude/worktrees/
+.DS_Store
+*.log

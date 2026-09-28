@@ -1,0 +1,7 @@
+[
+  {
+    "id": 1,
+    "op": "machine.describe",
+    "machineId": "m1"
+  }
+]

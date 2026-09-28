@@ -1,0 +1,59 @@
+[
+  {
+    "machine": {
+      "id": "wsp-live-665-build",
+      "kind": "sandbox",
+      "streamUrl": "https://stream.example/x",
+      "labels": {
+        "wsp": "1",
+        "wsp-owner": "state-1"
+      },
+      "seen": {
+        "state": "running",
+        "createdAt": "2026-09-12T13:00:00.000Z"
+      },
+      "replayed": true,
+      "daemonSupervisor": "entrypoint",
+      "notice": "size 2x4 on 2 cores: cpu clamped to 1 and memory clamped to 2 GB",
+      "roads": {
+        "previewUrl": false,
+        "daemonAnswers": true,
+        "putBytes": true,
+        "describe": true,
+        "facts": false,
+        "metrics": true
+      }
+    }
+  },
+  {
+    "machine": {
+      "id": "wsp-8fef733ad77786dc",
+      "kind": "desktop",
+      "roads": {
+        "previewUrl": true,
+        "daemonAnswers": true,
+        "putBytes": false,
+        "describe": false,
+        "facts": true,
+        "metrics": false
+      }
+    }
+  },
+  {
+    "machine": {
+      "id": "c1",
+      "kind": "sandbox",
+      "seen": {
+        "state": "paused"
+      },
+      "roads": {
+        "previewUrl": false,
+        "daemonAnswers": false,
+        "putBytes": false,
+        "describe": false,
+        "facts": false,
+        "metrics": false
+      }
+    }
+  }
+]

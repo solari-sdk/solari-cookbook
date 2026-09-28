@@ -1,0 +1,15 @@
+[
+  {
+    "type": "port.close"
+  },
+  {
+    "type": "port.close",
+    "port": 8080,
+    "exited": "yes"
+  },
+  {
+    "type": "port.close",
+    "port": 8080,
+    "at": 1
+  }
+]

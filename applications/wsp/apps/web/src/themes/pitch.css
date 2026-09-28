@@ -1,0 +1,44 @@
+/* Pitch: true black with one grey edge. */
+[data-theme="pitch"] {
+  color-scheme: dark;
+  --background: #000000;
+  --foreground: #e8e8e8;
+  --card: #0a0a0a;
+  --muted: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --muted-foreground: #8a8a8a;
+  --accent: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --accent-foreground: var(--foreground);
+  --primary: #e8e8e8;
+  --primary-foreground: #000;
+  --border: #262626;
+  --input: #343434;
+  --success: var(--color-emerald-500);
+  --warning: var(--color-amber-500);
+  --error-foreground: #f4645f;
+  --warning-foreground: #e9a23b;
+  --success-foreground: #5fbf72;
+  --info-foreground: #62acff;
+  --update-foreground: #62acff;
+  --sidebar: #000000;
+  --sidebar-foreground: #e8e8e8;
+  --sidebar-muted-foreground: #a3a3a3;
+  --sidebar-whisper: var(--sidebar-muted-foreground);
+  --sidebar-control-surface: #0a0a0a;
+  --sidebar-row-hover: color-mix(in srgb, var(--sidebar-foreground) 4%, transparent);
+  --sidebar-row-active: color-mix(in srgb, var(--sidebar-foreground) 11%, transparent);
+  --sidebar-row-selected: color-mix(in srgb, var(--sidebar-foreground) 7%, transparent);
+  --sidebar-row-edge: transparent;
+  --sidebar-rail: rgb(255 255 255 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #000000;
+  --sidebar-card: #000000;
+  --sidebar-fill: #0a0a0a;
+  --sidebar-hover: #181818;
+  --sidebar-hover-ink: var(--sidebar-foreground);
+  --sidebar-quiet: var(--sidebar-muted-foreground);
+  --sidebar-input: rgb(255 255 255 / 18%);
+  --glass-ink: #d0d0d0;
+  --material-ground: #000000;
+  --material-raised: #141414;
+  --material-edge: #1f1f1f;
+}

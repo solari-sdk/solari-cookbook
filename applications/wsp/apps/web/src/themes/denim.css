@@ -1,0 +1,44 @@
+/* Denim: indigo-black with a periwinkle blue. */
+[data-theme="denim"] {
+  color-scheme: dark;
+  --background: #14161e;
+  --foreground: #d6dae6;
+  --card: #1a1d27;
+  --muted: color-mix(in srgb, var(--foreground) 6%, transparent);
+  --muted-foreground: #8e96aa;
+  --accent: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --accent-foreground: var(--foreground);
+  --primary: #7d95ea;
+  --primary-foreground: #0f1118;
+  --border: #282d3c;
+  --input: #333a4c;
+  --success: var(--color-emerald-500);
+  --warning: var(--color-amber-500);
+  --error-foreground: #ef7a85;
+  --warning-foreground: #e2a558;
+  --success-foreground: #7fcf9a;
+  --info-foreground: #9fb3f2;
+  --update-foreground: #9fb3f2;
+  --sidebar: #10121a;
+  --sidebar-foreground: #e0e4ee;
+  --sidebar-muted-foreground: #9aa2b6;
+  --sidebar-whisper: var(--sidebar-muted-foreground);
+  --sidebar-control-surface: #14161e;
+  --sidebar-row-hover: color-mix(in srgb, var(--sidebar-foreground) 4%, transparent);
+  --sidebar-row-active: color-mix(in srgb, var(--sidebar-foreground) 11%, transparent);
+  --sidebar-row-selected: color-mix(in srgb, var(--sidebar-foreground) 7%, transparent);
+  --sidebar-row-edge: transparent;
+  --sidebar-rail: rgb(255 255 255 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #10121a;
+  --sidebar-card: #10121a;
+  --sidebar-fill: #14161e;
+  --sidebar-hover: #242939;
+  --sidebar-hover-ink: var(--sidebar-foreground);
+  --sidebar-quiet: var(--sidebar-muted-foreground);
+  --sidebar-input: rgb(255 255 255 / 18%);
+  --glass-ink: #d2d7e2;
+  --material-ground: #0f1117;
+  --material-raised: #212431;
+  --material-edge: #252a38;
+}

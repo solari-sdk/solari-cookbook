@@ -1,0 +1,11 @@
+{
+  "bash": "GNU bash, version 5.2.15(1)-release (x86_64-pc-linux-gnu)",
+  "term": "xterm-256color",
+  "sttySize": "20 40",
+  "probe": "echo TERM=$TERM; stty size; bash --version | head -1\r\n\rTERM=xterm-256color\r\n20 40\r\nGNU bash, version 5.2.15(1)-release (x86_64-pc-linux-gnu)\r\nroot@localhost:/root#",
+  "cols": 40,
+  "prompt": "bash-5.2$ ",
+  "typed": "curl -sS http://localhost:6173 \r0/",
+  "oneWrite": "curl -sS http://localhost:61730/",
+  "port": 61730
+}

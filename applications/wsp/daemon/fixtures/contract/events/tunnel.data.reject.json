@@ -1,0 +1,10 @@
+[
+  {
+    "type": "tunnel.data",
+    "tunnelId": "t1"
+  },
+  {
+    "type": "tunnel.data",
+    "data": "aGVsbG8="
+  }
+]

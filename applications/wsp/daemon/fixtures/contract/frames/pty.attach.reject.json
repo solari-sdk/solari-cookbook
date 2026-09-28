@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "op": "pty.attach"
+  },
+  {
+    "id": 1,
+    "op": "pty.attach",
+    "ptyId": 1
+  },
+  {
+    "id": 1,
+    "op": "pty.attach",
+    "ptyId": "pty_1",
+    "machineId": 1
+  }
+]

@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "op": "git.diff",
+    "cwd": "repo"
+  },
+  {
+    "id": 1,
+    "op": "git.diff",
+    "cwd": "repo",
+    "scope": "all"
+  },
+  {
+    "id": 1,
+    "op": "git.diff",
+    "cwd": "repo",
+    "scope": "unstaged",
+    "path": 3
+  },
+  {
+    "id": 1,
+    "op": "git.diff",
+    "cwd": "/root/repo",
+    "scope": "branch",
+    "machineId": 1
+  }
+]

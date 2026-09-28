@@ -1,0 +1,13 @@
+[
+  {
+    "id": 7,
+    "op": "guest.close",
+    "session": "g1"
+  },
+  {
+    "id": 8,
+    "op": "guest.close",
+    "session": "g1",
+    "error": "the host holds no such session"
+  }
+]

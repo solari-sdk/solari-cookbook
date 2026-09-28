@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+[package]
+name = "wsp-daemon-bin"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "The one binary: flags, the runtime, one process"
+
+[[bin]]
+name = "wsp-daemon"
+path = "src/main.rs"
+
+[dependencies]
+wsp-frames = { path = "../wsp-frames" }
+wsp-daemon = { path = "../wsp-daemon" }
+wsp-guest = { path = "../wsp-guest" }
+wsp-runtime = { path = "../wsp-runtime" }
+tokio.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# setpriority, for the one knob the daemon sets on itself that is not a file; the other platform sets neither.
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = "3"
+sha2 = "0.10"
+tokio-tungstenite.workspace = true
+futures-util.workspace = true
+xattr = "1"

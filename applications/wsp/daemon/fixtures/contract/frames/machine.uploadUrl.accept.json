@@ -1,0 +1,8 @@
+[
+  {
+    "id": 1,
+    "op": "machine.uploadUrl",
+    "machineId": "m1",
+    "path": "/root/in.tgz"
+  }
+]

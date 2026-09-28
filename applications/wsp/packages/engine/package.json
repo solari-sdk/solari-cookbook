@@ -1,0 +1,19 @@
+{
+  "name": "@wsp/engine",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts",
+    "test": "vitest run packages/engine"
+  },
+  "dependencies": {
+    "@wsp/catalog": "workspace:*",
+    "@wsp/keys": "workspace:*",
+    "@wsp/protocol": "workspace:*"
+  },
+  "devDependencies": {
+    "ws": "^8.21.3",
+    "@types/ws": "^8.18.1"
+  },
+  "license": "AGPL-3.0-only"
+}

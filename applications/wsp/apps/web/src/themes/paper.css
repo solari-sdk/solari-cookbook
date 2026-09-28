@@ -1,0 +1,47 @@
+/* Paper: zinc on near white. A page with no theme mark draws it on the light side. */
+[data-theme="paper"],
+:root:not([data-theme]) {
+  color-scheme: light;
+  --background: oklch(99.2% 0 0);
+  --foreground: oklch(27.4% 0.006 286.033);
+  --card: #fff;
+  --muted: oklch(98.5% 0 none);
+  /* A step under zinc-500, which read 4.39:1 on the hover fill. */
+  --muted-foreground: oklch(53.5% 0.016 285.938);
+  --accent: oklch(96.7% 0.001 286.375);
+  --accent-foreground: oklch(21% 0.006 285.885);
+  --primary: oklch(0.488 0.217 264);
+  --primary-foreground: #fff;
+  --border: oklch(92% 0.004 286.32);
+  --input: oklch(87.1% 0.006 286.286);
+  /* Emerald and amber at 500 read 2.46:1 and 2.15:1 on white as fills; 600 clears the 3:1 graphics floor. */
+  --success: var(--color-emerald-600);
+  --warning: var(--color-amber-600);
+  --error-foreground: oklch(50.5% 0.213 27.518);
+  --warning-foreground: oklch(0.56 0.14 56);
+  --success-foreground: oklch(50.8% 0.118 165.612);
+  --info-foreground: oklch(48.8% 0.243 264.376);
+  --update-foreground: var(--primary);
+  --sidebar: oklch(98.5% 0 none);
+  --sidebar-foreground: var(--foreground);
+  /* One step darker than the page's muted ink: at zinc-500 it read 4.62:1 on the sidebar against the dark side's 8.33:1. */
+  --sidebar-muted-foreground: oklch(44.2% 0.017 285.786);
+  /* The base the whispered tiers mix an alpha from; an alpha over a light ground loses more than over a dark one. */
+  --sidebar-whisper: oklch(37% 0.013 285.805);
+  --sidebar-control-surface: oklch(96.7% 0.001 286.375);
+  --sidebar-row-hover: oklch(99.2% 0 0);
+  --sidebar-row-active: #fff;
+  /* White on this sidebar stood at 1.05 to 1 and read as no lift, so the selected row is one step darker, edged. */
+  --sidebar-row-selected: oklch(96.7% 0.001 286.375);
+  --sidebar-row-edge: color-mix(in srgb, var(--foreground) 10%, transparent);
+  /* Ink rather than the hairline, which vanished over the light glass. */
+  --sidebar-rail: rgb(0 0 0 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: oklch(99.2% 0 0);
+  --sidebar-card: #fff;
+  --sidebar-fill: oklch(98.5% 0 none);
+  --sidebar-hover: oklch(96.7% 0.001 286.375);
+  --sidebar-hover-ink: oklch(21% 0.006 285.885);
+  --sidebar-quiet: oklch(53.5% 0.016 285.938);
+  --sidebar-input: oklch(87.1% 0.006 286.286);
+}

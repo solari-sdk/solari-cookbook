@@ -1,0 +1,27 @@
+[
+  {
+    "type": "guest.message",
+    "session": "g1",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "tools": []
+      }
+    }
+  },
+  {
+    "type": "guest.message",
+    "session": "g1",
+    "message": null
+  },
+  {
+    "type": "guest.message",
+    "session": "g1",
+    "message": {
+      "stream": "out",
+      "text": "rows\n"
+    },
+    "machineId": "wsp-a"
+  }
+]

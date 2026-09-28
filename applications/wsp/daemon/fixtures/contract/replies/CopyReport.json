@@ -1,0 +1,42 @@
+[
+  {
+    "road": "clonefile",
+    "path": "/Users/dev/spoo-landing-pricing-page",
+    "base": "1ac97f8d7ea55cc4f6a4f8f2f0e4f3b6ce9dc0c9",
+    "branch": "main",
+    "fetched": true,
+    "carried": "deps-and-config",
+    "excluded": [
+      ".next",
+      "node_modules/.cache"
+    ],
+    "skipped": [
+      "node_modules/.cache: node_modules is a link or not a folder, so nothing under it was removed"
+    ],
+    "bytes": 6442450944,
+    "ms": 4900
+  },
+  {
+    "road": "worktree",
+    "path": "/Users/dev/spoo-landing-qr-codes",
+    "base": "2bd08e9f8fb66dd5a7b5a9a3a1f5a4c7df0ed1d0",
+    "branch": "",
+    "fetched": false,
+    "carried": "config-only",
+    "excluded": [],
+    "bytes": 21474836481,
+    "ms": 12400,
+    "fellBack": "the folder is 20.0 GB and a clone above 20.0 GB is not taken"
+  },
+  {
+    "road": "in-place",
+    "path": "/Users/dev/spoo-landing",
+    "base": "",
+    "branch": "",
+    "fetched": false,
+    "carried": "nothing",
+    "excluded": [],
+    "bytes": 0,
+    "ms": 0
+  }
+]

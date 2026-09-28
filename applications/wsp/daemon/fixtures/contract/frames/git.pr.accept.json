@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "op": "git.pr",
+    "cwd": "repo"
+  },
+  {
+    "id": 2,
+    "op": "git.pr",
+    "cwd": "repo",
+    "base": "main",
+    "title": "the pricing page",
+    "body": "what the branch does"
+  },
+  {
+    "id": 1,
+    "op": "git.pr",
+    "cwd": "/root/repo",
+    "base": "main",
+    "machineId": "wsp-a"
+  }
+]

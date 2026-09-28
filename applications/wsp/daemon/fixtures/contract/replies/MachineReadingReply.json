@@ -1,0 +1,24 @@
+[
+  {
+    "reading": {
+      "state": "running",
+      "cpu": 1,
+      "memMb": 2048,
+      "memBytes": 734003200,
+      "cpuUsageUsec": 41200000,
+      "uptimeMs": 5430000,
+      "procs": 37,
+      "quietForMs": 143000,
+      "address": "10.65.0.6",
+      "cgroup": "/sys/fs/cgroup/wsp/wsp-8fef733ad77786dc",
+      "upper": "/var/lib/wsp/run/wsp-8fef733ad77786dc/upper"
+    }
+  },
+  {
+    "reading": {
+      "state": "paused",
+      "cgroup": "/sys/fs/cgroup/wsp/wsp-a",
+      "upper": "/var/lib/wsp/run/wsp-a/upper"
+    }
+  }
+]

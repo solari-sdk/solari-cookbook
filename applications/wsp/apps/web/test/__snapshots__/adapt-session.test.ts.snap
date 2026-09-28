@@ -1,0 +1,169 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`deriveMessagesTimelineRows > snapshot: live run 1 1`] = `
+[
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-02T17:19:35.668Z",
+    "durationStart": "2026-09-02T17:19:35.668Z",
+    "id": "59094224-bb3d-43b6-b054-322aa849fa00#1:m1",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-02T17:19:35.668Z",
+      "id": "59094224-bb3d-43b6-b054-322aa849fa00#1:m1",
+      "role": "user",
+      "streaming": false,
+      "text": "hello",
+      "turnId": "59094224-bb3d-43b6-b054-322aa849fa00#1",
+      "updatedAt": "2026-09-02T17:19:35.668Z",
+    },
+    "showAssistantCopyButton": false,
+    "showAssistantMeta": false,
+  },
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-02T17:19:53.068Z",
+    "durationStart": "2026-09-02T17:19:53.068Z",
+    "id": "59094224-bb3d-43b6-b054-322aa849fa00#2:m1",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-02T17:19:53.068Z",
+      "id": "59094224-bb3d-43b6-b054-322aa849fa00#2:m1",
+      "role": "user",
+      "streaming": false,
+      "text": "build a simple chat app, run it locally, use npm",
+      "turnId": "59094224-bb3d-43b6-b054-322aa849fa00#2",
+      "updatedAt": "2026-09-02T17:19:53.068Z",
+    },
+    "showAssistantCopyButton": false,
+    "showAssistantMeta": false,
+  },
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-02T17:23:35.068Z",
+    "durationStart": "2026-09-02T17:23:35.068Z",
+    "id": "59094224-bb3d-43b6-b054-322aa849fa00#3:m1",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-02T17:23:35.068Z",
+      "id": "59094224-bb3d-43b6-b054-322aa849fa00#3:m1",
+      "role": "user",
+      "streaming": false,
+      "text": "/model",
+      "turnId": "59094224-bb3d-43b6-b054-322aa849fa00#3",
+      "updatedAt": "2026-09-02T17:23:35.068Z",
+    },
+    "showAssistantCopyButton": false,
+    "showAssistantMeta": false,
+  },
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-02T17:24:00.468Z",
+    "durationStart": "2026-09-02T17:24:00.468Z",
+    "id": "59094224-bb3d-43b6-b054-322aa849fa00#4:m1",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-02T17:24:00.468Z",
+      "id": "59094224-bb3d-43b6-b054-322aa849fa00#4:m1",
+      "role": "user",
+      "streaming": false,
+      "text": "anyways can you make it more beautiful, use shadcn",
+      "turnId": "59094224-bb3d-43b6-b054-322aa849fa00#4",
+      "updatedAt": "2026-09-02T17:24:00.468Z",
+    },
+    "showAssistantCopyButton": false,
+    "showAssistantMeta": false,
+  },
+]
+`;
+
+exports[`deriveMessagesTimelineRows > snapshot: the chat fixture, settled and expanded 1`] = `
+[
+  {
+    "createdAt": "2026-09-01T01:31:30.612Z",
+    "expanded": false,
+    "id": "turn-fold:turn_0001",
+    "kind": "turn-fold",
+    "label": "Worked for 10s",
+    "turnId": "turn_0001",
+  },
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-01T01:31:38.712Z",
+    "durationStart": "2026-09-01T01:31:30.862Z",
+    "id": "turn_0001:m4",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-01T01:31:38.712Z",
+      "id": "turn_0001:m4",
+      "role": "assistant",
+      "streaming": false,
+      "text": "Server is live at :3000.",
+      "turnId": "turn_0001",
+      "updatedAt": "2026-09-01T01:31:38.712Z",
+    },
+    "showAssistantCopyButton": true,
+    "showAssistantMeta": true,
+  },
+]
+`;
+
+exports[`deriveMessagesTimelineRows > snapshot: the chat fixture, settled and expanded 2`] = `
+[
+  {
+    "createdAt": "2026-09-01T01:31:30.612Z",
+    "expanded": true,
+    "id": "turn-fold:turn_0001",
+    "kind": "turn-fold",
+    "label": "Worked for 10s",
+    "turnId": "turn_0001",
+  },
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-01T01:31:30.612Z",
+    "durationStart": "2026-09-01T01:31:30.612Z",
+    "id": "turn_0001:m1",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-01T01:31:30.612Z",
+      "id": "turn_0001:m1",
+      "role": "assistant",
+      "streaming": false,
+      "text": "Creating the server file, then starting it.",
+      "turnId": "turn_0001",
+      "updatedAt": "2026-09-01T01:31:30.862Z",
+    },
+    "showAssistantCopyButton": false,
+    "showAssistantMeta": false,
+  },
+  {
+    "createdAt": "2026-09-01T01:31:33.907Z",
+    "expanded": false,
+    "groupId": "work-group:tool:turn_0001:toolu_01WspFixBash1",
+    "hasFailure": false,
+    "hiddenCount": 2,
+    "id": "work-toggle:turn_0001:w2",
+    "kind": "work-toggle",
+    "summary": "Ran 1 command",
+    "summaryKind": "command",
+  },
+  {
+    "assistantCopyStreaming": false,
+    "createdAt": "2026-09-01T01:31:38.712Z",
+    "durationStart": "2026-09-01T01:31:30.862Z",
+    "id": "turn_0001:m4",
+    "kind": "message",
+    "message": {
+      "createdAt": "2026-09-01T01:31:38.712Z",
+      "id": "turn_0001:m4",
+      "role": "assistant",
+      "streaming": false,
+      "text": "Server is live at :3000.",
+      "turnId": "turn_0001",
+      "updatedAt": "2026-09-01T01:31:38.712Z",
+    },
+    "showAssistantCopyButton": true,
+    "showAssistantMeta": true,
+  },
+]
+`;

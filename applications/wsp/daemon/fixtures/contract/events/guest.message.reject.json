@@ -1,0 +1,17 @@
+[
+  {
+    "type": "guest.message",
+    "message": {}
+  },
+  {
+    "type": "guest.message",
+    "session": 2,
+    "message": {}
+  },
+  {
+    "type": "guest.message",
+    "session": "g1",
+    "message": {},
+    "machineId": 1
+  }
+]

@@ -1,0 +1,478 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`each agent's hooks > falls back when the person's own file sets the key: a Gemini extension, a Pi extension, nothing for Hermes; Codex is additive and never falls back 1`] = `
+"// wsp writes this file when a workspace is forked; edits are overwritten.
+import { readFileSync } from "node:fs";
+export default function (pi) {
+  pi.on("before_agent_start", async event => ({ systemPrompt: \`\${event.systemPrompt}\\n\\n\${readFileSync("/etc/wsp/machine-context.md", "utf8")}\` }));
+}
+"
+`;
+
+exports[`each agent's hooks > writes the short text through each always-loaded hook and the skill into each global skills directory > claude 1`] = `
+"/etc/claude-code/CLAUDE.md
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer; it is not that computer. The wsp-machine skill has the full picture: what did not install, the secret names, the aliases whose commands are missing, and how the common things are done here.
+
+- A background process started with a plain & inside a tool call dies when that tool call ends. Detach it: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder. A cd moves your own shell, which persists across your tool calls, not the thread's folder, and the files pane follows that shell's folder unless you pinned the panes.
+- A server listening on a port shows in the app for the person to open; bind 0.0.0.0, not 127.0.0.1. A printed http://localhost:<port> link has its port forwarded to their computer. Ports below 1024 are not forwarded.
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh. Use them by name ($NAME); never print, log or commit a value, and never read that file.
+- Sign-ins go through wsp: run the tool's own login command and the page opens on the person's computer. Do not paste tokens into the terminal and do not ask for a password.
+
+----
+/etc/claude-code/.claude/skills/wsp-machine/SKILL.md
+---
+name: wsp-machine
+description: How this cloud Linux machine differs from the person's computer, what did not install here, where secrets live, and how to keep a server alive, hand over a URL and sign in. Read it before starting a server, opening a port, using a secret or calling a tool that may not be installed.
+---
+
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder. A cd moves your own shell, which persists across your tool calls, not the thread's folder, and the files pane follows that shell's folder unless you pinned the panes.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> in your shell and it stays there across your tool calls; the thread's folder does not move. Absolute paths work from anywhere.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`each agent's hooks > writes the short text through each always-loaded hook and the skill into each global skills directory > codex 1`] = `
+"/etc/codex/requirements.toml
+# wsp writes this file when a workspace is forked; edits are overwritten.
+additional_developer_instructions = '''
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer; it is not that computer. The wsp-machine skill has the full picture: what did not install, the secret names, the aliases whose commands are missing, and how the common things are done here.
+
+- A background process started with a plain & inside a tool call dies when that tool call ends. Detach it: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app for the person to open; bind 0.0.0.0, not 127.0.0.1. A printed http://localhost:<port> link has its port forwarded to their computer. Ports below 1024 are not forwarded.
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh. Use them by name ($NAME); never print, log or commit a value, and never read that file.
+- Sign-ins go through wsp: run the tool's own login command and the page opens on the person's computer. Do not paste tokens into the terminal and do not ask for a password.
+'''
+
+----
+/etc/codex/skills/wsp-machine/SKILL.md
+---
+name: wsp-machine
+description: How this cloud Linux machine differs from the person's computer, what did not install here, where secrets live, and how to keep a server alive, hand over a URL and sign in. Read it before starting a server, opening a port, using a secret or calling a tool that may not be installed.
+---
+
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`each agent's hooks > writes the short text through each always-loaded hook and the skill into each global skills directory > gemini 1`] = `
+"/etc/gemini-cli/system-defaults.json
+{
+  "context": {
+    "fileName": [
+      "GEMINI.md",
+      "WSP-MACHINE.md"
+    ]
+  }
+}
+
+----
+/root/.gemini/WSP-MACHINE.md
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer; it is not that computer. The wsp-machine skill has the full picture: what did not install, the secret names, the aliases whose commands are missing, and how the common things are done here.
+
+- A background process started with a plain & inside a tool call dies when that tool call ends. Detach it: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app for the person to open; bind 0.0.0.0, not 127.0.0.1. A printed http://localhost:<port> link has its port forwarded to their computer. Ports below 1024 are not forwarded.
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh. Use them by name ($NAME); never print, log or commit a value, and never read that file.
+- Sign-ins go through wsp: run the tool's own login command and the page opens on the person's computer. Do not paste tokens into the terminal and do not ask for a password.
+
+----
+/root/.gemini/skills/wsp-machine/SKILL.md
+---
+name: wsp-machine
+description: How this cloud Linux machine differs from the person's computer, what did not install here, where secrets live, and how to keep a server alive, hand over a URL and sign in. Read it before starting a server, opening a port, using a secret or calling a tool that may not be installed.
+---
+
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`each agent's hooks > writes the short text through each always-loaded hook and the skill into each global skills directory > hermes 1`] = `
+"/etc/profile.d/wsp-machine.sh
+# wsp writes this file when a workspace is forked; edits are overwritten.
+export HERMES_ENVIRONMENT_HINT="$(cat /etc/wsp/machine-context.md)"
+
+----
+/etc/fish/conf.d/wsp-machine.fish
+# wsp writes this file when a workspace is forked; edits are overwritten.
+set -gx HERMES_ENVIRONMENT_HINT (cat /etc/wsp/machine-context.md | string collect)
+
+----
+/root/.hermes/skills/wsp-machine/SKILL.md
+---
+name: wsp-machine
+description: How this cloud Linux machine differs from the person's computer, what did not install here, where secrets live, and how to keep a server alive, hand over a URL and sign in. Read it before starting a server, opening a port, using a secret or calling a tool that may not be installed.
+---
+
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`each agent's hooks > writes the short text through each always-loaded hook and the skill into each global skills directory > opencode 1`] = `
+"/etc/opencode/opencode.json
+{
+  "instructions": [
+    "/etc/wsp/machine-context.md"
+  ]
+}
+
+----
+/root/.config/opencode/skills/wsp-machine/SKILL.md
+---
+name: wsp-machine
+description: How this cloud Linux machine differs from the person's computer, what did not install here, where secrets live, and how to keep a server alive, hand over a URL and sign in. Read it before starting a server, opening a port, using a secret or calling a tool that may not be installed.
+---
+
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`each agent's hooks > writes the short text through each always-loaded hook and the skill into each global skills directory > pi 1`] = `
+"/root/.pi/agent/APPEND_SYSTEM.md
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer; it is not that computer. The wsp-machine skill has the full picture: what did not install, the secret names, the aliases whose commands are missing, and how the common things are done here.
+
+- A background process started with a plain & inside a tool call dies when that tool call ends. Detach it: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app for the person to open; bind 0.0.0.0, not 127.0.0.1. A printed http://localhost:<port> link has its port forwarded to their computer. Ports below 1024 are not forwarded.
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh. Use them by name ($NAME); never print, log or commit a value, and never read that file.
+- Sign-ins go through wsp: run the tool's own login command and the page opens on the person's computer. Do not paste tokens into the terminal and do not ask for a password.
+
+----
+/root/.pi/agent/skills/wsp-machine/SKILL.md
+---
+name: wsp-machine
+description: How this cloud Linux machine differs from the person's computer, what did not install here, where secrets live, and how to keep a server alive, hand over a URL and sign in. Read it before starting a server, opening a port, using a secret or calling a tool that may not be installed.
+---
+
+wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`the document > renders a builder before the seal, with nothing missing and no tmux, brew or fish 1`] = `
+"wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Docker and Podman are not installed.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- This machine is a golden builder, not a workspace yet.
+- Golden: not sealed yet.
+- Disk: size unknown when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: none. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: none.
+- Agents that did not install: none.
+- Files left on the person's computer: none.
+- Aliases whose command is not here: none.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`the document > renders a workspace on a sealed golden 1`] = `
+"wsp writes this file when a workspace is forked; edits are overwritten.
+
+# This machine
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer: the files, tools and agents they ticked. It is not that computer.
+
+- Linux 6.6.30, user root, home /root. macOS apps, casks and Mac App Store apps are not here.
+- Homebrew is at /home/linuxbrew/.linuxbrew.
+- Login shells get their PATH from /etc/profile.d/wsp-golden.sh: /root/.local/bin:/usr/local/sbin:/usr/local/bin:/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:/root/go/bin:/root/.cargo/bin:/root/.local/share/pnpm:/root/.bun/bin:/usr/sbin:/usr/bin:/sbin:/bin
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- wsp-daemon listens on 0.0.0.0:7070 with its own token. Do not stop it and do not bind port 7070.
+- wsp on this machine's PATH drives the person's host as this thread; wsp --help agent lists its verbs.
+- A background process started with a plain & inside a tool call dies when that tool call ends.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app as a server the person can open. A loopback-only bind (127.0.0.1) is unreachable through the preview edge; bind 0.0.0.0. Ports below 1024 are not forwarded.
+- Sign-ins go through wsp: BROWSER is /usr/local/bin/wsp-open and xdg-open is the same shim. The page opens on the person's computer and the callback port is tunnelled back here.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh and /etc/fish/conf.d/wsp-secrets.fish. They are never printed, logged or committed, and that file is never read or copied. .env files, .netrc and private keys were never copied from the person's computer.
+
+# This workspace
+
+- Workspace: task-1.
+- Golden: v3, sealed 2026-09-05, setup 9f2a7c1d4e5b.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free and skips tool installs that would go under it.
+- Secrets set in /etc/profile.d/wsp-secrets.sh: OPENAI_API_KEY, GH_TOKEN. Use them by name ($NAME); a missing one is asked for through wsp, not typed here.
+- Tools that did not install: raycast (macOS app, no Linux build).
+- Agents that did not install: Zed (no installer known).
+- Files left on the person's computer: ~/.ssh/id_ed25519 (private key, never copied).
+- Aliases whose command is not here: o runs open; rc runs code.
+
+# How to
+
+- Keep a server alive: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'. Read the log file, not the tool output. Bind 0.0.0.0 if the person should open it.
+- Hand the person a URL: print it as http://localhost:<port>; wsp forwards the port and the link opens on their computer. For a page that is not a local server, run wsp-open <url>; it appears in the app for them to open.
+- Ask for a sign-in: run the tool's own login command (gh auth login, gcloud auth login). It opens through $BROWSER, the person signs in on their computer, and the callback comes back here. Do not paste tokens into the terminal and do not ask for a password.
+- Work in a folder: cd <dir> && <cmd> on one line, or absolute paths.
+- Use a secret: $NAME is set from /etc/profile.d/wsp-secrets.sh. Never echo, log or commit a value, and never cat that file.
+"
+`;
+
+exports[`the document > the short always-loaded text carries the facts an agent must not get wrong and points at the skill 1`] = `
+"wsp writes this file when a workspace is forked; edits are overwritten.
+
+This is a Linux machine in the cloud that wsp set up from the recipe of the person's computer; it is not that computer. The wsp-machine skill has the full picture: what did not install, the secret names, the aliases whose commands are missing, and how the common things are done here.
+
+- A background process started with a plain & inside a tool call dies when that tool call ends. Detach it: setsid nohup <cmd> > /tmp/<name>.log 2>&1 < /dev/null &, or tmux new -d -s <name> '<cmd>'.
+- A turn ends when the agent process exits, not at its reply, and the thread reads running until then; a command you run in the background holds the turn open until it finishes, up to the 6 hour cap on one turn, and its result reaches you there. Nothing else wakes you, so a command whose output you want in the same breath runs in the foreground and you wait for it. Only a server you mean to keep serving is detached with setsid nohup, and that one holds nothing open.
+- Every agent session starts in the thread's folder; terminal panes open in the home folder.
+- A server listening on a port shows in the app for the person to open; bind 0.0.0.0, not 127.0.0.1. A printed http://localhost:<port> link has its port forwarded to their computer. Ports below 1024 are not forwarded.
+- Containers do not run here: the kernel has no overlayfs, and Docker and Podman are not installed. Install services natively.
+- Disk: 19.5 GB root disk, 11.2 GB free when this file was written. wsp keeps 2 GB free.
+- Secrets are exported by /etc/profile.d/wsp-secrets.sh. Use them by name ($NAME); never print, log or commit a value, and never read that file.
+- Sign-ins go through wsp: run the tool's own login command and the page opens on the person's computer. Do not paste tokens into the terminal and do not ask for a password.
+"
+`;

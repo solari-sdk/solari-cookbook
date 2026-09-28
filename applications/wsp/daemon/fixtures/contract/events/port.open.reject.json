@@ -1,0 +1,14 @@
+[
+  {
+    "type": "port.open"
+  },
+  {
+    "type": "port.open",
+    "port": "8080"
+  },
+  {
+    "type": "port.open",
+    "port": 8080,
+    "loopback": "no"
+  }
+]

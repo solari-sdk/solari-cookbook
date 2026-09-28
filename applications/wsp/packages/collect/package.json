@@ -1,0 +1,20 @@
+{
+  "name": "@wsp/collect",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts src/live.ts --format esm --dts",
+    "test": "vitest run packages/collect",
+    "live": "tsup src/index.ts src/live.ts --format esm --dts --silent && node dist/live.js",
+    "bottles": "tsup src/index.ts src/live.ts --format esm --dts --silent && node scripts/fetch-linux-bottles.mjs"
+  },
+  "dependencies": {
+    "@wsp/catalog": "workspace:*",
+    "@wsp/protocol": "workspace:*",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  },
+  "license": "AGPL-3.0-only"
+}

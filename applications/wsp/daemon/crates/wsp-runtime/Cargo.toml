@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+[package]
+name = "wsp-runtime"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+description = "The workspace manager behind the machine ops on a place link: the workspaces youki's library runs from the computer's own directories and a copy of one checkout on it"
+
+[dependencies]
+wsp-frames = { path = "../wsp-frames" }
+serde.workspace = true
+serde_json.workspace = true
+base64.workspace = true
+tokio.workspace = true
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+# The sibling every JSON write lands in before its rename, so a daemon that dies inside a write leaves no torn
+# file. A dependency of the crate and not of its tests alone, since the writer ships, and of no target alone,
+# since the door's manifest goes through it on every platform the daemon runs on.
+tempfile = "3"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+# clonefile, statfs and getattrlist: the three calls the directory clone on a Mac is made of.
+libc = "0.2"
+# The pty the pane's broker opens is POSIX and so is every call it makes, so the module builds here too and its
+# cases run on the computer the work is done on rather than on a box alone.
+nix = { version = "0.31", default-features = false, features = ["poll", "process", "signal", "term"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+# pidfd_open, which nix 0.31 wraps no module for: the descriptor the runtime watches a workspace's init on.
+libc = "0.2"
+libcontainer = { version = "0.7.0", default-features = false, features = ["v2", "libseccomp"] }
+libcgroups = { version = "0.7.0", default-features = false, features = ["v2"] }
+nix = { version = "0.31", default-features = false, features = ["fs", "ioctl", "mount", "poll", "process", "sched", "signal", "term", "user"] }
+xattr = "1"
+netlink-sys = "0.8"
+netlink-packet-core = "0.8"
+netlink-packet-route = "0.31"
+httparse = "1"
+percent-encoding = "2"
+
+[dev-dependencies]
+xattr = "1"

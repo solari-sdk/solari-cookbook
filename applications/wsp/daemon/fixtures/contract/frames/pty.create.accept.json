@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "op": "pty.create"
+  },
+  {
+    "id": 2,
+    "op": "pty.create",
+    "cols": 80,
+    "rows": 24,
+    "shell": "bash",
+    "cwd": "/root",
+    "env": {
+      "TERM": "xterm-256color"
+    }
+  },
+  {
+    "id": 3,
+    "op": "pty.create",
+    "cols": 100,
+    "rows": 40,
+    "cwd": "/root/project",
+    "machineId": "wsp-a"
+  }
+]

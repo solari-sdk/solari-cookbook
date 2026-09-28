@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "op": "tunnel.open",
+    "tunnelId": "t1"
+  },
+  {
+    "id": 1,
+    "op": "tunnel.open",
+    "tunnelId": "t1",
+    "port": 0
+  },
+  {
+    "id": 1,
+    "op": "tunnel.open",
+    "tunnelId": "t1",
+    "port": 65536
+  },
+  {
+    "id": 1,
+    "op": "tunnel.open",
+    "port": 8123
+  }
+]

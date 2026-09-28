@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "op": "place.update",
+    "uploadId": "u1",
+    "seq": 0,
+    "last": false,
+    "data": "AAAA",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "id": 2,
+    "op": "place.update",
+    "uploadId": "u1",
+    "seq": 1,
+    "last": true,
+    "data": "AAAA",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

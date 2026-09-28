@@ -1,0 +1,26 @@
+[
+  {
+    "machines": [
+      {
+        "id": "wsp-a",
+        "state": "running",
+        "labels": {
+          "wsp": "1",
+          "row": "yes"
+        },
+        "size": {
+          "cpu": 2,
+          "memMb": 1024
+        }
+      },
+      {
+        "id": "wsp-b",
+        "state": "gone",
+        "labels": {}
+      }
+    ]
+  },
+  {
+    "machines": []
+  }
+]

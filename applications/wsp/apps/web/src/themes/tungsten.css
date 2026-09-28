@@ -1,0 +1,44 @@
+/* Tungsten: warm soot with ivory ink. */
+[data-theme="tungsten"] {
+  color-scheme: dark;
+  --background: #121110;
+  --foreground: #ece6dc;
+  --card: #1a1816;
+  --muted: color-mix(in srgb, var(--foreground) 5%, transparent);
+  --muted-foreground: #9c9288;
+  --accent: color-mix(in srgb, var(--foreground) 8%, transparent);
+  --accent-foreground: var(--foreground);
+  --primary: #ece6dc;
+  --primary-foreground: #141210;
+  --border: #2a2623;
+  --input: #373129;
+  --success: var(--color-emerald-500);
+  --warning: var(--color-amber-500);
+  --error-foreground: #e57368;
+  --warning-foreground: #e2a558;
+  --success-foreground: #8fbf87;
+  --info-foreground: #86b0e7;
+  --update-foreground: #86b0e7;
+  --sidebar: #0f0e0d;
+  --sidebar-foreground: #ece6dc;
+  --sidebar-muted-foreground: #a89d92;
+  --sidebar-whisper: var(--sidebar-muted-foreground);
+  --sidebar-control-surface: #121110;
+  --sidebar-row-hover: color-mix(in srgb, var(--sidebar-foreground) 4%, transparent);
+  --sidebar-row-active: color-mix(in srgb, var(--sidebar-foreground) 11%, transparent);
+  --sidebar-row-selected: color-mix(in srgb, var(--sidebar-foreground) 7%, transparent);
+  --sidebar-row-edge: transparent;
+  --sidebar-rail: rgb(255 255 255 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #0f0e0d;
+  --sidebar-card: #0f0e0d;
+  --sidebar-fill: #121110;
+  --sidebar-hover: #262220;
+  --sidebar-hover-ink: var(--sidebar-foreground);
+  --sidebar-quiet: var(--sidebar-muted-foreground);
+  --sidebar-input: rgb(255 255 255 / 18%);
+  --glass-ink: #dcd5ca;
+  --material-ground: #0d0c0b;
+  --material-raised: #211f1c;
+  --material-edge: #272320;
+}

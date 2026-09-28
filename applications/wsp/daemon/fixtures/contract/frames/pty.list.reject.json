@@ -1,0 +1,14 @@
+[
+  {
+    "op": "pty.list"
+  },
+  {
+    "id": null,
+    "op": "pty.list"
+  },
+  {
+    "id": 1,
+    "op": "pty.list",
+    "machineId": 1
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "pr": {
+      "number": 12,
+      "url": "https://github.com/o/r/pull/12",
+      "state": "open",
+      "host": "github.com"
+    },
+    "created": true
+  },
+  {
+    "pr": {
+      "number": 12,
+      "url": "https://github.com/o/r/pull/12",
+      "state": "merged",
+      "host": "github.com"
+    },
+    "created": false
+  }
+]

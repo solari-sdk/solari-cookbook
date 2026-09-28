@@ -1,0 +1,23 @@
+[
+  {
+    "type": "browser.open"
+  },
+  {
+    "type": "browser.open",
+    "url": "ftp://x"
+  },
+  {
+    "type": "browser.open",
+    "url": "not a url"
+  },
+  {
+    "type": "browser.open",
+    "url": "https://x",
+    "port": 0
+  },
+  {
+    "type": "browser.open",
+    "url": "https://x",
+    "port": 70000
+  }
+]

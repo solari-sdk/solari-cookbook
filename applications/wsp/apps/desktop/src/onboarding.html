@@ -1,0 +1,372 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: AGPL-3.0-only -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>wsp</title>
+    <!-- The web app's own stylesheet, so every colour, radius and face here is the app's token; stage.mjs writes the built file's name. -->
+    <link rel="stylesheet" href="__WEB_CSS__" />
+    <style>
+      html { color-scheme: light dark; }
+      html.dark { color-scheme: dark; }
+      html:not(.dark) { color-scheme: light; }
+      body {
+        margin: 0;
+        height: 100vh;
+        overflow: hidden;
+        color: var(--foreground);
+        font: 14px/1.5 var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+      }
+      /* The app's stylesheet leaves html and body clear under the desktop's class so the sidebar shows the window's
+         glass; this page has no glass to show, so its ground is painted here, flat, in the app's token. */
+      .ground { position: fixed; inset: 0; background: var(--background); z-index: -1; }
+      /* The welcome's one loud moment: the accent falling from the top of the window onto the mark, and a halo behind
+         the mark itself; both leave with the welcome. */
+      .glow {
+        position: fixed; inset: 0; pointer-events: none; z-index: -1;
+        background: radial-gradient(60% 75% at 50% 0%, color-mix(in oklab, var(--primary) 22%, transparent) 0%, transparent 100%);
+        transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      body:has(#welcome[hidden]) .glow { opacity: 0; }
+      #welcome .hero { position: relative; }
+      #welcome .hero::before {
+        content: ""; position: absolute; inset: -40px -20px; border-radius: 50%; z-index: -1;
+        background: color-mix(in oklab, var(--primary) 28%, transparent); filter: blur(56px);
+        animation: halo 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+      }
+      @keyframes halo { from { opacity: 0; scale: 0.7; } }
+
+      /* ---- the screen ---- */
+      .setup { margin: 0 auto; display: flex; height: 100%; width: 560px; max-width: 100%; flex-direction: column; align-items: center; }
+      /* Two flex items sharing what the bands leave, so the screen stands centred and each stops at its least. */
+      .margin { flex: 1 1 0; min-height: 48px; width: 100%; }
+      .margin.bottom { min-height: 40px; }
+      .head { margin-bottom: 64px; display: flex; width: 100%; flex: none; flex-direction: column; align-items: center; }
+      .content { display: flex; width: 100%; min-height: 0; flex-direction: column; }
+      .foot { position: relative; display: flex; width: 100%; flex: none; flex-direction: column; align-items: center; padding-top: 56px; }
+      h1 { margin: 0; width: 100%; text-align: center; font: 600 34px/1.15 var(--font-sans); letter-spacing: -0.02em; }
+      .sentence { margin: 16px 0 0; max-width: 440px; text-align: center; font-size: 15px; line-height: 1.5; color: var(--muted-foreground); }
+
+      .hero { display: grid; place-items: center; margin-bottom: 28px; }
+      #welcome .head { margin-bottom: 0; }
+      #welcome .hero { margin-bottom: 0; }
+      #welcome .tilde { width: 320px; height: 200px; }
+      /* The mark's 12.8 units across at 250 px is a tilde 200 px wide; the box is cropped to the stroke's own rows. */
+      .tilde { width: 250px; height: 156px; overflow: visible; color: var(--foreground); }
+      /* Lit from above, as the Mac draws the app icon: the body flat in the ink, one thin light along the top edge and
+         one thin shade along the bottom, each cut from the stroke's own outline moved 0.3 units, so a vertical run
+         carries neither and nothing shades across the body. */
+      .tilde .body { stroke-width: 2.6; stroke-dasharray: 22; }
+      .tilde .lit { flood-color: light-dark(color-mix(in oklab, var(--color-white) 75%, transparent), var(--color-white)); }
+      .tilde .shade { flood-color: light-dark(var(--color-neutral-950), var(--background)); flood-opacity: 0.4; }
+      /* The welcome is the mark alone: it draws itself, its top edge lights, then the keycap rises; nothing plays after.
+         The agents screen rises in as one piece when the press brings it. */
+      @keyframes draw { from { stroke-dashoffset: 22; } }
+      @keyframes light { from { flood-opacity: 0; } }
+      @keyframes rise { from { opacity: 0; translate: 0 12px; } }
+      #welcome .tilde .body, #welcome .tilde .lit, #welcome .foot, #agents .head, #agents .content, #agents .foot {
+        animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+        animation-fill-mode: backwards;
+      }
+      #welcome .tilde .body { animation-name: draw; animation-duration: 0.9s; }
+      #welcome .tilde .lit { animation-name: light; animation-duration: 0.4s; animation-delay: 0.7s; }
+      #welcome .foot { animation-name: rise; animation-duration: 0.5s; animation-delay: 1s; }
+      #agents .head { animation-name: rise; animation-duration: 0.34s; }
+      #agents .content { animation-name: rise; animation-duration: 0.34s; animation-delay: 0.06s; }
+      #agents .foot { animation-name: rise; animation-duration: 0.34s; animation-delay: 0.1s; }
+      @media (prefers-reduced-motion: reduce) {
+        #welcome .tilde .body, #welcome .tilde .lit, #welcome .foot, #welcome .hero::before, #agents .head, #agents .content, #agents .foot { animation: none; }
+      }
+
+      /* ---- the card and its one row: the app's settings/recipe/rows.tsx CARD, ROW, NAME, Slot, STATE_WORD ---- */
+      .card { width: 100%; overflow: hidden; border-radius: 10px; border: 1px solid var(--border); background: var(--card); text-align: left; }
+      .row { display: flex; height: 48px; align-items: center; gap: 12px; padding: 0 10px 0 16px; }
+      .row + .row { border-top: 1px solid var(--border); }
+      label.row { cursor: pointer; transition: background-color 150ms; }
+      label.row:hover { background: color-mix(in oklab, var(--accent) 40%, transparent); }
+      label.row:has(input:disabled) { cursor: default; background: none; }
+      .mark { width: 18px; height: 18px; flex: none; display: grid; place-items: center; color: var(--muted-foreground); }
+      .mark svg { width: 18px; height: 18px; }
+      /* Each agent's published glyph, drawn in the row's ink so six marks from six vendors read as one set. */
+      .glyph { width: 16px; height: 16px; background: currentColor; mask: var(--glyph) center / contain no-repeat; }
+      .initial { font: 600 12px/1 var(--font-sans); }
+      label.row:has(input:checked) .mark { color: var(--foreground); }
+      .name { min-width: 0; flex: 1 0 auto; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; color: var(--foreground); }
+      label.row:has(input:disabled) .name { color: var(--muted-foreground); }
+      .slot { margin-left: auto; display: flex; min-width: 96px; flex: 0 1 auto; align-items: center; justify-content: flex-end; }
+      .state { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 12px/1.5 var(--font-mono); font-variant-numeric: tabular-nums; color: var(--muted-foreground); }
+      /* One row of its own height before the scan answers: the line is empty until then, and a column that recentres
+         under the words arriving is the one thing this screen must not do. */
+      .hint { margin: 12px 0 0; min-height: 19.5px; text-align: center; font-size: 13px; line-height: 1.5; color: var(--muted-foreground); }
+
+      /* ---- components/ui/checkbox.tsx: the box in the input hairline, the tick drawn by the indicator over the accent ---- */
+      .check { appearance: none; margin: 0; width: 16px; height: 16px; flex: none; display: grid; place-items: center; border: 1px solid var(--input); border-radius: 0.25rem; background: var(--background); cursor: inherit; }
+      .check:checked { background: var(--primary); border-color: var(--primary); }
+      .check:checked::after { content: ""; width: 4px; height: 8px; margin-top: -2px; border: solid var(--primary-foreground); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+      .check:disabled { opacity: 0.64; }
+
+      /* ---- components/ui/button.tsx: the default variant at the setup keycap's size ---- */
+      .primary {
+        position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        height: 40px; border-radius: 10px; padding: 0 22px; border: 1px solid var(--primary);
+        font: 500 15px/1.5 var(--font-sans); white-space: nowrap; cursor: pointer;
+        background: var(--primary); color: var(--primary-foreground);
+        box-shadow: inset 0 1px color-mix(in oklab, var(--color-white) 16%, transparent), 0 1px 2px color-mix(in oklab, var(--primary) 24%, transparent);
+        transition: box-shadow 150ms, background-color 150ms;
+      }
+      .primary:hover { background: color-mix(in oklab, var(--primary) 90%, transparent); }
+      .primary:disabled { opacity: 0.64; pointer-events: none; }
+      :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+      /* The refusal slot: inside the footer's 56 px gap, out of the flow at 18 px from its top, so
+         it stands two lines tall and its arrival moves neither the head, the card nor the keycap. What happened in the
+         destructive ink, then what to do in the foreground ink; every refusal here is written to fit two lines at
+         560 px, so nothing is ever cut. */
+      .refusal { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); margin: 0; width: 560px; max-width: 100%; min-height: 36px; text-align: center; font: 12px/18px var(--font-mono); color: var(--destructive-foreground); overflow-wrap: anywhere; }
+      .refusal .fix { color: var(--foreground); }
+    </style>
+  </head>
+  <body>
+    <div class="ground" aria-hidden="true"></div>
+    <div class="glow" aria-hidden="true"></div>
+    <section class="setup" id="welcome">
+      <div class="margin" aria-hidden="true"></div>
+      <div class="head">
+        <div class="hero">
+          <!-- A copy of apps/web/src/brand/mark.svg, which the desktop brand test pins it to; the band its outline
+               leaves bare when moved down is the top edge, moved up the bottom. -->
+          <svg class="tilde" viewBox="0 3 16 10" aria-hidden="true" fill="none" stroke="currentColor" stroke-linecap="round">
+            <defs>
+              <!-- The region is the box, not the path's own: a percentage of a 4.5 unit tall geometry cuts the stroke's rows. -->
+              <filter id="edges" filterUnits="userSpaceOnUse" x="-1" y="2" width="18" height="12">
+                <feOffset in="SourceAlpha" dy="0.3" result="down" />
+                <feComposite in="SourceAlpha" in2="down" operator="out" result="top" />
+                <feFlood class="lit" result="light" />
+                <feComposite in="light" in2="top" operator="in" result="rim" />
+                <feOffset in="SourceAlpha" dy="-0.3" result="up" />
+                <feComposite in="SourceAlpha" in2="up" operator="out" result="bottom" />
+                <feFlood class="shade" result="ink" />
+                <feComposite in="ink" in2="bottom" operator="in" result="under" />
+                <feMerge><feMergeNode in="SourceGraphic" /><feMergeNode in="rim" /><feMergeNode in="under" /></feMerge>
+              </filter>
+            </defs>
+            <g class="body" filter="url(#edges)"><path d="M1.6 8A3.4 3.4 0 0 1 8 8A3.4 3.4 0 0 0 14.4 8" /></g>
+          </svg>
+        </div>
+      </div>
+      <div class="foot">
+        <button id="start" type="button" class="primary">Get started <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="margin bottom" aria-hidden="true"></div>
+    </section>
+
+    <section class="setup" id="agents" hidden>
+      <div class="margin" aria-hidden="true"></div>
+      <div class="head">
+        <h1>Your agents drive wsp</h1>
+        <p class="sentence">Each ticked agent gets the wsp tools and skill, so it can open threads and tasks on this Mac.</p>
+      </div>
+      <div class="content">
+        <div class="card" id="rows"></div>
+        <p class="hint" id="line"></p>
+      </div>
+      <div class="foot">
+        <p class="refusal" id="status"></p>
+        <button id="open" type="button" class="primary">Open wsp <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="margin bottom" aria-hidden="true"></div>
+    </section>
+
+    <script>
+      const $ = id => document.getElementById(id);
+      /** The line under the card: what the ticks mean, or why the keycap is held. */
+      const LINES = {
+        some: "Agents you install later get the tools from Settings.",
+        noneTicked: "Tick at least one agent. wsp works through the agents you give it.",
+        noneFound: "No agent found on this Mac. Install Claude Code or Codex, then press Check again.",
+      };
+      /** Each refusal in two halves, what happened and what to do, both written to fit the slot's two lines at 560 px.
+       * The shell's own words are never drawn: they are unbounded and would run past the slot into the keycap, so they
+       * ride on the slot's title where the whole of one can be read. */
+      const REFUSALS = {
+        unread: { happened: "The agents on this Mac could not be read.", fix: "Press Check again to read them again." },
+        tools: { fix: "Take the tick off that agent, or fix its config and press again." },
+        shell: { happened: "wsp could not open on this Mac.", fix: "Press Open wsp again." },
+      };
+      const text = e => String(e && e.message ? e.message : e).replace(/^.*Error: /, "");
+
+      // The app's stylesheet has two sides told apart by the dark class; this page follows the computer's, with
+      // transitions held off for one frame across a flip, as the app does.
+      const html = document.documentElement;
+      const scheme = window.matchMedia("(prefers-color-scheme: dark)");
+      const follow = () => {
+        html.classList.add("no-transitions");
+        html.classList.toggle("dark", scheme.matches);
+        requestAnimationFrame(() => html.classList.remove("no-transitions"));
+      };
+      follow();
+      scheme.addEventListener("change", follow);
+
+      /** Names in a sentence: one, two joined by and, more with commas before the and. */
+      const list = names => (names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`);
+      /** The same, capped for a refusal: three names whole, and past that the first two and how many more, so the
+       * sentence holds the slot's two lines however many agents refused at once. */
+      const capped = names => (names.length <= 3 ? list(names) : `${names[0]}, ${names[1]} and ${names.length - 2} more`);
+
+      /** Draws one refusal in a slot: what happened in the destructive ink, then what to do in the foreground ink,
+       * with the shell's own words, where there are any, on the title. */
+      function refuse(slot, happened, fix, said) {
+        if (fix === "") slot.replaceChildren(happened);
+        else {
+          const what = document.createElement("span");
+          what.className = "fix";
+          what.textContent = fix;
+          slot.replaceChildren(`${happened} `, what);
+        }
+        if (said === undefined) slot.removeAttribute("title");
+        else slot.title = said;
+      }
+
+      function clearRefusal(slot) {
+        slot.replaceChildren();
+        slot.removeAttribute("title");
+      }
+
+      /** The agents whose glyph stage.mjs wrote beside this page; the rest draw their initial. */
+      const GLYPHS = new Set(__AGENT_GLYPHS__);
+      /** The agents the scan found on this computer, in the catalog's order; only these can be ticked. */
+      let found = [];
+      /** Whether the last scan refused. A computer whose agents could not be read is not a computer with none. */
+      let unread = false;
+
+      const ticked = () => [...$("rows").querySelectorAll("input:checked")].map(i => i.value);
+
+      function markOf(agent) {
+        const mark = document.createElement("span");
+        mark.className = "mark";
+        if (GLYPHS.has(agent.id)) {
+          const glyph = document.createElement("span");
+          glyph.className = "glyph";
+          glyph.dataset.agent = agent.id;
+          glyph.style.setProperty("--glyph", `url("agents/${agent.id}.svg")`);
+          mark.append(glyph);
+        } else {
+          const initial = document.createElement("span");
+          initial.className = "initial";
+          initial.textContent = agent.name.slice(0, 1);
+          mark.append(initial);
+        }
+        return mark;
+      }
+
+      function rowOf(agent) {
+        const row = document.createElement("label");
+        row.className = "row";
+        const check = document.createElement("input");
+        check.className = "check";
+        check.type = "checkbox";
+        check.value = agent.id;
+        check.checked = agent.found;
+        check.disabled = !agent.found;
+        check.addEventListener("change", settle);
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = agent.name;
+        const slot = document.createElement("span");
+        slot.className = "slot";
+        const state = document.createElement("span");
+        state.className = "state";
+        state.textContent = agent.found ? "on this Mac" : "not installed";
+        slot.append(state);
+        row.append(check, markOf(agent), name, slot);
+        return row;
+      }
+
+      /** The keycap and the line follow the ticks: at least one agent takes the tools, or the press is held. */
+      function settle() {
+        const open = $("open");
+        if (unread || found.length === 0) {
+          open.firstChild.textContent = "Check again ";
+          open.disabled = false;
+          $("line").textContent = unread ? "" : LINES.noneFound;
+          return;
+        }
+        open.firstChild.textContent = "Open wsp ";
+        const any = ticked().length > 0;
+        open.disabled = !any;
+        $("line").textContent = any ? LINES.some : LINES.noneTicked;
+      }
+
+      async function scan() {
+        try {
+          const agents = await window.wsp.agents();
+          found = agents.filter(a => a.found);
+          unread = false;
+          clearRefusal($("status"));
+          // Found agents first, in the catalog's order, then the rest, so the ticks sit together at the top.
+          $("rows").replaceChildren(...[...found, ...agents.filter(a => !a.found)].map(rowOf));
+        } catch (e) {
+          found = [];
+          unread = true;
+          $("rows").replaceChildren();
+          refuse($("status"), REFUSALS.unread.happened, REFUSALS.unread.fix, text(e));
+        }
+        settle();
+      }
+
+      // The scan starts while the mark draws, so the agents screen is ready when the press brings it.
+      let reading = scan();
+
+      function toAgents() {
+        $("welcome").hidden = true;
+        $("agents").hidden = false;
+      }
+
+      /** The one press out of this page: the tools into every ticked agent, then this computer recorded and the app
+       * opened on it. A config that refused says which and stays here, so its tick can come off and the press go again. */
+      async function openWsp() {
+        const button = $("open");
+        const slot = $("status");
+        if (button.disabled) return;
+        button.disabled = true;
+        let leaving = false;
+        try {
+          await reading;
+          if (unread || found.length === 0) {
+            reading = scan();
+            await reading;
+            return;
+          }
+          clearRefusal(slot);
+          const ids = ticked();
+          if (ids.length === 0) return;
+          const report = await window.wsp.install(ids);
+          if (report.failures.length > 0) {
+            const names = report.failures.map(f => found.find(a => a.id === f.id)?.name ?? f.id);
+            const happened = names.length === 1 ? `${names[0]}'s config would not take the wsp tools.` : `${capped(names)} would not take the wsp tools.`;
+            refuse(slot, happened, REFUSALS.tools.fix, report.failures.map(f => `${f.id}: ${f.error}`).join("\n"));
+            return;
+          }
+          leaving = true;
+          await window.wsp.finish();
+        } catch (e) {
+          leaving = false;
+          refuse(slot, REFUSALS.shell.happened, REFUSALS.shell.fix, text(e));
+        } finally {
+          if (!leaving) settle();
+        }
+      }
+
+      $("start").addEventListener("click", toAgents);
+      $("open").addEventListener("click", openWsp);
+      // Nothing is focused on either screen: Enter moves the screen on, and a ring shows only where the keyboard put
+      // it. A button the keyboard is on answers its own Enter.
+      document.addEventListener("keydown", e => {
+        if (e.key !== "Enter" || e.target instanceof HTMLButtonElement) return;
+        if (!$("welcome").hidden) toAgents();
+        else void openWsp();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,43 @@
+[
+  {
+    "dir": "/home/maya",
+    "roots": [
+      "/home/maya",
+      "/wsp/projects/p_1/checkout"
+    ],
+    "folders": [
+      {
+        "path": "/home/maya/code",
+        "repo": true
+      },
+      {
+        "path": "/home/maya/notes",
+        "repo": false
+      }
+    ],
+    "hidden": 3
+  },
+  {
+    "dir": "/home/maya/notes",
+    "roots": [
+      "/home/maya"
+    ],
+    "folders": [],
+    "hidden": 0
+  },
+  {
+    "dir": "/home/maya",
+    "roots": [
+      "/home/maya"
+    ],
+    "folders": [
+      {
+        "path": "/home/maya/code/spoo",
+        "repo": true,
+        "branch": "main",
+        "touchedAt": 1758700000000
+      }
+    ],
+    "hidden": 0
+  }
+]

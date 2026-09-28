@@ -1,0 +1,13 @@
+[
+  {
+    "id": 1,
+    "op": "machine.list"
+  },
+  {
+    "id": 2,
+    "op": "machine.list",
+    "labels": {
+      "wsp": "1"
+    }
+  }
+]

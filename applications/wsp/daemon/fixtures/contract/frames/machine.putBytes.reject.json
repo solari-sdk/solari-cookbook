@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "op": "machine.putBytes",
+    "machineId": "m1",
+    "path": "/root/in.tgz",
+    "uploadId": "u1",
+    "seq": 0,
+    "last": false
+  },
+  {
+    "id": 1,
+    "op": "machine.putBytes",
+    "machineId": "m1",
+    "path": "/root/in.tgz",
+    "uploadId": "uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+    "seq": 0,
+    "last": false,
+    "data": ""
+  },
+  {
+    "id": 1,
+    "op": "machine.putBytes",
+    "machineId": "m1",
+    "path": "/root/in.tgz",
+    "uploadId": "u1",
+    "seq": -1,
+    "last": false,
+    "data": ""
+  }
+]

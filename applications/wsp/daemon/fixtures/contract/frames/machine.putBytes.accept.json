@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "op": "machine.putBytes",
+    "machineId": "m1",
+    "path": "/root/in.tgz",
+    "uploadId": "u1",
+    "seq": 0,
+    "last": false,
+    "data": "AAAA"
+  },
+  {
+    "id": 2,
+    "op": "machine.putBytes",
+    "machineId": "m1",
+    "path": "/root/in.tgz",
+    "uploadId": "u1",
+    "seq": 1,
+    "last": true,
+    "data": "AAAA",
+    "timeoutMs": 60000
+  }
+]

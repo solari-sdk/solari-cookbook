@@ -1,0 +1,15 @@
+[
+  {
+    "id": 1,
+    "op": "machine.exec",
+    "machineId": "m1",
+    "cmd": "uname -m"
+  },
+  {
+    "id": 2,
+    "op": "machine.exec",
+    "machineId": "m1",
+    "cmd": "sleep 1",
+    "timeoutMs": 5000
+  }
+]

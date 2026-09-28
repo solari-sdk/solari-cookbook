@@ -1,0 +1,178 @@
+[
+  {
+    "id": 1,
+    "op": "machine.create"
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "laptop"
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "template": "wsp-box:24.04",
+      "cpu": 2,
+      "memMb": 4096,
+      "diskGb": 20,
+      "envs": {
+        "A": "b"
+      },
+      "labels": {
+        "wsp": "1"
+      },
+      "onIdle": "sleep",
+      "idleTimeoutMs": 1800000,
+      "idempotencyKey": "k1"
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "copy": {
+        "from": "projects/wsp/checkout",
+        "at": "/Users/zingzy/wsp"
+      }
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "copy": {
+        "from": "/wsp/projects/wsp/checkout"
+      }
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "copy": {
+        "from": "/wsp/projects/wsp/checkout",
+        "at": "/Users/../../etc"
+      }
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "copy": {
+        "from": "/wsp/projects/../../root/.ssh",
+        "at": "/Users/zingzy/wsp"
+      }
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "shares": [
+        {
+          "source": "logins/codex/auth.json",
+          "target": "/root/.codex/auth.json"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "shares": [
+        {
+          "source": "/var/lib/wsp/logins/../../root/.ssh/id_ed25519",
+          "target": "/root/.codex/auth.json"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "shares": [
+        {
+          "source": "/var/lib/wsp/logins/codex/auth.json",
+          "target": "/root/../etc/passwd"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "shares": [
+        {
+          "source": "/var/lib/wsp/logins/codex/auth.json"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "binds": [
+        {
+          "source": "projects/pr_1/memory",
+          "target": "/root/.claude-cfg/projects/-root-wsp/memory"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "binds": [
+        {
+          "source": "/wsp/projects/../../root/.ssh",
+          "target": "/root/.claude-cfg/projects/-root-wsp/memory"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "binds": [
+        {
+          "source": "/wsp/projects/pr_1/memory",
+          "target": "/root/../etc"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "op": "machine.create",
+    "spec": {
+      "kind": "sandbox",
+      "binds": [
+        {
+          "source": "/wsp/projects/pr_1/memory"
+        }
+      ]
+    }
+  }
+]

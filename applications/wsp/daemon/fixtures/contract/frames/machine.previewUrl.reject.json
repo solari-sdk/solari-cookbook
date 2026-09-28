@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1,
+    "op": "machine.previewUrl",
+    "machineId": "m1"
+  },
+  {
+    "id": 1,
+    "op": "machine.previewUrl",
+    "machineId": "m1",
+    "port": 0
+  },
+  {
+    "id": 1,
+    "op": "machine.previewUrl",
+    "machineId": "m1",
+    "port": 65536
+  }
+]

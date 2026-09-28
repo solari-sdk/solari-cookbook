@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "op": "proc.inspect"
+  },
+  {
+    "id": 1,
+    "op": "proc.inspect",
+    "pid": 0
+  },
+  {
+    "id": 1,
+    "op": "proc.inspect",
+    "pid": "50"
+  },
+  {
+    "id": 1,
+    "op": "proc.inspect",
+    "pid": 1.5
+  }
+]

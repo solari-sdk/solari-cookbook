@@ -1,0 +1,15 @@
+[
+  {
+    "type": "port.close",
+    "port": 8080
+  },
+  {
+    "type": "port.close",
+    "port": 8080,
+    "pid": 123,
+    "process": "node",
+    "command": "node server.js",
+    "exited": true,
+    "at": "2026-09-12T00:00:00.000Z"
+  }
+]

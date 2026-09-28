@@ -1,0 +1,40 @@
+/* Frost: blue-grey light with a steel blue. */
+[data-theme="frost"] {
+  color-scheme: light;
+  --background: #f5f7fa;
+  --foreground: #1f2933;
+  --card: #ffffff;
+  --muted: #eef2f6;
+  --muted-foreground: #5d6978;
+  --accent: #e5ebf1;
+  --accent-foreground: #161e26;
+  --primary: #3462a8;
+  --primary-foreground: #fff;
+  --border: #d8dfe7;
+  --input: #c3cdd9;
+  --success: var(--color-emerald-600);
+  --warning: var(--color-amber-600);
+  --error-foreground: #b42318;
+  --warning-foreground: #8a5a0b;
+  --success-foreground: #1f7a4d;
+  --info-foreground: #3462a8;
+  --update-foreground: #3462a8;
+  --sidebar: #eef2f6;
+  --sidebar-foreground: #1f2933;
+  --sidebar-muted-foreground: #536070;
+  --sidebar-whisper: #38424d;
+  --sidebar-control-surface: #e5ebf1;
+  --sidebar-row-hover: #f5f7fa;
+  --sidebar-row-active: #ffffff;
+  --sidebar-row-selected: #e5ebf1;
+  --sidebar-row-edge: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --sidebar-rail: rgb(31 41 51 / 16%);
+  --sidebar-stage-fade: var(--sidebar);
+  --sidebar-canvas: #f5f7fa;
+  --sidebar-card: #ffffff;
+  --sidebar-fill: #eef2f6;
+  --sidebar-hover: #e5ebf1;
+  --sidebar-hover-ink: #161e26;
+  --sidebar-quiet: #5d6978;
+  --sidebar-input: #c3cdd9;
+}
