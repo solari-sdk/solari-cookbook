@@ -49,6 +49,7 @@ One key spans all three, so an example can use more than one at once.
 | Example | Language | What it shows |
 | --- | --- | --- |
 | [desktop-computer-use-py](examples/desktop-computer-use-py) | Python | Screenshot, click, and type on a Linux GUI |
+| [desktop-gui-assert-ts](examples/desktop-gui-assert-ts) | TypeScript | Drive a GUI app, then prove the action landed on disk |
 
 ## Applications
 
