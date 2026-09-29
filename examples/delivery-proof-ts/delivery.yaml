@@ -1,0 +1,37 @@
+# The delivery contract. Everything the run knows about your software arrives
+# through this one file: what a sandbox looks like before you touch it, the
+# commands you would actually type to install your thing, and what must be
+# true afterwards. Never put a literal secret in `run`, `path`, or `contains`.
+#
+# This file demos itself against the inline installer in index.ts — swap that
+# script and this contract for your own installer and your own checks.
+
+environment:
+  template: base
+  notes: >-
+    A Solari sandbox created from the "base" template. python3, node, and curl
+    are preinstalled; nothing else is pre-seeded.
+
+deliver:
+  - id: install
+    run: sh /tmp/installer.sh
+  - id: start
+    run: /opt/widgetd/bin/widgetd start
+
+expect:
+  - id: cli-version
+    kind: command
+    run: /opt/widgetd/bin/widgetd --version
+  - id: config-file
+    kind: file
+    path: /etc/widgetd/widgetd.conf
+    contains: "port="
+  - id: http-port
+    kind: port
+    port: 8080
+  # "delivers exactly": these paths and nothing else under the root.
+  - id: install-tree
+    kind: tree
+    root: /opt/widgetd
+    paths:
+      - bin/widgetd

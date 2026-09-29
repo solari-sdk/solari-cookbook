@@ -34,6 +34,7 @@ past. Copy one into your project and change the parts you care about.
 | [sandbox-snapshot-fork-py](examples/sandbox-snapshot-fork-py) | Python | Seed a snapshot, fork clones, and verify each restored the exact file digest |
 | [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
 | [sandbox-scan-untrusted-code-ts](examples/sandbox-scan-untrusted-code-ts) | TypeScript | Run untrusted code and capture what it did (audit hook) |
+| [delivery-proof-ts](examples/delivery-proof-ts) | TypeScript | Run an installer on a new sandbox and check it delivered exactly what it declared — "it runs" is not enough |
 
 ### Multi-product
 
