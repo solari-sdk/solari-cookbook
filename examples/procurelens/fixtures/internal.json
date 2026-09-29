@@ -1,0 +1,83 @@
+[
+  {
+    "sku": "ACME-101",
+    "name": "ACME synthetic demo item ACME-101",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "ACME-102",
+    "name": "ACME synthetic demo item ACME-102",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": 20,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "ACME-103",
+    "name": "ACME synthetic demo item ACME-103",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "ACME-104",
+    "name": "ACME synthetic demo item ACME-104",
+    "price": "120.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": " acme-105 ",
+    "name": "ACME synthetic demo item acme-105",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "ACME-106",
+    "name": "ACME synthetic demo item ACME-106",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "ACME-108",
+    "name": "ACME synthetic demo item ACME-108",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "acme-108",
+    "name": "ACME synthetic demo item acme-108",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": null
+  },
+  {
+    "sku": "ACME-109",
+    "name": "ACME synthetic demo item ACME-109",
+    "price": "20.00",
+    "currency": "USD",
+    "availability": "in_stock",
+    "stock": null,
+    "leadTimeDays": 2
+  }
+]

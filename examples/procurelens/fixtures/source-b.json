@@ -1,0 +1,67 @@
+{
+  "adapter": "fixture-v1",
+  "sourceUrl": "https://supplier.example/catalog",
+  "observedAt": "2026-09-02T09:00:00.000Z",
+  "httpStatus": 200,
+  "complete": true,
+  "fragments": [
+    "{\"sku\":\"ACME-101\",\"name\":\"ACME synthetic demo item ACME-101\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-102\",\"name\":\"ACME synthetic demo item ACME-102\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":10,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-103\",\"name\":\"ACME synthetic demo item ACME-103\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-104\",\"name\":\"ACME synthetic demo item ACME-104\",\"price\":\"139.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-105\",\"name\":\"ACME synthetic demo item ACME-105\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-107\",\"name\":\"ACME synthetic demo item ACME-107\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-108\",\"name\":\"ACME synthetic demo item ACME-108\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}",
+    "{\"sku\":\"ACME-109\",\"name\":\"ACME synthetic demo item ACME-109\",\"price\":\"20.00\",\"currency\":\"USD\",\"availability\":\"in_stock\",\"stock\":null,\"leadTimeDays\":null}"
+  ],
+  "visible": [
+    {
+      "sku": "ACME-101",
+      "name": "ACME synthetic demo item ACME-101",
+      "price": "20.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-102",
+      "name": "ACME synthetic demo item ACME-102",
+      "price": "20.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-103",
+      "name": "ACME synthetic demo item ACME-103",
+      "price": "20.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-104",
+      "name": "ACME synthetic demo item ACME-104",
+      "price": "139.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-105",
+      "name": "ACME synthetic demo item ACME-105",
+      "price": "20.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-107",
+      "name": "ACME synthetic demo item ACME-107",
+      "price": "20.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-108",
+      "name": "ACME synthetic demo item ACME-108",
+      "price": "20.00",
+      "availability": "in_stock"
+    },
+    {
+      "sku": "ACME-109",
+      "name": "ACME synthetic demo item ACME-109",
+      "price": "20.00",
+      "availability": "in_stock"
+    }
+  ]
+}

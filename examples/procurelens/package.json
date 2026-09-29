@@ -1,0 +1,11 @@
+{
+  "name": "procurelens", "version": "0.1.0", "private": true, "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "test": "node --experimental-strip-types --test tests/*.test.ts && node scripts/test-processor.mjs",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "demo": "node --experimental-strip-types src/cli.ts simulate fixtures/internal.json fixtures/source-a.json"
+  },
+  "dependencies": { "@solarisdk/browser": "0.1.3", "@solarisdk/sandbox": "0.1.3" }
+}
