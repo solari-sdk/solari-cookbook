@@ -33,6 +33,7 @@ past. Copy one into your project and change the parts you care about.
 | [sandbox-code-interpreter-py](examples/sandbox-code-interpreter-py) | Python | Stateful Python kernel for agent loops |
 | [sandbox-snapshot-fork-py](examples/sandbox-snapshot-fork-py) | Python | Seed a snapshot, fork clones, and verify each restored the exact file digest |
 | [sandbox-port-preview-ts](examples/sandbox-port-preview-ts) | TypeScript | Expose a server in the VM on a public URL |
+| [sandbox-interactive-cli-ts](examples/sandbox-interactive-cli-ts) | TypeScript | Answer an interactive wizard's prompts over a real PTY |
 | [sandbox-scan-untrusted-code-ts](examples/sandbox-scan-untrusted-code-ts) | TypeScript | Run untrusted code and capture what it did (audit hook) |
 
 ### Multi-product
