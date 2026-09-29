@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "faultline-solari"
+version = "0.1.0"
+description = "Time-travel debugger and cost-aware evaluation system for long-running AI agents on Solari"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "solari-sandbox>=0.2.0",
+  "fastapi>=0.100.0",
+  "uvicorn>=0.20.0",
+  "pydantic>=2.0.0",
+]
+
+[project.scripts]
+faultline = "faultline.cli:main"
+
+[tool.setuptools]
+packages = ["faultline"]
+
+[tool.setuptools.package-data]
+faultline = ["static/*"]
