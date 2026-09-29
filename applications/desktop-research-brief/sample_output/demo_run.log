@@ -1,0 +1,90 @@
+[   4.1s] session ZGVza3RvcC1wb29sLWktMGRmMWIwMWJiNjBlOGMyNTA6dm1fMDAwOTIzOmNtdGhzMDNsdjAxM3hvMDAxYXFmOHpmZ2s6MTc4ODI1OTYxODExNw.QLTP765M4onUJz38h35QRVvbwA7tjIhuH3qo-bib8KM  (watch live: console.getsolari.com -> Desktops)
+[   5.9s] display ready after 1 poll(s)
+[   6.9s] browsers in VM: ['google-chrome'] -> using google-chrome
+[   7.2s] launched google-chrome pid=611
+[  33.9s] navigate https://pinetree-research.com: loaded=True | The address bar shows "pinetree-research.com" and the page is fully loaded and readable, displaying the Pinetree Research homepage with the headline "Engineering the Future of Autonomous Intelligence" and navigation links.
+[  41.8s]   extract screen 1: 3 found, 3 new, more_below=True
+[  48.6s]   extract screen 2: 0 found, 0 new, more_below=False
+[  65.6s]   plan 1. [url] https://pinetree-research.com/about
+[  65.6s]   plan 2. [url] https://pinetree-research.com/research
+[  65.6s]   plan 3. [url] https://pinetree-research.com/blog
+[  65.6s]   plan 4. [url] https://pinetree-research.com/careers
+[  65.6s]   plan 5. [search] Pinetree Research AI funding investors 2026
+[  65.6s]   plan 6. [search] Pinetree Research pinetree-research.com GitHub
+[  65.6s]   plan 7. [search] Pinetree Research AI lab LinkedIn
+[  65.6s]   plan 8. [search] Pinetree Research Computer Use Agents autonomous AI news 2026
+[  65.6s]   plan 9. [search] Pinetree Research autonomous intelligence research paper arxiv
+[  65.6s] --- task 1 [url] https://pinetree-research.com/about
+[  80.2s] navigate https://pinetree-research.com/about: loaded=True | The address bar shows "pinetree-research.com/about" and the page is visibly loaded with the "About Pinetree" heading and subtitle text readable on screen.
+[  84.8s]   extract screen 1: 1 found, 1 new, more_below=True
+[  97.8s]   extract screen 2: 6 found, 6 new, more_below=False
+[  97.8s] --- task 2 [url] https://pinetree-research.com/research
+[ 122.9s] wait_settled: timeout after 20s, proceeding with latest frame
+[ 129.7s] navigate https://pinetree-research.com/research: loaded=True | The address bar shows "pinetree-research.com/research" and the page is fully loaded and readable, displaying the Pinetree Research website with the heading "Advancing the limits of autonomous computer use."
+[ 136.6s]   extract screen 1: 3 found, 3 new, more_below=True
+[ 150.1s]   extract screen 2: 6 found, 6 new, more_below=True
+[ 165.4s]   extract screen 3: 9 found, 9 new, more_below=True
+[ 165.4s] --- task 3 [url] https://pinetree-research.com/blog
+[ 179.5s] navigate https://pinetree-research.com/blog: loaded=True | The address bar shows "pinetree-research.com/blog" (matching the required site), and the page is fully loaded and readable with a "Latest from Our Blog" heading, blog content, and benchmark charts visible.
+[ 197.8s]   extract screen 1: 18 found, 18 new, more_below=True
+[ 208.8s]   extract screen 2: 5 found, 5 new, more_below=True
+[ 214.8s]   extract screen 3: 1 found, 1 new, more_below=False
+[ 214.8s] --- task 4 [url] https://pinetree-research.com/careers
+[ 228.6s] navigate https://pinetree-research.com/careers: loaded=True | The address bar shows "pinetree-research.com/careers" and the page is fully loaded and readable, displaying "Careers at Pinetree" as the heading along with "Our Belief" section content.
+[ 240.8s]   extract screen 1: 6 found, 6 new, more_below=True
+[ 250.5s]   extract screen 2: 3 found, 3 new, more_below=False
+[ 250.5s] --- task 5 [search] Pinetree Research AI funding investors 2026
+[ 262.7s] navigate https://duckduckgo.com/?q=Pinetree+Research+AI+funding+investors+2026: loaded=True | The address bar shows "duckduckgo.com/?q=Pinetree+Research+AI+funding+investors+2026&ia=web" (same site with added &ia=web parameter), and the page is fully loaded with readable search results from PitchBook, CrunchBase, and Tracxn.
+[ 266.9s]   brain: click(392,514) | The CrunchBase result for "Pinetree Research - Crunchbase Company Profile & Funding" is the most relevant prim
+[ 280.1s]   extract screen 1: 0 found, 0 new, more_below=False, obstacle='Cloudflare CAPTCHA challenge ("Verify you are human") is blocking access to the Crunchbase page for Pinetree Research. No substantive content is visible.'
+[ 280.1s]   blocked source (Cloudflare CAPTCHA challenge ("Verify you are human") is blocking access to the ); not attempting to bypass
+[ 280.1s] --- task 6 [search] Pinetree Research pinetree-research.com GitHub
+[ 293.2s] navigate https://duckduckgo.com/?q=Pinetree+Research+pinetree-research.com+GitHub: loaded=True | The address bar shows "duckduckgo.com/?q=Pinetree+Research+pinetree-research.com+GitHub&ia=web" (same site, with additional parameters), and the page is fully loaded with visible search results for that query.
+[ 297.9s]   brain: click(294,535) | The second result "PinetreeResearch repositories ╖ GitHub" at https://github.com/orgs/PinetreeResearch/reposit
+[ 318.5s]   extract screen 1: 9 found, 9 new, more_below=True
+[ 318.5s] --- task 7 [search] Pinetree Research AI lab LinkedIn
+[ 330.7s] navigate https://duckduckgo.com/?q=Pinetree+Research+AI+lab+LinkedIn: loaded=True | The address bar shows "duckduckgo.com/?q=Pinetree+Research+AI+lab+LinkedIn&ia=web" (same site, with additional parameter), and the page is fully loaded with readable search results for "Pinetree Research AI lab LinkedIn".
+[ 334.6s]   brain: click(245,364) | The first result is the LinkedIn company page for Pinetree Research, which is exactly what we need. I'll click
+[ 353.7s]   extract screen 1: 5 found, 5 new, more_below=True, obstacle='A sign-in popup is present but partially dismissed (close button visible), and some company profile content is visible behind/around it. Core profile facts (name, industry, location, follower count, tagline) are readable.'
+[ 357.2s]   dismiss: click(781,281) | A sign-in popup is visible with a close (X) button in the top-right corner. I'll click the X button 
+[ 365.7s]   dismiss: done | The screenshot shows a LinkedIn company page for Pinetree Research. The content is clearly visible -
+[ 372.5s]   extract screen 1: 5 found, 4 new, more_below=True, obstacle='LinkedIn prompts non-logged-in users to sign in, but basic company profile information is still visible.'
+[ 372.5s] --- task 8 [search] Pinetree Research Computer Use Agents autonomous AI news 2026
+[ 384.1s] navigate https://duckduckgo.com/?q=Pinetree+Research+Computer+Use+Agents+autonomous+AI+news+2026: loaded=True | The address bar shows "duckduckgo.com/?q=Pinetree+Research+Computer+Use+Agents+autonomous+AI+news+2026&ia=web" and the page is fully loaded with visible search results for that query.
+[ 389.8s]   brain: click(392,690) | I can see a result "Approaching Human-level Intelligence on Online-Mind2Web" from pinetree-research.com/blog/o
+[ 405.6s]   extract screen 1: 3 found, 3 new, more_below=True
+[ 413.8s]   extract screen 2: 2 found, 2 new, more_below=True
+[ 413.8s] --- task 9 [search] Pinetree Research autonomous intelligence research paper arxiv
+[ 425.8s] navigate https://duckduckgo.com/?q=Pinetree+Research+autonomous+intelligence+research+paper+arxiv: loaded=True | The address bar shows "duckduckgo.com/?q=Pinetree+Research+autonomous+intelligence+research+paper+arxiv&ia=web" and the page is fully loaded with visible search results.
+[ 433.2s]   brain: click(419,364) | I can see two arXiv results at the top. The second one "Arbor: Tree Search as a Cognition Layer for Autonomous
+[ 467.4s]   extract screen 1: 12 found, 12 new, more_below=True
+[ 501.6s]   extract screen 2: 12 found, 9 new, more_below=True
+
+=== RUN SUMMARY ===
+   1. done    [url] https://pinetree-research.com/about  - https://pinetree-research.com/about -> 7 new findings
+   2. done    [url] https://pinetree-research.com/research  - https://pinetree-research.com/research -> 18 new findings
+   3. done    [url] https://pinetree-research.com/blog  - https://pinetree-research.com/blog -> 24 new findings
+   4. done    [url] https://pinetree-research.com/careers  - https://pinetree-research.com/careers -> 9 new findings
+   5. failed  [search] Pinetree Research AI funding investors 2026  - https://www.crunchbase.com/organization/pinetree-research blocked: Cloudflare CAPTCHA challenge ("Verify you are human") is blocking access to the Crunchbase page for Pinetree Research. N
+   6. done    [search] Pinetree Research pinetree-research.com GitHub  - https://github.com/orgs/PinetreeResearch/repositories -> 9 new findings
+   7. done    [search] Pinetree Research AI lab LinkedIn  - https://www.linkedin.com/company/pinetree-research -> 9 new findings
+   8. done    [search] Pinetree Research Computer Use Agents autonomous AI news 2026  - https://pinetree-research.com/blog/online-mind2web-benchmark -> 5 new findings
+   9. done    [search] Pinetree Research autonomous intelligence research paper arxiv  - https://arxiv.org/abs/2606.11926 -> 21 new findings
+findings: 105  problem=3  approach=17  product=50  team=5  tech=11  hiring=1  news=7  other=11
+sources: 9  actions: 47/90  model_calls: 38  elapsed: 495s
+checkpoint: runs\pinetree-research\checkpoint.json
+[ 557.0s] brief composed: 9571 chars
+[ 557.7s] opened mousepad pid=2425
+[ 568.5s] editor contents verified: True (9571 chars read back)
+[ 577.8s] GUI save verified: True
+[ 580.5s] session destroyed
+
+=== DONE ===
+target      : Pinetree Research
+findings    : 105 from 9 sources
+checkpoint  : runs\pinetree-research\checkpoint.json
+brief (local): runs\pinetree-research\brief.md
+brief (VM)   : /root/reports/pinetree-research-20260901-1156.md   pasted_verified=True gui_save_verified=True
+download     : <signed url redacted>
+recording    : <signed url redacted>
+model calls  : 39 (retries 0)   elapsed: 580s
