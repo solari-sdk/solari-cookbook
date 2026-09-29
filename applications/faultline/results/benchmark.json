@@ -1,5 +1,5 @@
 {
-  "experiment_id": "exp-bench-1790630463",
+  "experiment_id": "exp-bench-1790687475",
   "seed": 42,
   "scenarios": [
     "wrong-owner"
@@ -7,34 +7,34 @@
   "metrics_by_strategy": {
     "Linear": {
       "probes_count": 18.0,
-      "localization_time_ms": 21.37,
+      "localization_time_ms": 3.6,
       "forks_count": 0.0,
       "snapshots_count": 25.0,
-      "verification_time_ms": 21.29,
+      "verification_time_ms": 3.55,
       "runs_evaluated": 1
     },
     "Binary": {
       "probes_count": 6.0,
-      "localization_time_ms": 1.15,
+      "localization_time_ms": 1.36,
       "forks_count": 0.0,
       "snapshots_count": 25.0,
-      "verification_time_ms": 1.14,
+      "verification_time_ms": 1.34,
       "runs_evaluated": 1
     },
     "Parallel": {
       "probes_count": 11.0,
-      "localization_time_ms": 3.16,
+      "localization_time_ms": 3.42,
       "forks_count": 5.0,
       "snapshots_count": 25.0,
-      "verification_time_ms": 0.76,
+      "verification_time_ms": 0.35,
       "runs_evaluated": 1
     },
     "Adaptive": {
       "probes_count": 4.0,
-      "localization_time_ms": 0.67,
+      "localization_time_ms": 0.88,
       "forks_count": 0.0,
       "snapshots_count": 25.0,
-      "verification_time_ms": 0.66,
+      "verification_time_ms": 0.86,
       "runs_evaluated": 1
     }
   },
@@ -76,5 +76,5 @@
       "cost_status": "ESTIMATED"
     }
   },
-  "timestamp": 1790630463.8657649
+  "timestamp": 1790687475.6785128
 }

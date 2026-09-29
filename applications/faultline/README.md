@@ -8,6 +8,8 @@ When an AI agent performs 30+ state-changing actions and eventually fails, repla
 
 ---
 
+![Fault Line architecture](docs/fault-line-architecture.svg)
+
 ## 🚀 The Central Loop
 
 ```text

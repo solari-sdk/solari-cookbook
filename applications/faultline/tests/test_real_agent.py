@@ -366,11 +366,11 @@ class TestRealAgentIntegration(unittest.TestCase):
 
         async def run_test():
             sbx_id, store = await adapter.create_sandbox()
-            # Force wait_for side effect to simulate TimeoutError
-            with patch("asyncio.wait_for", side_effect=asyncio.TimeoutError):
-                with self.assertRaises(RuntimeError) as ctx:
-                    await adapter.create_snapshot(sbx_id, store, "test-snap")
-                self.assertIn("Solari checkpoint timed out", str(ctx.exception))
+            # Make sbx.snapshot raise TimeoutError when awaited to simulate timeout
+            mock_sbx.snapshot = unittest.mock.AsyncMock(side_effect=asyncio.TimeoutError)
+            with self.assertRaises(RuntimeError) as ctx:
+                await adapter.create_snapshot(sbx_id, store, "test-snap")
+            self.assertIn("Solari checkpoint timed out", str(ctx.exception))
 
         asyncio.run(run_test())
 
