@@ -1,0 +1,32 @@
+{
+  "name": "goblinqa",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-6.ts",
+    "milestone:6": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-6.ts",
+    "milestone:0": "tsx src/milestone-0.ts",
+    "milestone:1": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-1.ts",
+    "milestone:2": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-2.ts",
+    "milestone:3": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-3.ts",
+    "milestone:4": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-4.ts",
+    "milestone:5": "node --env-file-if-exists=.env --env-file-if-exists=src/.env --import tsx src/milestone-5.ts",
+    "test:secure-input": "node --import tsx --test src/goblin/secure-input.test.ts",
+    "test": "node --import tsx --test src/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^1.52.0",
+    "@solarisdk/browser": "^0.1.1"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

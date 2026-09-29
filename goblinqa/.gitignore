@@ -1,0 +1,5 @@
+# Browser evidence may contain sandbox data and expiring access URLs.
+artifacts/
+.env
+.env.local
+.DS_Store
