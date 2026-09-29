@@ -8,4 +8,6 @@ __pycache__/
 .venv/
 venv/
 screenshot.png
+examples/watchdog-selfheal-ts/out/
+examples/portal-watch-ts/out/
 screenshots/
