@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [ghostspec](ghostspec) | TypeScript | Describe a flow in English, get a Playwright test verified to pass before you get it |

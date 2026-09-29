@@ -1,0 +1,39 @@
+{
+  "name": "ghostspec",
+  "version": "0.1.0",
+  "description": "Point it at your web app, describe a flow in English, get real Playwright tests — written and verified on a cloud browser.",
+  "type": "module",
+  "bin": {
+    "ghostspec": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "test": "tsx src/selftest.ts"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "e2e",
+    "ai",
+    "solari",
+    "cloud-browser"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "playwright-core": "^1.59.0"
+  },
+  "//devDependencies": "@playwright/test is dev-only: verify.ts spawns the real runner to prove a generated spec passes before we hand it over. Install it with PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 — specs run on a Solari cloud browser over CDP, so no local Chromium is ever needed. Deliberately NOT pinned to 1.59.x: that pin only applies to the /ws/ Playwright-protocol path (HTTP 428 otherwise). We connect over CDP, which has no version gate — 1.62.1 here is the proof.",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

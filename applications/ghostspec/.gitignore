@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+.env.local
+
+# ghostspec's own default output dir
+ghostspec-out/
+
+# verification scratch: temp specs, a node_modules symlink, an empty browsers dir
+.verify/
+test-results/
+no-browsers/
+
+# local agent knowledge base — never published
+agent-docs/
