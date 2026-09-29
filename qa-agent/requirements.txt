@@ -1,0 +1,4 @@
+boto3>=1.34.0
+solari-browser>=0.1.2
+solari-sandbox>=0.1.0
+python-dotenv>=1.0.0
