@@ -1,0 +1,109 @@
+{
+  "backend": "solari",
+  "classes": 6,
+  "bugsPlanted": true,
+  "target": "https://87b8377dcd7767f473a7-3000.preview.getsolari.com",
+  "backpressureEvents": [],
+  "results": [
+    {
+      "name": "anon",
+      "ok": false,
+      "saw": [
+        "tracker",
+        "heading",
+        "tier",
+        "consent-banner",
+        "signin",
+        "quota"
+      ],
+      "findings": [
+        {
+          "kind": "leaked",
+          "testid": "tracker"
+        }
+      ],
+      "ms": 8942
+    },
+    {
+      "name": "free",
+      "ok": false,
+      "saw": [
+        "tracker",
+        "heading",
+        "tier",
+        "export",
+        "quota"
+      ],
+      "findings": [
+        {
+          "kind": "leaked",
+          "testid": "export"
+        }
+      ],
+      "ms": 7357
+    },
+    {
+      "name": "paid",
+      "ok": true,
+      "saw": [
+        "tracker",
+        "heading",
+        "tier",
+        "export",
+        "quota"
+      ],
+      "findings": [],
+      "ms": 8914
+    },
+    {
+      "name": "admin",
+      "ok": true,
+      "saw": [
+        "tracker",
+        "heading",
+        "tier",
+        "export",
+        "admin",
+        "quota"
+      ],
+      "findings": [],
+      "ms": 7995
+    },
+    {
+      "name": "eu-consent-rejected",
+      "ok": false,
+      "saw": [
+        "tracker",
+        "heading",
+        "tier",
+        "consent-banner",
+        "export",
+        "quota"
+      ],
+      "findings": [
+        {
+          "kind": "leaked",
+          "testid": "tracker"
+        },
+        {
+          "kind": "leaked",
+          "testid": "export"
+        }
+      ],
+      "ms": 8899
+    },
+    {
+      "name": "anon-consent-accepted",
+      "ok": true,
+      "saw": [
+        "tracker",
+        "heading",
+        "tier",
+        "signin",
+        "quota"
+      ],
+      "findings": [],
+      "ms": 6720
+    }
+  ]
+}
