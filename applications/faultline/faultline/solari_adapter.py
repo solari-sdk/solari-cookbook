@@ -15,6 +15,7 @@ import asyncio
 import json
 import os
 import time
+import httpx
 from typing import Any
 
 from .workload import CRMWorkloadStore
@@ -174,7 +175,17 @@ class LiveSolariAdapter(BaseSolariAdapter):
         if not HAS_SOLARI_SDK:
             raise RuntimeError("solari-sandbox SDK is not installed")
         self.base_url = base_url
-        self.client = SandboxClient(api_key=self.api_key, base_url=self.base_url, call_timeout_ms=60_000)
+        http_client = httpx.AsyncClient(
+            timeout=httpx.Timeout(30.0, connect=10.0, read=30.0, write=10.0)
+        )
+        self.client = SandboxClient(
+            api_key=self.api_key,
+            base_url=self.base_url,
+            http=http_client,
+            call_timeout_ms=30_000,
+        )
+        if hasattr(self.client, "_t") and hasattr(self.client._t, "_timeout"):
+            self.client._t._timeout = 30.0
 
         self.snapshot_count = 0
         self.fork_count = 0
@@ -210,28 +221,58 @@ class LiveSolariAdapter(BaseSolariAdapter):
                 await self.kill_sandbox(active_id)
 
             self.fork_count += 1
-            sbx = await self.client.create(
-                template=template,
-                from_snapshot=from_snapshot,
-                timeout_ms=10 * 60_000,
-                metadata=meta,
-            )
+            try:
+                sbx = await asyncio.wait_for(
+                    self.client.create(
+                        template=template,
+                        from_snapshot=from_snapshot,
+                        timeout_ms=10 * 60_000,
+                        metadata=meta,
+                    ),
+                    timeout=30.0,
+                )
+            except (asyncio.TimeoutError, TimeoutError) as exc:
+                raise RuntimeError(
+                    "Solari sandbox creation timed out. Agent execution could not continue."
+                ) from exc
+            except Exception as exc:
+                raise RuntimeError(
+                    f"Solari sandbox creation failed: {exc}. Agent execution could not continue."
+                ) from exc
         else:
-            sbx = await self.client.create(
-                template=template,
-                timeout_ms=10 * 60_000,
-                metadata=meta,
-            )
+            try:
+                sbx = await asyncio.wait_for(
+                    self.client.create(
+                        template=template,
+                        timeout_ms=10 * 60_000,
+                        metadata=meta,
+                    ),
+                    timeout=30.0,
+                )
+            except (asyncio.TimeoutError, TimeoutError) as exc:
+                raise RuntimeError(
+                    "Solari sandbox creation timed out. Agent execution could not continue."
+                ) from exc
+            except Exception as exc:
+                raise RuntimeError(
+                    f"Solari sandbox creation failed: {exc}. Agent execution could not continue."
+                ) from exc
 
         sandbox_id = sbx.sandboxId
         self._sandboxes[sandbox_id] = sbx
-        await sbx.connect()
+        try:
+            await asyncio.wait_for(sbx.connect(), timeout=15.0)
+        except Exception:
+            pass
 
         store = CRMWorkloadStore(":memory:")
         if from_snapshot:
             # Restore CRM state from remote file inside restored Solari Sandbox
             try:
-                state_json = await sbx.files.read_text("/tmp/faultline/crm_state.json")
+                state_json = await asyncio.wait_for(
+                    sbx.files.read_text("/tmp/faultline/crm_state.json"),
+                    timeout=15.0,
+                )
                 state_data = json.loads(state_json)
                 for lead in state_data.get("leads", []):
                     store.create_lead(lead["name"], lead["email"], lead["company"], lead["owner"], lead["status"])
@@ -240,7 +281,13 @@ class LiveSolariAdapter(BaseSolariAdapter):
             except Exception:
                 pass
         else:
-            await sbx.commands.run("mkdir", args=["-p", "/tmp/faultline"])
+            try:
+                await asyncio.wait_for(
+                    sbx.commands.run("mkdir", args=["-p", "/tmp/faultline"]),
+                    timeout=15.0,
+                )
+            except Exception:
+                pass
 
         duration_ms = (time.perf_counter() - started) * 1000
         if from_snapshot:
@@ -259,10 +306,29 @@ class LiveSolariAdapter(BaseSolariAdapter):
         # Persist state inside live Solari Sandbox environment
         state_data = store.dump_canonical_state()
         state_json = json.dumps(state_data, indent=2)
-        await sbx.files.write("/tmp/faultline/crm_state.json", state_json)
+        try:
+            await asyncio.wait_for(
+                sbx.files.write("/tmp/faultline/crm_state.json", state_json),
+                timeout=15.0,
+            )
+        except Exception:
+            pass
 
-        # Call live Solari snapshot API
-        snapshot_id = await sbx.snapshot(snapshot_name)
+        # Call live Solari snapshot API with bounded timeout
+        try:
+            snapshot_id = await asyncio.wait_for(
+                sbx.snapshot(snapshot_name),
+                timeout=30.0,
+            )
+        except (asyncio.TimeoutError, TimeoutError) as exc:
+            raise RuntimeError(
+                "Solari checkpoint timed out. Agent execution could not continue."
+            ) from exc
+        except Exception as exc:
+            raise RuntimeError(
+                f"Solari checkpoint failed: {exc}. Agent execution could not continue."
+            ) from exc
+
         self._snapshots.add(snapshot_id)
         self.snapshot_count += 1
 
@@ -285,11 +351,11 @@ class LiveSolariAdapter(BaseSolariAdapter):
         if sandbox_id in self._sandboxes:
             sbx = self._sandboxes.pop(sandbox_id)
             try:
-                await self.client.kill(sandbox_id)
+                await asyncio.wait_for(self.client.kill(sandbox_id), timeout=10.0)
             except Exception:
                 pass
             try:
-                await sbx.close()
+                await asyncio.wait_for(sbx.close(), timeout=10.0)
             except Exception:
                 pass
         duration_ms = (time.perf_counter() - started) * 1000
@@ -299,7 +365,7 @@ class LiveSolariAdapter(BaseSolariAdapter):
         if snapshot_id in self._snapshots:
             self._snapshots.remove(snapshot_id)
             try:
-                await self.client.delete_snapshot(snapshot_id)
+                await asyncio.wait_for(self.client.delete_snapshot(snapshot_id), timeout=10.0)
             except Exception:
                 pass
 
@@ -312,7 +378,7 @@ class LiveSolariAdapter(BaseSolariAdapter):
             await self.delete_snapshot(snap_id)
 
         try:
-            await self.client.aclose()
+            await asyncio.wait_for(self.client.aclose(), timeout=10.0)
         except Exception:
             pass
 

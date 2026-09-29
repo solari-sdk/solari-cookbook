@@ -5,7 +5,8 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
-from .agent import DeterministicAgent
+from .agent import DeterministicAgent, RealLLMAgent
+from .llm_provider import LLMProvider
 from .benchmark import BenchmarkRunner
 from .checkpoint import CheckpointManager
 from .fault_injection import SCENARIOS, get_fault_scenario
@@ -30,6 +31,31 @@ def main() -> None:
         choices=list(SCENARIOS.keys()),
         default="wrong-owner",
         help="Fault scenario name.",
+    )
+    run_parser.add_argument(
+        "--agent-type",
+        choices=["deterministic", "real"],
+        default="deterministic",
+        help="Agent runner type.",
+    )
+    run_parser.add_argument(
+        "--model",
+        default=None,
+        help="LLM model name for real agent.",
+    )
+
+    # agent-run command
+    agent_run_parser = subparsers.add_parser("agent-run", help="Start a real LLM-powered agent run.")
+    agent_run_parser.add_argument(
+        "--scenario",
+        choices=list(SCENARIOS.keys()),
+        default="wrong-owner",
+        help="Fault scenario name.",
+    )
+    agent_run_parser.add_argument(
+        "--model",
+        default=None,
+        help="LLM model name for real agent.",
     )
 
     # diagnose command
@@ -67,7 +93,9 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.command == "run":
-        asyncio.run(cmd_run(args.scenario))
+        asyncio.run(cmd_run(args.scenario, args.agent_type, args.model))
+    elif args.command == "agent-run":
+        asyncio.run(cmd_run(args.scenario, "real", args.model))
     elif args.command == "diagnose":
         asyncio.run(cmd_diagnose(args.run_id, args.strategy))
     elif args.command == "benchmark":
@@ -80,13 +108,21 @@ def main() -> None:
         cmd_serve(args.host, args.port)
 
 
-async def cmd_run(scenario_name: str) -> None:
+async def cmd_run(scenario_name: str, agent_type: str = "deterministic", model_name: str | None = None) -> None:
     scenario = get_fault_scenario(scenario_name)
     adapter = SolariSandboxAdapter()
-    agent = DeterministicAgent(adapter)
+
+    if agent_type == "real":
+        provider = LLMProvider(model_name=model_name)
+        if not provider.has_credentials():
+            print("[ERROR] Real LLM Agent requires API credentials. Set LLM_API_KEY or GEMINI_API_KEY environment variable.")
+            return
+        agent = RealLLMAgent(adapter, provider=provider)
+    else:
+        agent = DeterministicAgent(adapter)
 
     run_id = f"FL-CLI-001"
-    print(f"[RUN] Executing Agent Run [{run_id}] | Scenario: {scenario_name} | Backend: {adapter.backend_name}...")
+    print(f"[RUN] Executing Agent Run [{run_id}] | Mode: {agent_type.upper()} | Scenario: {scenario_name} | Backend: {adapter.backend_name}...")
     run_rec = await agent.run_workload(run_id, scenario)
 
     print(f"[AGENT] Status: {run_rec.agent_status}")

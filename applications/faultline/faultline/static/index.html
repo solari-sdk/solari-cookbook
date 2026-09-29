@@ -57,6 +57,10 @@
           <p id="page-subtitle">Real-time status of agent runs, fault localization, and counterfactual repairs.</p>
         </div>
         <div class="header-actions">
+          <select id="agent-type-selector" class="select-input">
+            <option value="deterministic">Mode: Deterministic CRM Workload</option>
+            <option value="real">Mode: Real LLM Agent (Gemini / OpenAI)</option>
+          </select>
           <select id="scenario-selector" class="select-input">
             <option value="wrong-owner">Fault: Wrong Owner (Alice → Bob)</option>
             <option value="wrong-status">Fault: Wrong Status (Qualified → Contacted)</option>

@@ -28,35 +28,52 @@ Run ➔ Checkpoint ➔ Detect ➔ Localize ➔ Diff ➔ Repair ➔ Replay ➔ Ve
 
 ---
 
-## 🏛️ Architecture
+## Architecture
 
-```text
-               CLI / Web Dashboard
-                        │
-                        ▼
-               FastAPI Backend API
-                        │
-   ┌────────────────────┼────────────────────┐
-   ▼                    ▼                    ▼
-Agent Runner      Benchmark Runner     Solari Adapter
-(Deterministic /    (Linear/Binary/    (Live Solari SDK /
- Optional LLM)     Parallel/Adaptive)   Simulated Substrate)
-   │                    │                    │
-   ▼                    ▼                    ▼
-Checkpoint Mgr    Fault Localizer     Counterfactual Repair
-   │                    │                    │
-   └────────────────────┼────────────────────┘
-                        │
-                        ▼
-              Independent Verifier
-                        │
-                        ▼
-                State Diff Engine
-                        │
-                        ▼
-              Regression Case Store
+Fault Line instruments multi-step agent execution with checkpointed state history. The Real LLM Agent uses a single planning request to generate a validated execution plan, while the resulting CRM actions still execute as individual state transitions with checkpoints. When verification detects a failure, Fault Line searches checkpoint history to locate the first invalid state, compares the state transition, creates a counterfactual repair branch, replays the affected path, and verifies the result. Solari provides the live sandbox, snapshot, and fork infrastructure, while the Offline Simulator provides deterministic local execution.
+
+```mermaid
+flowchart TD
+
+    A["Agent Task"] --> B{"Execution Mode"}
+
+    B --> C["Real LLM Agent"]
+    B --> D["Deterministic CRM Workload"]
+
+    C --> E["LLM Planning<br/>1 API Call"]
+    E --> F["Validated Action Plan"]
+
+    D --> F
+
+    F --> G["CRM Tool Execution"]
+    G --> H["State Transitions"]
+    H --> I["Step-by-Step Checkpoints"]
+    I --> J["Independent Verifier"]
+
+    J -->|PASS| K["Successful Run"]
+    J -->|FAIL| L["Fault Localization"]
+
+    L --> M["Binary / Linear /<br/>Parallel / Adaptive Search"]
+    M --> N["First Invalid State"]
+
+    N --> O["State Diff"]
+    O --> P["Counterfactual Repair"]
+
+    P --> Q["Replay"]
+    Q --> R["Verification"]
+
+    R -->|PASS| S["Validated Causal Candidate"]
+    R -->|FAIL| T["Repair Not Validated"]
+
+    S --> U["Regression Case Store"]
+
+    I -.-> V["Solari Backend"]
+    V --> W["Live Sandbox"]
+    W --> X["Snapshots"]
+    X --> Y["Snapshot Forks"]
+
+    I -.-> Z["Offline Simulator"]
 ```
-
 ---
 
 ## 🛠️ Quickstart & Usage
@@ -166,10 +183,66 @@ Test Suite Coverage:
 
 ---
 
+## 🤖 Real Agent Integration
+
+Fault Line includes a real LLM-powered tool-using agent integration (`RealLLMAgent`) that executes multi-step CRM operations through structured tool selection and raw datastore state mutations.
+
+### Environment Credentials
+
+Set your LLM API Key and optional model override:
+
+```bash
+export LLM_API_KEY="your-gemini-or-openai-api-key"
+export LLM_MODEL="gemini-2.5-flash"  # or gemini-2.0-flash, gpt-4o-mini
+```
+
+### Running Real LLM Agent Workloads
+
+Via CLI:
+
+```bash
+# Execute real agent with fault scenario
+python -m applications.faultline agent-run --scenario wrong-owner
+
+# Or specify agent type on run command
+python -m applications.faultline run --agent-type real --scenario wrong-owner
+```
+
+Via API:
+
+```bash
+POST /api/agent/run
+Content-Type: application/json
+
+{
+  "scenario": "wrong-owner",
+  "model": "gemini-2.5-flash"
+}
+```
+
+### Real Agent Architecture & Workflow
+
+1. **LLM Planning**: The Real LLM Agent makes a single planning API call for the workload.
+2. **Plan Validation**: The returned action plan is validated against the supported CRM tool schema before execution.
+3. **Local CRM Execution**: The validated actions execute locally through the CRM workload/tool layer. Each action remains an individual state transition.
+4. **Step-by-Step Checkpoints**: Fault Line preserves checkpoint/state history for each execution step.
+5. **Controlled Fault Injection**: The configured fault scenario injects the targeted anomaly during execution.
+6. **Independent Verification**: The verifier checks the final datastore state against domain invariants.
+7. **Fault Localization & State Diff**: Fault Line searches checkpoint history, identifies the first invalid state, and computes the field-level state diff.
+8. **Counterfactual Repair & Replay**: Fault Line forks from the last known-good state when the selected backend supports it, applies the repair, replays the remaining execution path, and verifies the result.
+9. **Regression Case Persistence**: Saves the resulting regression case for replay/testing.
+
+### Limitations & Scope
+
+- **CRM Workload Substrate**: Demonstrates real LLM tool selection and state mutation within Fault Line's multi-step CRM substrate. It is not yet a universal debugger for arbitrary external third-party agent runtimes.
+- **Nondeterministic Replay Note**: Replaying historical checkpoints with LLM steps uses recorded state checkpoints to guarantee reproducible state transitions during time-travel debugging.
+
+---
+
 ## ⚖️ Transparent Metric Status & Honest Limitations
 
 1. **Cost Accounting Status (`ESTIMATED`)**: Execution, snapshot, fork, and probe costs are calculated using an estimated unit price model (`$0.0001` per snapshot, `$0.0002` per fork, `$0.00005` per step).
-2. **Token Instrumentation (`UNAVAILABLE`)**: For deterministic workloads running without an external LLM provider, token count metrics are explicitly set to `0` and labeled `UNAVAILABLE`.
+2. **Token Instrumentation (`MEASURED` / `UNAVAILABLE`)**: Real LLM agent execution records token counts (`MEASURED`) from API provider metadata. For deterministic runs without LLM credentials, token metrics are set to `0` (`UNAVAILABLE`).
 3. **VM Concurrency Limit**: Live Solari sandbox environments on standard plans enforce a 1-concurrent-VM limit. Parallel search automatically bounds worker concurrency via `asyncio.Semaphore` to stay within plan limits.
-4. **Deterministic MVP Workload**: The workload engine uses a deterministic 24-step CRM pipeline for reproducible evaluation and benchmarking. Real-world LLM agent runners can plug in via the `OptionalLLMAgent` base class.
+4. **Deterministic & Real Agent Substrates**: Supports both 100% offline deterministic CRM workloads and real LLM tool-calling agents via `RealLLMAgent` and `LLMProvider`.
 

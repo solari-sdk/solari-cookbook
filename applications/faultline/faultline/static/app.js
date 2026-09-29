@@ -44,6 +44,7 @@ function initActions() {
 
 async function runAgentWorkload() {
   const scenario = document.getElementById('scenario-selector').value;
+  const agent_type = document.getElementById('agent-type-selector')?.value || 'deterministic';
   const btn = document.getElementById('btn-run-agent');
   btn.disabled = true;
   btn.innerText = '⏳ Executing Workload...';
@@ -52,8 +53,12 @@ async function runAgentWorkload() {
     const res = await fetch('/api/run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ scenario }),
+      body: JSON.stringify({ scenario, agent_type }),
     });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.detail || `Server returned HTTP ${res.status}`);
+    }
     const run = await res.json();
     currentRunId = run.run_id;
     currentRunData = run;
@@ -62,7 +67,7 @@ async function runAgentWorkload() {
     renderRunDetail(run);
     switchTab('run-detail');
   } catch (err) {
-    alert('Error running agent workload: ' + err);
+    alert('Error running agent workload:\n\n' + err.message);
   } finally {
     btn.disabled = false;
     btn.innerText = '🚀 Run Agent Workload';

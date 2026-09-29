@@ -29,6 +29,15 @@ class TestSolariAdapter(unittest.TestCase):
         # 4. Cleanup
         await adapter.cleanup_all()
 
+    def test_live_solari_transport_timeout(self):
+        from faultline.solari_adapter import HAS_SOLARI_SDK, LiveSolariAdapter
+        if not HAS_SOLARI_SDK:
+            self.skipTest("solari-sandbox SDK missing")
+        adapter = LiveSolariAdapter(api_key="test-key")
+        self.assertTrue(hasattr(adapter.client, "_t"))
+        self.assertEqual(adapter.client._t._timeout, 30.0)
+
 
 if __name__ == "__main__":
     unittest.main()
+

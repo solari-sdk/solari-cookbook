@@ -11,7 +11,8 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from .agent import DeterministicAgent
+from .agent import DeterministicAgent, RealLLMAgent
+from .llm_provider import LLMProvider
 from .benchmark import BenchmarkRunner
 from .checkpoint import CheckpointManager
 from .diff_engine import StateDiffEngine
@@ -45,6 +46,8 @@ STATIC_DIR = Path(__file__).parent / "static"
 
 class RunRequest(BaseModel):
     scenario: str = "wrong-owner"
+    agent_type: str = "deterministic"
+    model: str | None = None
 
 
 class DiagnoseRequest(BaseModel):
@@ -60,9 +63,26 @@ async def create_run(req: RunRequest):
 
     run_id = f"FL-{len(RUN_STORE)+1:03d}"
     adapter = SolariSandboxAdapter()
-    agent = DeterministicAgent(adapter)
 
-    run_rec = await agent.run_workload(run_id, scenario)
+    if req.agent_type == "real":
+        provider = LLMProvider(model_name=req.model)
+        if not provider.has_credentials():
+            raise HTTPException(
+                status_code=400,
+                detail="LLM API Key missing. Please set LLM_API_KEY or GEMINI_API_KEY in environment to run the Real LLM Agent.",
+            )
+        agent = RealLLMAgent(adapter, provider=provider)
+    else:
+        agent = DeterministicAgent(adapter)
+
+    try:
+        run_rec = await agent.run_workload(run_id, scenario)
+    except Exception as err:
+        try:
+            await adapter.cleanup_all()
+        except Exception:
+            pass
+        raise HTTPException(status_code=400, detail=str(err))
 
     # Store run record and checkpoint manager
     RUN_STORE[run_id] = run_rec
@@ -81,6 +101,12 @@ async def create_run(req: RunRequest):
         run_rec.fault_boundary_step = res.first_invalid_step
 
     return run_rec.to_dict()
+
+
+@app.post("/api/agent/run")
+async def create_real_agent_run(req: RunRequest):
+    req.agent_type = "real"
+    return await create_run(req)
 
 
 @app.get("/api/runs")
