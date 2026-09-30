@@ -1,0 +1,24 @@
+{
+  "name": "pipeline",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node serve.ts"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.1.5",
+    "@solarisdk/sandbox": "^0.1.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "ai": "^7.0.107",
+    "express": "^5.2.1",
+    "gifenc": "^1.0.3",
+    "playwright": "^1.63.0",
+    "pngjs": "^7.0.0",
+    "vite": "^8.3.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/pngjs": "^6.0.5"
+  }
+}

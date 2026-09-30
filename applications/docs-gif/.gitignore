@@ -1,0 +1,9 @@
+node_modules
+.env
+# every run's frames, GIFs and log
+out/
+# recorded GIFs; the first run makes them
+docs/static/img/**/*.gif
+# docusaurus
+docs/.docusaurus
+docs/build

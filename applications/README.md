@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [docs-gif](docs-gif) | TypeScript | Record a how-to page as GIFs against the app in a sandbox, keep only the ones a checker verifies, and write them into the docs |

@@ -1,0 +1,18 @@
+{
+  "name": "docs-gif",
+  "private": true,
+  "type": "module",
+  "workspaces": ["app", "docs", "pipeline"],
+  "scripts": {
+    "dev": "npm run dev -w pipeline & npm run dev -w docs",
+    "start": "npm run docs-generate",
+    "docs-generate": "node --env-file-if-exists=.env pipeline/generate.ts",
+    "docs-update": "node --env-file-if-exists=.env pipeline/update.ts",
+    "snapshot": "node --env-file-if-exists=.env pipeline/snapshot.ts",
+    "clean": "node pipeline/remove-gifs.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "typescript": "^5"
+  }
+}
