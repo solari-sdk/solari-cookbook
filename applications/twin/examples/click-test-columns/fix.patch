@@ -1,0 +1,18 @@
+diff --git a/tests/test_commands.py b/tests/test_commands.py
+index c2de826..dd9ffee 100644
+--- a/tests/test_commands.py
++++ b/tests/test_commands.py
+@@ -171,7 +171,12 @@ def test_custom_parser(runner):
+         def invoke(self, ctx):
+             ctx.invoke(self.callback, ctx.args, **ctx.params)
+ 
+-    parser = optparse.OptionParser(usage="Usage: foo test [OPTIONS]")
++    # optparse wraps help to the COLUMNS variable; pin the width so the expected
++    # output does not depend on the terminal (78 is its default for 80 columns).
++    parser = optparse.OptionParser(
++        usage="Usage: foo test [OPTIONS]",
++        formatter=optparse.IndentedHelpFormatter(width=78),
++    )
+     parser.add_option(
+         "-f", "--file", dest="filename", help="write report to FILE", metavar="FILE"
+     )

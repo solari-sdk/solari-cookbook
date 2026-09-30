@@ -1,0 +1,67 @@
+{
+  "name": "@crypticsaiyan/twincli",
+  "version": "0.1.1",
+  "description": "Capture a failing environment on one machine, replay it on a Solari sandbox, and find the difference that breaks it.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crypticsaiyan/twin.git"
+  },
+  "homepage": "https://twincli.vercel.app",
+  "bugs": {
+    "url": "https://github.com/crypticsaiyan/twin/issues"
+  },
+  "keywords": [
+    "reproduce",
+    "bug-report",
+    "environment",
+    "bisect",
+    "solari",
+    "sandbox",
+    "mcp",
+    "works-on-my-machine",
+    "cli"
+  ],
+  "bin": {
+    "twin": "dist/bin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "node src/bin.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "e2e:docker": "node test/e2e/replay-docker.ts",
+    "e2e:docker:bisect": "node test/e2e/bisect-docker.ts",
+    "e2e:mcp": "node test/e2e/mcp-session.ts",
+    "prepare": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm check && pnpm build"
+  },
+  "packageManager": "pnpm@10.20.0",
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.14",
+    "@types/node": "^22.20.4",
+    "@vitest/coverage-v8": "^5.0.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.1",
+    "@solarisdk/sdk": "0.1.4",
+    "zod": "^4.6.5"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

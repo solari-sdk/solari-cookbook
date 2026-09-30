@@ -1,0 +1,13 @@
+Replay on solari (machine AlDq8esMs1x4vuzv…, run fd0c959a)
+  ✓ prepare workspace  0.3s
+  ✓ install node 22.23.3  2.1s
+  ✓ check out 984bf46b2f90  4.5s
+  ✓ install npm 10.9.9  3.7s
+  ✓ install dependencies (npm ci)  46.4s
+
+Attempts
+  1  FAIL exit 1  exit1:0aee0834ac9c4d2d  8.0s
+  2  FAIL exit 1  exit1:0aee0834ac9c4d2d  1.7s
+  expected  FAIL exit1:0aee0834ac9c4d2d
+
+REPRODUCED: every attempt failed exactly as the capsule recorded.

@@ -1,0 +1,19 @@
+# A real Claude Code session (haiku) with twin over MCP; abridged
+
+CALL twin.replay {"capsule": "examples/lru-cache-397/bad.json", "keep": true}
+RES  Replay on solari (machine At-EtdY5f4EhKdR9…, run 892efd7c)
+CALL twin.run {"command": "npm run test:jsdom", "machine": "At-EtdY5f4EhKdR9"}
+CALL twin.run {"command": "npm ls lru-cache", "machine": "At-EtdY5f4EhKdR9"}
+RES  exit 1 (0.7s)
+RES  exit 0 (1.1s)
+SAY  Now read the fix and verify it.
+CALL Read {"file_path": "/tmp/drift-live/fix.patch"}
+RES  1	diff --git a/package-lock.json b/package-lock.json
+CALL twin.verify {"capsule": "examples/lru-cache-397/bad.json", "patch": "diff --git a/package-lock.json b/package-lock.json\ni...
+RES  Verify on solari (machine AopMdrZU-1AQIj1l…, run 434b34cd)
+CALL twin.release {"machine": "At-EtdY5f4EhKdR9"}
+RES  released At-EtdY5f4Eh…
+SAY  Replay: REPRODUCED every attempt. ESM/CJS error from lru-cache 11.2.6 in cssstyle/jsdom dep chain requiring @asamuzakjp/css-color with top-level await. Verify: FIXED by upgrading lru-cache to 11.5.3 and adding npm overrides for jsdom.
+
+FINAL Replay: REPRODUCED every attempt. ESM/CJS error from lru-cache 11.2.6 in cssstyle/jsdom dep chain requiring @asamuzakjp/css-color with top-level await. Verify: FIXED by upgrading lru-cache to 11.5.3 and adding npm overrides for jsdom.
+(8 turns, claude --model haiku, about $0.07)

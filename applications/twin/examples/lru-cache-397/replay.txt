@@ -1,0 +1,24 @@
+Replay on solari (machine Ai-rQbpONX1HBtnK…, run 86f8e9bd)
+  ✓ prepare workspace  0.3s
+  ✓ install node 24.15.0  2.1s
+  ✓ check out 883ac15d47f9  1.0s
+  ✓ install npm 11.12.1  3.5s
+  ✓ install dependencies (npm ci)  9.7s
+  ✓ pin 32 packages to the capsule's versions (@asamuzakjp/css-color@5.1.5, @babel/helper-define-polyfill-provider@0.6.8, @babel/helpers@7.29.2, +29 more)  5.7s
+
+Attempts
+  1  FAIL exit 1  exit1:3c9267cd7d019116  0.6s
+  2  FAIL exit 1  exit1:3c9267cd7d019116  0.7s
+  3  FAIL exit 1  exit1:3c9267cd7d019116  0.6s
+  expected  FAIL exit1:3c9267cd7d019116
+
+REPRODUCED: every attempt failed exactly as the capsule recorded.
+
+The machine is still running at the failure, in the reporter's environment:
+  twin shell Ai-rQbpONX1H         open a terminal on it
+  twin shell Ai-rQbpONX1H --web   get a browser terminal link to share
+It is billed while running and released after 15 minutes idle, or now with: twin stop
+
+Notes
+  - 42 variables were set on the reporter's machine but only by name, so left unset here (AI_AGENT, CASROOT, CLAUDECODE, CLAUDE_CODE_CHILD_SESSION, CLAUDE_CODE_ENTRYPOINT and 37 more). Usually harmless; if the command needs one, pass --env NAME=value (or have the reporter capture with --include-env NAME).
+  - 1 package versions from the capsule were not installed: picomatch (several new versions recorded).

@@ -1,0 +1,155 @@
+
+>>> inspect {"capsule":"examples/echarts-21538/new-york.json"}
+<<< 0 s
+Command
+  argv       npx jest --config test/ut/jest.config.cjs --coverage=false test/ut/spec/util/time.test.ts
+  cwd        .
+  result     FAIL (exit 1) in 0.8s
+  signature  exit1:0aee0834ac9c4d2d
+  key lines  FAIL test/ut/spec/util/time.test.ts
+             ✕ roundTime_locale
+             expect(received).toEqual(expected) // deep equality
+             Expected: 528526800000
+             Received: 528523200000
+             Test Suites: 1 failed, 1 total
+             Tests: 1 failed, 14 passed, 15 total
+
+System
+  os         linux x64 (garuda)
+  libc       glibc 2.44
+  time zone  America/New_York
+  locale     en-US
+
+Toolchain
+  bun            1.3.14
+  deno           2.9.5
+  go             1.26.6
+  java           26.0.2.1
+  node           22.23.3
+  python         3.14.7
+  ruby           3.4.10
+  rustc          1.97.1
+  npm            10.9.9  package-lock.json
+  node packages  617 installed
+  other tools    cargo 1.97.1, clang 22.1.8, cmake 4.4.2, docker 29.7.2, gcc 16.2.1, git 2.55.0, make 4.4.1, npm 10.9.9, pip 26.2.1, pnpm 10.20.0, yarn 1.22.22
+
+Repository
+  remote     https://github.com/apache/echarts
+  commit     984bf46b2f905dd0ad909a2d5e6e9d66a1b6568c on master
+  diff       clean
+  untracked  none
+
+Environment
+  LANG        en_US.UTF-8
+  TZ          America/New_York
+  names only  1 other variables (values not included)
+
+Redaction (rules v1)
+  scrubbed  nothing matched
+
+>>> replay {"capsule":"examples/echarts-21538/new-york.json","attempts":1}
+  ... machine AoEvhTKPBPoYV9rR… ready
+  ... prepare workspace
+  ... install node 22.23.3
+  ... check out 984bf46b2f90
+  ... install npm 10.9.9
+  ... install dependencies (npm ci)
+  ... attempt 1/1
+<<< 71 s
+Replay on solari (machine AoEvhTKPBPoYV9rR…, run e7c8ca03)
+  ✓ prepare workspace  0.3s
+  ✓ install node 22.23.3  2.2s
+  ✓ check out 984bf46b2f90  4.4s
+  ✓ install npm 10.9.9  4.2s
+  ✓ install dependencies (npm ci)  48.9s
+
+Attempts
+  1  FAIL exit 1  exit1:0aee0834ac9c4d2d  8.0s
+  expected  FAIL exit1:0aee0834ac9c4d2d
+
+REPRODUCED: every attempt failed exactly as the capsule recorded.
+
+The machine is still running at the failure, in the reporter's environment:
+  machine AoEvhTKPBPoYV9rRAs5jOamxX-cY_GAv3Wxty_2w8RLk9cMzYWkbHZ3ztfUYrAhO6BGuoob5tWxT6eQuHLvI1ouUqf1klpkbzro6zwcl7GE4TV9W3dDrR50iyq1Rln5M-R615FQdTAExQiSTRXI.W1Glcgub4GXd8AulrTirAsmmEPQOELzMhh45by3ohVY
+Explore and try fixes with run and write_file on this machine, check the final diff with
+verify, then release it. It is billed while running and released after 15 minutes idle.
+
+>>> run {"machine":"<191 chars>","command":"<178 chars>"}
+<<< 4 s
+exit 0 (1.7s)
+TZ=America/New_York node v22.23.3
+/tmp/twin/repo
+      ✓ should format year (2 ms)
+      ✓ should format quarter (1 ms)
+      ✓ should format month (1 ms)
+      ✓ should format day
+      ✓ should format day of week (1 ms)
+      ✓ should format hour
+      ✓ should format hour (1 ms)
+      ✓ should format minute
+      ✓ should format second
+      ✓ should format millisecond
+      ✓ should format millisecond
+      ✓ should format meridian
+      ✓ should format meridian in uppercase
+      ✓ roundTime_UTC
+      ✕ roundTime_locale (2 ms)
+    Expected: 528526800000
+    Received: 528523200000
+Tests:       1 failed, 14 passed, 15 total
+
+>>> write_file {"machine":"<191 chars>","path":"fix.patch","content":"<2874 chars>"}
+<<< 1 s
+wrote 2874 bytes to /tmp/twin/repo/fix.patch
+
+>>> run {"machine":"<191 chars>","command":"<158 chars>"}
+<<< 5 s
+exit 0 (4.5s)
+      ✓ should format year (3 ms)
+      ✓ should format quarter
+      ✓ should format month (1 ms)
+      ✓ should format day (1 ms)
+      ✓ should format day of week
+      ✓ should format hour (1 ms)
+      ✓ should format hour (1 ms)
+      ✓ should format minute
+      ✓ should format second (1 ms)
+      ✓ should format millisecond
+      ✓ should format millisecond
+      ✓ should format meridian (3 ms)
+      ✓ should format meridian in uppercase
+      ✓ roundTime_UTC (1 ms)
+      ✓ roundTime_locale
+Tests:       15 passed, 15 total
+
+>>> verify {"capsule":"examples/echarts-21538/new-york.json","patch":"<2874 chars>","attempts":1}
+  ... machine AmugPTdqTVMUGSec… ready
+  ... prepare workspace
+  ... install node 22.23.3
+  ... check out 984bf46b2f90
+  ... upload candidate fix
+  ... apply candidate fix
+  ... install npm 10.9.9
+  ... install dependencies (npm ci)
+  ... attempt 1/1
+<<< 74 s
+Verify on solari (machine AmugPTdqTVMUGSec…, run 63a31c05)
+  ✓ prepare workspace  0.3s
+  ✓ install node 22.23.3  2.2s
+  ✓ check out 984bf46b2f90  4.4s
+  ✓ upload candidate fix  0.0s
+  ✓ apply candidate fix  0.3s
+  ✓ install npm 10.9.9  4.2s
+  ✓ install dependencies (npm ci)  45.6s
+
+Attempts
+  1  PASS  8.2s
+  expected  FAIL exit1:0aee0834ac9c4d2d
+
+FIXED: the command passes in the reporter's environment with the fix applied.
+
+>>> release {"machine":"<191 chars>"}
+<<< 7 s
+released AoEvhTKPBPoYV9rRAs5jOamxX-cY_GAv3Wxty_2w8RLk9cMzYWkbHZ3ztfUYrAhO6BGuoob5tWxT6eQuHLvI1ouUqf1klpkbzro6zwcl7GE4TV9W3dDrR50iyq1Rln5M-R615FQdTAExQiSTRXI.W1Glcgub4GXd8AulrTirAsmmEPQOELzMhh45by3ohVY
+
+session 162 s

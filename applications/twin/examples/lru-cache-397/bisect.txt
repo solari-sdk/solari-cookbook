@@ -1,0 +1,58 @@
+Bisect on solari (machine AqxXZjQT-A1bIxgl…, run b69808c5)
+  good environment built in 21.7s (5 steps)
+
+Candidates (32)
+  @asamuzakjp/css-color@5.1.5
+  @babel/helper-define-polyfill-provider@0.6.8
+  @babel/helpers@7.29.2
+  @babel/parser@7.29.2
+  @babel/preset-env@7.29.2
+  @csstools/css-syntax-patches-for-csstree@1.1.2
+  babel-plugin-polyfill-corejs2@0.4.17
+  babel-plugin-polyfill-corejs3@0.14.2
+  babel-plugin-polyfill-regenerator@0.6.8
+  baseline-browser-mapping@2.10.15
+  brace-expansion@1.1.13
+  browserslist@4.28.2
+  caniuse-lite@1.0.30001785
+  core-js-compat@3.49.0
+  electron-to-chromium@1.5.331
+  enhanced-resolve@5.20.1
+  eslint-import-resolver-node@0.3.10
+  eslint-import-resolver-webpack@0.13.11
+  get-tsconfig@4.13.7
+  lodash@4.18.1
+  lodash-es@4.18.1
+  lru-cache@11.3.0
+  node-releases@2.0.37
+  regjsparser@0.13.1
+  rollup-plugin-dts@6.4.1
+  socket.io-parser@4.2.6
+  tapable@2.3.2
+  terser@5.46.1
+  tldts@7.0.28
+  tldts-core@7.0.28
+  tough-cookie@6.0.1
+  undici@7.24.7
+
+Trials (10)
+   1  pass  (good environment)  32.9s
+   2  FAIL  @asamuzakjp/css-color@5.1.5 + @babel/helper-define-polyfill-provider@0.6.8 + @babel/helpers@7.29.2 + @babel/parser@7.29.2 + @babel/preset-env@7.29.2 + @csstools/css-syntax-patches-for-csstree@1.1.2 + babel-plugin-polyfill-corejs2@0.4.17 + babel-plugin-polyfill-corejs3@0.14.2 + babel-plugin-polyfill-regenerator@0.6.8 + baseline-browser-mapping@2.10.15 + brace-expansion@1.1.13 + browserslist@4.28.2 + caniuse-lite@1.0.30001785 + core-js-compat@3.49.0 + electron-to-chromium@1.5.331 + enhanced-resolve@5.20.1 + eslint-import-resolver-node@0.3.10 + eslint-import-resolver-webpack@0.13.11 + get-tsconfig@4.13.7 + lodash@4.18.1 + lodash-es@4.18.1 + lru-cache@11.3.0 + node-releases@2.0.37 + regjsparser@0.13.1 + rollup-plugin-dts@6.4.1 + socket.io-parser@4.2.6 + tapable@2.3.2 + terser@5.46.1 + tldts@7.0.28 + tldts-core@7.0.28 + tough-cookie@6.0.1 + undici@7.24.7  6.3s
+   3  pass  @asamuzakjp/css-color@5.1.5 + @babel/helper-define-polyfill-provider@0.6.8 + @babel/helpers@7.29.2 + @babel/parser@7.29.2 + @babel/preset-env@7.29.2 + @csstools/css-syntax-patches-for-csstree@1.1.2 + babel-plugin-polyfill-corejs2@0.4.17 + babel-plugin-polyfill-corejs3@0.14.2 + babel-plugin-polyfill-regenerator@0.6.8 + baseline-browser-mapping@2.10.15 + brace-expansion@1.1.13 + browserslist@4.28.2 + caniuse-lite@1.0.30001785 + core-js-compat@3.49.0 + electron-to-chromium@1.5.331 + enhanced-resolve@5.20.1  34.7s
+   4  FAIL  eslint-import-resolver-node@0.3.10 + eslint-import-resolver-webpack@0.13.11 + get-tsconfig@4.13.7 + lodash@4.18.1 + lodash-es@4.18.1 + lru-cache@11.3.0 + node-releases@2.0.37 + regjsparser@0.13.1 + rollup-plugin-dts@6.4.1 + socket.io-parser@4.2.6 + tapable@2.3.2 + terser@5.46.1 + tldts@7.0.28 + tldts-core@7.0.28 + tough-cookie@6.0.1 + undici@7.24.7  2.7s
+   5  FAIL  eslint-import-resolver-node@0.3.10 + eslint-import-resolver-webpack@0.13.11 + get-tsconfig@4.13.7 + lodash@4.18.1 + lodash-es@4.18.1 + lru-cache@11.3.0 + node-releases@2.0.37 + regjsparser@0.13.1  2.2s
+   6  pass  eslint-import-resolver-node@0.3.10 + eslint-import-resolver-webpack@0.13.11 + get-tsconfig@4.13.7 + lodash@4.18.1  34.2s
+   7  FAIL  lodash-es@4.18.1 + lru-cache@11.3.0 + node-releases@2.0.37 + regjsparser@0.13.1  1.9s
+   8  FAIL  lodash-es@4.18.1 + lru-cache@11.3.0  1.9s
+   9  pass  lodash-es@4.18.1  34.0s
+  10  FAIL  lru-cache@11.3.0  1.7s
+
+Minimal failing difference:
+  lru-cache@11.3.0
+Applying it to the good environment fails the captured way; without it, it passes.
+
+Not varied (1)
+  picomatch: several new versions installed on the failing machine
+
+Notes
+  - 42 variables were set on the reporter's machine but only by name, so left unset here (AI_AGENT, CASROOT, CLAUDECODE, CLAUDE_CODE_CHILD_SESSION, CLAUDE_CODE_ENTRYPOINT and 37 more). Usually harmless; if the command needs one, pass --env NAME=value (or have the reporter capture with --include-env NAME).

@@ -1,0 +1,26 @@
+twin: machine Av_CvbTk4dCD1O24… ready
+twin: prepare workspace
+twin: install python 3.13.12
+twin: check out 06b2a6787411
+twin: install python dependencies
+twin: attempt 1/3
+twin: attempt 2/3
+twin: attempt 3/3
+Replay on solari (machine Av_CvbTk4dCD1O24…, run 9fcbbacd)
+  ✓ prepare workspace  0.3s
+  ✓ install python 3.13.12  2.1s
+  ✓ check out 06b2a6787411  0.9s
+  ✓ install python dependencies  2.2s
+
+Attempts
+  1  FAIL exit 1  exit1:f588df1fc6102464  1.2s
+  2  FAIL exit 1  exit1:f588df1fc6102464  0.7s
+  3  FAIL exit 1  exit1:f588df1fc6102464  0.7s
+  expected  FAIL exit1:f588df1fc6102464
+
+REPRODUCED: every attempt failed exactly as the capsule recorded.
+
+Notes
+  - 42 variables were set on the reporter's machine but only by name, so left unset here (AI_AGENT, CASROOT, CLAUDECODE, CLAUDE_CODE_CHILD_SESSION, CLAUDE_CODE_ENTRYPOINT and 37 more). Usually harmless; if the command needs one, pass --env NAME=value.
+exit 0
+wall 20.2s

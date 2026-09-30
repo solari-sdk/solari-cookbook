@@ -1,0 +1,57 @@
+name: twin verify
+description: Check that a pull request fixes a reported bug in the reporter's own environment, from the twin capsule attached to the issue.
+author: crypticsaiyan
+branding:
+  icon: check-circle
+  color: green
+
+inputs:
+  solari-api-key:
+    description: Solari API key (store it as a repository secret).
+    required: true
+  capsule:
+    description: Capsule path or https URL. By default, the capsule attached to an issue the pull request closes.
+    required: false
+    default: ''
+  attempts:
+    description: Runs of the failing command.
+    required: false
+    default: '3'
+  comment:
+    description: Post the verdict as a pull request comment, updated on each push.
+    required: false
+    default: 'true'
+  github-token:
+    description: Token for reading issues and writing the comment.
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  verdict:
+    description: fixed, still-failing, different-failure, flaky, inconclusive or skipped (no capsule found).
+    value: ${{ steps.verify.outputs.verdict }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 22
+    - name: Install twin
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npx --yes pnpm@10.20.0 install --frozen-lockfile
+    - name: Verify in the reporter's environment
+      id: verify
+      shell: bash
+      env:
+        SOLARI_API_KEY: ${{ inputs.solari-api-key }}
+        GH_TOKEN: ${{ inputs.github-token }}
+        CAPSULE: ${{ inputs.capsule }}
+        ATTEMPTS: ${{ inputs.attempts }}
+        COMMENT: ${{ inputs.comment }}
+        REPO: ${{ github.repository }}
+        PR: ${{ github.event.pull_request.number }}
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        HEAD_REPO: ${{ github.event.pull_request.head.repo.clone_url }}
+      run: bash "$GITHUB_ACTION_PATH/scripts/action/run.sh"

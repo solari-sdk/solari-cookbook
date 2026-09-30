@@ -1,0 +1,360 @@
+{
+  "twin": 1,
+  "createdAt": "2026-09-29T10:56:42.221Z",
+  "generator": "twin 0.1.0",
+  "command": {
+    "argv": [
+      "uv",
+      "run",
+      "--frozen",
+      "pytest",
+      "-q",
+      "-p",
+      "no:cacheprovider",
+      "tests/test_commands.py"
+    ],
+    "cwd": ".",
+    "exitCode": 1,
+    "signal": null,
+    "durationMs": 225,
+    "outcome": "fail",
+    "failure": {
+      "signature": "exit1:f588df1fc6102464",
+      "keyLines": [
+        "except Exception as e:",
+        "ctx.fail(str(e))",
+        "assert result.exception is None",
+        "assert result.output.splitlines() == [\"q1.txt q2.txt\", \"f.txt\", \"False\"]",
+        "assert result.exception is None",
+        "> assert result.output.splitlines() == [",
+        "E AssertionError: assert ['Usage: foo ...le=FILE', ...] == ['Usage: foo ...es to stdout']",
+        "FAILED tests/test_commands.py::test_custom_parser",
+        "1 failed, 102 passed in <duration>"
+      ],
+      "outputTail": "..........F..................... [ 31%]\n................................ [ 62%]\n................................ [ 93%]\n.......                          [100%]\n=============== FAILURES ===============\n__________ test_custom_parser __________\n\nrunner = <click.testing.CliRunner object at 0x7f45936306e0>\n\n    def test_custom_parser(runner):\n        import optparse\n    \n        @click.group()\n        def cli():\n            pass\n    \n        class OptParseCommand(click.Command):\n            def __init__(self, name, parser, callback):\n                super().__init__(name)\n                self.parser = parser\n                self.callback = callback\n    \n            def parse_args(self, ctx, args):\n                try:\n                    opts, args = parser.parse_args(args)\n                except Exception as e:\n                    ctx.fail(str(e))\n                ctx.args = args\n                ctx.params = vars(opts)\n    \n            def get_usage(self, ctx):\n                return self.parser.get_usage()\n    \n            def get_help(self, ctx):\n                return self.parser.format_help()\n    \n            def invoke(self, ctx):\n                ctx.invoke(self.callback, ctx.args, **ctx.params)\n    \n        parser = optparse.OptionParser(usage=\"Usage: foo test [OPTIONS]\")\n        parser.add_option(\n            \"-f\", \"--file\", dest=\"filename\", help=\"write report to FILE\", metavar=\"FILE\"\n        )\n        parser.add_option(\n            \"-q\",\n            \"--quiet\",\n            action=\"store_false\",\n            dest=\"verbose\",\n            default=True,\n            help=\"don't print status messages to stdout\",\n        )\n    \n        def test_callback(args, filename, verbose):\n            click.echo(\" \".join(args))\n            click.echo(filename)\n            click.echo(verbose)\n    \n        cli.add_command(OptParseCommand(\"test\", parser, test_callback))\n    \n        result = runner.invoke(cli, [\"test\", \"-f\", \"f.txt\", \"-q\", \"q1.txt\", \"q2.txt\"])\n        assert result.exception is None\n        assert result.output.splitlines() == [\"q1.txt q2.txt\", \"f.txt\", \"False\"]\n    \n        result = runner.invoke(cli, [\"test\", \"--help\"])\n        assert result.exception is None\n>       assert result.output.splitlines() == [\n            \"Usage: foo test [OPTIONS]\",\n            \"\",\n            \"Options:\",\n            \"  -h, --help            show this help message and exit\",\n            \"  -f FILE, --file=FILE  write report to FILE\",\n            \"  -q, --quiet           don't print status messages to stdout\",\n        ]\nE       AssertionError: assert ['Usage: foo ...le=FILE', ...] == ['Usage: foo ...es to stdout']\nE         \nE         At index 3 diff: '  -h, --help      show this help' != '  -h, --help            show this help message and exit'\nE         Left contains 3 more items, first extra item: '                  write report to FILE'\nE         Use -v to get more diff\n\ntests/test_commands.py:200: AssertionError\n======= short test summary info ========\nFAILED tests/test_commands.py::test_custom_parser\n1 failed, 102 passed in 0.08s"
+    }
+  },
+  "os": {
+    "platform": "linux",
+    "arch": "x64",
+    "release": "7.1.8-arch1-3",
+    "distro": "garuda",
+    "distroVersion": null,
+    "libc": "glibc",
+    "libcVersion": "2.44"
+  },
+  "runtimes": {
+    "node": "26.7.0",
+    "bun": "1.3.14",
+    "deno": "2.9.5",
+    "python": "3.13.12",
+    "go": "1.26.6",
+    "rustc": "1.92.0",
+    "java": "26.0.2.1",
+    "ruby": "3.4.10"
+  },
+  "tools": {
+    "npm": "12.0.2",
+    "pnpm": "10.20.0",
+    "yarn": "1.22.22",
+    "pip": "26.2.1",
+    "uv": "0.11.3",
+    "cargo": "1.92.0",
+    "git": "2.55.0",
+    "make": "4.4.1",
+    "gcc": "16.2.1",
+    "clang": "22.1.8",
+    "cmake": "4.4.2",
+    "docker": "29.7.2"
+  },
+  "packageManagers": [
+    {
+      "name": "uv",
+      "ecosystem": "python",
+      "version": "0.11.3",
+      "declared": null,
+      "lockfile": "uv.lock",
+      "lockfileSha256": "742507a6bbb80c093d2ebefc073357e3ef0cb504e9299def5348377f0d585d54"
+    }
+  ],
+  "resolved": {
+    "python": {
+      "cachetools": "7.0.5",
+      "cfgv": "3.5.0",
+      "click": "8.6.0.dev0",
+      "colorama": "0.4.6",
+      "distlib": "0.4.0",
+      "filelock": "3.25.2",
+      "identify": "2.6.18",
+      "iniconfig": "2.3.0",
+      "librt": "0.8.1",
+      "mypy": "1.20.0",
+      "mypy-extensions": "1.1.0",
+      "nodeenv": "1.10.0",
+      "packaging": "26.0",
+      "pathspec": "1.0.4",
+      "platformdirs": "4.9.4",
+      "pluggy": "1.6.0",
+      "pre-commit": "4.5.1",
+      "pre-commit-uv": "4.2.1",
+      "pygments": "2.20.0",
+      "pyproject-api": "1.10.0",
+      "pyright": "1.1.408",
+      "pytest": "9.0.2",
+      "python-discovery": "1.2.1",
+      "pyyaml": "6.0.3",
+      "ruff": "0.15.9",
+      "tomli-w": "1.2.0",
+      "tox": "4.52.0",
+      "tox-uv": "1.34.0",
+      "tox-uv-bare": "1.34.0",
+      "typing-extensions": "4.15.0",
+      "uv": "0.11.3",
+      "virtualenv": "21.2.0"
+    }
+  },
+  "repo": {
+    "remote": "https://github.com/pallets/click",
+    "commit": "06b2a678741131fd577ce170e23e5ca0aeba0309",
+    "branch": "main",
+    "dirty": false,
+    "diff": "",
+    "diffTruncated": false,
+    "diffRedacted": false,
+    "untracked": []
+  },
+  "env": {
+    "AI_AGENT": {
+      "state": "set"
+    },
+    "CASROOT": {
+      "state": "set"
+    },
+    "CGO_ENABLED": {
+      "state": "absent"
+    },
+    "CI": {
+      "state": "absent"
+    },
+    "CLAUDECODE": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_CHILD_SESSION": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_ENTRYPOINT": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_EXECPATH": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_MESSAGING_SOCKET": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_MESSAGING_TOKEN": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_SESSION_ATTENDED": {
+      "state": "set"
+    },
+    "CLAUDE_CODE_SESSION_ID": {
+      "state": "set"
+    },
+    "CLAUDE_EFFORT": {
+      "state": "set"
+    },
+    "CLAUDE_PID": {
+      "state": "set"
+    },
+    "COLUMNS": {
+      "state": "set",
+      "value": "40"
+    },
+    "COREPACK_ENABLE_AUTO_PIN": {
+      "state": "set"
+    },
+    "CRYPTOGRAPHY_OPENSSL_NO_LEGACY": {
+      "state": "set"
+    },
+    "CSF_DrawPluginDefaults": {
+      "state": "set"
+    },
+    "CSF_EXCEPTION_PROMPT": {
+      "state": "set"
+    },
+    "CSF_IGESDefaults": {
+      "state": "set"
+    },
+    "CSF_LANGUAGE": {
+      "state": "set"
+    },
+    "CSF_MDTVTexturesDirectory": {
+      "state": "set"
+    },
+    "CSF_MIGRATION_TYPES": {
+      "state": "set"
+    },
+    "CSF_OCCTResourcePath": {
+      "state": "set"
+    },
+    "CSF_PluginDefaults": {
+      "state": "set"
+    },
+    "CSF_SHMessage": {
+      "state": "set"
+    },
+    "CSF_STEPDefaults": {
+      "state": "set"
+    },
+    "CSF_ShadersDirectory": {
+      "state": "set"
+    },
+    "CSF_StandardDefaults": {
+      "state": "set"
+    },
+    "CSF_StandardLiteDefaults": {
+      "state": "set"
+    },
+    "CSF_TObjDefaults": {
+      "state": "set"
+    },
+    "CSF_TObjMessage": {
+      "state": "set"
+    },
+    "CSF_XCAFDefaults": {
+      "state": "set"
+    },
+    "CSF_XSMessage": {
+      "state": "set"
+    },
+    "CSF_XmlOcafResource": {
+      "state": "set"
+    },
+    "DEBUGINFOD_URLS": {
+      "state": "set"
+    },
+    "DRAWDEFAULT": {
+      "state": "set"
+    },
+    "DRAWHOME": {
+      "state": "set"
+    },
+    "ELECTRON_OZONE_PLATFORM_HINT": {
+      "state": "empty"
+    },
+    "FORCE_COLOR": {
+      "state": "absent"
+    },
+    "GIT_EDITOR": {
+      "state": "set"
+    },
+    "GOFLAGS": {
+      "state": "absent"
+    },
+    "HL_INITIAL_WORKSPACE_TOKEN": {
+      "state": "set"
+    },
+    "IS_DEMO": {
+      "state": "set"
+    },
+    "LANG": {
+      "state": "set",
+      "value": "C.UTF-8"
+    },
+    "LANGUAGE": {
+      "state": "absent"
+    },
+    "LC_ALL": {
+      "state": "absent"
+    },
+    "LC_COLLATE": {
+      "state": "absent"
+    },
+    "LC_CTYPE": {
+      "state": "absent"
+    },
+    "LC_MESSAGES": {
+      "state": "absent"
+    },
+    "LC_NUMERIC": {
+      "state": "absent"
+    },
+    "LC_TIME": {
+      "state": "absent"
+    },
+    "LD_LIBRARY_PATH": {
+      "state": "set"
+    },
+    "MMGT_CLEAR": {
+      "state": "set"
+    },
+    "MOZ_ENABLE_WAYLAND": {
+      "state": "set"
+    },
+    "NODE_ENV": {
+      "state": "absent"
+    },
+    "NODE_OPTIONS": {
+      "state": "absent"
+    },
+    "NO_COLOR": {
+      "state": "set",
+      "value": "1"
+    },
+    "NoDefaultCurrentDirectoryInExePath": {
+      "state": "set"
+    },
+    "PATH": {
+      "state": "set"
+    },
+    "PYTHONDONTWRITEBYTECODE": {
+      "state": "absent"
+    },
+    "PYTHONHASHSEED": {
+      "state": "absent"
+    },
+    "PYTHONIOENCODING": {
+      "state": "absent"
+    },
+    "PYTHONUTF8": {
+      "state": "absent"
+    },
+    "RUST_BACKTRACE": {
+      "state": "absent"
+    },
+    "SHELL": {
+      "state": "set"
+    },
+    "TERM": {
+      "state": "set",
+      "value": "xterm-kitty"
+    },
+    "TERMINFO": {
+      "state": "set"
+    },
+    "TZ": {
+      "state": "absent"
+    },
+    "VSSCRIPT_PATH": {
+      "state": "set"
+    },
+    "_JAVA_AWT_WM_NONREPARENTING": {
+      "state": "set"
+    }
+  },
+  "locale": {
+    "timeZone": "Asia/Calcutta",
+    "locale": "en-US"
+  },
+  "redaction": {
+    "rulesVersion": 2,
+    "valuesIncluded": [
+      "COLUMNS",
+      "LANG",
+      "NO_COLOR",
+      "TERM"
+    ],
+    "hashedValues": false,
+    "scrubbed": {}
+  }
+}

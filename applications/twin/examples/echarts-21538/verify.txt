@@ -1,0 +1,15 @@
+Replay on solari (machine AkhV_ntXHJrec7VZ…, run e179d260)
+  ✓ prepare workspace  0.3s
+  ✓ install node 22.23.3  2.1s
+  ✓ check out 984bf46b2f90  4.2s
+  ✓ upload candidate fix  0.0s
+  ✓ apply candidate fix  0.3s
+  ✓ install npm 10.9.9  4.7s
+  ✓ install dependencies (npm ci)  46.8s
+
+Attempts
+  1  PASS  8.1s
+  2  PASS  1.7s
+  expected  FAIL exit1:0aee0834ac9c4d2d
+
+FIXED: the command passes in the reporter's environment with the fix applied.

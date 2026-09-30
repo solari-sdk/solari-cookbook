@@ -1,0 +1,13 @@
+Bisect on solari (machine AvubsvqLazIY9m-5…, run 98e18221)
+  good environment built in 56.3s (5 steps)
+
+Candidates (1)
+  TZ=America/New_York
+
+Trials (2)
+   1  pass  (good environment)  8.0s
+   2  FAIL  TZ=America/New_York  1.7s
+
+Minimal failing difference:
+  TZ=America/New_York
+Applying it to the good environment fails the captured way; without it, it passes.

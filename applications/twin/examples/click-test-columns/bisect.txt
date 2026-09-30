@@ -1,0 +1,27 @@
+twin: machine ready
+twin: prepare workspace
+twin: install python 3.13.12
+twin: check out 06b2a6787411
+twin: install python dependencies
+twin: trial 1: good environment
+twin:   -> pass
+twin: trial 2: COLUMNS=40
+twin:   -> fail
+Bisect on solari (machine Ai10rC4wqUBzyOBY…, run 8b3eaf59)
+  good environment built in 7.9s (4 steps)
+
+Candidates (1)
+  COLUMNS=40
+
+Trials (2)
+   1  pass  (good environment)  1.2s
+   2  FAIL  COLUMNS=40  0.8s
+
+Minimal failing difference:
+  COLUMNS=40
+Applying it to the good environment fails the captured way; without it, it passes.
+
+Notes
+  - 42 variables were set on the reporter's machine but only by name, so left unset here (AI_AGENT, CASROOT, CLAUDECODE, CLAUDE_CODE_CHILD_SESSION, CLAUDE_CODE_ENTRYPOINT and 37 more). Usually harmless; if the command needs one, pass --env NAME=value.
+exit 0
+wall 24.6s

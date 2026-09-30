@@ -1,0 +1,59 @@
+diff --git a/package-lock.json b/package-lock.json
+index 11bf980..a28ef9f 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -71,9 +71,9 @@
+       }
+     },
+     "node_modules/@asamuzakjp/css-color/node_modules/lru-cache": {
+-      "version": "11.2.6",
+-      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.2.6.tgz",
+-      "integrity": "sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==",
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "engines": {
+@@ -95,9 +95,9 @@
+       }
+     },
+     "node_modules/@asamuzakjp/dom-selector/node_modules/lru-cache": {
+-      "version": "11.2.6",
+-      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.2.6.tgz",
+-      "integrity": "sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==",
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "engines": {
+@@ -3633,9 +3633,9 @@
+       }
+     },
+     "node_modules/cssstyle/node_modules/lru-cache": {
+-      "version": "11.2.6",
+-      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.2.6.tgz",
+-      "integrity": "sha512-ESL2CrkS/2wTPfuend7Zhkzo2u0daGJ/A2VucJOgQ/C48S/zB8MMeMHSGKYpXhIjbPxfuezITkaBH1wqv00DDQ==",
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "engines": {
+diff --git a/package.json b/package.json
+index 66b4572..c6bf24c 100644
+--- a/package.json
++++ b/package.json
+@@ -172,5 +172,10 @@
+   "bugs": {
+     "url": "https://github.com/cure53/DOMPurify/issues"
+   },
+-  "homepage": "https://github.com/cure53/DOMPurify"
++  "homepage": "https://github.com/cure53/DOMPurify",
++  "overrides": {
++    "jsdom": {
++      "lru-cache": "^11.3.2"
++    }
++  }
+ }
