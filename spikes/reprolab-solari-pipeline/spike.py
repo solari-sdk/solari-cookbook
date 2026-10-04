@@ -303,10 +303,11 @@ print(json.dumps(analysis))
             # The stock image may show LibreOffice's first-run Tip of the Day
             # above the sheet. Escape dismisses it and is harmless when absent.
             await desktop.keyboard.press("Escape")
+            await desktop.keyboard.press("Escape")
             await asyncio.sleep(1)
             # A1 is the header; Ctrl+Home then Down deterministically selects A2.
             await desktop.keyboard.hotkey("ctrl", "home")
-            await desktop.keyboard.press("ArrowDown")
+            await desktop.keyboard.press("Down")
             await desktop.keyboard.hotkey("ctrl", "c")
             await asyncio.sleep(2)
             clipboard_raw = await desktop.clipboard.get()
