@@ -39,4 +39,5 @@ variable it reads and nothing else.
 
 | Application | Language | What it does |
 | --- | --- | --- |
+| [reprolab](reprolab) | Python | Reproduce a web-exported CSV identifier coercion in real LibreOffice with deterministic evidence |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
