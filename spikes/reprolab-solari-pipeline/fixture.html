@@ -1,0 +1,26 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ReproLab CSV fixture</title>
+
+<table border="1">
+  <thead>
+    <tr><th>account_code</th><th>customer</th><th>amount</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>001234</td><td>Northstar Labs</td><td>250.00</td></tr>
+  </tbody>
+</table>
+
+<button id="export">Export CSV</button>
+
+<script>
+  const csv = "account_code,customer,amount\n001234,Northstar Labs,250.00\n";
+  document.querySelector("#export").addEventListener("click", () => {
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "export.csv";
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+</script>
