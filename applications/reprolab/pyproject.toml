@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reprolab-solari"
+version = "0.1.0"
+description = "Deterministic cross-surface artifact reproduction on Solari"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+  "solari-browser==0.2.1",
+  "solari-sandbox==0.2.3",
+  "solari-desktop==0.3.0",
+]
+
+[project.scripts]
+reprolab = "reprolab.cli:main"
+
+[tool.setuptools]
+packages = ["reprolab"]
+
+[tool.setuptools.package-data]
+reprolab = ["fixture.html"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+

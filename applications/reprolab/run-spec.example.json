@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "recipe": "csv_identifier_libreoffice",
+  "target_url": "https://staging.example.com/reports/september",
+  "profile_id": null,
+  "page_assertion": {
+    "title": "Monthly Reports",
+    "contains_text": "September account report"
+  },
+  "row_selector": {
+    "customer": "Northstar Labs"
+  },
+  "target_column": "account_code",
+  "target_cell": "A2",
+  "expected_text": "001234",
+  "known_failure_text": "1234"
+}
