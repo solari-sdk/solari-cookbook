@@ -300,6 +300,10 @@ print(json.dumps(analysis))
             # CSV files open the Text Import dialog. Enter accepts its defaults.
             await desktop.keyboard.press("Return")
             await asyncio.sleep(6)
+            # The stock image may show LibreOffice's first-run Tip of the Day
+            # above the sheet. Escape dismisses it and is harmless when absent.
+            await desktop.keyboard.press("Escape")
+            await asyncio.sleep(1)
             # A1 is the header; Ctrl+Home then Down deterministically selects A2.
             await desktop.keyboard.hotkey("ctrl", "home")
             await desktop.keyboard.press("ArrowDown")
