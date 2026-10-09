@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/*
+ * Ruled exam paper and navy ink. Proctor red marks only recording and failure,
+ * pass green only a score. Every colour below derives from these tokens.
+ */
+@theme {
+  --color-paper: #eef1f4;
+  --color-sheet: #f8fafb;
+  --color-rule: #c9d5e2;
+  --color-ink: #14213d;
+  --color-graphite: #56606e;
+  --color-proctor: #c8102e;
+  --color-pass: #2e7d5b;
+
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #0d1524;
+    --color-sheet: #142036;
+    --color-rule: #2a3a55;
+    --color-ink: #e4eaf2;
+    --color-graphite: #93a0b3;
+    --color-proctor: #ff5a6e;
+    --color-pass: #5fcf98;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Headings use Archivo at its expanded width: the invigilator's lettering. */
+.display {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  letter-spacing: -0.01em;
+}
+
+/* Setup time is hatched on the rail because it does not count. */
+.hatched {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-rule) 0 2px,
+    transparent 2px 7px
+  );
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

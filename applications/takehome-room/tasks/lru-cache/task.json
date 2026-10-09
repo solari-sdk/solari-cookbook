@@ -1,0 +1,5 @@
+{
+  "title": "LRU cache with expiry",
+  "workMinutes": 45,
+  "setupMinutes": 10
+}

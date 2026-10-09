@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [takehome-room](takehome-room) | TypeScript | Take-home coding interviews in a recorded desktop, graded by hidden tests in a separate sandbox |
