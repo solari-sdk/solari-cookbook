@@ -1,0 +1,4 @@
+flask>=3.0.0
+solari-browser
+solari-sandbox
+solari-desktop
