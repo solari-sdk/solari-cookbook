@@ -43,6 +43,7 @@ One key spans all three, so an example can use more than one at once.
 | --- | --- | --- |
 | [form-delivery-check-ts](examples/form-delivery-check-ts) | TypeScript | Submit a form in a browser, verify the lead landed in a sandbox |
 | [security-posture-review-ts](examples/security-posture-review-ts) | TypeScript | Browser and sandbox running concurrently on one key |
+| [release-watch-py](examples/release-watch-py) | Python | Launch packet: stealth browser + sandbox kernel + desktop proof |
 
 ### Desktop
 
