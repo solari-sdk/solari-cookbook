@@ -1,0 +1,13 @@
+{
+  "name": "solari-browser-playwright-runner-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "playwright test",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.2",
+    "typescript": "^5.7.2"
+  }
+}

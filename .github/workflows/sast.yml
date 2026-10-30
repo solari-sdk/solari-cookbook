@@ -1,0 +1,72 @@
+name: SAST
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly re-scan of the default branch: registry rules evolve, and compliance
+    # (Secureframe "Code static application security testing") wants recurring
+    # evidence even in a quiet week, not just push-triggered runs.
+    - cron: "23 9 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sast-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# ============================================================================
+#  Static application security testing (Semgrep).
+#
+#  WHY SEMGREP, NOT CODEQL: this repo is private and the org has no GitHub
+#  Advanced Security license — the code-scanning API 403s ("Advanced Security
+#  must be enabled"), so github/codeql-action cannot upload results here.
+#  Semgrep runs entirely inside the job and needs neither. This mirrors
+#  pinetree-browser / pinetree-desktop / pinetree-browser-platform / solari-changelog
+#  so every repo in the estate produces the same shape of evidence.
+#
+#  WHAT THERE IS TO SCAN HERE: multi-language example code (TS, Python, Ruby)
+#  that customers copy-paste to talk to the Solari API. Semgrep auto-detects
+#  language per file, so one scan over the whole tree covers all of them —
+#  no per-language job needed. The realistic findings are a hardcoded API key
+#  in an example (the one thing that would be actively harmful to ship), an
+#  unsafe subprocess/eval call, or an SSRF-shaped URL built from user input.
+#
+#  TWO STEPS, ONE REAL GATE:
+#    - "Report" runs every rule at every severity and never blocks — it exists
+#      so a human reading the log sees the full picture, including WARNING/INFO
+#      findings nobody has triaged yet.
+#    - "Gate" runs ERROR-severity rules only and FAILS on any finding. A new
+#      ERROR finding is either a real bug (fix it) or a justified false
+#      positive (suppress it with an inline `nosemgrep: <rule-id> -- <reason>`
+#      comment, which a reviewer has to see and accept in the diff).
+# ============================================================================
+
+jobs:
+  semgrep:
+    name: Semgrep
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep:1.86.0
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Report — every rule, every severity, never blocks
+        continue-on-error: true
+        run: |
+          semgrep scan \
+            --config p/default \
+            --config p/secrets \
+            --metrics off \
+            .
+
+      - name: Gate — ERROR severity only, fails the build
+        run: |
+          semgrep scan \
+            --config p/default \
+            --config p/secrets \
+            --severity ERROR \
+            --error \
+            --metrics off \
+            .

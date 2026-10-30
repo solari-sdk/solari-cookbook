@@ -1,0 +1,4 @@
+vendor,amount,status,cost_center
+Acme Cloud,100,pending,infra
+Pinetree Travel,275,approved,research
+Northstar Data,250,pending,data

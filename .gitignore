@@ -1,8 +1,11 @@
 node_modules/
 package-lock.json
 .env
+.dev.vars
+.wrangler/
 __pycache__/
 *.pyc
 .venv/
 venv/
 screenshot.png
+screenshots/

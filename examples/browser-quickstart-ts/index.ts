@@ -22,9 +22,11 @@ try {
   console.log("session:", browser.id)
 } finally {
   await browser.close()
-  // REQUIRED in Node, and easy to miss: the client keeps a loopback proxy
-  // server open for the connection-retry path, and that handle keeps the
-  // event loop alive. Skip this and your script prints its output and then
-  // hangs forever instead of exiting.
+  // Optional as of @solarisdk/browser 0.1.3: the client keeps a loopback proxy
+  // server open for the connection-retry path, but 0.1.3 unrefs that listener,
+  // so `browser.close()` alone is enough to exit. Calling `solari.close()` is
+  // still fine and releases the client's pool immediately. Before 0.1.3 it was
+  // required — skip it there and the script printed its output and then hung
+  // forever instead of exiting.
   await solari.close()
 }

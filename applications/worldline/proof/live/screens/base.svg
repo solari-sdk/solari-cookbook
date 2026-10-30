@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<defs><linearGradient id="bg" x1="0" x2="1"><stop stop-color="#0d1210"/><stop offset="1" stop-color="#1c2b22"/></linearGradient></defs>
+<rect width="1280" height="720" fill="url(#bg)"/><rect x="42" y="38" width="1196" height="644" rx="22" fill="#101512" stroke="#354039"/>
+<circle cx="78" cy="75" r="8" fill="#ff7067"/><circle cx="104" cy="75" r="8" fill="#f6c453"/><circle cx="130" cy="75" r="8" fill="#63ce8c"/>
+<text x="72" y="120" font-family="Arial" font-size="24" font-weight="700" fill="#eaf1e9">Live checkpoint</text>
+<rect x="1080" y="87" width="116" height="33" rx="16" fill="#c9fb69"/><text x="1138" y="109" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700" fill="#101512">SNAPSHOT</text>
+<style>.row{font: 19px 'Courier New',monospace;fill:#afc1b4}</style><text x="76" y="158" class="row">$ sha256sum expense-ledger.csv</text><text x="76" y="189" class="row">460f9e0ba42a14ace9ea28db436c0c844acd6a8ebe84c07117af9a719430f77b</text><text x="76" y="220" class="row"></text><text x="76" y="251" class="row">vendor,amount,status,cost_center</text><text x="76" y="282" class="row">Acme Cloud,100,pending,infra</text><text x="76" y="313" class="row">Pinetree Travel,250,pending,research</text><text x="76" y="344" class="row">Northstar Data,250,pending,data</text>
+<rect x="72" y="612" width="1136" height="1" fill="#303a34"/><text x="72" y="650" font-family="Arial" font-size="15" fill="#77847b">Worldline · remote execution evidence</text>
+</svg>

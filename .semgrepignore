@@ -1,0 +1,6 @@
+# Semgrep's default rulesets are written for executable code and produce
+# false positives when they match prose in documentation, e.g. a README
+# describing a URL-scheme workaround. Every example directory here has a
+# README.md walking through the code; none of them are executable.
+*.md
+node_modules/

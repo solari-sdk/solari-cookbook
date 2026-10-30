@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  # Weekly run of the same checks against the default branch. Push/PR only
+  # tells you a CHANGE broke something; the schedule catches rot that arrives
+  # without a commit — an example pinned to a since-yanked SDK version, or a
+  # PyPI/npm release that silently changes a type an example relied on.
+  schedule:
+    - cron: "0 9 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# ============================================================================
+#  THE FIRST CI THIS REPO HAS HAD.
+#
+#  WHAT THIS REPO IS: a collection of independent, self-contained SDK examples
+#  under examples/<name>/ — one per language/use-case, each with its own
+#  package.json / requirements.txt / plain script and no shared build. There
+#  is no single thing to "build"; the unit of correctness is EACH EXAMPLE
+#  DIRECTORY on its own.
+#
+#  SO THE REAL RISK IS NOT "the tests fail" (there are no tests), IT IS
+#  "an example customers copy-paste does not even parse/typecheck" — a
+#  renamed SDK export, a syntax error from a bad edit, a requirements.txt
+#  pin that no longer resolves. That is what the three jobs below check,
+#  one per language family actually present in this repo (TypeScript,
+#  Python, Ruby). Each job discovers its directories at run time by the
+#  marker file for that language, so a new example under examples/ is
+#  covered automatically without editing this workflow.
+# ============================================================================
+
+jobs:
+  typecheck-ts:
+    name: TypeScript examples (typecheck)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: npm install + tsc --noEmit for every TS example
+        run: |
+          set -e
+          status=0
+          for dir in examples/*/; do
+            [ -f "${dir}package.json" ] || continue
+            echo "::group::${dir}"
+            (
+              cd "$dir"
+              # --legacy-peer-deps: at least one example (browser-workers-cdp-ts,
+              # a Cloudflare Worker) has a real peer-dependency conflict between
+              # wrangler and @cloudflare/workers-types in its OWN package.json.
+              # That is pre-existing and none of this workflow's business to fix;
+              # loosening peer-dep resolution here only affects whether install
+              # succeeds for a typecheck, never what customers actually run.
+              npm install --no-audit --no-fund --legacy-peer-deps
+              if [ -f tsconfig.json ]; then
+                npx --yes tsc --noEmit
+              else
+                # No tsconfig in this example (most of them) — check every
+                # top-level .ts file directly with the same modern-module
+                # flags the SDK's own examples assume (top-level await).
+                # Most examples that reach for `process`/`node:fs` declare
+                # @types/node themselves; a few do not, and tsc has no other
+                # way to know Node's globals exist. Installing it here (never
+                # saved to package.json) makes the check independent of
+                # whether an individual example remembered to declare it.
+                npm install --no-audit --no-fund --no-save --legacy-peer-deps @types/node
+                npx --yes tsc --noEmit --skipLibCheck --moduleResolution node \
+                  --module esnext --target es2022 --esModuleInterop *.ts
+              fi
+            ) || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+
+  lint-python:
+    name: Python examples (syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Byte-compile every Python example
+        # py_compile checks syntax only and needs no installed dependencies,
+        # so this cannot flake on a registry outage — it catches the failure
+        # mode that actually recurs (a bad edit leaves invalid Python) without
+        # requiring network access in CI.
+        run: |
+          set -e
+          status=0
+          for dir in examples/*/; do
+            [ -f "${dir}requirements.txt" ] || continue
+            echo "::group::${dir}"
+            for f in "$dir"*.py; do
+              [ -f "$f" ] || continue
+              python3 -m py_compile "$f" && echo "ok: $f" || status=1
+            done
+            echo "::endgroup::"
+          done
+          exit $status
+
+      - name: requirements.txt parses as valid pip requirements
+        run: |
+          set -e
+          status=0
+          for dir in examples/*/; do
+            [ -f "${dir}requirements.txt" ] || continue
+            pip install --dry-run --no-deps -r "${dir}requirements.txt" >/tmp/pip-dry-run.log 2>&1 \
+              && echo "ok: ${dir}requirements.txt" \
+              || { echo "BAD requirements.txt: ${dir}"; cat /tmp/pip-dry-run.log; status=1; }
+          done
+          exit $status
+
+  lint-ruby:
+    name: Ruby examples (syntax)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+
+      - name: ruby -c for every Ruby example
+        run: |
+          set -e
+          status=0
+          shopt -s globstar nullglob
+          for f in examples/**/*.rb; do
+            ruby -c "$f" || status=1
+          done
+          exit $status
