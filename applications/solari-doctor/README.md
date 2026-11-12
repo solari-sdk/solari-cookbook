@@ -142,11 +142,11 @@ and cites its source — a cookbook gotcha or an open issue.
 
 ## Quick start
 
-Not published to npm. Clone the fork and build it:
+Not published to npm. Clone the cookbook and build it:
 
 ```bash
-git clone https://github.com/nitheshkummarc/solari-cookbook.git
-cd solari-cookbook/solari-doctor
+git clone https://github.com/solari-sdk/solari-cookbook.git
+cd solari-cookbook/applications/solari-doctor
 npm ci
 npm run build
 
@@ -164,7 +164,7 @@ checks that need the API are skipped with the reason named.
 To check a different project, run it from that project's directory —
 `sdk-version` and `browser-lifecycle` resolve `@solarisdk/browser` from the
 current working directory, not from solari-doctor's own `node_modules`. For a
-global `solari-doctor` command, `npm link` from `solari-doctor/`.
+global `solari-doctor` command, `npm link` from `applications/solari-doctor/`.
 
 ## Usage
 
@@ -461,9 +461,9 @@ solari-doctor/
 └── LICENSE
 ```
 
-Workflows live at the repository root, in
-[`.github/workflows/`](../.github/workflows/): a PR gate that needs no
-credentials, and a separate secret-gated live workflow.
+CI runs on the [development fork](https://github.com/nitheshkummarc/solari-cookbook/tree/main/.github/workflows),
+not in this repository, so nothing outside this directory changes: a PR gate
+that needs no credentials, and a separate secret-gated live workflow.
 
 ## Why I built it
 
