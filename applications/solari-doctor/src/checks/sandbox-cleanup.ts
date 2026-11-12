@@ -18,6 +18,7 @@
 import type { DoctorContext } from "../context.js";
 import { mapSdkError } from "../runner/errors.js";
 import type { CheckResult, DoctorCheck } from "../types.js";
+import { acquireSandboxSlot } from "./sandbox-slot.js";
 
 const SANDBOX_TIMEOUT_MS = 60_000;
 
@@ -48,6 +49,8 @@ export const sandboxCleanupCheck: DoctorCheck = {
     const client = ctx.sandbox();
     let sandbox: Awaited<ReturnType<typeof client.sandboxes.create>> | undefined;
     let killed = false;
+    // One live VM at a time across the sandbox checks (F52).
+    const releaseSlot = await acquireSandboxSlot();
 
     try {
       sandbox = await client.sandboxes.create({
@@ -150,6 +153,7 @@ export const sandboxCleanupCheck: DoctorCheck = {
           // The check's own result stands; a failed cleanup must not replace it.
         }
       }
+      releaseSlot();
     }
   },
 };

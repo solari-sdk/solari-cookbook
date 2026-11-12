@@ -16,6 +16,7 @@
 import type { DoctorContext } from "../context.js";
 import { mapSdkError, sanitizeErrorMessage } from "../runner/errors.js";
 import type { CheckResult, DoctorCheck } from "../types.js";
+import { acquireSandboxSlot } from "./sandbox-slot.js";
 
 /** A whole command line where a binary name belongs (README gotcha 3). */
 const WRONG_FORM = "ls -la";
@@ -48,6 +49,8 @@ export const sandboxCommandCheck: DoctorCheck = {
   async run(ctx: DoctorContext): Promise<CheckResult> {
     const client = ctx.sandbox();
     let sandbox: Awaited<ReturnType<typeof client.sandboxes.create>> | undefined;
+    // One live VM at a time across the sandbox checks (F52).
+    const releaseSlot = await acquireSandboxSlot();
 
     try {
       sandbox = await client.sandboxes.create({
@@ -137,6 +140,7 @@ export const sandboxCommandCheck: DoctorCheck = {
         // Nothing useful to report: the check's own result already stands, and
         // a failed cleanup must not replace it.
       }
+      releaseSlot();
     }
   },
 };
