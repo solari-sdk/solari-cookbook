@@ -1,0 +1,11 @@
+{
+  // Typecheck the test suite too. The build tsconfig deliberately excludes
+  // test/ (it is not shipped in dist/), but untypechecked tests would make
+  // `npm run check` green while real type errors sat in them.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "."
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

@@ -40,3 +40,4 @@ variable it reads and nothing else.
 | Application | Language | What it does |
 | --- | --- | --- |
 | [worldline](worldline) | Python | Snapshot-branch competing plans, verify their artifacts, and replay only the winner |
+| [solari-doctor](solari-doctor) | TypeScript | Diagnostic CLI that checks a local setup against Solari's documented failure modes and shows the evidence for each result |

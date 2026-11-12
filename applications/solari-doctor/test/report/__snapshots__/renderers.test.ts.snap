@@ -1,0 +1,87 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`json renderer > renders a full run 1`] = `
+"{
+  "schemaVersion": 1,
+  "checks": [
+    {
+      "id": "auth",
+      "status": "pass",
+      "message": "authenticated",
+      "durationMs": 120
+    },
+    {
+      "id": "sdk-version",
+      "status": "warn",
+      "message": "@solarisdk/browser 0.1.2 installed",
+      "durationMs": 2,
+      "remediation": "Upgrade to 0.1.3 or later, where browser.close() alone is enough to exit.",
+      "evidence": {
+        "sdkVersion": "0.1.2"
+      }
+    },
+    {
+      "id": "browser-lifecycle",
+      "status": "fail",
+      "message": "child process did not exit within the deadline",
+      "durationMs": 5013,
+      "evidence": {
+        "deadlineMs": 5000,
+        "processExited": false
+      }
+    },
+    {
+      "id": "sandbox-command",
+      "status": "skip",
+      "message": "skipped: \\"auth\\" did not pass",
+      "durationMs": 0,
+      "evidence": {
+        "blockedBy": "auth",
+        "rootCause": "auth"
+      }
+    }
+  ],
+  "diagnoses": [
+    {
+      "cause": "the installed @solarisdk/browser is older than 0.1.3, and a process did not exit",
+      "confidence": "high",
+      "remediation": "Upgrade to @solarisdk/browser 0.1.3 or later.",
+      "supportingChecks": [
+        "sdk-version",
+        "browser-lifecycle"
+      ],
+      "issueRef": "solari-cookbook#README-gotcha-1"
+    }
+  ]
+}
+"
+`;
+
+exports[`terminal renderer > renders a clean run with no diagnoses 1`] = `
+"solari-doctor
+
+  + auth  authenticated  120ms
+
+1 check · 1 passed
+"
+`;
+
+exports[`terminal renderer > renders a full run 1`] = `
+"solari-doctor
+
+  + auth               authenticated  120ms
+  ! sdk-version        @solarisdk/browser 0.1.2 installed  2ms
+      Upgrade to 0.1.3 or later, where browser.close() alone is enough to exit.
+  x browser-lifecycle  child process did not exit within the deadline  5.0s
+  - sandbox-command    skipped: "auth" did not pass  0ms
+
+diagnosis
+
+  the installed @solarisdk/browser is older than 0.1.3, and a process did not
+  exit
+    confidence: high · from: sdk-version, browser-lifecycle · solari-cookbook#README-gotcha-1
+    Upgrade to @solarisdk/browser 0.1.3 or later.
+
+4 checks · 1 passed · 1 warned · 1 failed · 1 skipped
+"
+`;

@@ -1,0 +1,47 @@
+# solari-doctor — scoped ignore rules.
+# The cookbook's root .gitignore already covers node_modules/, .env, .venv/.
+# These add what this project needs on top of it.
+
+# Local working notes and verification scripts — not part of the app.
+# The published write-up of what was verified is docs-public/FINDINGS.md.
+/docs
+CLAUDE.md
+/scripts
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Credentials — SOLARI_API_KEY must never be committed.
+# Defensive: the cookbook root already ignores `.env`, restated here so the
+# rule survives if this directory is ever extracted on its own.
+.env
+.env.*
+!.env.example
+
+# Dependencies (restated for the same reason)
+node_modules/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Test / tooling output
+coverage/
+.nyc_output/
+.vitest/
+*.log
+npm-debug.log*
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# The cookbook root ignores `package-lock.json` for its examples, which are
+# meant to be copied and run loosely. solari-doctor is a tool, not an example:
+# it pins exact versions (see .npmrc `save-exact=true`) and its lockfile is
+# part of the deliverable. Re-include it for this subtree only.
+!package-lock.json

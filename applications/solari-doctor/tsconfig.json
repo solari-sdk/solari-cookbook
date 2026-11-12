@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    // ESM, enforced at compile time. @solarisdk/browser is ESM-only — its
+    // exports map declares `types` and `import` with no `require` condition
+    // (finding F36), so a CommonJS build would typecheck and then fail at
+    // runtime. `nodenext` makes the compiler apply Node's real ESM resolution
+    // rules instead of deferring that failure.
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2023",
+    "lib": ["es2023"],
+    "types": ["node"],
+
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    // A diagnostic tool that is loose about its own types has no standing to
+    // report on anyone else's environment.
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "test", "scripts", "ci", ".venv"]
+}
