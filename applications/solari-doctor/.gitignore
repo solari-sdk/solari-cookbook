@@ -2,15 +2,8 @@
 # The cookbook's root .gitignore already covers node_modules/, .env, .venv/.
 # These add what this project needs on top of it.
 
-# ---------------------------------------------------------------------------
-# Research / verification material — LOCAL ONLY, never pushed.
-#
-# Everything below was produced while verifying the SDK's real behaviour before
-# any code was written. It is the evidence trail, not the deliverable. From
-# here on, only what we actually build ships to GitHub.
-#
-# Reverse any single line here if a document should join the submission.
-# ---------------------------------------------------------------------------
+# Local working notes and verification scripts — not part of the app.
+# The published write-up of what was verified is docs-public/FINDINGS.md.
 /docs
 CLAUDE.md
 /scripts
