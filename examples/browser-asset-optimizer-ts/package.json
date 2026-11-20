@@ -1,0 +1,19 @@
+{
+  "name": "solari-browser-asset-optimizer-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.4.0",
+    "sharp": "^0.35.5",
+    "subset-font": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "@types/subset-font": "^2.3.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
