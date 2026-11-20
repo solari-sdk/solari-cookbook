@@ -1,0 +1,16 @@
+{
+  "name": "solari-browser-tiktok-video-download-ts",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx index.ts"
+  },
+  "dependencies": {
+    "@solarisdk/browser": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

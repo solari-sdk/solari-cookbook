@@ -23,6 +23,16 @@ past. Copy one into your project and change the parts you care about.
 | [browser-workers-cdp-ts](examples/browser-workers-cdp-ts) | TypeScript | Drive a browser from a Cloudflare Worker, over raw CDP |
 | [browser-playwright-runner-ts](examples/browser-playwright-runner-ts) | TypeScript | Run your existing Playwright suite on Solari, no local Chromium |
 | [eu-consent-evidence-ts](examples/eu-consent-evidence-ts) | TypeScript | Pre-consent tracker evidence via raw CDP |
+| [browser-ad-request-blocking-ts](examples/browser-ad-request-blocking-ts) | TypeScript | Compare ad requests with and without a blocklist |
+| [browser-asset-optimizer-ts](examples/browser-asset-optimizer-ts) | TypeScript | Capture a page's images and fonts, recompress them, report the savings |
+| [browser-council-calendar-ts](examples/browser-council-calendar-ts) | TypeScript | Scrape a city council's meeting calendar to JSON |
+| [browser-council-calendar-py](examples/browser-council-calendar-py) | Python | Scrape a city council's meeting calendar to JSON |
+| [browser-youtube-video-insights-ts](examples/browser-youtube-video-insights-ts) | TypeScript | Read a YouTube video's metadata, stats and comments |
+| [browser-tiktok-video-download-ts](examples/browser-tiktok-video-download-ts) | TypeScript | Save a TikTok video file from its player |
+| [browser-pytest-runner-py](examples/browser-pytest-runner-py) | Python | Run async Playwright pytest tests on a cloud browser |
+| [browser-mcp-wikipedia-server-py](examples/browser-mcp-wikipedia-server-py) | Python | MCP server whose tools read Wikipedia through a browser |
+| [browser-mcp-youtube-server-py](examples/browser-mcp-youtube-server-py) | Python | MCP server whose tools read YouTube through a browser |
+| [browser-from-sandbox-py](examples/browser-from-sandbox-py) | Python | Launch a cloud browser from code running in a sandbox |
 
 ### Sandbox
 
